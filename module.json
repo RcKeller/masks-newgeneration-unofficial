@@ -1,31 +1,17 @@
 {
 	"id": "masks-newgeneration-unofficial",
-	"title": "Masks: A New Generation (PbtA)",
-	"description": "Masks: A New Generation from Magpie Games (unofficial)",
+	"title": "Masks: A New Generation (Bear Edition)",
+	"description": "Masks: A New Generation from Magpie Games, customized by Andrew Barrows",
 	"version": "#{VERSION}#",
 	"compatibility": {
 		"minimum": 13,
-		"verified": 13.346,
-		"maximum": 13
+		"verified": 13.35,
+		"maximum": 15
 	},
 	"authors": [
 		{
-			"name": "CyricPL",
-			"discord": "@CyricPL#6704"
-		},
-		{
-			"name": "Geekswordsman",
-			"discord": "@Geekswordsman#3085"
-		},
-		{
-			"name": "ephson",
-			"url": "https://github.com/philote",
-			"discord": "ephson",
-			"reddit": "u/ephson"
-		},
-		{
-			"name": "erizocosmico",
-			"url": "https://github.com/erizocosmico"
+			"name": "RcKeller",
+			"url": "https://github.com/RcKeller"
 		}
 	],
 	"packs": [

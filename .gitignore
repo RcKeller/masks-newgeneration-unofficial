@@ -55,3 +55,6 @@ foundry
 # Other
 .claude/
 CLAUDE.md
+
+images/tokenizer/*
+assets/scenes/*
