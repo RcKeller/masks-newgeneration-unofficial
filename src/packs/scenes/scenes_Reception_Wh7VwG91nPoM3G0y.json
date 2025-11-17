@@ -4,7 +4,7 @@
   "navigation": true,
   "navOrder": 0,
   "background": {
-    "src": "assets/maps/bank%20lobby.jpg",
+    "src": "modules/masks-newgeneration-unofficial/images/maps/bank%20lobby.jpg",
     "anchorX": 0,
     "anchorY": 0,
     "offsetX": 0,
@@ -91,7 +91,7 @@
   "tiles": [
     {
       "texture": {
-        "src": "assets/maps/after%20hours.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/after%20hours.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,

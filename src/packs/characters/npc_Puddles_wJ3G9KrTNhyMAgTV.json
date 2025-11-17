@@ -1,7 +1,7 @@
 {
   "name": "Puddles",
   "type": "npc",
-  "img": "modules/masks-newgeneration-extensions/assets/npc-images/puddles.Avatar.webp?1763405790653",
+  "img": "modules/masks-newgeneration-extensions/images/tokenizer/npc-images/puddles.Avatar.webp?1763405790653",
   "system": {
     "stats": {},
     "attributes": {
@@ -88,7 +88,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-extensions/assets/npc-images/puddles.Token.webp?1763405790653",
+      "src": "modules/masks-newgeneration-extensions/images/tokenizer/npc-images/puddles.Token.webp?1763405790653",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

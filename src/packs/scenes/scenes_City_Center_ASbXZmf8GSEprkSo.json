@@ -5,7 +5,7 @@
   "navigation": true,
   "navOrder": 0,
   "background": {
-    "src": "assets/maps/3%20car%20pile-up.jpg",
+    "src": "modules/masks-newgeneration-unofficial/images/maps/3%20car%20pile-up.jpg",
     "anchorX": 0,
     "anchorY": 0,
     "offsetX": 0,
@@ -92,7 +92,7 @@
   "tiles": [
     {
       "texture": {
-        "src": "assets/maps/3%20car%20pile-up%20night.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/3%20car%20pile-up%20night.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,
@@ -133,7 +133,7 @@
     },
     {
       "texture": {
-        "src": "assets/maps/shin%20tokyo%20night.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/shin%20tokyo%20night.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,
@@ -174,7 +174,7 @@
     },
     {
       "texture": {
-        "src": "assets/maps/shin%20tokyo.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/shin%20tokyo.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,

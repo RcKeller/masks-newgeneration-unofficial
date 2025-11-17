@@ -3,7 +3,7 @@
   "name": "Jewelry Maker",
   "type": "npc",
   "_id": "uOj2A5hM3SuttFU0",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/jewelry_maker.Avatar.webp?1761524032523",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/jewelry_maker.Avatar.webp?1761524032523",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/jewelry_maker.Token.webp?1761524032523",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/jewelry_maker.Token.webp?1761524032523",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

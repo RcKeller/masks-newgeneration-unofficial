@@ -3,7 +3,7 @@
   "name": "Courier",
   "type": "npc",
   "_id": "U4WLk1FBgFABcOct",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/courier.Avatar.webp?1761523872958",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/courier.Avatar.webp?1761523872958",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/courier.Token.webp?1761523872958",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/courier.Token.webp?1761523872958",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

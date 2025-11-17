@@ -1,7 +1,7 @@
 {
   "name": "Ripsnarl",
   "type": "npc",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/ripsnarl.Avatar.webp?1761929015100",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/ripsnarl.Avatar.webp?1761929015100",
   "system": {
     "stats": {},
     "attributes": {
@@ -80,7 +80,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/ripsnarl.Token.webp?1761929015100",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/ripsnarl.Token.webp?1761929015100",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

@@ -1,7 +1,7 @@
 {
   "name": "Snuggles",
   "type": "npc",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/giant_sloth.Avatar.webp?1761928935577",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/giant_sloth.Avatar.webp?1761928935577",
   "system": {
     "stats": {},
     "attributes": {
@@ -80,7 +80,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/giant_sloth.Token.webp?1761928935577",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/giant_sloth.Token.webp?1761928935577",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

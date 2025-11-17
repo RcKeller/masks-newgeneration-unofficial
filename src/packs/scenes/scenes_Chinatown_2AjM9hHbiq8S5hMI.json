@@ -5,7 +5,7 @@
   "navigation": true,
   "navOrder": 0,
   "background": {
-    "src": "assets/maps/chinatown.jpg",
+    "src": "modules/masks-newgeneration-unofficial/images/maps/chinatown.jpg",
     "anchorX": 0,
     "anchorY": 0,
     "offsetX": 0,
@@ -92,7 +92,7 @@
   "tiles": [
     {
       "texture": {
-        "src": "assets/maps/canopy%20baked.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/canopy%20baked.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,
@@ -133,7 +133,7 @@
     },
     {
       "texture": {
-        "src": "assets/maps/canopy%20base.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/canopy%20base.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,
@@ -174,7 +174,7 @@
     },
     {
       "texture": {
-        "src": "assets/maps/canopy%20baked.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/canopy%20baked.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,

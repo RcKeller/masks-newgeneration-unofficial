@@ -4,7 +4,7 @@
   "navigation": true,
   "navOrder": 0,
   "background": {
-    "src": "assets/maps/server-room.jpg",
+    "src": "modules/masks-newgeneration-unofficial/images/maps/server-room.jpg",
     "anchorX": 0,
     "anchorY": 0,
     "offsetX": 0,
@@ -91,7 +91,7 @@
   "tiles": [
     {
       "texture": {
-        "src": "assets/maps/server-room-redalert.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/server-room-redalert.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,

@@ -3,7 +3,7 @@
   "name": "Turtle Tamer",
   "type": "character",
   "_id": "lq3QqUm7a7dyciyx",
-  "img": "modules/masks-newgeneration-unofficial/assets/pc-images/turtle_tamer.Avatar.webp?1761853130934",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/pc-images/turtle_tamer.Avatar.webp?1761853130934",
   "system": {
     "stats": {
       "danger": {
@@ -657,7 +657,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/pc-images/turtle_tamer.Token.webp?1761853130934",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/pc-images/turtle_tamer.Token.webp?1761853130934",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

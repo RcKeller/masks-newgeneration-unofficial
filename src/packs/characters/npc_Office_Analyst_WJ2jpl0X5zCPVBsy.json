@@ -3,7 +3,7 @@
   "name": "Office Analyst",
   "type": "npc",
   "_id": "WJ2jpl0X5zCPVBsy",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/office_analyst.Avatar.webp?1761524335480",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/office_analyst.Avatar.webp?1761524335480",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/office_analyst.Token.webp?1761524335480",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/office_analyst.Token.webp?1761524335480",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

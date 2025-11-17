@@ -4,7 +4,7 @@
   "navigation": false,
   "navOrder": 0,
   "background": {
-    "src": "assets/maps/old-rooftop-night.jpg",
+    "src": "modules/masks-newgeneration-unofficial/images/maps/old-rooftop-night.jpg",
     "anchorX": 0,
     "anchorY": 0,
     "offsetX": 0,
@@ -1357,7 +1357,7 @@
   "tiles": [
     {
       "texture": {
-        "src": "assets/maps/old-rooftop-dawn.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/old-rooftop-dawn.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,
@@ -1408,7 +1408,7 @@
     },
     {
       "texture": {
-        "src": "assets/maps/old-rooftop-sunset.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/old-rooftop-sunset.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,

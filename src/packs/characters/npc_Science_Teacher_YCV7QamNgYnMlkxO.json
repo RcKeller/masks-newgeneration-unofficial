@@ -3,7 +3,7 @@
   "name": "Science Teacher",
   "type": "npc",
   "_id": "YCV7QamNgYnMlkxO",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/science_teacher.Avatar.webp?1761523769485",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/science_teacher.Avatar.webp?1761523769485",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/science_teacher.Token.webp?1761523769485",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/science_teacher.Token.webp?1761523769485",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

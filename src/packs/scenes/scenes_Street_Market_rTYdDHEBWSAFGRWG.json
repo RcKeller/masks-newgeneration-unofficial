@@ -4,7 +4,7 @@
   "navigation": true,
   "navOrder": 0,
   "background": {
-    "src": "assets/maps/market-street-day.jpg",
+    "src": "modules/masks-newgeneration-unofficial/images/maps/market-street-day.jpg",
     "anchorX": 0,
     "anchorY": 0,
     "offsetX": 0,
@@ -91,7 +91,7 @@
   "tiles": [
     {
       "texture": {
-        "src": "assets/maps/market-street-night.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/market-street-night.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,

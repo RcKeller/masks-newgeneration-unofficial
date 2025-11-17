@@ -3,7 +3,7 @@
   "name": "Gran with Groceries",
   "type": "npc",
   "_id": "PHzGU9DsnbPcvIeQ",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/gran_with_groceries.Avatar.webp?1761523551942",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/gran_with_groceries.Avatar.webp?1761523551942",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/gran_with_groceries.Token.webp?1761523551942",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/gran_with_groceries.Token.webp?1761523551942",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

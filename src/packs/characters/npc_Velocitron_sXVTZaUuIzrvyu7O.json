@@ -2,7 +2,7 @@
   "name": "Velocitron",
   "type": "npc",
   "_id": "sXVTZaUuIzrvyu7O",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/velocitron.Avatar.webp?1761853859301",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/velocitron.Avatar.webp?1761853859301",
   "system": {
     "stats": {},
     "attributes": {
@@ -81,7 +81,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/velocitron.Token.webp?1761853859301",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/velocitron.Token.webp?1761853859301",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

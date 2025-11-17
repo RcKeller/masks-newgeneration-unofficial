@@ -3,7 +3,7 @@
   "name": "Switchgear",
   "type": "character",
   "_id": "4OMYJvcn7sZtMVej",
-  "img": "modules/masks-newgeneration-unofficial/assets/pc-images/switchgear.Avatar.webp?1761453744210",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/pc-images/switchgear.Avatar.webp?1761453744210",
   "system": {
     "stats": {
       "danger": {
@@ -640,7 +640,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/pc-images/switchgear.Token.webp?1761453744210",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/pc-images/switchgear.Token.webp?1761453744210",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

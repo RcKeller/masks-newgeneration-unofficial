@@ -3,7 +3,7 @@
   "name": "Grad Student Coder",
   "type": "npc",
   "_id": "9xbp82GYbOmUTOE9",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/grad_student_coder.Avatar.webp?1761524321473",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/grad_student_coder.Avatar.webp?1761524321473",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/grad_student_coder.Token.webp?1761524321473",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/grad_student_coder.Token.webp?1761524321473",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

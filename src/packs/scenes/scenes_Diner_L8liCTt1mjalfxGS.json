@@ -4,7 +4,7 @@
   "navigation": false,
   "navOrder": 0,
   "background": {
-    "src": "assets/maps/cyberpunk-diner-day.jpg",
+    "src": "modules/masks-newgeneration-unofficial/images/maps/cyberpunk-diner-day.jpg",
     "anchorX": 0,
     "anchorY": 0,
     "offsetX": 0,
@@ -540,7 +540,7 @@
     },
     {
       "texture": {
-        "src": "assets/maps/cyberpunk-diner-afterhours.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/cyberpunk-diner-afterhours.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,

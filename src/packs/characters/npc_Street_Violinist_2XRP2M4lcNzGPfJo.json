@@ -3,7 +3,7 @@
   "name": "Street Violinist",
   "type": "npc",
   "_id": "2XRP2M4lcNzGPfJo",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/street_violinist.Avatar.webp?1761524367233",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/street_violinist.Avatar.webp?1761524367233",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/street_violinist.Token.webp?1761524367233",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/street_violinist.Token.webp?1761524367233",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

@@ -92,7 +92,7 @@
   "tiles": [
     {
       "texture": {
-        "src": "assets/maps/art%20gallery.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/art%20gallery.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,

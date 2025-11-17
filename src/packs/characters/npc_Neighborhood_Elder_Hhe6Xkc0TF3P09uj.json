@@ -3,7 +3,7 @@
   "name": "Neighborhood Elder",
   "type": "npc",
   "_id": "Hhe6Xkc0TF3P09uj",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/neighborhood_elder.Avatar.webp?1761523851989",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/neighborhood_elder.Avatar.webp?1761523851989",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/neighborhood_elder.Token.webp?1761523851989",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/neighborhood_elder.Token.webp?1761523851989",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

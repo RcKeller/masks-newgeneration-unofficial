@@ -4,7 +4,7 @@
   "navigation": true,
   "navOrder": 0,
   "background": {
-    "src": "assets/maps/shopping%20mall.jpg",
+    "src": "modules/masks-newgeneration-unofficial/images/maps/shopping%20mall.jpg",
     "anchorX": 0,
     "anchorY": 0,
     "offsetX": 0,
@@ -1127,7 +1127,7 @@
   "tiles": [
     {
       "texture": {
-        "src": "assets/maps/shopping%20mall%20train%20wreck.jpg",
+        "src": "modules/masks-newgeneration-unofficial/images/maps/shopping%20mall%20train%20wreck.jpg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "offsetX": 0,
