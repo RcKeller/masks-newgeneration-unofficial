@@ -1,0 +1,23 @@
+{
+  "type": "Scene",
+  "folder": null,
+  "name": "City",
+  "color": null,
+  "sorting": "a",
+  "_id": "4ZLXYsVfzEiw5JqP",
+  "description": "",
+  "sort": 0,
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1763233045275,
+    "modifiedTime": 1763233045275,
+    "lastModifiedBy": "huLnHNA8To2T4B8h"
+  },
+  "_key": "!folders!4ZLXYsVfzEiw5JqP"
+}

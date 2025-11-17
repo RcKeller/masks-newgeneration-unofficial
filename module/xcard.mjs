@@ -14,11 +14,11 @@
  *      and ensuring it begins with "/w GM " so the player can explain if desired.
  *
  * Settings:
- *   - (client) masks-newgeneration-extensions.xcardTriggerMode
+ *   - (client) masks-newgeneration-unofficial.xcardTriggerMode
  *       String select with the four behaviors above (per-user).
  *
  * Backward compatibility:
- *   - (world) masks-newgeneration-extensions.xcardNotifyGMOnClick (Boolean)
+ *   - (world) masks-newgeneration-unofficial.xcardNotifyGMOnClick (Boolean)
  *       Legacy toggle to send the anonymous GM ping. It is kept registered
  *       (config: false) to avoid errors in existing worlds, but it is no longer
  *       consulted — the new client select controls behavior now.
@@ -32,7 +32,7 @@
  * - Also: use `ChatMessage.getSpeaker({ alias })` and robust active‑GM checks.
  */
 
-const NS = "masks-newgeneration-extensions";
+const NS = "masks-newgeneration-unofficial";
 const TEMPLATE_PATH = `modules/${NS}/templates/xcard.hbs`;
 
 // --- Settings (new + legacy/deprecated) ---
@@ -40,7 +40,7 @@ const KEY_XCARD_MODE = "xcardTriggerMode"; // client select: user-configurable m
 const KEY_NOTIFY_GM = "xcardNotifyGMOnClick"; // legacy (deprecated; config: false)
 
 // Socket channel (still used for GM‑anonymous mode)
-const SOCKET_NS = "module.masks-newgeneration-extensions";
+const SOCKET_NS = "module.masks-newgeneration-unofficial";
 
 const XCARD_TITLE = "🛑 X‑Card has been played";
 

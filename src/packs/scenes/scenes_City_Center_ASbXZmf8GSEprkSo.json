@@ -1,0 +1,242 @@
+{
+  "name": "City Center",
+  "_id": "ASbXZmf8GSEprkSo",
+  "active": false,
+  "navigation": true,
+  "navOrder": 0,
+  "background": {
+    "src": "assets/maps/3%20car%20pile-up.jpg",
+    "anchorX": 0,
+    "anchorY": 0,
+    "offsetX": 0,
+    "offsetY": 0,
+    "fit": "fill",
+    "scaleX": 1,
+    "scaleY": 1,
+    "rotation": 0,
+    "tint": "#ffffff",
+    "alphaThreshold": 0
+  },
+  "foreground": null,
+  "foregroundElevation": null,
+  "thumb": "modules/masks-newgeneration-unofficial/assets/scenes/ASbXZmf8GSEprkSo-thumb.webp",
+  "width": 6440,
+  "height": 4200,
+  "padding": 0.25,
+  "initial": {
+    "x": null,
+    "y": null,
+    "scale": null
+  },
+  "backgroundColor": "#999999",
+  "grid": {
+    "type": 1,
+    "size": 100,
+    "style": "solidLines",
+    "thickness": 1,
+    "color": "#000000",
+    "alpha": 0.2,
+    "distance": 5,
+    "units": "ft"
+  },
+  "tokenVision": false,
+  "fog": {
+    "exploration": true,
+    "overlay": null,
+    "colors": {
+      "explored": null,
+      "unexplored": null
+    }
+  },
+  "environment": {
+    "darknessLevel": 0,
+    "darknessLock": false,
+    "globalLight": {
+      "enabled": false,
+      "alpha": 0.5,
+      "bright": false,
+      "color": null,
+      "coloration": 1,
+      "luminosity": 0,
+      "saturation": 0,
+      "contrast": 0,
+      "shadows": 0,
+      "darkness": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    "cycle": true,
+    "base": {
+      "hue": 0,
+      "intensity": 0,
+      "luminosity": 0,
+      "saturation": 0,
+      "shadows": 0
+    },
+    "dark": {
+      "hue": 0.7138888888888889,
+      "intensity": 0,
+      "luminosity": -0.25,
+      "saturation": 0,
+      "shadows": 0
+    }
+  },
+  "drawings": [],
+  "tokens": [],
+  "lights": [],
+  "notes": [],
+  "sounds": [],
+  "regions": [],
+  "templates": [],
+  "tiles": [
+    {
+      "texture": {
+        "src": "assets/maps/3%20car%20pile-up%20night.jpg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 1700,
+      "y": 1100,
+      "width": 6440,
+      "height": 4200,
+      "elevation": -1,
+      "sort": 0,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "fTmcnfoW5w5KQRKU",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {},
+      "_key": "!scenes.tiles!ASbXZmf8GSEprkSo.fTmcnfoW5w5KQRKU"
+    },
+    {
+      "texture": {
+        "src": "assets/maps/shin%20tokyo%20night.jpg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 1700,
+      "y": 1100,
+      "width": 6440,
+      "height": 4200,
+      "elevation": 0,
+      "sort": 1,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "9Eoqs3nUvN1oA0iY",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {},
+      "_key": "!scenes.tiles!ASbXZmf8GSEprkSo.9Eoqs3nUvN1oA0iY"
+    },
+    {
+      "texture": {
+        "src": "assets/maps/shin%20tokyo.jpg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 1700,
+      "y": 1100,
+      "width": 6440,
+      "height": 4200,
+      "elevation": -1,
+      "sort": 2,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "Z5WD89XOO1MPxw8X",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {},
+      "_key": "!scenes.tiles!ASbXZmf8GSEprkSo.Z5WD89XOO1MPxw8X"
+    }
+  ],
+  "walls": [],
+  "playlist": "zrL6RyTl4SH9G1fl",
+  "playlistSound": null,
+  "journal": null,
+  "journalEntryPage": null,
+  "weather": "",
+  "folder": "4ZLXYsVfzEiw5JqP",
+  "sort": 150000,
+  "ownership": {
+    "default": 2
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1760382851938,
+    "modifiedTime": 1763233055238,
+    "lastModifiedBy": "huLnHNA8To2T4B8h"
+  },
+  "navName": "",
+  "_key": "!scenes!ASbXZmf8GSEprkSo"
+}

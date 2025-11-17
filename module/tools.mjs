@@ -35,13 +35,13 @@ import {
   InfluenceIndex
 } from "./helpers/influence.mjs";
 
-const NS            = "masks-newgeneration-extensions";           // module namespace (settings)
+const NS            = "masks-newgeneration-unofficial";           // module namespace (settings)
 const FLAG_SCOPE    = "masks-newgeneration-unofficial";           // where Influence arrays live
 const FLAG_KEY      = "influences";
 const KEY_ANNOUNCE  = "announceInfluenceChanges";                  // world setting for chat announces
 const KEY_PREFER_TGT= "quickInfluencePreferTarget";                // client: use current target first
 const KEY_USE_GM    = "quickInfluenceUseGMRelay";                  // world: GM-hop for counterpart
-const SOCKET_NS     = "module.masks-newgeneration-extensions";     // GM relay channel
+const SOCKET_NS     = "module.masks-newgeneration-unofficial";     // GM relay channel
 
 /* -------------------------------- Utilities ------------------------------- */
 

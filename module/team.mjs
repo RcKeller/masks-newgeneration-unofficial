@@ -1,7 +1,7 @@
-// masks-newgeneration-extensions / team.js
+// masks-newgeneration-unofficial / team.js
 /* global game, ui, Hooks, ChatMessage, CONST, renderTemplate, foundry */
 
-const NS = "masks-newgeneration-extensions";
+const NS = "masks-newgeneration-unofficial";
 
 // Settings keys
 const KEY_ALLOW_EDIT = "playersCanEdit";  // UI gate only (document permission is the real control)

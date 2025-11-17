@@ -19,8 +19,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /* -------------------------- CLI ARG PARSING -------------------------- */
 function parseArgs(argv) {
   const args = {
-    chars: 'src/packs/sgb30-characters',
-    campaign: 'src/packs/sgb30-campaign',
+    chars: 'src/packs/characters',
+    campaign: 'src/packs/campaign',
     out: 'pbta-dump',
     md: false
   };

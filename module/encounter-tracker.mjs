@@ -12,12 +12,12 @@
  * - Works for GMs and players; players without permission GM‑relay the change.
  *
  * Storage:
- *   flags[masks-newgeneration-extensions].pbtaGoneRound = <roundNumber>
+ *   flags[masks-newgeneration-unofficial].pbtaGoneRound = <roundNumber>
  */
 
 (() => {
-  const NS        = "masks-newgeneration-extensions";
-  const SOCKET_NS = "module.masks-newgeneration-extensions";
+  const NS        = "masks-newgeneration-unofficial";
+  const SOCKET_NS = "module.masks-newgeneration-unofficial";
   const FLAG_GONE = "pbtaGoneRound";
   const BTN_CLASS = "pbta-gone-toggle";
 

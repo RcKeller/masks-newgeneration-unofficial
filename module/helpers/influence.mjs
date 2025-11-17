@@ -20,7 +20,7 @@
  *    Typical influence counts are small, so this is very fast in practice.
  */
 
-export const NS = "masks-newgeneration-extensions";
+export const NS = "masks-newgeneration-unofficial";
 const FLAG_PATH = "flags.masks-newgeneration-unofficial.influences";
 
 /* ----------------------------- Normalization ----------------------------- */

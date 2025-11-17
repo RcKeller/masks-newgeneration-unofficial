@@ -14,7 +14,7 @@
  * Single-writer election prevents multi-client race conditions.
  */
 
-const NS = "masks-newgeneration-extensions";
+const NS = "masks-newgeneration-unofficial";
 
 const PATH = Object.freeze({
 	HP: "system.attributes.hp",

@@ -1,7 +1,7 @@
 {
 	"name": "Aquaria",
 	"type": "npc",
-	"img": "modules/masks-newgeneration-extensions/images/villains/2.png",
+	"img": "modules/masks-newgeneration-unofficial/images/villains/2.png",
 	"system": {
 		"stats": {},
 		"attributes": {
@@ -80,7 +80,7 @@
 		"width": 1,
 		"height": 1,
 		"texture": {
-			"src": "modules/masks-newgeneration-extensions/images/villains/2.png",
+			"src": "modules/masks-newgeneration-unofficial/images/villains/2.png",
 			"anchorX": 0.5,
 			"anchorY": 0.5,
 			"offsetX": 0,

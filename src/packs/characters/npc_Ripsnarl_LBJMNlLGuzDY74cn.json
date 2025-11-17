@@ -1,0 +1,1472 @@
+{
+  "name": "Ripsnarl",
+  "type": "npc",
+  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/ripsnarl.Avatar.webp?1761929015100",
+  "system": {
+    "stats": {},
+    "attributes": {
+      "conditions": {
+        "label": "Conditions",
+        "description": "Choose all that apply:",
+        "customLabel": false,
+        "userLabel": false,
+        "type": "ListMany",
+        "condition": false,
+        "position": "Left",
+        "options": {
+          "0": {
+            "label": "Afraid",
+            "value": false
+          },
+          "1": {
+            "label": "Angry",
+            "value": false
+          },
+          "2": {
+            "label": "Guilty",
+            "value": false
+          },
+          "3": {
+            "label": "Hopeless",
+            "value": false
+          },
+          "4": {
+            "label": "Insecure",
+            "value": false
+          }
+        }
+      },
+      "realName": {
+        "label": "Real Name",
+        "description": null,
+        "customLabel": false,
+        "userLabel": false,
+        "type": "Text",
+        "value": "",
+        "position": "Left"
+      },
+      "generation": {
+        "label": "Generation",
+        "description": null,
+        "customLabel": false,
+        "userLabel": false,
+        "type": "Text",
+        "value": "",
+        "position": "Left"
+      }
+    },
+    "attrLeft": {},
+    "attrTop": {},
+    "details": {
+      "drive": {
+        "label": "Drive",
+        "value": "Driven by instinct and the commands of the Turtle Tamer.,Seeks to tunnel and maul, leaving destruction in its wake.,Protective of its territory, attacking anything that encroaches.,Confused by human emotions, reacting unpredictably to them."
+      },
+      "abilities": {
+        "label": "Abilities",
+        "value": "<ul><li>Burrowing: Can tunnel through earth and concrete with ease.</li><li>Massive Claws: Sharp and strong enough to tear through metal.</li><li>Sub-sonic Rumbles: Emits disorienting vibrations that disrupt balance.</li></ul>"
+      },
+      "biography": {
+        "label": "Notes",
+        "value": "Ripsnarl was summoned by the Turtle Tamer to serve as a tunneling beast of destruction. Its war paint-like dirt mask marks it as a fearsome predator, though its origins remain shrouded in mystery. The creature's massive claws and subsonic rumbles make it a formidable opponent, capable of destabilizing entire city blocks. Despite its ferocity, Ripsnarl is bound to the Turtle Tamer's will, acting as a living weapon in their schemes."
+      }
+    },
+    "tags": ""
+  },
+  "prototypeToken": {
+    "name": "Aquaria",
+    "displayName": 0,
+    "actorLink": false,
+    "width": 1,
+    "height": 1,
+    "texture": {
+      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/ripsnarl.Token.webp?1761929015100",
+      "anchorX": 0.5,
+      "anchorY": 0.5,
+      "offsetX": 0,
+      "offsetY": 0,
+      "fit": "contain",
+      "scaleX": 1,
+      "scaleY": 1,
+      "rotation": 0,
+      "tint": "#ffffff",
+      "alphaThreshold": 0.75
+    },
+    "lockRotation": false,
+    "rotation": 0,
+    "alpha": 1,
+    "disposition": -1,
+    "displayBars": 0,
+    "bar1": {
+      "attribute": null
+    },
+    "bar2": {
+      "attribute": null
+    },
+    "light": {
+      "negative": false,
+      "priority": 0,
+      "alpha": 0.5,
+      "angle": 360,
+      "bright": 0,
+      "color": null,
+      "coloration": 1,
+      "dim": 0,
+      "attenuation": 0.5,
+      "luminosity": 0.5,
+      "saturation": 0,
+      "contrast": 0,
+      "shadows": 0,
+      "animation": {
+        "type": null,
+        "speed": 5,
+        "intensity": 5,
+        "reverse": false
+      },
+      "darkness": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    "sight": {
+      "enabled": false,
+      "range": 0,
+      "angle": 360,
+      "visionMode": "basic",
+      "color": null,
+      "attenuation": 0.1,
+      "brightness": 0,
+      "saturation": 0,
+      "contrast": 0
+    },
+    "detectionModes": [],
+    "occludable": {
+      "radius": 0
+    },
+    "ring": {
+      "enabled": false,
+      "colors": {
+        "ring": null,
+        "background": null
+      },
+      "effects": 1,
+      "subject": {
+        "scale": 1,
+        "texture": null
+      }
+    },
+    "turnMarker": {
+      "mode": 1,
+      "animation": null,
+      "src": null,
+      "disposition": false
+    },
+    "movementAction": null,
+    "flags": {},
+    "randomImg": false,
+    "appendNumber": false,
+    "prependAdjective": false
+  },
+  "items": [
+    {
+      "name": "Tunnel Tremor",
+      "type": "npcMove",
+      "system": {
+        "moveType": "villain",
+        "description": "<p>When Ripsnarl burrows beneath the battlefield, the ground shakes violently, sending tremors through the streets. Buildings sway, cracks spiderweb across the pavement, and debris rains down from unstable structures. The heroes must act fast to stabilize the area or @UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.J6NDHhQ2xeaHUZ6Y]{put innocents in danger} caught in the collapsing ruins.</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "LVwo4jdqJVgBJi8n",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/earth-america-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 10,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694970,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.LVwo4jdqJVgBJi8n"
+    },
+    {
+      "name": "Claw Swipe",
+      "type": "npcMove",
+      "system": {
+        "moveType": "villain",
+        "description": "<p>Ripsnarl lunges forward with a massive claw swipe, aiming to carve through anything in its path. The force of the blow sends heroes flying, crashing through walls or into parked cars. Those caught in the attack must @UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.w5RMQhyRMu0Kz8Bh.JournalEntryPage.ychaHSFqGy2SK7d7]{trade blows} or suffer the consequences.</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "PcVNFVuLi8LP4dbR",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/armor-punch-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 20,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694970,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.PcVNFVuLi8LP4dbR"
+    },
+    {
+      "name": "Subsonic Rumble",
+      "type": "npcMove",
+      "system": {
+        "moveType": "villain",
+        "description": "<p>Ripsnarl emits a deep, subsonic rumble that vibrates through the air, rattling bones and disorienting anyone nearby. The sound waves disrupt balance and focus, making it hard to stand or think clearly. Heroes must @UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.aiXzW3H0z4NREaFc]{inflict a Condition} or find a way to block the debilitating noise.</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "lMWqM3AXi5Zjh8Kd",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/screaming-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 30,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694970,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.lMWqM3AXi5Zjh8Kd"
+    },
+    {
+      "name": "Burrow Ambush",
+      "type": "npcMove",
+      "system": {
+        "moveType": "villain",
+        "description": "<p>Ripsnarl disappears into the earth, leaving only a trail of disturbed soil behind. Moments later, it erupts from the ground beneath an unsuspecting hero, catching them off guard. The sudden attack forces the hero to @UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.w5RMQhyRMu0Kz8Bh.JournalEntryPage.t9kFvEp4eNYMCUkC]{resist or avoid their blows} or be dragged underground.</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "gz1B10pQ0Whha1by",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/target-dummy-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 40,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694970,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.gz1B10pQ0Whha1by"
+    },
+    {
+      "name": "Dirt Mask",
+      "type": "npcMove",
+      "system": {
+        "moveType": "villain",
+        "description": "<p>Ripsnarl smears its war paint-like dirt mask across its face, signaling a shift to a more aggressive stance. The sight is intimidating, and the heroes feel the weight of its predatory gaze. Ripsnarl @UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.vbmelu6amDCsv8Xp]{insults the heroes} with a growl.</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "7WCyz6mwzRDIpR5j",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/philosopher-bust-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 50,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": "huLnHNA8To2T4B8h",
+        "createdTime": 1761855694970,
+        "modifiedTime": 1761929586905
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.7WCyz6mwzRDIpR5j"
+    },
+    {
+      "name": "Afraid — Retreat Underground",
+      "type": "npcMove",
+      "system": {
+        "moveType": "condition",
+        "description": "<p>When Ripsnarl feels fear, it digs frantically, creating a maze of tunnels to escape. The ground becomes unstable, and heroes must navigate the shifting terrain or risk falling into its traps. Ripsnarl @UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.w5RMQhyRMu0Kz8Bh.JournalEntryPage.Xp8um8mddjyw1T7N]{gives ground} but leaves behind a dangerous battlefield.</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "PiZHTxhF3YCm0a23",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/ghost-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 60,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694970,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.PiZHTxhF3YCm0a23"
+    },
+    {
+      "name": "Angry — Frenzied Mauling",
+      "type": "npcMove",
+      "system": {
+        "moveType": "condition",
+        "description": "<p>Ripsnarl's anger sends it into a frenzy, slashing wildly at everything in sight. Its claws tear through concrete and metal alike, leaving destruction in its wake. Heroes must @UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.w5RMQhyRMu0Kz8Bh.JournalEntryPage.KfrxYBcKmyhJEFkh]{struggle past the pain} or be overwhelmed by its relentless assault.</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "oPSXND5Xlv5bUASV",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/enrage-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 70,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694970,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.oPSXND5Xlv5bUASV"
+    },
+    {
+      "name": "Guilty — Subdued Growl",
+      "type": "npcMove",
+      "system": {
+        "moveType": "condition",
+        "description": "<p>Ripsnarl's guilt manifests as a low, mournful growl, its aggression momentarily dampened. It hesitates, claws retracted, as if questioning its actions. This pause gives heroes a chance to @UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.TxVR9tX5Y50wmTRt]{offer a difficult choice}—strike now or try to reason with the beast.</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "OwkDPHUjf67hoNrA",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/cold-heart-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 80,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694970,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.OwkDPHUjf67hoNrA"
+    },
+    {
+      "name": "Hopeless — Collapse the Tunnels",
+      "type": "npcMove",
+      "system": {
+        "moveType": "condition",
+        "description": "<p>In its despair, Ripsnarl collapses its own tunnels, burying itself and anyone nearby under tons of earth. The heroes must act quickly to dig themselves out or @UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.y38zWkHIGzqyZmGc]{show what the collateral will cost} as the city sinks into the chaos.</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "pQn8zvqpGbVkSVZL",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/broken-pottery-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 90,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694970,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.pQn8zvqpGbVkSVZL"
+    },
+    {
+      "name": "Insecure — Defensive Posture",
+      "type": "npcMove",
+      "system": {
+        "moveType": "condition",
+        "description": "<p>Ripsnarl's insecurity makes it defensive, curling into a ball with its claws out. It lashes out at any perceived threat, @UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.w5RMQhyRMu0Kz8Bh.JournalEntryPage.7bUuUXo8ob2I9rx3]{lash out verbally} with growls and snarls. Heroes must approach carefully or risk provoking a violent reaction.</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "Y7kECD1tBxO3q3U9",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/suspicious-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 100,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.Y7kECD1tBxO3q3U9"
+    },
+    {
+      "name": "Make a Playbook Move",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.voNk2PNNF7oNqnSn]{Make a Playbook Move}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "XxZLRPMandg02RXl",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/playbook.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 110,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.XxZLRPMandg02RXl"
+    },
+    {
+      "name": "Activate Downsides of Abilities and Relationships",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.NXgUwNBxnjOEIqRa]{Activate the Downsides of their Abilities and Relationships}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "6DbAyG1IMyF4pGVw",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/liar-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 120,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.6DbAyG1IMyF4pGVw"
+    },
+    {
+      "name": "Inflict Condition",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.aiXzW3H0z4NREaFc]{Inflict a Condition}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "vGvifFcFeH95RVCl",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/spiky-explosion-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 130,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.vGvifFcFeH95RVCl"
+    },
+    {
+      "name": "Take Influence",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.NQfxjpOmX5mqu1Ow]{Take Influence Over Someone}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "R9yTEfaxsNO6gdLZ",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/distraction-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 140,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.R9yTEfaxsNO6gdLZ"
+    },
+    {
+      "name": "Bring Team Together",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.llXD7GIZiU5z5MiG.JournalEntryPage.5NEbMj9wQ0QJFLYz]{Bring Them Together}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "6FrZwFxCx2OHKVGC",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/team-upgrade-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 150,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.6FrZwFxCx2OHKVGC"
+    },
+    {
+      "name": "Capture Someone",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.llXD7GIZiU5z5MiG.JournalEntryPage.u8A6Gk7GoqBIMQBs]{Capture Someone}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "VvIe3CLmEIvEjzwJ",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/arrest-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 160,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.VvIe3CLmEIvEjzwJ"
+    },
+    {
+      "name": "Put Innocents in Danger",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.llXD7GIZiU5z5MiG.JournalEntryPage.J6NDHhQ2xeaHUZ6Y]{Put Innocents in Danger}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "g89r1iY95qSGEXUC",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/target-dummy-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 170,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.g89r1iY95qSGEXUC"
+    },
+    {
+      "name": "Villain Move",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.gUeKGSiXfwJEKGeS]{Make a Villain Move}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "TJAj1k1bbGDV52s9",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/armor-punch-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 180,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.TJAj1k1bbGDV52s9"
+    },
+    {
+      "name": "Show Collateral Damage",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.y38zWkHIGzqyZmGc]{Show the Costs of Collateral Damage}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "aBhH5hANkqbgF6wF",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/bulldozer-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 190,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.aBhH5hANkqbgF6wF"
+    },
+    {
+      "name": "Reveal Future",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.Rm4fQyfiwGkpytfF]{Reveal the Future}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "gwDpRDWaOWi9IInq",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/eye-target-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 200,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.gwDpRDWaOWi9IInq"
+    },
+    {
+      "name": "Announce Between-Panel Threats",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.llXD7GIZiU5z5MiG.JournalEntryPage.sSBCr0W3EJYs6Tg7]{Announce Between-Panel Threats}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "EWjyN7MpcuM92PyV",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/ringing-alarm-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 210,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.EWjyN7MpcuM92PyV"
+    },
+    {
+      "name": "Price of Victory",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.JournalEntry.llXD7GIZiU5z5MiG.JournalEntryPage.89UPbdTtpbs4kmP3]{Make Them Pay a Price for Victory}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "VjdZvraq4A5EEbbj",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/broken-pottery-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 220,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.VjdZvraq4A5EEbbj"
+    },
+    {
+      "name": "Counter",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.llXD7GIZiU5z5MiG.JournalEntryPage.EgNc30M2opeJiQOg]{Turn Their Move Back on Them}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "bNV1IksTfHqP1xTK",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/halt-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 230,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.bNV1IksTfHqP1xTK"
+    },
+    {
+      "name": "Reverse",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.llXD7GIZiU5z5MiG.JournalEntryPage.EgNc30M2opeJiQOg]{Turn Their Move Back on Them}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "G1bTO83zoC0bCCkj",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/mirror-mirror-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 240,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.G1bTO83zoC0bCCkj"
+    },
+    {
+      "name": "Possible Consequence...",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.llXD7GIZiU5z5MiG.JournalEntryPage.TxVR9tX5Y50wmTRt]{Tell them the Possible Consequences and Ask}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "OnTA9FHhkGqsRMv9",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/death-note-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 250,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.OnTA9FHhkGqsRMv9"
+    },
+    {
+      "name": "Tell Them Who They Are or Should Be",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.llXD7GIZiU5z5MiG.JournalEntryPage.vbmelu6amDCsv8Xp]{Tell Them Who They Are or Who They Should Be}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "VYHvqAoUxUMwuoId",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/philosopher-bust-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 260,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.VYHvqAoUxUMwuoId"
+    },
+    {
+      "name": "Rash Decision",
+      "type": "npcMove",
+      "system": {
+        "description": "<p>@UUID[Compendium.masks-newgeneration-unofficial.documents.llXD7GIZiU5z5MiG.JournalEntryPage.WDtPMAeq3CIumtrg]{Bring an NPC to Rash Decisions and Hard Conclusions}</p>",
+        "rollFormula": "",
+        "moveResults": {
+          "failure": {
+            "key": "system.moveResults.failure.value",
+            "label": "Complications...",
+            "value": ""
+          },
+          "partial": {
+            "key": "system.moveResults.partial.value",
+            "label": "Partial success",
+            "value": ""
+          },
+          "success": {
+            "key": "system.moveResults.success.value",
+            "label": "Success!",
+            "value": ""
+          }
+        },
+        "uses": 0
+      },
+      "_id": "C3N2TFzwV4g79ggP",
+      "img": "modules/masks-newgeneration-unofficial/images/gameicons/radar-sweep-%23ffffff-%233da7db.svg",
+      "effects": [],
+      "folder": null,
+      "sort": 270,
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pbta",
+        "systemVersion": "1.1.22",
+        "lastModifiedBy": null,
+        "createdTime": 1761855694971,
+        "modifiedTime": 1761855694971
+      },
+      "ownership": {
+        "default": 0
+      },
+      "_key": "!actors.items!LBJMNlLGuzDY74cn.C3N2TFzwV4g79ggP"
+    }
+  ],
+  "effects": [],
+  "folder": "mZxQRaH7gFWagkQh",
+  "ownership": {
+    "default": 0,
+    "huLnHNA8To2T4B8h": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1761855694970,
+    "modifiedTime": 1761933471158,
+    "lastModifiedBy": "huLnHNA8To2T4B8h"
+  },
+  "_id": "LBJMNlLGuzDY74cn",
+  "sort": 300000,
+  "_key": "!actors!LBJMNlLGuzDY74cn"
+}

@@ -2,21 +2,21 @@
 
 <p align="center">
     <img alt="Foundry Version 13 support" src="https://img.shields.io/badge/Foundry-v13-informational">
-    <img alt="Latest Release Download Count" src="https://img.shields.io/github/downloads/RcKeller/masks-newgeneration-extensions/latest/total"> 
-    <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/RcKeller/masks-newgeneration-extensions"> 
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/RcKeller/masks-newgeneration-extensions">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/RcKeller/masks-newgeneration-extensions">
+    <img alt="Latest Release Download Count" src="https://img.shields.io/github/downloads/RcKeller/masks-newgeneration-unofficial/latest/total"> 
+    <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/RcKeller/masks-newgeneration-unofficial"> 
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/RcKeller/masks-newgeneration-unofficial">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/RcKeller/masks-newgeneration-unofficial">
 </p>
 <p align="center">
-    <img alt="GitHub" src="https://img.shields.io/github/license/RcKeller/masks-newgeneration-extensions"> 
-    <a href="https://github.com/RcKeller/masks-newgeneration-extensions/issues">
-        <img alt="GitHub issues" src="https://img.shields.io/github/issues/RcKeller/masks-newgeneration-extensions">
+    <img alt="GitHub" src="https://img.shields.io/github/license/RcKeller/masks-newgeneration-unofficial"> 
+    <a href="https://github.com/RcKeller/masks-newgeneration-unofficial/issues">
+        <img alt="GitHub issues" src="https://img.shields.io/github/issues/RcKeller/masks-newgeneration-unofficial">
     </a> 
-    <a href="https://github.com/RcKeller/masks-newgeneration-extensions/network">
-        <img alt="GitHub forks" src="https://img.shields.io/github/forks/RcKeller/masks-newgeneration-extensions">
+    <a href="https://github.com/RcKeller/masks-newgeneration-unofficial/network">
+        <img alt="GitHub forks" src="https://img.shields.io/github/forks/RcKeller/masks-newgeneration-unofficial">
     </a> 
-    <a href="https://github.com/RcKeller/masks-newgeneration-extensions/stargazers">
-        <img alt="GitHub stars" src="https://img.shields.io/github/stars/RcKeller/masks-newgeneration-extensions">
+    <a href="https://github.com/RcKeller/masks-newgeneration-unofficial/stargazers">
+        <img alt="GitHub stars" src="https://img.shields.io/github/stars/RcKeller/masks-newgeneration-unofficial">
     </a>
 </p>
 
