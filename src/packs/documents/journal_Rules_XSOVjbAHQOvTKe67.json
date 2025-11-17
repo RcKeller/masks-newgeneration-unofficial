@@ -35,13 +35,15 @@
       "_stats": {
         "systemId": "pbta",
         "systemVersion": "0.7.2",
-        "coreVersion": "12.324",
+        "coreVersion": "13.350",
         "createdTime": null,
         "modifiedTime": 1700081506850,
         "lastModifiedBy": "Dqtz4V1KsRqBnD6q",
         "compendiumSource": null,
-        "duplicateSource": null
+        "duplicateSource": null,
+        "exportSource": null
       },
+      "category": null,
       "_key": "!journal.pages!XSOVjbAHQOvTKe67.NDN7CTMmEK7t35vQ"
     },
     {
@@ -69,20 +71,20 @@
         "qxt7zBbnFWpsYRqr": 3
       },
       "flags": {
-        "core": {
-          "sourceId": "JournalEntry.3ibhK1eQCCb1hV91.JournalEntryPage.BTyfwqfEGZY769m6"
-        }
+        "core": {}
       },
       "_stats": {
         "systemId": "pbta",
         "systemVersion": "0.7.2",
-        "coreVersion": "12.324",
+        "coreVersion": "13.350",
         "createdTime": 1699856599293,
         "modifiedTime": 1700081519612,
         "lastModifiedBy": "Dqtz4V1KsRqBnD6q",
-        "compendiumSource": null,
-        "duplicateSource": null
+        "compendiumSource": "JournalEntry.3ibhK1eQCCb1hV91.JournalEntryPage.BTyfwqfEGZY769m6",
+        "duplicateSource": null,
+        "exportSource": null
       },
+      "category": null,
       "_key": "!journal.pages!XSOVjbAHQOvTKe67.BTyfwqfEGZY769m6"
     },
     {
@@ -110,20 +112,20 @@
         "qxt7zBbnFWpsYRqr": 3
       },
       "flags": {
-        "core": {
-          "sourceId": "JournalEntry.k46JHfSXucGraTGs.JournalEntryPage.aIcOddfDrb7LKgey"
-        }
+        "core": {}
       },
       "_stats": {
         "systemId": "pbta",
         "systemVersion": "0.7.2",
-        "coreVersion": "12.324",
+        "coreVersion": "13.350",
         "createdTime": 1699856606785,
         "modifiedTime": 1700081529179,
         "lastModifiedBy": "Dqtz4V1KsRqBnD6q",
-        "compendiumSource": null,
-        "duplicateSource": null
+        "compendiumSource": "JournalEntry.k46JHfSXucGraTGs.JournalEntryPage.aIcOddfDrb7LKgey",
+        "duplicateSource": null,
+        "exportSource": null
       },
+      "category": null,
       "_key": "!journal.pages!XSOVjbAHQOvTKe67.aIcOddfDrb7LKgey"
     },
     {
@@ -151,20 +153,20 @@
         "qxt7zBbnFWpsYRqr": 3
       },
       "flags": {
-        "core": {
-          "sourceId": "JournalEntry.ml5iVphKqd1OeBAB.JournalEntryPage.mCCErZLBlkb99KMX"
-        }
+        "core": {}
       },
       "_stats": {
         "systemId": "pbta",
         "systemVersion": "0.7.2",
-        "coreVersion": "12.324",
+        "coreVersion": "13.350",
         "createdTime": 1699856613635,
         "modifiedTime": 1700081540411,
         "lastModifiedBy": "Dqtz4V1KsRqBnD6q",
-        "compendiumSource": null,
-        "duplicateSource": null
+        "compendiumSource": "JournalEntry.ml5iVphKqd1OeBAB.JournalEntryPage.mCCErZLBlkb99KMX",
+        "duplicateSource": null,
+        "exportSource": null
       },
+      "category": null,
       "_key": "!journal.pages!XSOVjbAHQOvTKe67.mCCErZLBlkb99KMX"
     },
     {
@@ -192,20 +194,20 @@
         "qxt7zBbnFWpsYRqr": 3
       },
       "flags": {
-        "core": {
-          "sourceId": "JournalEntry.dFlSmr1Ea1fJM7sE.JournalEntryPage.5EfDgycCMVaLvpsf"
-        }
+        "core": {}
       },
       "_stats": {
         "systemId": "pbta",
         "systemVersion": "0.7.2",
-        "coreVersion": "12.324",
+        "coreVersion": "13.350",
         "createdTime": 1699856620978,
         "modifiedTime": 1700081552767,
         "lastModifiedBy": "Dqtz4V1KsRqBnD6q",
-        "compendiumSource": null,
-        "duplicateSource": null
+        "compendiumSource": "JournalEntry.dFlSmr1Ea1fJM7sE.JournalEntryPage.5EfDgycCMVaLvpsf",
+        "duplicateSource": null,
+        "exportSource": null
       },
+      "category": null,
       "_key": "!journal.pages!XSOVjbAHQOvTKe67.5EfDgycCMVaLvpsf"
     },
     {
@@ -233,20 +235,20 @@
         "qxt7zBbnFWpsYRqr": 3
       },
       "flags": {
-        "core": {
-          "sourceId": "JournalEntry.7yIvBN0oMqfYtKPd.JournalEntryPage.WWRd7iOXdqrReKHB"
-        }
+        "core": {}
       },
       "_stats": {
         "systemId": "pbta",
         "systemVersion": "0.7.2",
-        "coreVersion": "12.324",
+        "coreVersion": "13.350",
         "createdTime": 1699856627334,
         "modifiedTime": 1700081565130,
         "lastModifiedBy": "Dqtz4V1KsRqBnD6q",
-        "compendiumSource": null,
-        "duplicateSource": null
+        "compendiumSource": "JournalEntry.7yIvBN0oMqfYtKPd.JournalEntryPage.WWRd7iOXdqrReKHB",
+        "duplicateSource": null,
+        "exportSource": null
       },
+      "category": null,
       "_key": "!journal.pages!XSOVjbAHQOvTKe67.WWRd7iOXdqrReKHB"
     }
   ],
@@ -257,14 +259,16 @@
   "_stats": {
     "systemId": "pbta",
     "systemVersion": "0.7.2",
-    "coreVersion": "12.324",
+    "coreVersion": "13.350",
     "createdTime": 1699855336910,
     "modifiedTime": 1700081565130,
     "lastModifiedBy": "Dqtz4V1KsRqBnD6q",
     "compendiumSource": null,
-    "duplicateSource": null
+    "duplicateSource": null,
+    "exportSource": null
   },
   "_id": "XSOVjbAHQOvTKe67",
   "sort": 200000,
+  "categories": [],
   "_key": "!journal!XSOVjbAHQOvTKe67"
 }

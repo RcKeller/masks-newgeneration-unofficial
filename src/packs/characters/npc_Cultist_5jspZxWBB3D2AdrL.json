@@ -1187,52 +1187,6 @@
         "default": 0
       },
       "_key": "!actors.items!5jspZxWBB3D2AdrL.t1gNFcipYehgkujS"
-    },
-    {
-      "name": "NPC Move",
-      "type": "npcMove",
-      "system": {
-        "moveType": "villain",
-        "description": "",
-        "rollFormula": "",
-        "moveResults": {
-          "failure": {
-            "key": "system.moveResults.failure.value",
-            "label": "Complications...",
-            "value": ""
-          },
-          "partial": {
-            "key": "system.moveResults.partial.value",
-            "label": "Partial success",
-            "value": ""
-          },
-          "success": {
-            "key": "system.moveResults.success.value",
-            "label": "Success!",
-            "value": ""
-          }
-        },
-        "uses": 0
-      },
-      "_id": "JNNrCt163UHmUZLz",
-      "img": "icons/svg/aura.svg",
-      "effects": [],
-      "folder": null,
-      "sort": 0,
-      "flags": {},
-      "_stats": {
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null,
-        "coreVersion": "13.350",
-        "systemId": "pbta",
-        "systemVersion": "1.1.22",
-        "lastModifiedBy": null
-      },
-      "ownership": {
-        "default": 0
-      },
-      "_key": "!actors.items!5jspZxWBB3D2AdrL.JNNrCt163UHmUZLz"
     }
   ],
   "effects": [],

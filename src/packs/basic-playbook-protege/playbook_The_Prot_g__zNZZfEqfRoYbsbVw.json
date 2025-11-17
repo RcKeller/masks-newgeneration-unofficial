@@ -332,12 +332,13 @@
   "_stats": {
     "compendiumSource": null,
     "duplicateSource": null,
-    "coreVersion": "12.327",
+    "coreVersion": "13.350",
     "systemId": "pbta",
     "systemVersion": "1.0.14",
     "createdTime": 1718261466966,
     "modifiedTime": 1718911624638,
-    "lastModifiedBy": "6hjjFCY28uGRsfsB"
+    "lastModifiedBy": "6hjjFCY28uGRsfsB",
+    "exportSource": null
   },
   "_id": "zNZZfEqfRoYbsbVw",
   "sort": 0,

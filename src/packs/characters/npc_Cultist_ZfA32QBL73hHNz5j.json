@@ -1,7 +1,7 @@
 {
   "name": "Cultist",
   "type": "npc",
-  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/cultist.Avatar.webp?1763246279766",
+  "img": "modules/masks-newgeneration-extensions/assets/npc-images/cultist.Avatar.webp?1763406574478",
   "system": {
     "stats": {},
     "attributes": {
@@ -88,7 +88,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/cultist.Token.webp?1763246279766",
+      "src": "modules/masks-newgeneration-extensions/assets/npc-images/cultist.Token.webp?1763406574478",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,
@@ -1246,7 +1246,7 @@
     "systemId": "pbta",
     "systemVersion": "1.1.22",
     "createdTime": 1763246385326,
-    "modifiedTime": 1763246428129,
+    "modifiedTime": 1763406574528,
     "lastModifiedBy": "huLnHNA8To2T4B8h"
   },
   "_id": "ZfA32QBL73hHNz5j",

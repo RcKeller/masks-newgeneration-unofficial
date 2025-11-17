@@ -1,0 +1,23 @@
+{
+  "type": "Actor",
+  "folder": null,
+  "name": "Honey Heist",
+  "color": "#af7a08",
+  "sorting": "a",
+  "_id": "rrw0i5fcPk42GyPP",
+  "description": "",
+  "sort": 0,
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1763405211573,
+    "modifiedTime": 1763405211573,
+    "lastModifiedBy": "huLnHNA8To2T4B8h"
+  },
+  "_key": "!folders!rrw0i5fcPk42GyPP"
+}

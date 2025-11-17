@@ -6,9 +6,7 @@
   "folder": "EN72hQiVqSj583p1",
   "sort": 125000,
   "flags": {
-    "core": {
-      "sourceId": "Compendium.masks-newgeneration-unofficial.moves-adult.tZ78T8JqxxhSej1C"
-    },
+    "core": {},
     "cf": {
       "id": "temp_4htx0v8rro6",
       "path": "Moves#/CF_SEP/Moves Adult",
@@ -54,12 +52,13 @@
   "_stats": {
     "systemId": "pbta",
     "systemVersion": "1.0.14",
-    "coreVersion": "12.327",
+    "coreVersion": "13.350",
     "createdTime": 1718674175224,
     "modifiedTime": 1718674175815,
     "lastModifiedBy": "6hjjFCY28uGRsfsB",
-    "compendiumSource": null,
-    "duplicateSource": null
+    "compendiumSource": "Compendium.masks-newgeneration-unofficial.moves-adult.tZ78T8JqxxhSej1C",
+    "duplicateSource": null,
+    "exportSource": null
   },
   "_key": "!items!ROP6Orix4ysA27Nh"
 }

@@ -401,12 +401,13 @@
   "_stats": {
     "compendiumSource": null,
     "duplicateSource": null,
-    "coreVersion": "12.327",
+    "coreVersion": "13.350",
     "systemId": "pbta",
     "systemVersion": "1.0.14",
     "createdTime": 1718258337076,
     "modifiedTime": 1718909947127,
-    "lastModifiedBy": "6hjjFCY28uGRsfsB"
+    "lastModifiedBy": "6hjjFCY28uGRsfsB",
+    "exportSource": null
   },
   "_id": "Sblehr0zwyebBGOl",
   "sort": 0,

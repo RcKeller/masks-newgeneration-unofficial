@@ -1798,9 +1798,6 @@
   "folder": null,
   "flags": {
     "masks-newgeneration-unofficial": {
-      "influences": []
-    },
-    "masks-newgeneration-unofficial": {
       "health": {
         "value": 5,
         "max": 5

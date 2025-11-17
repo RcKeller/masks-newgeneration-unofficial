@@ -299,12 +299,13 @@
   "_stats": {
     "compendiumSource": null,
     "duplicateSource": null,
-    "coreVersion": "12.327",
+    "coreVersion": "13.350",
     "systemId": "pbta",
     "systemVersion": "1.0.14",
     "createdTime": 1718257558329,
     "modifiedTime": 1718908091129,
-    "lastModifiedBy": "6hjjFCY28uGRsfsB"
+    "lastModifiedBy": "6hjjFCY28uGRsfsB",
+    "exportSource": null
   },
   "_id": "H3sZw5p57hkIAuMM",
   "sort": 0,

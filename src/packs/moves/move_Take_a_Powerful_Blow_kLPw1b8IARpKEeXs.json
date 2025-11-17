@@ -6,9 +6,7 @@
   "folder": "AOEag4Ri4UFgRMu2",
   "sort": 103125,
   "flags": {
-    "core": {
-      "sourceId": "Compendium.masks-newgeneration-unofficial.moves-basic.mUQT0aiymqtX1MOV"
-    },
+    "core": {},
     "cf": {
       "id": "temp_sjbmyuxuqd",
       "path": "Moves#/CF_SEP/Moves Basic",
@@ -54,12 +52,13 @@
   "_stats": {
     "systemId": "pbta",
     "systemVersion": "1.0.14",
-    "coreVersion": "12.327",
+    "coreVersion": "13.350",
     "createdTime": 1718674175244,
     "modifiedTime": 1718674176007,
     "lastModifiedBy": "6hjjFCY28uGRsfsB",
-    "compendiumSource": null,
-    "duplicateSource": null
+    "compendiumSource": "Compendium.masks-newgeneration-unofficial.moves-basic.mUQT0aiymqtX1MOV",
+    "duplicateSource": null,
+    "exportSource": null
   },
   "_key": "!items!kLPw1b8IARpKEeXs"
 }

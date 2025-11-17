@@ -50,12 +50,13 @@
   "_stats": {
     "systemId": "pbta",
     "systemVersion": "1.0.14",
-    "coreVersion": "12.327",
+    "coreVersion": "13.350",
     "createdTime": 1699858650702,
     "modifiedTime": 1718674176893,
     "lastModifiedBy": "6hjjFCY28uGRsfsB",
     "compendiumSource": null,
-    "duplicateSource": null
+    "duplicateSource": null,
+    "exportSource": null
   },
   "_id": "cAH622RTr42UH1nl",
   "sort": 1200000,
