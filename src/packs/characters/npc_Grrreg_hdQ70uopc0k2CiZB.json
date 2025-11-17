@@ -1,7 +1,7 @@
 {
   "name": "Grrreg",
   "type": "npc",
-  "img": "modules/masks-newgeneration-extensions/images/tokenizer/npc-images/grrreg.Avatar.webp?1763406005340",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/grrreg.Avatar.webp?1763406005340",
   "system": {
     "stats": {},
     "attributes": {
@@ -88,7 +88,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-extensions/images/tokenizer/npc-images/grrreg.Token.webp?1763406005340",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/grrreg.Token.webp?1763406005340",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

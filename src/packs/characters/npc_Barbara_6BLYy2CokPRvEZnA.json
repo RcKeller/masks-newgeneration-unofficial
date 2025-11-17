@@ -1,7 +1,7 @@
 {
   "name": "Barbara",
   "type": "npc",
-  "img": "modules/masks-newgeneration-extensions/images/tokenizer/npc-images/barbara.Avatar.webp?1763405978114",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/barbara.Avatar.webp?1763405978114",
   "system": {
     "stats": {},
     "attributes": {
@@ -88,7 +88,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-extensions/images/tokenizer/npc-images/barbara.Token.webp?1763405978114",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/barbara.Token.webp?1763405978114",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

@@ -1,7 +1,7 @@
 {
   "name": "@acid_burn",
   "type": "npc",
-  "img": "modules/masks-newgeneration-extensions/images/tokenizer/npc-images/_acid_burn.Avatar.webp?1763405934101",
+  "img": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/_acid_burn.Avatar.webp?1763405934101",
   "system": {
     "stats": {},
     "attributes": {
@@ -88,7 +88,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-extensions/images/tokenizer/npc-images/_acid_burn.Token.webp?1763405934101",
+      "src": "modules/masks-newgeneration-unofficial/images/tokenizer/npc-images/_acid_burn.Token.webp?1763405934101",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,
