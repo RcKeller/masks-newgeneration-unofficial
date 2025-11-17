@@ -1,7 +1,7 @@
 {
   "name": "Cultist",
   "type": "npc",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/cultist.Avatar.webp?1763246279766",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/cultist.Avatar.webp?1763246279766",
   "system": {
     "stats": {},
     "attributes": {
@@ -88,7 +88,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/cultist.Token.webp?1763246279766",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/cultist.Token.webp?1763246279766",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

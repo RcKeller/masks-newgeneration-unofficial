@@ -1,7 +1,7 @@
 {
   "name": "Bandit",
   "type": "character",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/pc-images/bucky_copy_.Avatar.webp?1763246866132",
+  "img": "modules/masks-newgeneration-unofficial/assets/pc-images/bucky_copy_.Avatar.webp?1763246866132",
   "system": {
     "stats": {
       "danger": {
@@ -731,7 +731,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/pc-images/bucky_copy_.Token.webp?1763246866132",
+      "src": "modules/masks-newgeneration-unofficial/assets/pc-images/bucky_copy_.Token.webp?1763246866132",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

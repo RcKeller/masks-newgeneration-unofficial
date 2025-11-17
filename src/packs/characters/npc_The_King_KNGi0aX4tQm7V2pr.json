@@ -1,7 +1,7 @@
 {
   "name": "The King",
   "type": "npc",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/the_king.Avatar.webp?1761852988461",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/the_king.Avatar.webp?1761852988461",
   "system": {
     "stats": {},
     "attributes": {
@@ -80,7 +80,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/the_king.Token.webp?1761852988461",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/the_king.Token.webp?1761852988461",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

@@ -3,7 +3,7 @@
   "name": "City Navigator",
   "type": "npc",
   "_id": "NF3wKxktLGJuabAk",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/city_navigator.Avatar.webp?1761524302328",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/city_navigator.Avatar.webp?1761524302328",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/city_navigator.Token.webp?1761524302328",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/city_navigator.Token.webp?1761524302328",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

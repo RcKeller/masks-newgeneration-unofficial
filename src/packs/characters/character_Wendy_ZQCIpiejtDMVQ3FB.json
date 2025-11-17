@@ -2,7 +2,7 @@
   "folder": null,
   "name": "Wendy",
   "type": "character",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/pc-images/wendy.Avatar.webp?1761453903393",
+  "img": "modules/masks-newgeneration-unofficial/assets/pc-images/wendy.Avatar.webp?1761453903393",
   "system": {
     "stats": {
       "danger": {
@@ -622,7 +622,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/pc-images/wendy.Token.webp?1761453903393",
+      "src": "modules/masks-newgeneration-unofficial/assets/pc-images/wendy.Token.webp?1761453903393",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

@@ -3,7 +3,7 @@
   "name": "Skate Park Kid",
   "type": "npc",
   "_id": "dNdVqJALGufCHi6w",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/skate_park_kid.Avatar.webp?1761523455513",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/skate_park_kid.Avatar.webp?1761523455513",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/skate_park_kid.Token.webp?1761523455513",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/skate_park_kid.Token.webp?1761523455513",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

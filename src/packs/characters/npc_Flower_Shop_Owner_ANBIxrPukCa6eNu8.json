@@ -3,7 +3,7 @@
   "name": "Flower‑Shop Owner",
   "type": "npc",
   "_id": "ANBIxrPukCa6eNu8",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/flower_shop_owner.Avatar.webp?1761523584849",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/flower_shop_owner.Avatar.webp?1761523584849",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/flower_shop_owner.Token.webp?1761523584849",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/flower_shop_owner.Token.webp?1761523584849",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

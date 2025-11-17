@@ -2,7 +2,7 @@
   "name": "Van",
   "type": "npc",
   "_id": "2xoISVK96GwfS7ws",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/van.Avatar.webp?1761520877089",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/van.Avatar.webp?1761520877089",
   "system": {
     "stats": {},
     "attributes": {
@@ -81,7 +81,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/van.Token.webp?1761520877089",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/van.Token.webp?1761520877089",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

@@ -1,7 +1,7 @@
 {
   "name": "The Director",
   "type": "npc",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/the_director.Avatar.webp?1761454104424",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/the_director.Avatar.webp?1761454104424",
   "system": {
     "stats": {},
     "attributes": {
@@ -80,7 +80,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/the_director.Token.webp?1761454104424",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/the_director.Token.webp?1761454104424",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

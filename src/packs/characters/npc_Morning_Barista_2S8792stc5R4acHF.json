@@ -3,7 +3,7 @@
   "name": "Morning Barista",
   "type": "npc",
   "_id": "2S8792stc5R4acHF",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/morning_barista.Avatar.webp?1761523516516",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/morning_barista.Avatar.webp?1761523516516",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/morning_barista.Token.webp?1761523516516",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/morning_barista.Token.webp?1761523516516",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

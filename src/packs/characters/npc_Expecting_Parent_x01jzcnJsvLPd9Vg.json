@@ -3,7 +3,7 @@
   "name": "Expecting Parent",
   "type": "npc",
   "_id": "x01jzcnJsvLPd9Vg",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/expecting_parent.Avatar.webp?1761523708714",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/expecting_parent.Avatar.webp?1761523708714",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/expecting_parent.Token.webp?1761523708714",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/expecting_parent.Token.webp?1761523708714",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

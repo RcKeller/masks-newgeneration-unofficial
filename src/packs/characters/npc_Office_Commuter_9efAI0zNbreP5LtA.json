@@ -3,7 +3,7 @@
   "name": "Office Commuter",
   "type": "npc",
   "_id": "9efAI0zNbreP5LtA",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/office_commuter.Avatar.webp?1761523677846",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/office_commuter.Avatar.webp?1761523677846",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/office_commuter.Token.webp?1761523677846",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/office_commuter.Token.webp?1761523677846",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

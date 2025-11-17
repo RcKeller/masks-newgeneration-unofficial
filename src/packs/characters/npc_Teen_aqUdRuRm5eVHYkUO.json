@@ -3,7 +3,7 @@
   "name": "Teen",
   "type": "npc",
   "_id": "aqUdRuRm5eVHYkUO",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/teen.Avatar.webp?1761523647852",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/teen.Avatar.webp?1761523647852",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/teen.Token.webp?1761523647852",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/teen.Token.webp?1761523647852",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

@@ -2,7 +2,7 @@
   "name": "Yvette",
   "type": "character",
   "_id": "jQSraUF4VOpIi2Wj",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/pc-images/yvette.Avatar.webp?1763247047555",
+  "img": "modules/masks-newgeneration-unofficial/assets/pc-images/yvette.Avatar.webp?1763247047555",
   "system": {
     "stats": {
       "danger": {
@@ -727,7 +727,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/pc-images/yvette.Token.webp?1763247047555",
+      "src": "modules/masks-newgeneration-unofficial/assets/pc-images/yvette.Token.webp?1763247047555",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

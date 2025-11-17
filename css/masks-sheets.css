@@ -558,4 +558,117 @@
   margin-top: 30px;
 }
 
+/* Minimal, Foundry-aligned styling for the GM Whisper control */
+#xcard-btn-wrapper {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+
+#xcard.ui-control.icon {
+  transition: var(--ui-fade-delay);
+}
+
+#xcard.ui-control.icon:hover {
+  background-color: var(--color-level-error);
+}
+
+/* A lightweight, inline HUD that sits wherever you mount it. */
+#masks-team {
+  /* Make centering in wide containers easy */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  /* Don't block clicks outside the panel */
+  pointer-events: none;
+  z-index: 100;
+  margin: 0.25rem 0;
+  /* Interactive inner content */
+  /* The only styled element: the "Team" tag */
+  /* Keep native buttons; just a nudge to input width */
+}
+#masks-team .panel {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: start;
+  gap: 8px;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: var(--masks-primary-text-color, #fff);
+}
+#masks-team .tag {
+  height: 100%;
+  margin: 0;
+  color: var(--masks-primary-text-color, #fff);
+  background: var(--masks-interactive-bg-color, #3da7db);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: 0.03em;
+  font-size: 20px;
+}
+#masks-team input[name=team] {
+  max-width: 3.6rem;
+  text-align: center;
+}
+
+#scene-controls-tools [data-tool=influenceGainOverThem] {
+  background-color: #4CAF50;
+}
+#scene-controls-tools [data-tool=influenceMutual] {
+  background-color: #2196F3;
+}
+#scene-controls-tools [data-tool=influenceGiveThemOverYou] {
+  background-color: #9C27B0;
+}
+#scene-controls-tools [data-tool=influenceClear] {
+  background-color: #F44336;
+}
+#scene-controls-tools [data-tool=forwardAdd],
+#scene-controls-tools [data-tool=ongoingAdd],
+#scene-controls-tools [data-tool=forwardRemove],
+#scene-controls-tools [data-tool=ongoingRemove] {
+  background-color: var(--masks-interactive-bg-color, #3da7db);
+}
+
+.sheet .influence-management img[data-influence-action=hasInfluenceOver] {
+  filter: #9C27B0 !important;
+}
+.sheet .influence-management img[data-influence-action=haveInfluenceOver] {
+  filter: #4CAF50 !important;
+}
+.sheet .influence-management [data-influence-action=delete] {
+  color: #F44336;
+}
+
+/* PbtA acted-this-round overlay for combat tracker */
+#combat li.combatant {
+  position: relative;
+  /* Reveal on row hover */
+  /* Keep visible while keyboard focusing the control */
+}
+#combat li.combatant > .pbta-gone-toggle {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  z-index: 2;
+  opacity: 0;
+  transition: var(--ui-fade-delay);
+  width: 55px;
+  height: 55px;
+  font-size: 65px;
+  background-color: transparent;
+  color: var(--color-level-success-bg);
+}
+#combat li.combatant:hover > .pbta-gone-toggle {
+  opacity: 0.4;
+}
+#combat li.combatant > .pbta-gone-toggle:focus {
+  opacity: 0.4;
+}
+
 /*# sourceMappingURL=masks-sheets.css.map */

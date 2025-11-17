@@ -3,7 +3,7 @@
   "name": "School Soccer Captain",
   "type": "npc",
   "_id": "IFdrjgB97TyjfBjb",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/school_soccer_captain.Avatar.webp?1761524351401",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/school_soccer_captain.Avatar.webp?1761524351401",
   "system": {
     "stats": {},
     "attributes": {
@@ -82,7 +82,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/school_soccer_captain.Token.webp?1761524351401",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/school_soccer_captain.Token.webp?1761524351401",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,

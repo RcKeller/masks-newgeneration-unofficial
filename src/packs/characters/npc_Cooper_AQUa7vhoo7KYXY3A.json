@@ -1,7 +1,7 @@
 {
   "name": "Cooper",
   "type": "npc",
-  "img": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/turtle_kaiju.Avatar.webp?1761929031940",
+  "img": "modules/masks-newgeneration-unofficial/assets/npc-images/turtle_kaiju.Avatar.webp?1761929031940",
   "system": {
     "stats": {},
     "attributes": {
@@ -80,7 +80,7 @@
     "width": 1,
     "height": 1,
     "texture": {
-      "src": "modules/masks-newgeneration-unofficial/images/campaign/npc-images/turtle_kaiju.Token.webp?1761929031940",
+      "src": "modules/masks-newgeneration-unofficial/assets/npc-images/turtle_kaiju.Token.webp?1761929031940",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "offsetX": 0,
