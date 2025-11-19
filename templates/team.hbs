@@ -1,4 +1,4 @@
-{{!-- <div class="panel faded-ui" role="group" aria-label="Masks Team HUD">
+<div class="panel faded-ui" role="group" aria-label="Masks Team HUD">
     <span class="tag" title="Masks Team Pool">Team</span>
 
     <button type="button" class="ui-control plain" data-action="minus" title="Spend 1 Team" {{#unless
@@ -12,85 +12,4 @@
 
     <button type="button" class="ui-control plain" data-action="reset" title="Reset to 0" {{#unless
         canEdit}}disabled{{/unless}} aria-label="Reset Team to 0">⟲</button>
-</div> --}}
-
-{{!-- Turn / cooldown cards for characters in the current encounter --}}
-{{#if hasEncounter}}
-<div class="masks-turns" aria-label="Masks Turn Tracker">
-    {{!-- GM turn card: only visible for GM, if there are any PC cards --}}
-    {{#if (and isGM gmHasTurnCard)}}
-    <article class="masks-turn-card masks-turn-card--gm" data-action="gm-advance">
-        <div class="masks-turn-card__status-banner">GM TURN</div>
-        <div class="masks-turn-card__portrait masks-turn-card__portrait--gm">
-            <span class="masks-turn-card__gm-initials">GM</span>
-        </div>
-        <footer class="masks-turn-card__footer">
-            <span class="masks-turn-card__name">ADVANCE</span>
-        </footer>
-    </article>
-    {{/if}}
-
-    {{#each cards as |card|}}
-    <article class="masks-turn-card
-               {{#if card.isDowned}} masks-turn-card--downed{{/if}}
-               {{#unless card.isReady}} masks-turn-card--cooldown{{/unless}}" data-actor-id="{{card.actorId}}">
-        {{#if card.isDowned}}
-        <div class="masks-turn-card__status-banner">DOWNED</div>
-        {{/if}}
-
-        <button type="button" class="masks-turn-card__clickable" data-action="turn-card"
-            data-actor-id="{{card.actorId}}">
-            <div class="masks-turn-card__portrait" style="background-image: url('{{card.img}}');"></div>
-
-            <div class="masks-turn-card__name-row">
-                {{!-- Left-side "*" button for owners (no behavior yet) --}}
-                {{#if card.isOwner}}
-                <button type="button" class="masks-turn-card__mini-btn masks-turn-card__mini-btn--left"
-                    data-action="owner-mark">
-                    *
-                </button>
-                {{/if}}
-
-                <div class="masks-turn-card__name">{{card.nameUpper}}</div>
-
-                <div class="masks-turn-card__name-buttons">
-                    {{!-- Right-side + / ++ buttons (no behavior yet) --}}
-                    <button type="button" class="masks-turn-card__mini-btn" data-action="plus-one">
-                        +
-                    </button>
-                    {{#if card.isOwner}}
-                    <button type="button" class="masks-turn-card__mini-btn" data-action="plus-two">
-                        ++
-                    </button>
-                    {{/if}}
-                </div>
-            </div>
-        </button>
-
-        {{!-- Cooldown meter: N-1 segments, filled from left, depleting right-to-left --}}
-        {{#if card.cooldownMax}}
-        <div class="masks-turn-card__cooldown" aria-hidden="true">
-            {{#times card.cooldownMax}}
-            <span class="masks-turn-card__cooldown-segment
-                       {{#if (gt card.cooldownRemaining @index)}}is-active{{/if}}"></span>
-            {{/times}}
-        </div>
-        {{/if}}
-
-        <div class="masks-turn-card__bottom-row">
-            {{!-- Left: pentagon placeholder --}}
-            <div class="masks-turn-card__pentagon" aria-hidden="true"></div>
-
-            {{!-- Right: potential/star control --}}
-            <button type="button" class="masks-turn-card__potential" data-action="add-potential"
-                data-actor-id="{{card.actorId}}" {{#unless card.mayEditPotential}}disabled{{/unless}}
-                aria-label="Add Potential">
-                <div class="masks-turn-card__potential-fill" style="--potential-fill-ratio: {{card.potentialRatio}};">
-                </div>
-                <span class="masks-turn-card__potential-star">★</span>
-            </button>
-        </div>
-    </article>
-    {{/each}}
 </div>
-{{/if}}
