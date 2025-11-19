@@ -10,7 +10,7 @@ const KEY_POSITION = "hudPosition";
 // Used only to remember which Journal is our storage; value itself is *not* stored in settings.
 const KEY_TEAM_DOCID = "teamDocId";
 
-// Per-combat flag for the turn tracker
+// Per-combat turn tracker flag
 const FLAG_TURN_TRACKER = "turnTracker";
 
 // Reference links (unchanged)
@@ -229,6 +229,16 @@ const MasksTeamHUD = {
 				Number.isFinite(remainingRaw) ? remainingRaw : 0
 			);
 			const cooldownMax = Math.max(0, Number.isFinite(maxRaw) ? maxRaw : 0);
+			const hasCooldown = cooldownRemaining > 0 && cooldownMax > 0;
+
+			const cooldownSlots = [];
+			if (hasCooldown) {
+				const threshold = cooldownMax - cooldownRemaining; // how many slots from the left are empty
+				for (let i = 0; i < cooldownMax; i++) {
+					const isActive = i >= threshold;
+					cooldownSlots.push({ isActive });
+				}
+			}
 
 			const isReady = !info.isDowned && cooldownRemaining <= 0;
 			const name = actor.name ?? "Hero";
@@ -241,8 +251,8 @@ const MasksTeamHUD = {
 				isOwner,
 				isDowned: info.isDowned,
 				isReady,
-				cooldownRemaining,
-				cooldownMax,
+				hasCooldown,
+				cooldownSlots,
 				potentialRatio,
 				mayEditPotential: isOwner,
 			});
@@ -474,7 +484,7 @@ const MasksTeamHUD = {
 	activateListeners() {
 		const q = (sel) => this.root?.querySelector(sel);
 
-		// Buttons for Team pool
+		// Team pool buttons
 		q("[data-action='minus']")?.addEventListener("click", (ev) => {
 			const step = ev.shiftKey ? -5 : -1;
 			this._change(step);
@@ -499,33 +509,37 @@ const MasksTeamHUD = {
 
 		// GM special card: advance cooldowns as if an NPC took a turn
 		this.root
-			?.querySelector("[data-action='gm-advance']")
-			?.addEventListener("click", (ev) => {
-				ev.preventDefault();
-				ev.stopPropagation();
-				this._advanceCooldownForNpcTurn();
+			?.querySelectorAll(".masks-turn-card--gm[data-action='gm-advance']")
+			?.forEach((el) => {
+				el.addEventListener("click", (ev) => {
+					ev.preventDefault();
+					ev.stopPropagation();
+					this._advanceCooldownForNpcTurn();
+				});
 			});
 
 		// Per-character cards:
 		// - GM click: mark as having taken their turn (updates cooldowns)
 		// - Non-GM click: open character sheet
-		this.root?.querySelectorAll("[data-action='turn-card']")?.forEach((el) => {
-			el.addEventListener("click", (ev) => {
-				ev.preventDefault();
-				const target = ev.currentTarget;
-				const actorId = target?.dataset.actorId;
-				if (!actorId) return;
+		this.root
+			?.querySelectorAll(".masks-turn-card[data-actor-id]")
+			?.forEach((cardEl) => {
+				cardEl.addEventListener("click", (ev) => {
+					// If something else handled this click, ignore
+					if (ev.defaultPrevented) return;
+					const actorId = cardEl.dataset.actorId;
+					if (!actorId) return;
 
-				const actor = game.actors?.get(actorId);
-				if (!actor) return;
+					const actor = game.actors?.get(actorId);
+					if (!actor) return;
 
-				if (game.user?.isGM) {
-					this._markActorTurn(actorId);
-				} else {
-					actor.sheet?.render(true, { focus: true });
-				}
+					if (game.user?.isGM) {
+						this._markActorTurn(actorId);
+					} else {
+						actor.sheet?.render(true, { focus: true });
+					}
+				});
 			});
-		});
 
 		// Potential/star button — add 1 Potential/xp
 		this.root
@@ -541,7 +555,7 @@ const MasksTeamHUD = {
 				});
 			});
 
-		// Mini-buttons (*, +, ++) are currently inert but should not trigger card clicks
+		// Inert mini buttons (*, +, ++): visually present but do nothing yet
 		this.root
 			?.querySelectorAll(
 				"[data-action='owner-mark'],[data-action='plus-one'],[data-action='plus-two']"
@@ -550,6 +564,7 @@ const MasksTeamHUD = {
 				el.addEventListener("click", (ev) => {
 					ev.preventDefault();
 					ev.stopPropagation();
+					// Intentionally no behavior (reserved for future features)
 				});
 			});
 	},
