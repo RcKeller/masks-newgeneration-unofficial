@@ -671,4 +671,71 @@
   opacity: 0.4;
 }
 
+#chat h4 {
+  font-size: var(--font-size-13);
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.pbta.sheet .cell--moves .item-name,
+.pbta.sheet .cell--basic-moves .item-name,
+.pbta.sheet .cell--starting-moves .item-name,
+.pbta.sheet .cell--advanced-moves .item-name,
+.pbta.sheet .cell--special-moves .item-name,
+.pbta.sheet .cell--other-moves .item-name,
+.pbta.sheet .cell--equipment .item-name,
+.pbta.sheet .cell--spells .item-name {
+  font-weight: normal;
+  text-transform: none !important;
+}
+
+.tox.tox-tinymce {
+  min-height: 300px;
+}
+
+.vtt #chat .message .shift.up {
+  color: forestgreen;
+}
+
+.cell.look {
+  display: none;
+}
+
+.cell.abilities {
+  width: 100%;
+}
+
+[data-edit="system.details.abilities.value"] {
+  min-height: 150px;
+}
+
+[data-edit="system.details.backstory.value"],
+[data-edit="system.details.biography.value"] {
+  min-height: 400px;
+}
+
+.pbta.sheet.actor {
+  min-height: 80vh;
+}
+
+.sheet-bottom.flexrow {
+  gap: 0;
+}
+
+#worldStylesheet .cm-editor {
+  max-height: 300px;
+}
+
+.sheet-bottom > .sheet-look {
+  min-width: 250px;
+}
+
+.token-initiative {
+  display: none !important;
+}
+
+#hotbar {
+  display: none;
+}
+
 /*# sourceMappingURL=masks-sheets.css.map */
