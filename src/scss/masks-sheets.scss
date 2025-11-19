@@ -880,285 +880,229 @@
   display: none;
 }
 
-/* ================= TEAM POOL CONTROLS ================= */
+/* Turn tracker cards inside the Team HUD */
+#masks-team {
 
-#masks-team .masks-team__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+  .masks-turns {
+    margin-top: 0.25rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+    overflow-x: auto;
+    padding: 0.25rem 0;
+  }
 
-#masks-team .masks-team__controls {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-top: 0.25rem;
-}
+  .masks-turn-card {
+    position: relative;
+    flex: 0 0 120px;
+    max-width: 120px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    transition: opacity 120ms ease-out, transform 120ms ease-out;
 
-#masks-team .masks-team__btn {
-  flex: 0 0 auto;
-  min-width: 1.8rem;
-  padding: 0.1rem 0.35rem;
-  border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(0, 0, 0, 0.6);
-  font-size: 0.9rem;
-  line-height: 1.2;
-  text-align: center;
-  cursor: pointer;
-}
+    &--cooldown {
+      opacity: 0.7;
+    }
 
-#masks-team .masks-team__btn--reset {
-  font-size: 0.8rem;
-}
+    &--downed {
+      opacity: 0.4;
+      filter: grayscale(1);
+    }
 
-#masks-team .masks-team__btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
 
-#masks-team .masks-team__value {
-  width: 3.25rem;
-  text-align: center;
-}
+  .masks-turn-card__status-banner {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    padding: 2px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    background: rgba(220, 53, 69, 0.95);
+    color: #ffffff;
+    pointer-events: none;
+    z-index: 2;
+    letter-spacing: 0.08em;
+  }
 
-#masks-team .masks-team__links {
-  margin-top: 0.4rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 0.75rem;
-}
+  .masks-turn-card__clickable {
+    display: flex;
+    flex-direction: column;
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+    flex: 1 1 auto;
+    text-align: left;
+  }
 
-/* ================= TURN TRACKER LAYOUT ================= */
+  .masks-turn-card__portrait {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background-size: cover;
+    background-position: center center;
+  }
 
-#masks-team .masks-turns {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
+  .masks-turn-card__name-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 4px 4px;
+    background: rgba(0, 0, 0, 0.8);
+  }
 
-#masks-team .masks-turn-card {
-  position: relative;
-  flex: 0 0 130px;
-  width: 130px;
-  display: flex;
-  flex-direction: column;
-  background: rgba(5, 5, 5, 0.9);
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 80ms ease-out, box-shadow 80ms ease-out, filter 80ms ease-out,
-    border-color 80ms ease-out;
-}
+  .masks-turn-card__name {
+    flex: 1 1 auto;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-#masks-team .masks-turn-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-  border-color: rgba(255, 255, 255, 0.25);
-}
+  .masks-turn-card__mini-btn {
+    border-radius: 3px;
+    padding: 0 3px;
+    font-size: 11px;
+    line-height: 1.2;
+    height: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.65);
+    color: #ffffff;
+    cursor: pointer;
 
-/* Cooldown grey-out (not ready) */
-#masks-team .masks-turn-card--cooldown {
-  filter: grayscale(0.5) brightness(0.9);
-}
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+  }
 
-/* Downed: stronger grey + banner */
-#masks-team .masks-turn-card--downed {
-  filter: grayscale(1) brightness(0.6);
-}
+  .masks-turn-card__mini-btn--left {
+    margin-right: 2px;
+  }
 
-/* GM card styling */
-#masks-team .masks-turn-card--gm {
-  background: linear-gradient(135deg, #3b1a3f, #101019);
-}
+  .masks-turn-card__name-buttons {
+    display: flex;
+    gap: 2px;
+  }
 
-/* Top status banner (DOWNED / GM TURN) */
-#masks-team .masks-turn-card__status-banner {
-  position: absolute;
-  top: 0.25rem;
-  left: 0.25rem;
-  right: 0.25rem;
-  z-index: 3;
-  padding: 0.05rem 0.35rem;
-  text-align: center;
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #ffdddd;
-  border: 1px solid rgba(255, 200, 200, 0.7);
-  pointer-events: none;
-}
+  .masks-turn-card__cooldown {
+    display: flex;
+    justify-content: center;
+    gap: 1px;
+    padding: 2px 4px 0;
+    background: rgba(0, 0, 0, 0.8);
+  }
 
-/* Portrait is fixed-size so cards are uniform */
-#masks-team .masks-turn-card__portrait-wrapper {
-  position: relative;
-  width: 100%;
-  height: 140px;
-  background: #050505;
-  overflow: hidden;
-}
+  .masks-turn-card__cooldown-segment {
+    flex: 0 0 8px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.18);
 
-#masks-team .masks-turn-card__portrait {
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-}
+    &.is-active {
+      background: var(--masks-tab-bg-active-color, #ffeb98);
+    }
+  }
 
-/* GM portrait variant */
-#masks-team .masks-turn-card__portrait--gm {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at 30% 10%, #ffffff22, #000000aa),
-    linear-gradient(135deg, #7c3aed, #111827);
-}
+  .masks-turn-card__bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 4px 5px;
+    background: rgba(0, 0, 0, 0.8);
+  }
 
-#masks-team .masks-turn-card__gm-initials {
-  font-weight: 700;
-  font-size: 1.8rem;
-  letter-spacing: 0.16em;
-}
+  .masks-turn-card__pentagon {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    border: 1px solid #ffffff;
+    background: rgba(128, 128, 128, 0.4);
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  }
 
-/* Bottom overlay (inside image) for pentagon + star */
-#masks-team .masks-turn-card__overlay-bottom {
-  position: absolute;
-  inset-inline: 0.25rem;
-  bottom: 0.25rem;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  pointer-events: none;
-}
+  .masks-turn-card__potential {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid #ffffff;
+    padding: 0;
+    margin: 0;
+    background:
+      radial-gradient(circle at center, #555555 55%, transparent 56%);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 
-/* Pentagon placeholder (bottom-left, inside image) */
-#masks-team .masks-turn-card__pentagon {
-  width: 24px;
-  height: 24px;
-  background: radial-gradient(circle at 30% 20%, #ffffff22, #777777aa);
-  border-radius: 5px;
-  clip-path: polygon(50% 0%, 100% 35%, 82% 100%, 18% 100%, 0% 35%);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
-}
+    &:disabled {
+      cursor: default;
+      opacity: 0.65;
+    }
+  }
 
-/* Star / potential circle (bottom-right, inside image) */
-#masks-team .masks-turn-card__potential {
-  position: relative;
-  pointer-events: auto;
-  width: 26px;
-  height: 26px;
-  flex: 0 0 26px;
-  padding: 0;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  background: radial-gradient(circle at 30% 20%, #ffffff33, #555555dd);
-  overflow: hidden;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
+  .masks-turn-card__potential-fill {
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(rgba(255, 255, 255, 0.9) calc(var(--potential-fill-ratio, 0) * 360deg),
+        rgba(255, 255, 255, 0.0) 0deg);
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
 
-#masks-team .masks-turn-card__potential:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
+  .masks-turn-card__potential-star {
+    position: relative;
+    font-size: 14px;
+    color: #ffffff;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.9);
+  }
 
-/* Vertical fill from bottom to top via CSS var --potential-fill-ratio (0–1) */
-#masks-team .masks-turn-card__potential-fill {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  height: calc(var(--potential-fill-ratio, 0) * 100%);
-  background: rgba(255, 255, 255, 0.9);
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
+  .masks-turn-card--gm {
+    flex: 0 0 90px;
+    cursor: pointer;
 
-/* Star glyph sits above the fill */
-#masks-team .masks-turn-card__potential-star {
-  position: relative;
-  z-index: 1;
-  font-size: 0.9rem;
-  line-height: 1;
-  color: #111111;
-  text-shadow: 0 0 2px rgba(255, 255, 255, 0.7);
-}
+    .masks-turn-card__status-banner {
+      background: var(--masks-interactive-bg-color, #1e528f);
+    }
 
-/* ================= NAME + BUTTON ROW ================= */
+    .masks-turn-card__portrait--gm {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.85);
+    }
 
-#masks-team .masks-turn-card__name-row {
-  display: flex;
-  align-items: center;
-  gap: 0.15rem;
-  padding: 0.2rem 0.3rem;
-  background: rgba(0, 0, 0, 0.9);
-}
+    .masks-turn-card__gm-initials {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.1em;
+    }
 
-#masks-team .masks-turn-card__name-row--gm {
-  justify-content: center;
-}
+    .masks-turn-card__footer {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 3px 4px 5px;
+    }
 
-#masks-team .masks-turn-card__name {
-  flex: 1 1 auto;
-  text-align: center;
-  font-size: 0.7rem;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: #ffffff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Mini buttons: *, +, ++ */
-#masks-team .masks-turn-card__mini-btn {
-  flex: 0 0 auto;
-  min-width: 1.1rem;
-  padding: 0.05rem 0.15rem;
-  font-size: 0.65rem;
-  line-height: 1.1;
-  border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background: rgba(20, 20, 20, 0.9);
-  color: #ffffff;
-  cursor: pointer;
-}
-
-#masks-team .masks-turn-card__mini-btn--left {
-  margin-right: 0.1rem;
-}
-
-#masks-team .masks-turn-card__name-buttons {
-  display: flex;
-  align-items: center;
-  gap: 0.1rem;
-}
-
-/* ================= COOLDOWN SEGMENTS ================= */
-
-#masks-team .masks-turn-card__cooldown {
-  display: flex;
-  gap: 2px;
-  padding: 0.15rem 0.25rem 0.25rem;
-  justify-content: flex-end;
-}
-
-#masks-team .masks-turn-card__cooldown-segment {
-  flex: 0 0 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-}
-
-#masks-team .masks-turn-card__cooldown-segment.is-active {
-  background: rgba(255, 255, 255, 0.8);
+    .masks-turn-card__name {
+      font-size: 10px;
+    }
+  }
 }
