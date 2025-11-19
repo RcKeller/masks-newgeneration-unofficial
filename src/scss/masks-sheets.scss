@@ -879,3 +879,230 @@
 #hotbar {
   display: none;
 }
+
+/* Turn tracker cards inside the Team HUD */
+#masks-team {
+
+  .masks-turns {
+    margin-top: 0.25rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+    overflow-x: auto;
+    padding: 0.25rem 0;
+  }
+
+  .masks-turn-card {
+    position: relative;
+    flex: 0 0 120px;
+    max-width: 120px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    transition: opacity 120ms ease-out, transform 120ms ease-out;
+
+    &--cooldown {
+      opacity: 0.7;
+    }
+
+    &--downed {
+      opacity: 0.4;
+      filter: grayscale(1);
+    }
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  .masks-turn-card__status-banner {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    padding: 2px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    background: rgba(220, 53, 69, 0.95);
+    color: #ffffff;
+    pointer-events: none;
+    z-index: 2;
+    letter-spacing: 0.08em;
+  }
+
+  .masks-turn-card__clickable {
+    display: flex;
+    flex-direction: column;
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  .masks-turn-card__portrait {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background-size: cover;
+    background-position: center center;
+  }
+
+  .masks-turn-card__name-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 4px 4px;
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .masks-turn-card__name {
+    flex: 1 1 auto;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .masks-turn-card__mini-btn {
+    border-radius: 3px;
+    padding: 0 3px;
+    font-size: 11px;
+    line-height: 1.2;
+    height: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.65);
+    color: #ffffff;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  .masks-turn-card__mini-btn--left {
+    margin-right: 2px;
+  }
+
+  .masks-turn-card__name-buttons {
+    display: flex;
+    gap: 2px;
+  }
+
+  .masks-turn-card__cooldown {
+    display: flex;
+    justify-content: center;
+    gap: 1px;
+    padding: 2px 4px 0;
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .masks-turn-card__cooldown-segment {
+    flex: 0 0 8px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.18);
+
+    &.is-active {
+      background: var(--masks-tab-bg-active-color, #ffeb98);
+    }
+  }
+
+  .masks-turn-card__bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 4px 5px;
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .masks-turn-card__pentagon {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    border: 1px solid #ffffff;
+    background: rgba(128, 128, 128, 0.4);
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  }
+
+  .masks-turn-card__potential {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid #ffffff;
+    padding: 0;
+    margin: 0;
+    background:
+      radial-gradient(circle at center, #555555 55%, transparent 56%);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.65;
+    }
+  }
+
+  .masks-turn-card__potential-fill {
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(rgba(255, 255, 255, 0.9) calc(var(--potential-fill-ratio, 0) * 360deg),
+        rgba(255, 255, 255, 0.0) 0deg);
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  .masks-turn-card__potential-star {
+    position: relative;
+    font-size: 14px;
+    color: #ffffff;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.9);
+  }
+
+  .masks-turn-card--gm {
+    flex: 0 0 90px;
+    cursor: pointer;
+
+    .masks-turn-card__status-banner {
+      background: var(--masks-interactive-bg-color, #1e528f);
+    }
+
+    .masks-turn-card__portrait--gm {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .masks-turn-card__gm-initials {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.1em;
+    }
+
+    .masks-turn-card__footer {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 3px 4px 5px;
+    }
+
+    .masks-turn-card__name {
+      font-size: 10px;
+    }
+  }
+}
