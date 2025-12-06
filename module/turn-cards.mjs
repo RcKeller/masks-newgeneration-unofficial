@@ -450,6 +450,36 @@
 
 			const cards = [];
 
+			// GM-only extra card
+			if (gm) {
+				cards.push(`
+          <div class="turncard-wrapper turncard-wrapper--gm">
+            <div class="turncard turncard--gm" role="group" aria-label="GM turn card">
+              <div class="turncard__inner">
+                <div class="turncard__portrait turncard__portrait--gm">
+                  <div class="turncard__gm-mark">Team</div>
+                </div>
+
+                <div class="turncard__nameplate">
+                  <div class="turncard__name" title="GM">
+                    Team
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="turncard__gm-btn turncard__gm-btn--gmturn"
+              data-action="gm-turn"
+              aria-label="Advance cooldowns (GM turn)"
+            >
+              GM Turn
+            </button>
+          </div>
+        `);
+			}
+
 			for (const cbt of team) {
 				const actor = cbt.actor;
 				const owns = canEditActor(actor);
@@ -527,20 +557,12 @@
                 </div>
 
                 <div class="turncard__nameplate">
-                  <div class="turncard__name-actions turncard__name-actions--left">
-                    ${leftBtn}
-                  </div>
-
                   <div class="turncard__name" title="${escape(
 																			actor.name ?? ""
 																		)}">
                     ${escape(actor.name ?? "UNKNOWN")}
                   </div>
 
-                  <div class="turncard__name-actions turncard__name-actions--right">
-                    ${plusBtn}
-                    ${plusPlusBtn}
-                  </div>
                 </div>
 
                 <button
@@ -549,7 +571,7 @@
                   data-action="placeholder-pentagon"
                   aria-label="Future feature placeholder"
                 >
-                  <i class="fa-regular fa-pentagon"></i>
+                  <i class="fa-thin fa-circle"></i>
                 </button>
 
                 <button
@@ -587,65 +609,6 @@
         `;
 
 				cards.push(cardHtml);
-			}
-
-			// GM-only extra card
-			if (gm) {
-				cards.push(`
-          <div class="turncard-wrapper turncard-wrapper--gm">
-            <div class="turncard turncard--gm" role="group" aria-label="GM turn card">
-              <div class="turncard__inner">
-                <div class="turncard__portrait turncard__portrait--gm">
-                  <div class="turncard__gm-mark">GM</div>
-                </div>
-
-                <div class="turncard__nameplate">
-                  <div class="turncard__name-actions turncard__name-actions--left">
-                    <span class="turncard__mini-spacer" aria-hidden="true"></span>
-                  </div>
-
-                  <div class="turncard__name" title="GM">
-                    GM
-                  </div>
-
-                  <div class="turncard__name-actions turncard__name-actions--right">
-                    <span class="turncard__mini-spacer" aria-hidden="true"></span>
-                  </div>
-                </div>
-
-                <div class="turncard__cooldown is-empty" aria-hidden="true"></div>
-
-                <button
-                  type="button"
-                  class="turncard__pentagon"
-                  data-action="placeholder-pentagon"
-                  aria-label="Future feature placeholder"
-                >
-                  <i class="fa-solid fa-pentagon"></i>
-                </button>
-
-                <button
-                  type="button"
-                  class="turncard__potential turncard__potential--disabled"
-                  data-action="placeholder-potential"
-                  aria-label="Potential is not available on the GM card"
-                  disabled
-                >
-                  <i class="fa-solid fa-star"></i>
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              class="turncard__gm-btn turncard__gm-btn--gmturn"
-              data-action="gm-turn"
-              aria-label="Advance cooldowns (GM turn)"
-            >
-              GM Turn
-            </button>
-          </div>
-        `);
 			}
 
 			this.root.innerHTML = `

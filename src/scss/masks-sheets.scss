@@ -907,12 +907,14 @@
     display: flex;
     flex-wrap: nowrap;
     /* single row */
-    gap: 10px;
-    padding: 6px 10px;
+    gap: 2px;
+    padding: 10px;
+    padding-bottom: 2px;
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     align-items: flex-start;
+    justify-content: space-between;
 
     /* Slight panel feel without forcing a hard background */
     background: transparent;
@@ -923,7 +925,7 @@
     width: clamp(110px, 8.5vw, 170px);
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 2px;
   }
 
   .turncard {
@@ -995,10 +997,9 @@
   }
 
   .turncard__nameplate {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 6px;
+    padding-left: 6px;
+    padding-right: 6px;
+    text-align: center;
 
     background: var(--masks-turncards-card-base);
     /* same as card base */
@@ -1006,6 +1007,7 @@
     padding: 4px 6px;
 
     .turncard__name {
+      color: black;
       text-transform: uppercase;
       /* required */
       font-weight: 800;
@@ -1014,7 +1016,6 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-align: center;
     }
   }
 
@@ -1100,7 +1101,7 @@
   .turncard__pentagon,
   .turncard__potential {
     position: absolute;
-    bottom: 6px;
+    bottom: 32px;
     width: 28px;
     height: 28px;
     padding: 0;
@@ -1161,7 +1162,7 @@
 
   .turncard__gm-btn {
     width: 100%;
-    border-radius: 6px;
+    border-radius: 1px;
     border: 1px solid rgba(255, 255, 255, 0.75);
     background: var(--masks-turncards-action-bg);
     color: #ffffff;
