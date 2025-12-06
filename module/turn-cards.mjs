@@ -1,4 +1,4 @@
-/* global Hooks, game, ui, foundry, renderTemplate */
+/* global Hooks, game, ui, foundry */
 
 /**
  * masks-newgeneration-unofficial / turn-cards.mjs
@@ -9,9 +9,7 @@
  *   remainingTurns = (teamSize - 1) after acting.
  *   Each subsequent turn by another PC or the GM card decrements remainingTurns by 1.
  * - Stores cooldown on Combatant flags so it persists across reloads.
- * - Potential uses actor.system.attributes.xp.value (0-5) when present; otherwise actor flag fallback.
- * - Team pool tracking is provided by the global MasksTeam service (team.js)
- *   and rendered directly on the Team card.
+ * - Potential uses actor.system.attributes.xp.value (0–5) when present; otherwise actor flag fallback.
  */
 
 (() => {
@@ -30,6 +28,11 @@
 		if (!Number.isFinite(x)) return lo;
 		return Math.min(hi, Math.max(lo, Math.floor(x)));
 	};
+
+	const escape = (s) =>
+		foundry?.utils?.escapeHTML
+			? foundry.utils.escapeHTML(String(s ?? ""))
+			: String(s ?? "");
 
 	function getActiveCombat() {
 		// Prefer the active combat; fallback to viewed tracker combat
@@ -86,7 +89,7 @@
 	}
 
 	function isDowned(cbt) {
-		// Prefer explicit defeated flags or HP <= 0
+		// Prefer explicit defeated flags (set by module/health.mjs) or HP <= 0
 		const defeated = cbt?.defeated === true;
 		const hp = Number(
 			foundry?.utils?.getProperty?.(cbt?.actor, "system.attributes.hp.value")
@@ -132,6 +135,7 @@
 			Hooks.on("createCombat", () => this._queueRender());
 			Hooks.on("deleteCombat", () => this._queueRender());
 			Hooks.on("updateCombat", (doc, changes) => {
+				// Relevant changes: active, combatant order, round/turn changes, etc.
 				if (!doc) return;
 				if (doc.active === true || doc.id === getActiveCombat()?.id)
 					this._queueRender();
@@ -193,27 +197,25 @@
 				if (!document.getElementById("masks-turncards")) this.mount();
 				else this._queueRender();
 			});
-
-			// Team pool changes (from team.js service)
-			Hooks.on("masksTeamUpdated", () => this._queueRender());
-			Hooks.on("masksTeamConfigChanged", () => this._queueRender());
 		},
 
 		_activateListeners() {
 			if (!this.root) return;
 			if (this.root.dataset.bound === "1") return;
 
-			// Left click: card actions & opening sheets
+			// Delegated clicks
 			this.root.addEventListener(
 				"click",
 				async (ev) => {
 					const target = ev.target instanceof HTMLElement ? ev.target : null;
 					if (!target) return;
 
-					// Action buttons
+					// Action buttons (placeholders, gm buttons, potential)
 					const actionEl = target.closest?.("[data-action]");
 					if (actionEl) {
 						const action = actionEl.dataset.action;
+						const wrap = actionEl.closest?.("[data-combatant-id]");
+						const combatantId = wrap?.dataset?.combatantId ?? null;
 
 						// Never let buttons trigger sheet open
 						ev.preventDefault();
@@ -221,7 +223,30 @@
 						ev.stopImmediatePropagation?.();
 
 						if (action === "potential") {
-							await this._handlePotentialClick(actionEl, +1);
+							if (!combatantId) return;
+							const combat = getActiveCombat();
+							const cbt = combat?.combatants?.get?.(combatantId);
+							const actor = cbt?.actor;
+							if (!actor) return;
+
+							if (!canEditActor(actor)) {
+								ui.notifications?.warn?.(
+									"You don’t have permission to change that character’s Potential."
+								);
+								return;
+							}
+
+							const cur = actorPotentialValue(actor);
+							const next = clampInt(cur + 1, 0, POTENTIAL_MAX);
+							await setActorPotential(actor, next);
+
+							// Tiny feedback (CSS animation hook)
+							actionEl.classList.remove("is-bump");
+							// eslint-disable-next-line no-unused-expressions
+							actionEl.offsetHeight;
+							actionEl.classList.add("is-bump");
+
+							this._queueRender();
 							return;
 						}
 
@@ -240,34 +265,11 @@
 							return;
 						}
 
-						if (action === "team-minus") {
-							const svc = globalThis.MasksTeam;
-							if (!svc) return;
-							const step = ev.shiftKey ? -5 : -1;
-							await svc.change?.(step);
-							return;
-						}
-
-						if (action === "team-plus") {
-							const svc = globalThis.MasksTeam;
-							if (!svc) return;
-							const step = ev.shiftKey ? 5 : 1;
-							await svc.change?.(step);
-							return;
-						}
-
-						if (action === "team-reset") {
-							const svc = globalThis.MasksTeam;
-							if (!svc) return;
-							await svc.set?.(0);
-							return;
-						}
-
 						// Placeholder actions: do nothing for now
 						return;
 					}
 
-					// Click anywhere else on a card to open the sheet
+					// Click anywhere else on a card to open sheet
 					const card = target.closest?.(".turncard[data-combatant-id]");
 					if (!card) return;
 
@@ -277,25 +279,12 @@
 					const actor = cbt?.actor;
 					if (!actor) return;
 
+					// Don’t open sheet if downed overlay exists and user clicked it? Requirement says clicking elsewhere opens.
+					// We'll still open the sheet regardless of downed state.
 					actor.sheet?.render?.(true);
 				},
 				{ capture: true }
 			);
-
-			// Right click on Potential star to subtract
-			this.root.addEventListener("contextmenu", async (ev) => {
-				const target = ev.target instanceof HTMLElement ? ev.target : null;
-				if (!target) return;
-
-				const potBtn = target.closest?.("[data-action='potential']");
-				if (!potBtn) return;
-
-				ev.preventDefault();
-				ev.stopPropagation();
-				ev.stopImmediatePropagation?.();
-
-				await this._handlePotentialClick(potBtn, -1);
-			});
 
 			// Keyboard accessibility for card open (Enter/Space)
 			this.root.addEventListener("keydown", (ev) => {
@@ -314,38 +303,6 @@
 			});
 
 			this.root.dataset.bound = "1";
-		},
-
-		async _handlePotentialClick(actionEl, delta) {
-			const wrap = actionEl.closest?.("[data-combatant-id]");
-			const combatantId = wrap?.dataset?.combatantId ?? null;
-			if (!combatantId) return;
-
-			const combat = getActiveCombat();
-			const cbt = combat?.combatants?.get?.(combatantId);
-			const actor = cbt?.actor;
-			if (!actor) return;
-
-			if (!canEditActor(actor)) {
-				ui.notifications?.warn?.(
-					"You don’t have permission to change that character’s Potential."
-				);
-				return;
-			}
-
-			const cur = actorPotentialValue(actor);
-			const next = clampInt(cur + delta, 0, POTENTIAL_MAX);
-			if (next === cur) return;
-
-			await setActorPotential(actor, next);
-
-			// Tiny feedback (CSS animation hook)
-			actionEl.classList.remove("is-bump");
-			// eslint-disable-next-line no-unused-expressions
-			actionEl.offsetHeight;
-			actionEl.classList.add("is-bump");
-
-			this._queueRender();
 		},
 
 		_queueRender() {
@@ -406,7 +363,7 @@
 
 		/**
 		 * Called when a character takes a turn.
-		 * Sets that actor's remainingTurns = (teamSize - 1).
+		 * Sets that actor’s remainingTurns = (teamSize - 1).
 		 */
 		async onActorTurn(actorId) {
 			const combat = getActiveCombat();
@@ -474,6 +431,7 @@
 			if (!this.root) return;
 
 			const combat = getActiveCombat();
+			const gm = game.user?.isGM === true;
 
 			if (!combat) {
 				this.root.style.display = "none";
@@ -490,15 +448,39 @@
 
 			this.root.style.display = "";
 
-			// Team pool service (may not exist)
-			const teamSvc = globalThis.MasksTeam;
-			const teamValue = teamSvc?.value ?? 0;
-			const teamCanEdit = teamSvc?.canEdit ?? false;
-			const showTeamCard = !!teamSvc; // Show if service is available
+			const cards = [];
 
-			const gm = game.user?.isGM === true;
+			// GM-only extra card
+			if (gm) {
+				cards.push(`
+          <div class="turncard-wrapper turncard-wrapper--gm">
+            <div class="turncard turncard--gm" role="group" aria-label="GM turn card">
+              <div class="turncard__inner">
+                <div class="turncard__portrait turncard__portrait--gm">
+                  <div class="turncard__gm-mark">Team</div>
+                </div>
 
-			const cards = team.map((cbt) => {
+                <div class="turncard__nameplate">
+                  <div class="turncard__name" title="GM">
+                    Team
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="turncard__gm-btn turncard__gm-btn--gmturn"
+              data-action="gm-turn"
+              aria-label="Advance cooldowns (GM turn)"
+            >
+              GM Turn
+            </button>
+          </div>
+        `);
+			}
+
+			for (const cbt of team) {
 				const actor = cbt.actor;
 				const owns = canEditActor(actor);
 				const downed = isDowned(cbt);
@@ -512,61 +494,128 @@
 						: 0;
 
 				const potential = actorPotentialValue(actor);
-				const potentialPct =
-					POTENTIAL_MAX > 0
-						? `${Math.round((potential / POTENTIAL_MAX) * 100)}%`
-						: "0%";
+				const potentialPct = `${Math.round((potential / POTENTIAL_MAX) * 100)}%`;
 
-				const status = downed ? "down" : onCooldown ? "busy" : "ready";
-				const statusLabel = downed ? "Down" : onCooldown ? "Busy" : "Ready";
+				const downedId = `turncard-downed-${cbt.id}`;
+
+				const leftBtn = owns
+					? `<button type="button" class="turncard__mini-btn" data-action="placeholder-star" aria-label="Placeholder (owned)">*</button>`
+					: `<span class="turncard__mini-spacer" aria-hidden="true"></span>`;
+
+				const plusBtn = `<button type="button" class="turncard__mini-btn" data-action="placeholder-plus" aria-label="Placeholder: plus">+</button>`;
+				const plusPlusBtn = owns
+					? `<button type="button" class="turncard__mini-btn" data-action="placeholder-plusplus" aria-label="Placeholder (owned): plus plus">++</button>`
+					: "";
+
+				const cooldownBar =
+					maxTurns > 0
+						? `
+            <div class="turncard__cooldown ${
+													onCooldown ? "" : "is-empty"
+												}" aria-hidden="true">
+              <div class="turncard__cooldown-fill" style="--masks-turncards-cooldown-frac:${cooldownFrac};"></div>
+            </div>
+          `
+						: "";
+
+				const downedOverlay = downed
+					? `
+            <div class="turncard__downed" id="${downedId}" role="status" aria-label="Downed">
+              <div class="turncard__downed-label">DOWNED</div>
+            </div>
+          `
+					: "";
 
 				const ariaLabelParts = [
 					actor?.name ? `Character: ${actor.name}` : "Character",
 					downed ? "Downed" : null,
-					onCooldown ? `On cooldown (${remaining} remaining)` : "Ready to act",
+					onCooldown ? `On cooldown (${remaining} remaining)` : "Ready",
 					`Potential ${potential} of ${POTENTIAL_MAX}`,
 				].filter(Boolean);
 
-				const downedId = downed ? `turncard-downed-${cbt.id}` : null;
+				const cardHtml = `
+          <div class="turncard-wrapper" data-combatant-id="${escape(cbt.id)}">
+            <div
+              class="turncard ${onCooldown ? "is-cooldown" : ""} ${
+					downed ? "is-downed" : ""
+				}"
+              data-combatant-id="${escape(cbt.id)}"
+              data-actor-id="${escape(actor.id)}"
+              role="button"
+              tabindex="0"
+              aria-label="${escape(ariaLabelParts.join(". "))}"
+              ${downed ? `aria-describedby="${downedId}"` : ""}
+            >
+              <div class="turncard__inner">
 
-				return {
-					type: "character",
-					combatantId: cbt.id,
-					actorId: actor.id,
-					name: actor.name ?? "UNKNOWN",
-					img: actor.img ?? "",
-					owns,
-					canEditPotential: owns,
-					downed,
-					downedId,
-					onCooldown,
-					cooldownFrac: cooldownFrac.toFixed(3),
-					potential,
-					potentialPct,
-					potentialMax: POTENTIAL_MAX,
-					status,
-					statusLabel,
-					canGmMarkTurn: gm,
-					ariaLabel: ariaLabelParts.join(". "),
-				};
-			});
+                ${cooldownBar}
+                <div class="turncard__portrait">
 
-			const context = {
-				gm,
-				showTeamCard,
-				teamSize,
-				maxTurns,
-				team: teamValue,
-				teamCanEdit,
-				cards,
-			};
+                  <img src="${escape(actor.img ?? "")}" alt="${escape(
+					actor.name ?? "Character portrait"
+				)}" loading="lazy" />
+                </div>
 
-			const html = await renderTemplate(
-				`modules/${NS}/templates/turncards.hbs`,
-				context
-			);
+                <div class="turncard__nameplate">
+                  <div class="turncard__name" title="${escape(
+																			actor.name ?? ""
+																		)}">
+                    ${escape(actor.name ?? "UNKNOWN")}
+                  </div>
 
-			this.root.innerHTML = html;
+                </div>
+
+                <button
+                  type="button"
+                  class="turncard__pentagon"
+                  data-action="placeholder-pentagon"
+                  aria-label="Future feature placeholder"
+                >
+                  <i class="fa-thin fa-circle"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="turncard__potential"
+                  data-action="potential"
+                  aria-label="Increase potential (currently ${potential} of ${POTENTIAL_MAX})"
+                  style="--masks-turncards-potential-fill:${potentialPct};"
+                >
+                  <i class="fa-solid fa-star"></i>
+                </button>
+              </div>
+
+              ${downedOverlay}
+            </div>
+
+            ${
+													gm
+														? `
+              <button
+                type="button"
+                class="turncard__gm-btn"
+                data-action="gm-mark-turn"
+                data-actor-id="${escape(actor.id)}"
+                aria-label="Mark turn taken for ${escape(
+																	actor.name ?? "character"
+																)}"
+              >
+                Mark Turn Taken
+              </button>
+            `
+														: ""
+												}
+          </div>
+        `;
+
+				cards.push(cardHtml);
+			}
+
+			this.root.innerHTML = `
+        <div class="turncards-row" data-team-size="${teamSize}" data-max-turns="${maxTurns}">
+          ${cards.join("\n")}
+        </div>
+      `;
 		},
 	};
 

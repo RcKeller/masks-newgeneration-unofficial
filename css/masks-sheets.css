@@ -749,7 +749,7 @@
 }
 
 /* ------------------------------------------------------------------------- */
-/* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                       */
+/* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                        */
 /* ------------------------------------------------------------------------- */
 #masks-turncards {
   width: 100%;
@@ -757,71 +757,54 @@
   /* allow clicks to pass through the outer container */
   z-index: 101;
   margin: 0.25rem 0;
-  /* --- Status / Cooldown bar ---------------------------------------------- */
-  /* State-specific colours (rough Invisible, Inc. vibe) */
-  /* --- Portrait ------------------------------------------------------------ */
-  /* --- Nameplate ----------------------------------------------------------- */
-  /* --- Downed overlay ------------------------------------------------------ */
-  /* --- Pentagon & Potential ------------------------------------------------ */
-  /* --- Team card controls -------------------------------------------------- */
-  /* --- GM buttons ---------------------------------------------------------- */
 }
 #masks-turncards .turncards-row {
   pointer-events: auto;
   display: flex;
   flex-wrap: nowrap;
   /* single row */
-  gap: 6px;
-  padding: 8px 10px 4px;
+  gap: 2px;
+  padding: 10px;
+  padding-bottom: 2px;
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  align-items: stretch;
-  justify-content: flex-start;
+  align-items: flex-start;
+  justify-content: space-between;
+  /* Slight panel feel without forcing a hard background */
   background: transparent;
 }
 #masks-turncards .turncard-wrapper {
   flex: 0 0 auto;
-  width: clamp(120px, 9vw, 180px);
+  width: clamp(110px, 8.5vw, 170px);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 #masks-turncards .turncard {
   position: relative;
   width: 100%;
   aspect-ratio: 3/4;
-  border-radius: 2px;
-  background: linear-gradient(180deg, #323844 0%, #171b22 100%);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
+  border-radius: 1px;
+  background: var(--masks-turncards-card-base);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 120ms ease-out, box-shadow 120ms ease-out, border-color 120ms ease-out, filter 120ms ease-out;
+  /* A subtle white edge so transparent portraits still read cleanly */
+  border: 1px solid rgba(255, 255, 255, 0.75);
 }
 #masks-turncards .turncard:hover {
-  transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.9);
   border-color: var(--masks-turncards-active-bg);
-  filter: brightness(1.03);
-}
-#masks-turncards .turncard.turncard--gm {
-  cursor: default;
-}
-#masks-turncards .turncard.turncard--gm:hover {
-  transform: none;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
-  border-color: rgba(255, 255, 255, 0.7);
-  filter: none;
 }
 #masks-turncards .turncard.is-cooldown .turncard__inner {
   opacity: var(--masks-turncards-cooldown-opacity);
 }
 #masks-turncards .turncard.is-downed .turncard__inner {
-  opacity: 0.45;
-}
-#masks-turncards .turncard.is-downed .turncard__portrait img {
+  opacity: 0.25;
   filter: grayscale(1);
+}
+#masks-turncards .turncard:hover {
+  transform: scale(1.03);
+  transition: transform 150ms ease-out;
 }
 #masks-turncards .turncard__inner {
   position: absolute;
@@ -829,111 +812,103 @@
   display: flex;
   flex-direction: column;
 }
-#masks-turncards .turncard__status {
-  position: relative;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 6px;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #fdf7e5;
-  background: var(--masks-turncards-status-ready-bg, #287060);
-  overflow: hidden;
-}
-#masks-turncards .turncard__status-label {
-  position: relative;
-  z-index: 2;
-  white-space: nowrap;
-}
-#masks-turncards .turncard__status-track {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: rgba(0, 0, 0, 0.55);
-  opacity: 0;
-  transition: opacity 120ms ease-out;
-}
-#masks-turncards .turncard__cooldown-fill {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  transform-origin: left center;
-  /* as fraction decreases, bar shrinks from the right */
-  transform: scaleX(var(--masks-turncards-cooldown-frac, 0));
-  background: var(--masks-turncards-cooldown-bar);
-  opacity: 0;
-  transition: transform 160ms ease-out, opacity 120ms ease-out;
-}
-#masks-turncards .turncard.is-cooldown .turncard__status-track,
-#masks-turncards .turncard.is-cooldown .turncard__cooldown-fill {
-  opacity: 1;
-}
-#masks-turncards .turncard--state-ready .turncard__status {
-  background: var(--masks-turncards-status-ready-bg, #2b7a69);
-}
-#masks-turncards .turncard--state-busy .turncard__status {
-  background: var(--masks-turncards-status-busy-bg, #1d6fa8);
-}
-#masks-turncards .turncard--state-down .turncard__status {
-  background: var(--masks-turncards-status-down-bg, #b15425);
-}
-#masks-turncards .turncard--state-team .turncard__status {
-  background: var(--masks-turncards-status-team-bg, #8f68c0);
-}
 #masks-turncards .turncard__portrait {
   flex: 1 1 auto;
-  background: #000;
+  background: black;
+  /* shows through transparent images */
 }
 #masks-turncards .turncard__portrait img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* required */
 }
 #masks-turncards .turncard__portrait--gm {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 6px;
-  background: radial-gradient(circle at 30% 0, #5e7187, #151821);
+  background: var(--masks-turncards-secondary-bg);
 }
 #masks-turncards .turncard__gm-mark {
   font-weight: 900;
-  font-size: 1.4rem;
-  letter-spacing: 0.12em;
+  font-size: 2rem;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.45);
   text-transform: uppercase;
-  color: #fdf7e5;
 }
 #masks-turncards .turncard__nameplate {
-  min-height: 28px;
-  padding: 5px 6px 6px;
-  background: linear-gradient(180deg, #ceb28a 0%, #b18f66 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding-left: 6px;
+  padding-right: 6px;
+  text-align: center;
+  background: var(--masks-turncards-card-base);
+  /* same as card base */
+  color: #ffffff;
+  padding: 4px 6px;
 }
-#masks-turncards .turncard__nameplate--team {
-  background: linear-gradient(180deg, #c3b3e0 0%, #a58fc8 100%);
-}
-#masks-turncards .turncard__name {
+#masks-turncards .turncard__nameplate .turncard__name {
+  color: black;
   text-transform: uppercase;
+  /* required */
   font-weight: 800;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  color: #1c1010;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+#masks-turncards .turncard__name-actions {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+#masks-turncards .turncard__name-actions--left {
+  justify-content: flex-start;
+}
+#masks-turncards .turncard__name-actions--right {
+  justify-content: flex-end;
+}
+#masks-turncards .turncard__mini-btn {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: var(--masks-turncards-action-bg);
+  color: #ffffff;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+}
+#masks-turncards .turncard__mini-btn:hover {
+  filter: brightness(1.05);
+}
+#masks-turncards .turncard__mini-spacer {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+}
+#masks-turncards .turncard__cooldown {
+  height: 30px;
+  background: rgba(0, 0, 0, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+#masks-turncards .turncard__cooldown.is-empty {
+  background: transparent;
+}
+#masks-turncards .turncard__cooldown-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--masks-turncards-cooldown-bar);
+  transform-origin: right center;
+  /* fill right -> left */
+  transform: scaleX(var(--masks-turncards-cooldown-frac, 0));
+}
 #masks-turncards .turncard__downed {
   position: absolute;
   inset: 0;
-  background: rgba(40, 40, 40, 0.55);
+  background: rgba(120, 120, 120, 0.45);
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -946,14 +921,14 @@
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.25);
   padding: 4px 8px;
   border-radius: 6px;
 }
 #masks-turncards .turncard__pentagon,
 #masks-turncards .turncard__potential {
   position: absolute;
-  bottom: 6px;
+  bottom: 32px;
   width: 28px;
   height: 28px;
   padding: 0;
@@ -970,19 +945,19 @@
 #masks-turncards .turncard__pentagon i {
   font-size: 1.3rem;
   color: var(--masks-turncards-pentagon-color);
-  -webkit-text-stroke: 2px #ffffff;
   /* white outline */
+  -webkit-text-stroke: 2px #ffffff;
 }
 #masks-turncards .turncard__potential {
   right: 6px;
   border-radius: 50%;
-  background: rgba(55, 55, 43, 0.7);
-  /* dark backing circle */
+  background: rgba(55, 55, 43, 0.6);
+  /* grey circle */
   border: 2px solid #ffffff;
   overflow: hidden;
+  /* Fill based on --masks-turncards-potential-fill: 0%..100% */
 }
 #masks-turncards .turncard__potential::before {
-  /* Fill based on --masks-turncards-potential-fill: 0%..100% */
   content: "";
   position: absolute;
   inset: auto 0 0 0;
@@ -1003,71 +978,24 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
-#masks-turncards .turncard-wrapper--team {
-  min-width: clamp(140px, 10vw, 190px);
-}
-#masks-turncards .turncard__team {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-#masks-turncards .turncard__team-value {
-  font-size: 1.6rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #fdf7e5;
-}
-#masks-turncards .turncard__team-controls {
-  display: flex;
-  gap: 4px;
-}
-#masks-turncards .turncard__team-btn {
-  min-width: 24px;
-  height: 24px;
-  padding: 0 4px;
-  border-radius: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  background: rgba(0, 0, 0, 0.45);
-  color: #ffffff;
-  font-weight: 900;
-  font-size: 0.95rem;
-  line-height: 1;
-  cursor: pointer;
-}
-#masks-turncards .turncard__team-btn:hover:not(:disabled) {
-  filter: brightness(1.1);
-}
-#masks-turncards .turncard__team-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-#masks-turncards .turncard__team-btn--reset {
-  font-size: 0.75rem;
-}
 #masks-turncards .turncard__gm-btn {
   width: 100%;
-  border-radius: 2px;
+  border-radius: 1px;
   border: 1px solid rgba(255, 255, 255, 0.75);
   background: var(--masks-turncards-action-bg);
   color: #ffffff;
   font-weight: 800;
-  padding: 4px 6px;
+  padding: 6px 8px;
   cursor: pointer;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 #masks-turncards .turncard__gm-btn:hover {
   filter: brightness(1.05);
 }
-#masks-turncards .turncard__gm-btn--gmturn {
-  margin-top: 4px;
+#masks-turncards .turncard--gm {
+  cursor: default;
 }
 #masks-turncards .turncard--gm:hover {
-  border-color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.75);
 }
 @keyframes masks-turncards-bump {
   0% {

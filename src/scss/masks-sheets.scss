@@ -892,7 +892,7 @@
 }
 
 /* ------------------------------------------------------------------------- */
-/* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                       */
+/* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                        */
 /* ------------------------------------------------------------------------- */
 
 #masks-turncards {
@@ -907,56 +907,41 @@
     display: flex;
     flex-wrap: nowrap;
     /* single row */
-    gap: 6px;
-    padding: 8px 10px 4px;
+    gap: 2px;
+    padding: 10px;
+    padding-bottom: 2px;
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    align-items: stretch;
-    justify-content: flex-start;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    /* Slight panel feel without forcing a hard background */
     background: transparent;
   }
 
   .turncard-wrapper {
     flex: 0 0 auto;
-    width: clamp(120px, 9vw, 180px);
+    width: clamp(110px, 8.5vw, 170px);
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
 
   .turncard {
     position: relative;
     width: 100%;
     aspect-ratio: 3 / 4;
-    border-radius: 2px;
-    background: linear-gradient(180deg, #323844 0%, #171b22 100%);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
+    border-radius: 1px;
+    background: var(--masks-turncards-card-base);
     overflow: hidden;
     cursor: pointer;
-    transition:
-      transform 120ms ease-out,
-      box-shadow 120ms ease-out,
-      border-color 120ms ease-out,
-      filter 120ms ease-out;
+
+    /* A subtle white edge so transparent portraits still read cleanly */
+    border: 1px solid rgba(255, 255, 255, 0.75);
 
     &:hover {
-      transform: translateY(-1px) scale(1.02);
-      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.9);
       border-color: var(--masks-turncards-active-bg);
-      filter: brightness(1.03);
-    }
-
-    &.turncard--gm {
-      cursor: default;
-
-      &:hover {
-        transform: none;
-        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
-        border-color: rgba(255, 255, 255, 0.7);
-        filter: none;
-      }
     }
 
     &.is-cooldown .turncard__inner {
@@ -964,12 +949,14 @@
     }
 
     &.is-downed .turncard__inner {
-      opacity: 0.45;
-    }
-
-    &.is-downed .turncard__portrait img {
+      opacity: 0.25;
       filter: grayscale(1);
     }
+  }
+
+  .turncard:hover {
+    transform: scale(1.03);
+    transition: transform 150ms ease-out;
   }
 
   .turncard__inner {
@@ -979,86 +966,18 @@
     flex-direction: column;
   }
 
-  /* --- Status / Cooldown bar ---------------------------------------------- */
-
-  .turncard__status {
-    position: relative;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 6px;
-    font-size: 0.7rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #fdf7e5;
-    background: var(--masks-turncards-status-ready-bg, #287060);
-    overflow: hidden;
-  }
-
-  .turncard__status-label {
-    position: relative;
-    z-index: 2;
-    white-space: nowrap;
-  }
-
-  .turncard__status-track {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: rgba(0, 0, 0, 0.55);
-    opacity: 0;
-    transition: opacity 120ms ease-out;
-  }
-
-  .turncard__cooldown-fill {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    transform-origin: left center;
-    /* as fraction decreases, bar shrinks from the right */
-    transform: scaleX(var(--masks-turncards-cooldown-frac, 0));
-    background: var(--masks-turncards-cooldown-bar);
-    opacity: 0;
-    transition:
-      transform 160ms ease-out,
-      opacity 120ms ease-out;
-  }
-
-  .turncard.is-cooldown .turncard__status-track,
-  .turncard.is-cooldown .turncard__cooldown-fill {
-    opacity: 1;
-  }
-
-  /* State-specific colours (rough Invisible, Inc. vibe) */
-  .turncard--state-ready .turncard__status {
-    background: var(--masks-turncards-status-ready-bg, #2b7a69);
-  }
-
-  .turncard--state-busy .turncard__status {
-    background: var(--masks-turncards-status-busy-bg, #1d6fa8);
-  }
-
-  .turncard--state-down .turncard__status {
-    background: var(--masks-turncards-status-down-bg, #b15425);
-  }
-
-  .turncard--state-team .turncard__status {
-    background: var(--masks-turncards-status-team-bg, #8f68c0);
-  }
-
-  /* --- Portrait ------------------------------------------------------------ */
-
   .turncard__portrait {
     flex: 1 1 auto;
-    background: #000;
+    // background: var(--masks-turncards-card-base);
+    background: black;
+    /* shows through transparent images */
 
     img {
       display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      /* required */
     }
   }
 
@@ -1066,51 +985,101 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 6px;
-    background: radial-gradient(circle at 30% 0, #5e7187, #151821);
+    background: var(--masks-turncards-secondary-bg);
   }
 
   .turncard__gm-mark {
     font-weight: 900;
-    font-size: 1.4rem;
-    letter-spacing: 0.12em;
+    font-size: 2rem;
+    letter-spacing: 0.08em;
+    color: rgba(0, 0, 0, 0.45);
     text-transform: uppercase;
-    color: #fdf7e5;
   }
-
-  /* --- Nameplate ----------------------------------------------------------- */
 
   .turncard__nameplate {
-    min-height: 28px;
-    padding: 5px 6px 6px;
-    background: linear-gradient(180deg, #ceb28a 0%, #b18f66 100%);
-    border-top: 1px solid rgba(255, 255, 255, 0.5);
-    display: flex;
+    padding-left: 6px;
+    padding-right: 6px;
+    text-align: center;
+
+    background: var(--masks-turncards-card-base);
+    /* same as card base */
+    color: #ffffff;
+    padding: 4px 6px;
+
+    .turncard__name {
+      color: black;
+      text-transform: uppercase;
+      /* required */
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .turncard__name-actions {
+    display: inline-flex;
+    gap: 4px;
     align-items: center;
-    justify-content: center;
+
+    &--left {
+      justify-content: flex-start;
+    }
+
+    &--right {
+      justify-content: flex-end;
+    }
   }
 
-  .turncard__nameplate--team {
-    background: linear-gradient(180deg, #c3b3e0 0%, #a58fc8 100%);
+  .turncard__mini-btn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    background: var(--masks-turncards-action-bg);
+    color: #ffffff;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+      filter: brightness(1.05);
+    }
   }
 
-  .turncard__name {
-    text-transform: uppercase;
-    font-weight: 800;
-    font-size: 0.8rem;
-    letter-spacing: 0.06em;
-    color: #1c1010;
-    white-space: nowrap;
+  .turncard__mini-spacer {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+  }
+
+  .turncard__cooldown {
+    height: 30px;
+    background: rgba(0, 0, 0, 0.12);
+    position: relative;
     overflow: hidden;
-    text-overflow: ellipsis;
+
+    &.is-empty {
+      background: transparent;
+    }
   }
 
-  /* --- Downed overlay ------------------------------------------------------ */
+  .turncard__cooldown-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--masks-turncards-cooldown-bar);
+    transform-origin: right center;
+    /* fill right -> left */
+    transform: scaleX(var(--masks-turncards-cooldown-frac, 0));
+  }
 
   .turncard__downed {
     position: absolute;
     inset: 0;
-    background: rgba(40, 40, 40, 0.55);
+    background: rgba(120, 120, 120, 0.45);
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -1124,22 +1093,21 @@
     font-weight: 900;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.25);
     padding: 4px 8px;
     border-radius: 6px;
   }
 
-  /* --- Pentagon & Potential ------------------------------------------------ */
-
   .turncard__pentagon,
   .turncard__potential {
     position: absolute;
-    bottom: 6px;
+    bottom: 32px;
     width: 28px;
     height: 28px;
     padding: 0;
     border: none;
     cursor: pointer;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1152,21 +1120,21 @@
     i {
       font-size: 1.3rem;
       color: var(--masks-turncards-pentagon-color);
-      -webkit-text-stroke: 2px #ffffff;
       /* white outline */
+      -webkit-text-stroke: 2px #ffffff;
     }
   }
 
   .turncard__potential {
     right: 6px;
     border-radius: 50%;
-    background: rgba(55, 55, 43, 0.7);
-    /* dark backing circle */
+    background: rgba(55, 55, 43, 0.6);
+    /* grey circle */
     border: 2px solid #ffffff;
     overflow: hidden;
 
+    /* Fill based on --masks-turncards-potential-fill: 0%..100% */
     &::before {
-      /* Fill based on --masks-turncards-potential-fill: 0%..100% */
       content: "";
       position: absolute;
       inset: auto 0 0 0;
@@ -1192,86 +1160,27 @@
     cursor: not-allowed;
   }
 
-  /* --- Team card controls -------------------------------------------------- */
-
-  .turncard-wrapper--team {
-    min-width: clamp(140px, 10vw, 190px);
-  }
-
-  .turncard__team {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .turncard__team-value {
-    font-size: 1.6rem;
-    font-weight: 900;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #fdf7e5;
-  }
-
-  .turncard__team-controls {
-    display: flex;
-    gap: 4px;
-  }
-
-  .turncard__team-btn {
-    min-width: 24px;
-    height: 24px;
-    padding: 0 4px;
-    border-radius: 2px;
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    background: rgba(0, 0, 0, 0.45);
-    color: #ffffff;
-    font-weight: 900;
-    font-size: 0.95rem;
-    line-height: 1;
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-      filter: brightness(1.1);
-    }
-
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-  }
-
-  .turncard__team-btn--reset {
-    font-size: 0.75rem;
-  }
-
-  /* --- GM buttons ---------------------------------------------------------- */
-
   .turncard__gm-btn {
     width: 100%;
-    border-radius: 2px;
+    border-radius: 1px;
     border: 1px solid rgba(255, 255, 255, 0.75);
     background: var(--masks-turncards-action-bg);
     color: #ffffff;
     font-weight: 800;
-    padding: 4px 6px;
+    padding: 6px 8px;
     cursor: pointer;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
 
     &:hover {
       filter: brightness(1.05);
     }
   }
 
-  .turncard__gm-btn--gmturn {
-    margin-top: 4px;
-  }
+  .turncard--gm {
+    cursor: default;
 
-  .turncard--gm:hover {
-    border-color: rgba(255, 255, 255, 0.7);
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.75);
+    }
   }
 
   @keyframes masks-turncards-bump {
