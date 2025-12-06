@@ -29,6 +29,16 @@
   --masks-window-bg-position: bottom left;
   --masks-influence-icon-color: invert(100%);
   --masks-influence-icon-disabled-color: invert(100%) opacity(50%);
+  /* Turn Cards HUD palette */
+  --masks-turncards-card-base: #bda78a;
+  --masks-turncards-primary-bg: #f4e7d7;
+  --masks-turncards-secondary-bg: #ead0b0;
+  --masks-turncards-active-bg: #d1a06e;
+  --masks-turncards-action-bg: #69c0ae;
+  --masks-turncards-cooldown-bar: #2ab6cb;
+  --masks-turncards-potential-fill-color: #f9a949;
+  --masks-turncards-pentagon-color: #37372b;
+  --masks-turncards-cooldown-opacity: 0.75;
 }
 
 .pbta.window-app .window-content {
@@ -736,6 +746,273 @@
 
 #hotbar {
   display: none;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                        */
+/* ------------------------------------------------------------------------- */
+#masks-turncards {
+  width: 100%;
+  pointer-events: none;
+  /* allow clicks to pass through the outer container */
+  z-index: 101;
+  margin: 0.25rem 0;
+}
+#masks-turncards .turncards-row {
+  pointer-events: auto;
+  display: flex;
+  flex-wrap: nowrap;
+  /* single row */
+  gap: 10px;
+  padding: 6px 10px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: flex-start;
+  /* Slight panel feel without forcing a hard background */
+  background: transparent;
+}
+#masks-turncards .turncard-wrapper {
+  flex: 0 0 auto;
+  width: clamp(110px, 8.5vw, 170px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#masks-turncards .turncard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 1px;
+  background: var(--masks-turncards-card-base);
+  overflow: hidden;
+  cursor: pointer;
+  /* A subtle white edge so transparent portraits still read cleanly */
+  border: 1px solid rgba(255, 255, 255, 0.75);
+}
+#masks-turncards .turncard:hover {
+  border-color: var(--masks-turncards-active-bg);
+}
+#masks-turncards .turncard.is-cooldown .turncard__inner {
+  opacity: var(--masks-turncards-cooldown-opacity);
+}
+#masks-turncards .turncard.is-downed .turncard__inner {
+  opacity: 0.25;
+  filter: grayscale(1);
+}
+#masks-turncards .turncard:hover {
+  transform: scale(1.03);
+  transition: transform 150ms ease-out;
+}
+#masks-turncards .turncard__inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+#masks-turncards .turncard__portrait {
+  flex: 1 1 auto;
+  background: black;
+  /* shows through transparent images */
+}
+#masks-turncards .turncard__portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* required */
+}
+#masks-turncards .turncard__portrait--gm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--masks-turncards-secondary-bg);
+}
+#masks-turncards .turncard__gm-mark {
+  font-weight: 900;
+  font-size: 2rem;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.45);
+  text-transform: uppercase;
+}
+#masks-turncards .turncard__nameplate {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 6px;
+  background: var(--masks-turncards-card-base);
+  /* same as card base */
+  color: #ffffff;
+  padding: 4px 6px;
+}
+#masks-turncards .turncard__nameplate .turncard__name {
+  text-transform: uppercase;
+  /* required */
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+#masks-turncards .turncard__name-actions {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+#masks-turncards .turncard__name-actions--left {
+  justify-content: flex-start;
+}
+#masks-turncards .turncard__name-actions--right {
+  justify-content: flex-end;
+}
+#masks-turncards .turncard__mini-btn {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: var(--masks-turncards-action-bg);
+  color: #ffffff;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+}
+#masks-turncards .turncard__mini-btn:hover {
+  filter: brightness(1.05);
+}
+#masks-turncards .turncard__mini-spacer {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+}
+#masks-turncards .turncard__cooldown {
+  height: 30px;
+  background: rgba(0, 0, 0, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+#masks-turncards .turncard__cooldown.is-empty {
+  background: transparent;
+}
+#masks-turncards .turncard__cooldown-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--masks-turncards-cooldown-bar);
+  transform-origin: right center;
+  /* fill right -> left */
+  transform: scaleX(var(--masks-turncards-cooldown-frac, 0));
+}
+#masks-turncards .turncard__downed {
+  position: absolute;
+  inset: 0;
+  background: rgba(120, 120, 120, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8px;
+  pointer-events: none;
+  /* overlay shouldn't block clicking the sheet */
+}
+#masks-turncards .turncard__downed-label {
+  color: #ffffff;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+#masks-turncards .turncard__pentagon,
+#masks-turncards .turncard__potential {
+  position: absolute;
+  bottom: 6px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+#masks-turncards .turncard__pentagon {
+  left: 6px;
+}
+#masks-turncards .turncard__pentagon i {
+  font-size: 1.3rem;
+  color: var(--masks-turncards-pentagon-color);
+  /* white outline */
+  -webkit-text-stroke: 2px #ffffff;
+}
+#masks-turncards .turncard__potential {
+  right: 6px;
+  border-radius: 50%;
+  background: rgba(55, 55, 43, 0.6);
+  /* grey circle */
+  border: 2px solid #ffffff;
+  overflow: hidden;
+  /* Fill based on --masks-turncards-potential-fill: 0%..100% */
+}
+#masks-turncards .turncard__potential::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: var(--masks-turncards-potential-fill, 0%);
+  background: var(--masks-turncards-potential-fill-color);
+}
+#masks-turncards .turncard__potential i {
+  position: relative;
+  z-index: 1;
+  color: #ffffff;
+  /* white star */
+  font-size: 0.9rem;
+}
+#masks-turncards .turncard__potential.is-bump {
+  animation: masks-turncards-bump 180ms ease-out;
+}
+#masks-turncards .turncard__potential--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+#masks-turncards .turncard__gm-btn {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: var(--masks-turncards-action-bg);
+  color: #ffffff;
+  font-weight: 800;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+#masks-turncards .turncard__gm-btn:hover {
+  filter: brightness(1.05);
+}
+#masks-turncards .turncard--gm {
+  cursor: default;
+}
+#masks-turncards .turncard--gm:hover {
+  border-color: rgba(255, 255, 255, 0.75);
+}
+@keyframes masks-turncards-bump {
+  0% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Fallback if aspect-ratio isn't supported */
+@supports not (aspect-ratio: 1) {
+  #masks-turncards .turncard {
+    height: 220px;
+  }
 }
 
 /*# sourceMappingURL=masks-sheets.css.map */
