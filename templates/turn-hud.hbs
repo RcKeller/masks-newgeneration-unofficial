@@ -1,0 +1,76 @@
+<div class="mthd-panel" role="group" aria-label="Team Turns HUD">
+    <div class="mthd-cards">
+        {{#if showGmCard}}
+        <article class="mthd-card mthd-card--gm">
+            <div class="mthd-portrait mthd-portrait--gm" aria-label="GM card">
+                <i class="fa-solid fa-user-gear" aria-hidden="true"></i>
+            </div>
+
+            <div class="mthd-nameplate">
+                <div class="mthd-name">GM</div>
+                <div class="mthd-miniBtns">
+                    <button type="button" class="mthd-miniBtn" data-action="noop" aria-label="Plus">+</button>
+                </div>
+            </div>
+
+            <button type="button" class="mthd-turnbtn" data-action="gmTurn" aria-label="GM turn taker">
+                TURN TAKER
+            </button>
+        </article>
+        {{/if}}
+
+        {{#each cards}}
+        <article class="mthd-card {{#if onCooldown}}is-cooldown{{/if}} {{#if downed}}is-downed{{/if}}"
+            data-actor-id="{{actorId}}">
+            <div class="mthd-portrait" style="background-image:url('{{img}}');" aria-label="Open sheet for {{name}}">
+                {{#if onCooldown}}
+                <div class="mthd-cooldown" aria-label="Cooldown {{cooldownLabel}}">
+                    <div class="mthd-cooldownFill" style="width: {{cooldownPct}}%;"></div>
+                    <div class="mthd-cooldownTxt">{{cooldownLabel}}</div>
+                </div>
+                {{/if}}
+
+                {{#if downed}}
+                <div class="mthd-downedLbl">DOWNED</div>
+                {{/if}}
+
+                {{!-- Bottom-left pentagon placeholder --}}
+                <button type="button" class="mthd-pentagon" data-action="noop" aria-label="Future feature">
+                    <svg viewBox="0 0 100 100" class="mthd-pentagonSvg" aria-hidden="true">
+                        <polygon points="50,5 95,38 78,92 22,92 5,38" fill="#37372b" stroke="#ffffff"
+                            stroke-width="6" />
+                    </svg>
+                </button>
+
+                {{!-- Bottom-right Potential --}}
+                <button type="button" class="mthd-potential" data-action="potential"
+                    aria-label="Add potential to {{name}}" style="--pct: {{potentialPct}}%;">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="mthd-nameplate" aria-label="{{name}}">
+                {{#if showOwnerStar}}
+                <button type="button" class="mthd-miniBtn mthd-miniBtn--left" data-action="noop"
+                    aria-label="Owner">*</button>
+                {{/if}}
+
+                <div class="mthd-name">{{name}}</div>
+
+                <div class="mthd-miniBtns">
+                    <button type="button" class="mthd-miniBtn" data-action="noop" aria-label="Plus">+</button>
+                    {{#if showOwnerPlusPlus}}
+                    <button type="button" class="mthd-miniBtn" data-action="noop" aria-label="Plus plus">++</button>
+                    {{/if}}
+                </div>
+            </div>
+
+            {{#if showGmTurnBtn}}
+            <button type="button" class="mthd-turnbtn" data-action="markTurn" aria-label="Mark turn taken for {{name}}">
+                MARK TURN TAKEN
+            </button>
+            {{/if}}
+        </article>
+        {{/each}}
+    </div>
+</div>
