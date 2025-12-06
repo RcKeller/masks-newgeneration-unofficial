@@ -3,13 +3,12 @@
  */
 export const preloadHandlebarsTemplates = async function () {
     return loadTemplates([
-					"modules/masks-newgeneration-unofficial/templates/sheets/actor-sheet.hbs",
-					"modules/masks-newgeneration-unofficial/templates/parts/actor-header.hbs",
-					"modules/masks-newgeneration-unofficial/templates/parts/actor-attributes.hbs",
-					"modules/masks-newgeneration-unofficial/templates/parts/actor-movelist.hbs",
-					"modules/masks-newgeneration-unofficial/templates/parts/actor-social.hbs",
-					"modules/masks-newgeneration-unofficial/templates/parts/actor-advancement.hbs",
-					"modules/masks-newgeneration-unofficial/templates/influences-tab-page.hbs",
-					"modules/masks-newgeneration-unofficial/templates/turn-hud.hbs",
-				]);
+      'modules/masks-newgeneration-unofficial/templates/sheets/actor-sheet.hbs',
+      'modules/masks-newgeneration-unofficial/templates/parts/actor-header.hbs',
+      'modules/masks-newgeneration-unofficial/templates/parts/actor-attributes.hbs',
+      'modules/masks-newgeneration-unofficial/templates/parts/actor-movelist.hbs',
+      'modules/masks-newgeneration-unofficial/templates/parts/actor-social.hbs',
+      'modules/masks-newgeneration-unofficial/templates/parts/actor-advancement.hbs',
+      'modules/masks-newgeneration-unofficial/templates/influences-tab-page.hbs',
+    ]);
 };
