@@ -1,0 +1,119 @@
+{{!-- Team Turn Cards HUD --------------------------------------------------}}
+
+<div class="turncards-row" data-team-size="{{teamSize}}" data-max-turns="{{maxTurns}}">
+    {{#if showTeamCard}}
+    <div class="turncard-wrapper turncard-wrapper--team" data-team-card="1">
+        <article class="turncard turncard--gm turncard--state-team" role="group" aria-label="Team pool">
+            <div class="turncard__inner">
+                <div class="turncard__portrait turncard__portrait--gm">
+                    {{#if gm}}
+                    <button type="button" class="turncard__action turncard__action--team" data-action="gm-turn"
+                        aria-label="Advance cooldowns for GM and NPC actions">
+                        <span class="turncard__action-label">Action</span>
+                    </button>
+                    {{/if}}
+
+                    <div class="turncard__team">
+                        <div class="turncard__team-value" aria-live="polite">{{team}}</div>
+
+                        <div class="turncard__team-controls">
+                            <button type="button" class="turncard__team-btn" data-action="team-minus" {{#unless
+                                teamCanEdit}}disabled{{/unless}} title="Spend 1 Team (Shift: 5)"
+                                aria-label="Spend Team">
+                                &minus;
+                            </button>
+
+                            <button type="button" class="turncard__team-btn" data-action="team-plus" {{#unless
+                                teamCanEdit}}disabled{{/unless}} title="Add 1 Team (Shift: 5)" aria-label="Add Team">
+                                +
+                            </button>
+
+                            <button type="button" class="turncard__team-btn turncard__team-btn--reset"
+                                data-action="team-reset" {{#unless teamCanEdit}}disabled{{/unless}}
+                                title="Reset Team to 0" aria-label="Reset Team">
+                                ⟲
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="turncard__nameplate turncard__nameplate--team">
+                    <div class="turncard__name" title="Team Pool">Team Pool</div>
+                </footer>
+            </div>
+        </article>
+    </div>
+    {{/if}}
+
+    {{#each cards as |card|}}
+    <div class="turncard-wrapper" data-combatant-id="{{card.combatantId}}">
+        <article
+            class="turncard turncard--state-{{card.status}} {{#if card.onCooldown}}is-cooldown{{/if}} {{#if card.downed}}is-downed{{/if}}"
+            data-combatant-id="{{card.combatantId}}" data-actor-id="{{card.actorId}}" role="button" tabindex="0"
+            aria-label="{{card.ariaLabel}}" {{#if card.downedId}}aria-describedby="{{card.downedId}}" {{/if}}>
+            <div class="turncard__inner">
+
+                <div class="turncard__portrait">
+                    <img src="{{card.img}}" alt="{{card.name}}" loading="lazy" />
+
+                    {{#if card.showStatusBar}}
+                    <div class="turncard__status">
+                        <div class="turncard__status-track"></div>
+                        {{#if card.showCooldownBar}}
+                        <div class="turncard__cooldown-fill"
+                            style="--masks-turncards-cooldown-frac:{{card.cooldownFrac}};">
+                        </div>
+                        {{/if}}
+                        <span class="turncard__status-label">{{card.statusLabel}}</span>
+                    </div>
+                    {{/if}}
+
+                    {{!-- Action OR Aid overlay --}}
+                    <button type="button"
+                        class="turncard__action {{#if card.actionDisabled}}turncard__action--disabled{{/if}}"
+                        data-action="{{card.actionAction}}" data-actor-id="{{card.actorId}}"
+                        aria-label="{{card.actionAria}}" {{#if card.actionDisabled}}disabled{{/if}}>
+                        <span class="turncard__action-label">{{card.actionLabel}}</span>
+                    </button>
+
+                    {{!-- Shift Labels (circle) --}}
+                    <button type="button"
+                        class="turncard__shift {{#unless card.canShiftLabels}}turncard__shift--disabled{{/unless}}"
+                        data-action="shift-labels" data-actor-id="{{card.actorId}}"
+                        aria-label="Shift Labels for {{card.name}}" {{#unless card.canShiftLabels}}disabled{{/unless}}>
+                        <i class="fa-regular fa-circle"></i>
+                    </button>
+
+                    <button type="button"
+                        class="turncard__potential {{#unless card.canEditPotential}}turncard__potential--disabled{{/unless}}"
+                        data-action="potential" {{#unless card.canEditPotential}}disabled{{/unless}}
+                        aria-label="Adjust potential (currently {{card.potential}} of {{card.potentialMax}})"
+                        style="--masks-turncards-potential-fill:{{card.potentialPct}};">
+                        <i class="fa-solid fa-star"></i>
+                    </button>
+
+                    <button type="button"
+                        class="turncard__assist {{#unless card.canTeamForward}}turncard__assist--disabled{{/unless}}"
+                        data-action="team-forward" data-actor-id="{{card.actorId}}"
+                        aria-label="Spend 1 Team to give {{card.name}} +1 Forward" {{#unless
+                        card.canTeamForward}}disabled{{/unless}}>
+                        <i class="fa-solid fa-up"></i>
+                    </button>
+                </div>
+
+                <footer class="turncard__nameplate">
+                    <div class="turncard__name" title="{{card.name}}">
+                        {{card.name}}
+                    </div>
+                </footer>
+
+                {{#if card.downed}}
+                <div class="turncard__downed" id="{{card.downedId}}" role="status" aria-label="Downed">
+                    <div class="turncard__downed-label">DOWNED</div>
+                </div>
+                {{/if}}
+            </div>
+        </article>
+    </div>
+    {{/each}}
+</div>

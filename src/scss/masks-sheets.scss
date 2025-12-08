@@ -35,6 +35,17 @@
   --masks-window-bg-position: bottom left;
   --masks-influence-icon-color: invert(100%);
   --masks-influence-icon-disabled-color: invert(100%) opacity(50%);
+
+
+  --masks-turncards-card-base: #bda78a;
+  --masks-turncards-primary-bg: #f4e7d7;
+  --masks-turncards-secondary-bg: #ead0b0;
+  --masks-turncards-active-bg: #d1a06e;
+  --masks-turncards-action-bg: #69c0ae;
+  --masks-turncards-cooldown-bar: #2ab6cb;
+  --masks-turncards-potential-fill-color: #f9a949;
+  --masks-turncards-pentagon-color: #37372b;
+  --masks-turncards-cooldown-opacity: 0.75;
 }
 
 .pbta.window-app {
@@ -878,4 +889,455 @@
 
 #hotbar {
   display: none;
+}
+
+
+/* Chat accents used by Turn Card "Use Influence" messages */
+.vtt #chat .message .shift.up {
+  color: forestgreen;
+}
+
+.vtt #chat .message .shift.down {
+  color: #b00020;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                       */
+/* ------------------------------------------------------------------------- */
+
+#masks-turncards {
+  width: 100%;
+  pointer-events: none;
+  z-index: 101;
+  margin: 0.25rem 0;
+
+  .turncards-row {
+    pointer-events: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding: 8px 10px 4px;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    align-items: stretch;
+    justify-content: flex-start;
+    background: transparent;
+  }
+
+  .turncard-wrapper {
+    flex: 0 0 auto;
+    width: clamp(120px, 9vw, 180px);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .turncard-wrapper--team {
+    min-width: clamp(140px, 10vw, 190px);
+  }
+
+  .turncard {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #323844 0%, #171b22 100%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+    cursor: pointer;
+    transition:
+      transform 120ms ease-out,
+      box-shadow 120ms ease-out,
+      border-color 120ms ease-out,
+      filter 120ms ease-out;
+
+    &:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.9);
+      border-color: var(--masks-turncards-active-bg);
+      filter: brightness(1.03);
+    }
+
+    &.turncard--gm {
+      cursor: default;
+
+      &:hover {
+        transform: none;
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.8);
+        border-color: rgba(255, 255, 255, 0.7);
+        filter: none;
+      }
+    }
+
+    &.is-cooldown .turncard__inner {
+      opacity: var(--masks-turncards-cooldown-opacity);
+    }
+
+    &.is-downed .turncard__inner {
+      opacity: 0.45;
+    }
+
+    &.is-downed .turncard__portrait img {
+      filter: grayscale(1);
+    }
+  }
+
+  .turncard__inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* --- Portrait ------------------------------------------------------------ */
+
+  .turncard__portrait {
+    position: relative;
+    flex: 1 1 auto;
+    background: #000;
+    overflow: hidden;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .turncard__portrait--gm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 6px;
+    background: radial-gradient(circle at 30% 0, #5e7187, #151821);
+  }
+
+  /* --- Status strip (cooldown / busy / down) ------------------------------- */
+
+  .turncard__status,
+  .turncard__action {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fdf7e5;
+    overflow: hidden;
+  }
+
+  .turncard__status {
+    z-index: 1;
+    background: var(--masks-turncards-status-ready-bg, #287060);
+  }
+
+  .turncard__status-label {
+    position: relative;
+    z-index: 2;
+    white-space: nowrap;
+  }
+
+  .turncard__status-track {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    transition: opacity 120ms ease-out;
+  }
+
+  .turncard__cooldown-fill {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    transform-origin: right center;
+    transform: scaleX(var(--masks-turncards-cooldown-frac, 0));
+    background: var(--masks-turncards-cooldown-bar);
+    opacity: 0;
+    transition:
+      transform 160ms ease-out,
+      opacity 120ms ease-out;
+  }
+
+  .turncard.is-cooldown .turncard__status-track,
+  .turncard.is-cooldown .turncard__cooldown-fill {
+    opacity: 1;
+  }
+
+  .turncard--state-ready .turncard__status {
+    background: var(--masks-turncards-status-ready-bg, #2b7a69);
+  }
+
+  .turncard--state-busy .turncard__status {
+    background: var(--masks-turncards-status-busy-bg, #1d6fa8);
+  }
+
+  .turncard--state-down .turncard__status {
+    background: var(--masks-turncards-status-down-bg, #b15425);
+  }
+
+  .turncard--state-team .turncard__status {
+    background: var(--masks-turncards-status-team-bg, #8f68c0);
+  }
+
+  /* --- Action overlay (hover-only) ---------------------------------------- */
+
+  .turncard__action {
+    z-index: 3;
+    background: var(--masks-turncards-action-bg);
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition:
+      opacity 140ms ease-out,
+      transform 140ms ease-out,
+      filter 140ms ease-out;
+  }
+
+  .turncard__action-label {
+    pointer-events: none;
+  }
+
+  .turncard:hover .turncard__action,
+  .turncard:focus-within .turncard__action {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .turncard.is-downed .turncard__action {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .turncard__action--disabled,
+  .turncard__action:disabled {
+    filter: grayscale(0.35) brightness(0.85);
+    cursor: not-allowed;
+  }
+
+  /* --- Nameplate ----------------------------------------------------------- */
+
+  .turncard__nameplate {
+    min-height: 28px;
+    padding: 5px 6px 6px;
+    background: linear-gradient(180deg, #ceb28a 0%, #b18f66 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .turncard__nameplate--team {
+    background: linear-gradient(180deg, #c3b3e0 0%, #a58fc8 100%);
+  }
+
+  .turncard__name {
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    color: #1c1010;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* --- Downed overlay ------------------------------------------------------ */
+
+  .turncard__downed {
+    position: absolute;
+    inset: 0;
+    background: rgba(40, 40, 40, 0.55);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 8px;
+    pointer-events: none;
+  }
+
+  .turncard__downed-label {
+    color: #ffffff;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  /* --- Shift, Potential, Assist icons ------------------------------------- */
+
+  .turncard__shift,
+  .turncard__potential,
+  .turncard__assist {
+    position: absolute;
+    bottom: 6px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .turncard__shift {
+    left: 6px;
+
+    i {
+      font-size: 1.3rem;
+      color: var(--masks-turncards-pentagon-color);
+      -webkit-text-stroke: 2px #ffffff;
+    }
+  }
+
+  .turncard__shift--disabled,
+  .turncard__shift:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    filter: grayscale(0.25);
+  }
+
+  .turncard__assist {
+    right: 40px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    background: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+
+    i {
+      font-size: 0.9rem;
+    }
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
+
+    &:disabled,
+    &.turncard__assist--disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      filter: grayscale(0.25);
+    }
+  }
+
+  .turncard__potential {
+    right: 6px;
+    border-radius: 50%;
+    background: rgba(55, 55, 43, 0.7);
+    border: 2px solid #ffffff;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: var(--masks-turncards-potential-fill, 0%);
+      background: var(--masks-turncards-potential-fill-color);
+    }
+
+    i {
+      position: relative;
+      z-index: 1;
+      color: #ffffff;
+      font-size: 0.9rem;
+    }
+
+    &.is-bump {
+      animation: masks-turncards-bump 180ms ease-out;
+    }
+  }
+
+  .turncard__potential--disabled,
+  .turncard__potential:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(0.25);
+  }
+
+  /* --- Team card controls -------------------------------------------------- */
+
+  .turncard__team {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .turncard__team-value {
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fdf7e5;
+  }
+
+  .turncard__team-controls {
+    display: flex;
+    gap: 4px;
+  }
+
+  .turncard__team-btn {
+    min-width: 24px;
+    height: 24px;
+    padding: 0 4px;
+    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    background: rgba(0, 0, 0, 0.45);
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .turncard__team-btn--reset {
+    font-size: 0.75rem;
+  }
+
+  @keyframes masks-turncards-bump {
+    0% {
+      transform: scale(1);
+    }
+
+    60% {
+      transform: scale(1.12);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
+/* Fallback if aspect-ratio isn't supported */
+@supports not (aspect-ratio: 1) {
+  #masks-turncards .turncard {
+    height: 220px;
+  }
 }
