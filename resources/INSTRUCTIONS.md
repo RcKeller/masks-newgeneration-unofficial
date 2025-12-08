@@ -44,6 +44,7 @@ The action buttons within a portrait should be as follows:
 - Proving "Aid" via the new Aid button should play the following in chat: @UUID[Compendium.masks-newgeneration-unofficial.moves.H7mJLUYVlQ3ZPGHK]{Aid a Teammate}
 - Move the Team point HUD functionality into the "Team" card in the turncard row.
 - Clicking content on a card which changes the state of it temporarily should not make the css animation un-zoom and re-zoom on the card.
+- The Team card in the turncard row isn't even visible to anybody!! And I'm pretty sure it's not wired properly. Review team.mjs to see how we manage team points and adjust accordingly. If there is a better way to manage tracking team, please implement that, but know that the current strategy of tracking it via a journal entry was a workaround to permissions issues before since players could not edit global values.
 
 - Take some time to remove any cruft from the styles for #masks-turncards. A lot of them have been made redundant or could be refactored. However, don't break some of the nice things we have like the animations on hover, etc.
 

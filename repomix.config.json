@@ -39,6 +39,7 @@
 		"module/encounter-tracker.mjs",
 		"module/turn-cards.mjs",
 		"module/helpers",
+		"module/team.mjs",
 		"module/sheets/actor-sheet.mjs",
 		"languages/en.json",
 		"module.json",
