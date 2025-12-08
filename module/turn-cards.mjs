@@ -10,20 +10,17 @@ import {
 /**
  * masks-newgeneration-unofficial / turn-cards.mjs
  * ----------------------------------------------------------------------------
- * Team Turn Cards HUD:
- * - Shows playable Characters (actor.type === "character") in the active Combat.
- * - Cooldown = "can't act again until all other PCs have acted":
- *   remainingTurns = (teamSize - 1) after acting.
- *   Each subsequent turn by another PC or the GM card decrements remainingTurns by 1.
+ * Team Turn Cards HUD - Revised Implementation
  *
- * IMPORTANT CHANGE (bugfix):
- * - Cooldowns are stored on the Combat document flags (not Combatants),
- *   so all players can SEE "Busy" even when they don't own/control that combatant.
- *
- * Other additions:
- * - If you can't "Action" as that character, you get an "Aid" overlay (spend Team → give +1 Forward).
- * - Right-click on a character card opens a Foundry context menu for Influence actions.
- * - Clicking the circle opens a Shift Labels prompt (1 up, 1 down).
+ * Features:
+ * - Shows playable Characters (actor.type === "character") in the active Combat
+ * - Cooldown system: can't act again until all other PCs have acted
+ * - Team pool integration with +/- controls
+ * - Potential (XP) tracking via star icon
+ * - Shift Labels via pentagon icon
+ * - Aid button (spend Team → +1 Forward) for non-owners
+ * - Context menu for Influence actions
+ * - Proper permission handling for GMs and players
  */
 
 (() => {
@@ -45,8 +42,8 @@ import {
 		"@UUID[Compendium.masks-newgeneration-unofficial.moves.Item.H7mJLUYVlQ3ZPGHK]{Spending Team}";
 
 	// Influence settings (already registered by tools.mjs)
-	const KEY_ANNOUNCE_INFLUENCE = "announceInfluenceChanges"; // world
-	const KEY_USE_GM_INFLUENCE = "quickInfluenceUseGMRelay"; // world
+	const KEY_ANNOUNCE_INFLUENCE = "announceInfluenceChanges";
+	const KEY_USE_GM_INFLUENCE = "quickInfluenceUseGMRelay";
 
 	const LABEL_KEYS = Object.freeze([
 		"danger",
@@ -66,7 +63,6 @@ import {
 	};
 
 	function getActiveCombat() {
-		// Prefer the active combat; fallback to viewed tracker combat
 		return game.combats?.active ?? ui.combat?.viewed ?? null;
 	}
 
@@ -92,7 +88,6 @@ import {
 	}
 
 	function actorPotentialValue(actor) {
-		// Prefer the system XP track if it exists (Masks labels this “Potential” already)
 		const xpVal = Number(
 			foundry?.utils?.getProperty?.(actor, "system.attributes.xp.value")
 		);
@@ -119,13 +114,12 @@ import {
 		} catch (err) {
 			console.error(`[${NS}] Failed to set potential for ${actor?.name}`, err);
 			ui.notifications?.warn?.(
-				"You don’t have permission to change that character’s Potential."
+				"You don't have permission to change that character's Potential."
 			);
 		}
 	}
 
 	function isDowned(cbt) {
-		// Prefer explicit defeated flags or HP <= 0
 		const defeated = cbt?.defeated === true;
 		const hp = Number(
 			foundry?.utils?.getProperty?.(cbt?.actor, "system.attributes.hp.value")
@@ -138,12 +132,11 @@ import {
 		return (
 			foundry.utils.getProperty(actor, `system.stats.${key}.label`) ||
 			game.pbta?.sheetConfig?.actorTypes?.character?.stats?.[key]?.label ||
-			key
+			key.charAt(0).toUpperCase() + key.slice(1)
 		);
 	}
 
 	function shiftBounds() {
-		// Prefer PbtA sheet config bounds if present, else default Masks-ish bounds.
 		const min = Number(game.pbta?.sheetConfig?.minMod);
 		const max = Number(game.pbta?.sheetConfig?.maxMod);
 		const lo = Number.isFinite(min) ? min : -2;
@@ -179,22 +172,21 @@ import {
 			.join("");
 
 		const content = `
-      <form>
-        <p style="margin:0 0 0.5rem 0;">Choose one Label to shift <b>up</b> and one to shift <b>down</b>.</p>
-        <div class="form-group">
-          <label>Shift up:</label>
-          <select name="up">${optsUp}</select>
-        </div>
-        <div class="form-group">
-          <label>Shift down:</label>
-          <select name="down">${optsDown}</select>
-        </div>
-        <p class="notes" style="margin:0.35rem 0 0 0; opacity:0.8;">(They must be different.)</p>
-      </form>
-    `;
+			<form>
+				<p style="margin:0 0 0.5rem 0;">Choose one Label to shift <b>up</b> and one to shift <b>down</b>.</p>
+				<div class="form-group">
+					<label>Shift up:</label>
+					<select name="up">${optsUp}</select>
+				</div>
+				<div class="form-group">
+					<label>Shift down:</label>
+					<select name="down">${optsDown}</select>
+				</div>
+				<p class="notes" style="margin:0.35rem 0 0 0; opacity:0.8;">(They must be different.)</p>
+			</form>
+		`;
 
 		return new Promise((resolve) => {
-			// eslint-disable-next-line no-new
 			new Dialog({
 				title: title ?? `Shift Labels: ${actor?.name ?? "Character"}`,
 				content,
@@ -221,7 +213,19 @@ import {
 		});
 	}
 
-	async function applyShiftLabels(actor, upKey, downKey) {
+	/**
+	 * Apply label shifts and optionally announce to chat
+	 * @param {Actor} actor - The actor to shift labels on
+	 * @param {string} upKey - The label key to increase
+	 * @param {string} downKey - The label key to decrease
+	 * @param {object} options - Additional options
+	 * @param {boolean} options.announce - Whether to post to chat (default: true)
+	 * @param {string} options.reason - Reason for the shift (for chat message)
+	 * @param {Actor} options.sourceActor - The actor causing the shift (for influence messages)
+	 */
+	async function applyShiftLabels(actor, upKey, downKey, options = {}) {
+		const { announce = true, reason = "shift", sourceActor = null } = options;
+
 		if (!actor) return false;
 		const { lo, hi } = shiftBounds();
 
@@ -230,7 +234,7 @@ import {
 		const curDown = Number(foundry.utils.getProperty(actor, p(downKey)));
 
 		if (!Number.isFinite(curUp) || !Number.isFinite(curDown)) {
-			ui.notifications?.warn?.("This actor doesn’t have a Labels track to shift.");
+			ui.notifications?.warn?.("This actor doesn't have a Labels track to shift.");
 			return false;
 		}
 
@@ -238,8 +242,17 @@ import {
 		const nextDown = clampInt(curDown - 1, lo, hi);
 
 		const updates = {};
-		if (nextUp !== curUp) updates[p(upKey)] = nextUp;
-		if (nextDown !== curDown) updates[p(downKey)] = nextDown;
+		let actuallyShiftedUp = false;
+		let actuallyShiftedDown = false;
+
+		if (nextUp !== curUp) {
+			updates[p(upKey)] = nextUp;
+			actuallyShiftedUp = true;
+		}
+		if (nextDown !== curDown) {
+			updates[p(downKey)] = nextDown;
+			actuallyShiftedDown = true;
+		}
 
 		if (!Object.keys(updates).length) {
 			ui.notifications?.info?.("No Labels changed (already at limits).");
@@ -248,15 +261,50 @@ import {
 
 		try {
 			await actor.update(updates);
-			return true;
 		} catch (err) {
 			console.error(`[${NS}] Failed to shift labels for ${actor.name}`, err);
-			ui.notifications?.error?.("Couldn’t shift labels (see console).");
+			ui.notifications?.error?.("Couldn't shift labels (see console).");
 			return false;
 		}
+
+		// Announce to chat if requested
+		if (announce) {
+			const upLabel = statLabel(actor, upKey);
+			const downLabel = statLabel(actor, downKey);
+			const actorName = foundry.utils.escapeHTML(actor.name ?? "Character");
+
+			let content = "";
+
+			if (reason === "useInfluence" && sourceActor) {
+				const sourceName = foundry.utils.escapeHTML(sourceActor.name ?? "Someone");
+				content = `<b>${sourceName}</b> uses Influence to shift <b>${actorName}</b>'s Labels: `;
+			} else {
+				content = `<b>${actorName}</b> shifts their Labels: `;
+			}
+
+			const parts = [];
+			if (actuallyShiftedUp) {
+				parts.push(
+					`<span class="shift up">+${foundry.utils.escapeHTML(upLabel)}</span>`
+				);
+			}
+			if (actuallyShiftedDown) {
+				parts.push(
+					`<span class="shift down">-${foundry.utils.escapeHTML(downLabel)}</span>`
+				);
+			}
+			content += parts.join(", ");
+
+			await ChatMessage.create({
+				content,
+				type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+			});
+		}
+
+		return true;
 	}
 
-	/* -------------------------- Influence helpers (copied pattern) -------------------------- */
+	/* -------------------------- Influence helpers -------------------------- */
 
 	function readInfluences(actor) {
 		return foundry.utils.deepClone(actor.getFlag(NS, "influences") || []);
@@ -275,8 +323,8 @@ import {
 		const obj = {
 			id: foundry.utils.randomID?.(16) ?? Math.random().toString(36).slice(2),
 			name: nameToMatch,
-			hasInfluenceOver: false, // "they → me"
-			haveInfluenceOver: false, // "me → them"
+			hasInfluenceOver: false,
+			haveInfluenceOver: false,
 			locked: false,
 		};
 		arr.push(obj);
@@ -284,8 +332,8 @@ import {
 	}
 
 	function stateSymbol(e) {
-		const out = !!e?.haveInfluenceOver; // me → them
-		const inn = !!e?.hasInfluenceOver; // them → me
+		const out = !!e?.haveInfluenceOver;
+		const inn = !!e?.hasInfluenceOver;
 		if (out && inn) return "⬌";
 		if (out) return "⬆";
 		if (inn) return "⬇";
@@ -293,7 +341,6 @@ import {
 	}
 
 	async function writeInfluencesIfChanged(actor, beforeArr, afterArr) {
-		// Cheap structural compare
 		const sameLen = beforeArr.length === afterArr.length;
 		let equal = sameLen;
 		if (equal) {
@@ -322,7 +369,6 @@ import {
 	}
 
 	function mutateInfluenceSide(inflArr, counterpartyName, which) {
-		// which: "gt"|"lt"|"eq"|"reset"
 		const { idx, obj } = ensureInfluenceEntry(inflArr, counterpartyName);
 		const prev = { has: !!obj.hasInfluenceOver, have: !!obj.haveInfluenceOver };
 
@@ -331,9 +377,9 @@ import {
 		}
 
 		if (which === "gt") {
-			obj.haveInfluenceOver = true; // me → them
+			obj.haveInfluenceOver = true;
 		} else if (which === "lt") {
-			obj.hasInfluenceOver = true; // them → me
+			obj.hasInfluenceOver = true;
 		} else if (which === "eq") {
 			obj.haveInfluenceOver = true;
 			obj.hasInfluenceOver = true;
@@ -426,7 +472,6 @@ import {
 		const nameAforB = pickStorageName(actorA, tokA);
 		const nameBforA = pickStorageName(actorB, tokB);
 
-		// Apply local mutations (mirror on B)
 		let aPrevSym = "—",
 			aNowSym = "—";
 
@@ -484,18 +529,16 @@ import {
 			await Promise.all(tasks);
 		} catch (err) {
 			console.error(`[${NS}] Failed to set Influence`, err);
-			ui.notifications?.error?.("Couldn’t update Influence (see console).");
+			ui.notifications?.error?.("Couldn't update Influence (see console).");
 			return;
 		}
 
-		// Ask helpers to sync (harmless)
 		try {
 			await InfluenceIndex?.syncCharacterPairFlags?.(actorA);
 		} catch (_) {
 			/* no-op */
 		}
 
-		// Announce (prefer A line)
 		const aLabel = actorA.name ?? tokA?.document?.name ?? "A";
 		await announceInfluenceChange(aLabel, nameBforA, aPrevSym, aNowSym);
 
@@ -534,8 +577,6 @@ import {
 			if (game.user?.isGM)
 				this.normalizeCooldowns().finally(() => this._queueRender());
 			else this._queueRender();
-
-			this._setupContextMenu();
 		},
 
 		_registerHooks() {
@@ -552,6 +593,17 @@ import {
 				const flagChanged =
 					foundry.utils.getProperty(changes, `flags.${NS}.${FLAG_COOLDOWN_MAP}`) !==
 					undefined;
+
+				// Check if round advanced - reset cooldowns
+				const roundChanged = Object.prototype.hasOwnProperty.call(
+					changes ?? {},
+					"round"
+				);
+				if (roundChanged && isRelevant && game.user?.isGM) {
+					// Reset all cooldowns on round change
+					this._resetAllCooldowns(doc).finally(() => this._queueRender());
+					return;
+				}
 
 				if (flagChanged) this._queueRender();
 				if (doc?.active === true || isRelevant) this._queueRender();
@@ -596,13 +648,16 @@ import {
 						changes,
 						`flags.${NS}.${FLAG_POTENTIAL_FALLBACK}`
 					) !== undefined;
+				const statsChanged =
+					foundry.utils.getProperty(changes, "system.stats") !== undefined;
 
 				if (
 					xpChanged ||
 					imgChanged ||
 					nameChanged ||
 					hpChanged ||
-					fallbackPotChanged
+					fallbackPotChanged ||
+					statsChanged
 				)
 					this._queueRender();
 			});
@@ -752,7 +807,7 @@ import {
 				{ capture: true }
 			);
 
-			// Right-click Potential star to subtract (without interfering with card context menu)
+			// Right-click Potential star to subtract
 			this.root.addEventListener(
 				"contextmenu",
 				async (ev) => {
@@ -767,16 +822,6 @@ import {
 						await this._handlePotentialClick(potBtn, -1);
 						return;
 					}
-
-					// Fallback UI if ContextMenu isn't available
-					if (!this._contextMenu) {
-						const cardEl = target.closest?.(".turncard[data-actor-id]");
-						if (!cardEl) return;
-						ev.preventDefault();
-						ev.stopPropagation();
-						ev.stopImmediatePropagation?.();
-						await this._openContextDialogFallback(cardEl);
-					}
 				},
 				{ capture: true }
 			);
@@ -790,7 +835,6 @@ import {
 				const card = target.closest?.(".turncard[data-combatant-id]");
 				if (!card) return;
 
-				// Don’t trigger if focused element is a button
 				if (target.closest?.("button")) return;
 
 				ev.preventDefault();
@@ -801,40 +845,53 @@ import {
 		},
 
 		_setupContextMenu() {
-			const $ = globalThis.$ ?? window.$;
-			const CM = globalThis.ContextMenu ?? foundry?.applications?.api?.ContextMenu;
-			if (!$ || typeof CM !== "function") return;
+			// Use jQuery if available, otherwise try to use native ContextMenu
+			const $ = globalThis.jQuery ?? globalThis.$;
+
+			if (!$ || !this.root) {
+				console.warn(`[${NS}] jQuery not available for context menu`);
+				return;
+			}
+
+			// Destroy existing context menu if any
+			if (this._contextMenu) {
+				try {
+					this._contextMenu.close?.();
+				} catch (_) {}
+				this._contextMenu = null;
+			}
+
+			const menuItems = [
+				{
+					name: "Gain Influence over",
+					icon: '<i class="fa-solid fa-up"></i>',
+					callback: (li) => this._ctxInfluence(li, "gt"),
+				},
+				{
+					name: "Gain Synergy (mutual influence)",
+					icon: '<i class="fa-solid fa-left-right"></i>',
+					callback: (li) => this._ctxInfluence(li, "eq"),
+				},
+				{
+					name: "Give Influence to",
+					icon: '<i class="fa-solid fa-down"></i>',
+					callback: (li) => this._ctxInfluence(li, "lt"),
+				},
+				{
+					name: "Use Influence against…",
+					icon: '<i class="fa-solid fa-bullseye"></i>',
+					callback: (li) => this._ctxUseInfluence(li),
+				},
+			];
 
 			try {
-				// eslint-disable-next-line no-new
-				this._contextMenu = new CM($(this.root), ".turncard[data-actor-id]", [
-					{
-						name: "Gain Influence over",
-						icon: '<i class="fa-solid fa-up"></i>',
-						callback: (li) => this._ctxInfluence(li, "gt"),
-					},
-					{
-						name: "Gain Synergy (mutual influence)",
-						icon: '<i class="fa-solid fa-left-right"></i>',
-						callback: (li) => this._ctxInfluence(li, "eq"),
-					},
-					{
-						name: "Give Influence to",
-						icon: '<i class="fa-solid fa-down"></i>',
-						callback: (li) => this._ctxInfluence(li, "lt"),
-					},
-					{
-						name: "Use Influence against…",
-						icon: '<i class="fa-solid fa-bullseye"></i>',
-						callback: (li) => this._ctxUseInfluence(li),
-					},
-				]);
-			} catch (err) {
-				console.warn(
-					`[${NS}] Failed to initialize ContextMenu for Turn Cards`,
-					err
+				this._contextMenu = new ContextMenu(
+					$(this.root),
+					".turncard[data-actor-id]:not(.turncard--gm)",
+					menuItems
 				);
-				this._contextMenu = null;
+			} catch (err) {
+				console.warn(`[${NS}] Failed to create context menu`, err);
 			}
 		},
 
@@ -885,7 +942,7 @@ import {
 
 			if (src.actor.id === targetActor.id) {
 				ui.notifications?.warn?.(
-					"Pick someone else’s card to set Influence with them."
+					"Pick someone else's card to set Influence with them."
 				);
 				return;
 			}
@@ -916,18 +973,18 @@ import {
 			if (!src?.actor) return;
 
 			if (src.actor.id === targetActor.id) {
-				ui.notifications?.warn?.("You can’t use Influence against yourself.");
+				ui.notifications?.warn?.("You can't use Influence against yourself.");
 				return;
 			}
 
-			// Verify (fuzzy) that src has Influence over target
+			// Verify src has Influence over target
 			const has = InfluenceIndex.hasEdgeFromKeyToKey(
 				compositeKey(src.actor),
 				compositeKey(targetActor)
 			);
 			if (!has) {
 				ui.notifications?.warn?.(
-					`You don’t have Influence over ${targetActor.name}.`
+					`You don't have Influence over ${targetActor.name}.`
 				);
 				return;
 			}
@@ -938,23 +995,11 @@ import {
 			if (!picked) return;
 
 			if (canEditActor(targetActor)) {
-				const ok = await applyShiftLabels(targetActor, picked.up, picked.down);
-				if (ok) {
-					await ChatMessage.create({
-						content:
-							`<b>${foundry.utils.escapeHTML(
-								src.actor.name ?? "Someone"
-							)}</b> uses Influence to shift ` +
-							`<b>${foundry.utils.escapeHTML(targetActor.name ?? "someone")}</b>: ` +
-							`<span class="shift up">+${foundry.utils.escapeHTML(
-								String(statLabel(targetActor, picked.up))
-							)}</span>, ` +
-							`<span class="shift down">-${foundry.utils.escapeHTML(
-								String(statLabel(targetActor, picked.down))
-							)}</span>.`,
-						type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-					});
-				}
+				await applyShiftLabels(targetActor, picked.up, picked.down, {
+					announce: true,
+					reason: "useInfluence",
+					sourceActor: src.actor,
+				});
 			} else {
 				if (!game.socket || !hasAnyActiveGM()) {
 					ui.notifications?.warn?.("A GM must be online to apply that label shift.");
@@ -970,60 +1015,6 @@ import {
 			}
 		},
 
-		async _openContextDialogFallback(cardEl) {
-			const actorId = cardEl?.dataset?.actorId ?? null;
-			const targetActor = actorId ? game.actors?.get?.(actorId) : null;
-			if (!targetActor) return;
-
-			const content = `
-        <p style="margin:0 0 .5rem 0;"><b>${foundry.utils.escapeHTML(
-									targetActor.name ?? "Character"
-								)}</b></p>
-        <p class="notes" style="margin:0 0 .75rem 0; opacity:.8;">Choose an Influence action.</p>
-      `;
-
-			return new Promise((resolve) => {
-				// eslint-disable-next-line no-new
-				new Dialog({
-					title: "Turn Card Actions",
-					content,
-					buttons: {
-						gt: {
-							label: "Gain Influence over",
-							callback: async () => {
-								await this._ctxInfluence(cardEl, "gt");
-								resolve(true);
-							},
-						},
-						eq: {
-							label: "Gain Synergy (mutual)",
-							callback: async () => {
-								await this._ctxInfluence(cardEl, "eq");
-								resolve(true);
-							},
-						},
-						lt: {
-							label: "Give Influence to",
-							callback: async () => {
-								await this._ctxInfluence(cardEl, "lt");
-								resolve(true);
-							},
-						},
-						use: {
-							label: "Use Influence against…",
-							callback: async () => {
-								await this._ctxUseInfluence(cardEl);
-								resolve(true);
-							},
-						},
-						cancel: { label: "Cancel", callback: () => resolve(false) },
-					},
-					default: "cancel",
-					close: () => resolve(false),
-				}).render(true);
-			});
-		},
-
 		async _handlePotentialClick(actionEl, delta) {
 			const wrap = actionEl.closest?.("[data-combatant-id]");
 			const combatantId = wrap?.dataset?.combatantId ?? null;
@@ -1036,7 +1027,7 @@ import {
 
 			if (!canEditActor(actor)) {
 				ui.notifications?.warn?.(
-					"You don’t have permission to change that character’s Potential."
+					"You don't have permission to change that character's Potential."
 				);
 				return;
 			}
@@ -1048,8 +1039,7 @@ import {
 			await setActorPotential(actor, next);
 
 			actionEl.classList.remove("is-bump");
-			// eslint-disable-next-line no-unused-expressions
-			actionEl.offsetHeight;
+			void actionEl.offsetHeight;
 			actionEl.classList.add("is-bump");
 
 			this._queueRender();
@@ -1064,7 +1054,7 @@ import {
 
 			if (!canEditActor(actor)) {
 				ui.notifications?.warn?.(
-					"You don’t have permission to shift that character’s Labels."
+					"You don't have permission to shift that character's Labels."
 				);
 				return;
 			}
@@ -1074,7 +1064,10 @@ import {
 			});
 			if (!picked) return;
 
-			const ok = await applyShiftLabels(actor, picked.up, picked.down);
+			const ok = await applyShiftLabels(actor, picked.up, picked.down, {
+				announce: true,
+				reason: "shift",
+			});
 			if (ok) this._queueRender();
 		},
 
@@ -1094,7 +1087,7 @@ import {
 			}
 
 			if (teamSvc.value <= 0) {
-				ui.notifications?.warn?.("There’s no Team left to spend.");
+				ui.notifications?.warn?.("There's no Team left to spend.");
 				return;
 			}
 
@@ -1104,7 +1097,7 @@ import {
 			if (!canDoLocal) {
 				if (!canRelay) {
 					ui.notifications?.warn?.(
-						"You don’t have permission to Aid that character (and no GM is available to relay)."
+						"You don't have permission to Aid that character (and no GM is available to relay)."
 					);
 					return;
 				}
@@ -1137,14 +1130,13 @@ import {
 					err
 				);
 				ui.notifications?.error?.(
-					"Couldn’t spend Team for that action (see console)."
+					"Couldn't spend Team for that action (see console)."
 				);
 				return;
 			}
 
 			actionEl.classList.remove("is-bump");
-			// eslint-disable-next-line no-unused-expressions
-			actionEl.offsetHeight;
+			void actionEl.offsetHeight;
 			actionEl.classList.add("is-bump");
 
 			this._queueRender();
@@ -1200,38 +1192,24 @@ import {
 			const target = game.actors?.get?.(targetActorId);
 			if (!target) return;
 
-			// If this is "Use Influence", validate again on the GM for safety.
+			// If this is "Use Influence", validate again on the GM for safety
+			let sourceActor = null;
 			if (reason === "useInfluence" && sourceActorId) {
-				const src = game.actors?.get?.(sourceActorId);
+				sourceActor = game.actors?.get?.(sourceActorId);
 				const ok =
-					!!src &&
+					!!sourceActor &&
 					InfluenceIndex.hasEdgeFromKeyToKey(
-						compositeKey(src),
+						compositeKey(sourceActor),
 						compositeKey(target)
 					);
 				if (!ok) return;
 			}
 
-			const okShift = await applyShiftLabels(target, up, down);
-			if (!okShift) return;
-
-			if (reason === "useInfluence") {
-				const srcName = sourceActorId
-					? game.actors?.get?.(sourceActorId)?.name ?? "Someone"
-					: "Someone";
-				await ChatMessage.create({
-					content:
-						`<b>${foundry.utils.escapeHTML(srcName)}</b> uses Influence to shift ` +
-						`<b>${foundry.utils.escapeHTML(target.name ?? "someone")}</b>: ` +
-						`<span class="shift up">+${foundry.utils.escapeHTML(
-							String(statLabel(target, up))
-						)}</span>, ` +
-						`<span class="shift down">-${foundry.utils.escapeHTML(
-							String(statLabel(target, down))
-						)}</span>.`,
-					type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-				});
-			}
+			await applyShiftLabels(target, up, down, {
+				announce: true,
+				reason,
+				sourceActor,
+			});
 
 			this._queueRender();
 		},
@@ -1323,10 +1301,18 @@ import {
 		},
 
 		/**
+		 * Reset all cooldowns (called on round advance)
+		 */
+		async _resetAllCooldowns(combat) {
+			if (!combat) combat = getActiveCombat();
+			if (!combat) return;
+			if (!game.user?.isGM) return;
+
+			await this._writeCooldownMap(combat, {});
+		},
+
+		/**
 		 * GM-only: Clamp and migrate cooldown storage.
-		 * - Migrates legacy per-combatant flags into the combat map (if present).
-		 * - Drops map entries for removed combatants.
-		 * - Clamps values to current maxTurns.
 		 */
 		async normalizeCooldowns() {
 			const combat = getActiveCombat();
@@ -1338,13 +1324,11 @@ import {
 			let map = this._readCooldownMap(combat);
 			let changed = false;
 
-			// If maxTurns <= 0, clear everything.
 			if (maxTurns <= 0) {
 				if (Object.keys(map).length) {
 					map = {};
 					changed = true;
 				}
-				// Also clear legacy flags
 				for (const cbt of team) {
 					try {
 						await cbt.unsetFlag(NS, FLAG_REMAINING_OLD);
@@ -1356,7 +1340,7 @@ import {
 				return;
 			}
 
-			// Migrate legacy combatant flags → map (if map doesn't already have an entry)
+			// Migrate legacy combatant flags → map
 			for (const cbt of team) {
 				const id = cbt.id;
 				if (!id) continue;
@@ -1369,7 +1353,6 @@ import {
 					}
 				}
 
-				// Clear legacy regardless (keep things clean)
 				try {
 					const had = cbt.getFlag?.(NS, FLAG_REMAINING_OLD) !== undefined;
 					if (had) await cbt.unsetFlag(NS, FLAG_REMAINING_OLD);
@@ -1401,7 +1384,6 @@ import {
 
 		/**
 		 * GM-only: Called when a character takes a turn.
-		 * Sets that combatant's remainingTurns = (teamSize - 1).
 		 */
 		async onActorTurn(actorId) {
 			const combat = getActiveCombat();
@@ -1426,7 +1408,6 @@ import {
 
 		/**
 		 * GM-only: Decrement remainingTurns for every other combatant currently > 0.
-		 * @param {string|null} excludeActorId - the actor who just acted (do not decrement them)
 		 */
 		async advanceCooldowns(excludeActorId = null) {
 			const combat = getActiveCombat();
@@ -1487,13 +1468,14 @@ import {
 			const teamUiCanEdit = teamSvc?.canEdit ?? false;
 			const showTeamCard = !!teamSvc;
 
-			const gm = game.user?.isGM === true;
+			const isGM = game.user?.isGM === true;
 			const cooldownMap = this._readCooldownMap(combat);
 
 			const cards = team.map((cbt) => {
 				const actor = cbt.actor;
 
 				const ownsActor = canEditActor(actor);
+				const ownsCombatant = canEditCombatant(cbt);
 				const downed = isDowned(cbt);
 
 				const remaining = this._getRemainingFromMap(cooldownMap, cbt.id, maxTurns);
@@ -1514,10 +1496,17 @@ import {
 				const statusLabel = downed ? "Downed" : onCooldown ? "Busy" : "Ready";
 
 				// Action vs Aid overlay logic
-				const canMarkTurn = canEditCombatant(cbt);
+				// GMs can always take Action for anyone
+				// Owners can take Action for their own characters
+				// Others see Aid button instead
+				const canMarkTurn = isGM || ownsCombatant;
 				const readyToAct = !downed && !onCooldown;
 
-				// Aid availability (+1 Forward, -1 Team), local or via GM relay
+				// For GMs: they can always click Action regardless of cooldown/ready state
+				// For owners: they can only click if ready
+				const canAction = isGM ? !downed : canMarkTurn && readyToAct;
+
+				// Aid availability (+1 Forward, -1 Team)
 				const canSpendTeam = !!teamSvc && teamValue > 0;
 				const canForwardLocal =
 					canSpendTeam && teamSvc?.canEdit === true && canEditActor(actor) === true;
@@ -1525,29 +1514,34 @@ import {
 					canSpendTeam && !canForwardLocal && !!game.socket && hasAnyActiveGM();
 				const canTeamForward = canForwardLocal || canForwardRelay;
 
-				let aidUnavailableWhy = null;
-				if (!teamSvc) aidUnavailableWhy = "Team pool unavailable";
-				else if (teamValue <= 0) aidUnavailableWhy = "No Team left";
-				else if (!game.socket) aidUnavailableWhy = "Socket unavailable";
-				else if (!hasAnyActiveGM()) aidUnavailableWhy = "No active GM to relay";
-				else aidUnavailableWhy = "Unavailable";
+				// Determine what overlay to show
+				// If user can mark turn (GM or owner), show Action
+				// Otherwise show Aid
+				const showAction = canMarkTurn;
+				const showAid = !canMarkTurn;
 
-				const actionLabel = canMarkTurn ? "Action" : "Aid";
-				const actionAction = canMarkTurn ? "card-action" : "card-aid";
+				let actionLabel, actionAction, actionDisabled, actionAria;
 
-				const actionDisabled = downed
-					? true
-					: canMarkTurn
-					? !readyToAct
-					: !canTeamForward;
-
-				const actionAria = canMarkTurn
-					? readyToAct
+				if (showAction) {
+					actionLabel = "Action";
+					actionAction = "card-action";
+					actionDisabled = downed || (!isGM && !readyToAct);
+					actionAria = canAction
 						? `Mark action taken for ${actor.name}`
-						: `${actor.name} is not ready to act`
-					: canTeamForward
-					? `Spend 1 Team to Aid ${actor.name} (+1 Forward)`
-					: `Aid unavailable (${aidUnavailableWhy})`;
+						: downed
+						? `${actor.name} is downed`
+						: `${actor.name} is on cooldown`;
+				} else {
+					// Show Aid
+					actionLabel = "Aid";
+					actionAction = "card-aid";
+					actionDisabled = !canTeamForward || downed;
+					actionAria = canTeamForward
+						? `Spend 1 Team to Aid ${actor.name} (+1 Forward)`
+						: teamValue <= 0
+						? "No Team left to spend"
+						: "Aid unavailable";
+				}
 
 				const ariaLabelParts = [
 					actor?.name ? `Character: ${actor.name}` : "Character",
@@ -1583,13 +1577,13 @@ import {
 					showStatusBar: status !== "ready",
 					showCooldownBar: onCooldown && maxTurns > 0,
 
-					// Overlay action (Action or Aid)
+					// Overlay action
 					actionAction,
 					actionLabel,
 					actionDisabled,
 					actionAria,
 
-					// Quick spend Team → +1 Forward
+					// Quick spend Team → +1 Forward (separate assist button)
 					canTeamForward,
 
 					// Shift Labels (circle)
@@ -1598,12 +1592,12 @@ import {
 			});
 
 			const context = {
-				gm,
+				isGM,
 				showTeamCard,
 				teamSize,
 				maxTurns,
 				team: teamValue,
-				teamCanEdit: teamUiCanEdit,
+				teamCanEdit: teamUiCanEdit || isGM,
 				cards,
 			};
 
@@ -1612,6 +1606,9 @@ import {
 				context
 			);
 			this.root.innerHTML = html;
+
+			// Setup context menu after render
+			this._setupContextMenu();
 		},
 	};
 

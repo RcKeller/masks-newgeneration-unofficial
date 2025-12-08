@@ -23,14 +23,30 @@ Please keep in mind that the code we have thus far is a VERY ROUGH DRAFT and I p
     text-shadow: none;
 }
 - GMs can always take an Action, it isn't disabled for them even if the actor isn't ready yet.
-- If a character CANNOT take Action as somebody, they should instead have an "Aid" box that looks just like Action. This should be faded/disabled (but still appear) if they are out of team pool points. Clicking Aid should do the same thing the up arrow does - give that character +1 forward and then subtract a point from the team pool. It should also post to the chat like usual.
-- The state management for who has gone in that turn should reset if we ever advance to another round in the encounter.
+- The "Busy" bar flows in the wrong direction, the bar should drain from right-to-left (currently it drains left-to-right). ALSO, very important, the styles should have TRANSITIONS and animation so the bars deplete smoothly on tick
+- Remove the "Aid" button that appears on hover - that will instead be the Aid button that appears above the Shift Labels button (requirements provided below)
+- The state management for who has gone in that turn should reset if we ever advance to another round in the encounter. However, the cooldowns should advance on an ongoing basis. It is possible for a player to go multiple times in a round as long as their cooldown bar is depleted properly. This is possible because NPCs may act/react at will and when they do so the GM takes a turn in that round which advances the cooldowns.
+- Move the functionality of the old team point HUD (team.hbs and team.mjs) to the Team card in the turncards row. 
+- BUG: When a cooldown bar is about to be depleted for a player, it is not finishing and resetting back to the ready state. Fix this. Again it is possible to go multiple times in a round.
+- Advancing the turn in the encounter tracker counts as an action taken and should advance cooldowns accordingly.
 - NEW: Right clicking a character card should bring up a context menu (using foundry's apis). Options should be
   - Gain Influence over
   - Gain Synergy (mutual influence)
   - Give Influence to
   - Use Influence against ()
   (the first three have already been mechanically implemented in influence.mjs and their chat messages look real nice, you could probably do something similar if not identical)
+The action buttons within a portrait should be as follows:
+    - Bottom left (4px from bottom and left): Circle which opens up the Shift Labels prompt
+    - Bottom left above the Shift Labels: Implement this as the NEW Aid button. If character has an effective bonus (forward + ongoing is >0), everybody will see a blue circle with the number inside (white text). If you are an owner/gm and effective bonus is <= 0, you see a white plus mark icon as the button.
+      - In ANY case, if the player is an owner of that actor, left clicking this button will add +1 forward, and right clicking will subtract 1 forward and announce that to the chat. Whenever it changes, show a system notification. The "tools" mjs already implements some of the scripting for this behavior, you can probably utilize some of that.
+    - Bottom Right: The potential button (which as it is currently implemented is almost perfect)
+    - 
+- Proving "Aid" via the new Aid button should play the following in chat: @UUID[Compendium.masks-newgeneration-unofficial.moves.H7mJLUYVlQ3ZPGHK]{Aid a Teammate}
+- Move the Team point HUD functionality into the "Team" card in the turncard row.
+- Clicking content on a card which changes the state of it temporarily should not make the css animation un-zoom and re-zoom on the card.
+
+- Take some time to remove any cruft from the styles for #masks-turncards. A lot of them have been made redundant or could be refactored. However, don't break some of the nice things we have like the animations on hover, etc.
+
 
 Output the fully revised code (ALL OF IT). No need to re-output other unrelated scss styles, but all of the styling pertaining to turn cards - yeah, reoutput it all.
 
@@ -44,7 +60,6 @@ ORIGINAL REQUIREMENTS (have mostly been implemented)
 2. **Card layout** – Each card should:
    * **Portrait** – Display the actor’s main portrait (`actor.img`), not the token image.  Use CSS `object-fit: cover` so the portrait fills the card’s top area without distortion.
    * **Name plate** – A horizontal bar immediately under the portrait shows the character’s name in ALL CAPS with white text.  Use `text-transform: uppercase` in CSS.  The bar’s background color should be `#bda78a` (the same color as the card).
-   * **Action buttons** – On the right side of the name plate show a small button with a “+” symbol.  If the current user owns the actor, display an additional “++” button immediately to its right.  On the left side of the name plate, show a “*” button; display it only if the current user owns the actor.  These buttons should be non‑functional placeholders for now.
    * **Downed overlay** – If the actor’s health is zero or they are otherwise flagged as downed, overlay the entire card with a semi‑transparent grey tint and display “DOWNED” at the top.  The downed status should also grey out the card content.
    * **Potential (star)** – At the bottom‑right corner, render a circular icon (white star on a grey circle with white outline).  This represents the actor’s “potential” (0–5).  Use the Font Awesome star icon.  When the actor has zero potential, the circle is empty; as potential increases, fill the circle with `#f9a949` (potential color).  By 5 points it should be completely filled.  Clicking the star increments the actor’s potential by 1 (clamping at 5).  Persist this in a suitable actor property or flag so it survives reloads.
    * **Pentagon placeholder** – At the bottom‑left corner place a grey pentagon with a white outline.  This is a placeholder for a future feature.  Use the Font Awesome pentagon icon (available in the “Shapes” set) and style it with color `#37372b`.
