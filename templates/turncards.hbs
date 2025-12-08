@@ -1,12 +1,11 @@
 {{!-- Team Turn Cards HUD --------------------------------------------------}}
 
 <div class="turncards-row" data-team-size="{{teamSize}}" data-max-turns="{{maxTurns}}">
-    {{#if showTeamCard}}
     <div class="turncard-wrapper turncard-wrapper--team" data-team-card="1">
         <article class="turncard turncard--gm turncard--state-team" role="group" aria-label="Team pool">
             <div class="turncard__inner">
                 <div class="turncard__portrait turncard__portrait--gm">
-                    {{#if gm}}
+                    {{#if true}}
                     <button type="button" class="turncard__action turncard__action--team" data-action="gm-turn"
                         aria-label="Advance cooldowns for GM and NPC actions">
                         <span class="turncard__action-label">Action</span>
@@ -43,7 +42,6 @@
             </div>
         </article>
     </div>
-    {{/if}}
 
     {{#each cards as |card|}}
     <div class="turncard-wrapper" data-combatant-id="{{card.combatantId}}">

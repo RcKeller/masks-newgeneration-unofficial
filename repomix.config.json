@@ -29,16 +29,24 @@
 		}
 	},
 	"include": [
-		"src/scss",
-		"module",
+		"src/scss/masks-sheets.scss",
+		"templates/turncards.hbs",
+		"templates/team.hbs",
+		"module/advantage.mjs",
+		"module/influence.mjs",
+		"module/masks.mjs",
+		"module/tools.mjs",
+		"module/encounter-tracker.mjs",
+		"module/turn-cards.mjs",
 		"module/helpers",
+		"module/sheets/actor-sheet.mjs",
 		"languages/en.json",
 		"module.json",
 		"package.json",
 		"CONTRIBUTING.md",
 		"templates",
-		"templates/parts",
-		"templates/sheets"
+		"templates/parts/actor-advancement.hbs",
+		"templates/parts/actor-header.hbs"
 	],
 	"ignore": {
 		"useGitignore": true,
