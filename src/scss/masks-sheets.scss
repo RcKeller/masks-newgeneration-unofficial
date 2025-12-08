@@ -908,53 +908,61 @@
 /* ------------------------------------------------------------------------- */
 /* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                       */
 /* ------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
+/* Turn Cards HUD                                                            */
+/* ------------------------------------------------------------------------- */
 
 #masks-turncards {
-  --turncards-card-width: clamp(120px, 9vw, 160px);
-  --turncards-card-aspect: 3 / 4;
-  --turncards-control-size: 32px;
+  // Sizing
+  --tc-card-width: clamp(100px, 8vw, 140px);
+  --tc-card-aspect: 3 / 4;
+  --tc-control-size: 32px;
+  --tc-nameplate-height: 28px;
 
-  // Color palette
-  --turncards-card-base: #bda78a;
-  --turncards-primary-bg: #f4e7d7;
-  --turncards-secondary-bg: #ead0b0;
-  --turncards-active-bg: #d1a06e;
-  --turncards-action-bg: #69c0ae;
-  --turncards-action-hover-bg: #5bb09e;
-  --turncards-cooldown-bar: #2ab6cb;
-  --turncards-potential-fill: #f9a949;
-  --turncards-pentagon-color: #37372b;
-  --turncards-team-bg: linear-gradient(180deg, #6b5b95 0%, #4a3f6b 100%);
-  --turncards-team-nameplate: linear-gradient(180deg, #c3b3e0 0%, #a58fc8 100%);
+  // Colors
+  --tc-card-bg: linear-gradient(180deg, #3a3f4a 0%, #1e2128 100%);
+  --tc-card-border: rgba(255, 255, 255, 0.4);
+  --tc-card-border-hover: #d1a06e;
+  --tc-nameplate-bg: linear-gradient(180deg, #ceb28a 0%, #b18f66 100%);
+  --tc-nameplate-text: #1c1010;
 
-  // Status colors
-  --turncards-status-ready-bg: #2b7a69;
-  --turncards-status-busy-bg: #1d6fa8;
-  --turncards-status-down-bg: #b15425;
+  --tc-team-portrait-bg: linear-gradient(180deg, #6b5b95 0%, #4a3f6b 100%);
+  --tc-team-nameplate-bg: linear-gradient(180deg, #c3b3e0 0%, #a58fc8 100%);
 
-  // Opacity
-  --turncards-cooldown-opacity: 0.65;
-  --turncards-downed-opacity: 0.45;
+  --tc-action-bg: #69c0ae;
+  --tc-action-hover-bg: #5bb09e;
+  --tc-cooldown-bar-bg: #2ab6cb;
+  --tc-cooldown-label-bg: rgba(0, 0, 0, 0.6);
+  --tc-potential-fill: #f9a949;
+  --tc-forward-bg: #3b82f6;
+  --tc-forward-text: #fff;
+  --tc-shift-icon: #37372b;
+
+  --tc-cooldown-opacity: 0.6;
+  --tc-downed-opacity: 0.4;
+
+  // Transitions
+  --tc-transition-fast: 120ms ease-out;
+  --tc-transition-smooth: 300ms ease-out;
 
   width: 100%;
   pointer-events: none;
   z-index: 101;
-  margin: 0.25rem 0;
+  padding: 0.25rem 0;
 
   .turncards-row {
     pointer-events: auto;
     display: flex;
     flex-wrap: nowrap;
     gap: 8px;
-    padding: 8px 12px 6px;
+    padding: 8px 12px;
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     align-items: stretch;
     justify-content: flex-start;
-    background: transparent;
 
-    // Custom scrollbar for overflow
+    // Scrollbar styling
     &::-webkit-scrollbar {
       height: 6px;
     }
@@ -965,21 +973,14 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.25);
       border-radius: 3px;
     }
   }
 
   .turncard-wrapper {
     flex: 0 0 auto;
-    width: var(--turncards-card-width);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .turncard-wrapper--team {
-    width: var(--turncards-card-width);
+    width: var(--tc-card-width);
   }
 
   /* --- Card Base ----------------------------------------------------------- */
@@ -987,24 +988,23 @@
   .turncard {
     position: relative;
     width: 100%;
-    aspect-ratio: var(--turncards-card-aspect);
+    aspect-ratio: var(--tc-card-aspect);
     border-radius: 4px;
-    background: linear-gradient(180deg, #323844 0%, #171b22 100%);
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    background: var(--tc-card-bg);
+    border: 2px solid var(--tc-card-border);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
     overflow: hidden;
     cursor: pointer;
     transition:
-      transform 120ms ease-out,
-      box-shadow 120ms ease-out,
-      border-color 120ms ease-out,
-      filter 120ms ease-out;
+      transform var(--tc-transition-fast),
+      box-shadow var(--tc-transition-fast),
+      border-color var(--tc-transition-fast),
+      filter var(--tc-transition-fast);
 
     &:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-      border-color: var(--turncards-active-bg);
-      filter: brightness(1.05);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+      border-color: var(--tc-card-border-hover);
     }
 
     &:focus-visible {
@@ -1012,23 +1012,23 @@
       outline-offset: 2px;
     }
 
-    &.turncard--gm {
+    // Team card doesn't hover-zoom
+    &.turncard--team {
       cursor: default;
 
       &:hover {
         transform: none;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-        border-color: rgba(255, 255, 255, 0.5);
-        filter: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+        border-color: var(--tc-card-border);
       }
     }
 
     &.is-cooldown .turncard__inner {
-      opacity: var(--turncards-cooldown-opacity);
+      opacity: var(--tc-cooldown-opacity);
     }
 
     &.is-downed .turncard__inner {
-      opacity: var(--turncards-downed-opacity);
+      opacity: var(--tc-downed-opacity);
     }
 
     &.is-downed .turncard__portrait img {
@@ -1041,6 +1041,7 @@
     inset: 0;
     display: flex;
     flex-direction: column;
+    transition: opacity var(--tc-transition-smooth);
   }
 
   /* --- Portrait ------------------------------------------------------------ */
@@ -1048,7 +1049,7 @@
   .turncard__portrait {
     position: relative;
     flex: 1 1 auto;
-    background: #000;
+    background: #111;
     overflow: hidden;
 
     img {
@@ -1063,124 +1064,99 @@
   .turncard__portrait--team {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     flex-direction: column;
-    padding: 12px 8px;
-    background: var(--turncards-team-bg);
+    padding: 4px;
+    background: var(--tc-team-portrait-bg);
   }
 
-  /* --- Status strip (cooldown / busy / down) ------------------------------- */
+  /* --- Cooldown Bar -------------------------------------------------------- */
 
-  .turncard__status {
+  .turncard__cooldown {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 24px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 8px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #fdf7e5;
+    background: var(--tc-cooldown-label-bg);
     overflow: hidden;
     z-index: 1;
-    background: var(--turncards-status-ready-bg);
   }
 
-  .turncard__status-label {
+  .turncard__cooldown-bar {
+    position: absolute;
+    top: 0;
+    right: 0; // Anchored to right, drains left-to-right
+    bottom: 0;
+    width: calc(var(--cooldown-frac, 0) * 100%);
+    background: var(--tc-cooldown-bar-bg);
+    transition: width var(--tc-transition-smooth);
+  }
+
+  .turncard__cooldown-label {
     position: relative;
     z-index: 2;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fdf7e5;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     white-space: nowrap;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
 
-  .turncard__status-track {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background: rgba(0, 0, 0, 0.55);
-    opacity: 0;
-    transition: opacity 120ms ease-out;
-  }
-
-  .turncard__cooldown-fill {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    transform-origin: right center;
-    transform: scaleX(var(--masks-turncards-cooldown-frac, 0));
-    background: var(--turncards-cooldown-bar);
-    opacity: 0;
-    transition:
-      transform 200ms ease-out,
-      opacity 120ms ease-out;
-  }
-
-  .turncard.is-cooldown .turncard__status-track,
-  .turncard.is-cooldown .turncard__cooldown-fill {
-    opacity: 1;
-  }
-
-  .turncard--state-ready .turncard__status {
-    background: var(--turncards-status-ready-bg);
-  }
-
-  .turncard--state-busy .turncard__status {
-    background: var(--turncards-status-busy-bg);
-  }
-
-  .turncard--state-down .turncard__status {
-    background: var(--turncards-status-down-bg);
-  }
-
-  /* --- Action overlay ------------------------------------------------------ */
+  /* --- Action Button Overlay ----------------------------------------------- */
 
   .turncard__action {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 28px;
+    height: var(--tc-nameplate-height);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 8px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #fdf7e5;
-    z-index: 3;
-    background: var(--turncards-action-bg);
+    background: var(--tc-action-bg);
     border: none;
     border-radius: 0;
     cursor: pointer;
     opacity: 0;
     pointer-events: none;
     transform: translateY(-4px);
+    z-index: 3;
     transition:
-      opacity 140ms ease-out,
-      transform 140ms ease-out,
-      background-color 140ms ease-out;
+      opacity var(--tc-transition-fast),
+      transform var(--tc-transition-fast),
+      background-color var(--tc-transition-fast);
 
-    // Override ui-control styles for this specific element
+    // Override ui-control defaults
     width: auto;
-    height: 28px;
+    height: var(--tc-nameplate-height);
 
     &:hover:not(:disabled) {
-      background: var(--turncards-action-hover-bg);
+      background: var(--tc-action-hover-bg);
+    }
+
+    .turncard__action-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fdf7e5;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    &.is-disabled,
+    &:disabled {
+      filter: grayscale(0.5) brightness(0.7);
+      cursor: not-allowed;
     }
   }
 
-  .turncard__action-label {
-    pointer-events: none;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  }
-
+  // Show action on hover (but don't re-trigger card hover animation)
   .turncard:hover .turncard__action,
   .turncard:focus-within .turncard__action {
     opacity: 1;
@@ -1193,50 +1169,41 @@
     pointer-events: none;
   }
 
-  .turncard__action--disabled,
-  .turncard__action:disabled {
-    filter: grayscale(0.4) brightness(0.75);
-    cursor: not-allowed;
-
-    &:hover {
-      background: var(--turncards-action-bg);
-    }
-  }
-
   /* --- Nameplate ----------------------------------------------------------- */
 
   .turncard__nameplate {
-    min-height: 28px;
-    padding: 4px 8px 6px;
-    background: linear-gradient(180deg, #ceb28a 0%, #b18f66 100%);
-    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    flex: 0 0 auto;
+    height: var(--tc-nameplate-height);
+    padding: 4px 8px;
+    background: var(--tc-nameplate-bg);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
   .turncard__nameplate--team {
-    background: var(--turncards-team-nameplate);
+    background: var(--tc-team-nameplate-bg);
   }
 
   .turncard__name {
     text-transform: uppercase;
     font-weight: 800;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     letter-spacing: 0.04em;
-    color: #1c1010;
+    color: var(--tc-nameplate-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
   }
 
-  /* --- Downed overlay ------------------------------------------------------ */
+  /* --- Downed Overlay ------------------------------------------------------ */
 
   .turncard__downed {
     position: absolute;
     inset: 0;
-    background: rgba(40, 40, 40, 0.6);
+    background: rgba(40, 40, 40, 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1244,36 +1211,37 @@
   }
 
   .turncard__downed-label {
-    color: #ffffff;
+    color: #fff;
     font-weight: 900;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     background: rgba(180, 50, 50, 0.85);
-    padding: 6px 12px;
+    padding: 5px 10px;
     border-radius: 4px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   }
 
-  /* --- Corner Buttons (Shift, Potential, Assist) --------------------------- */
+  /* --- Corner Buttons ------------------------------------------------------ */
 
+  // Shared styles for corner buttons
   .turncard__shift,
-  .turncard__potential,
-  .turncard__assist {
+  .turncard__forward,
+  .turncard__potential {
     position: absolute;
-    bottom: 34px; // Above nameplate
-    width: var(--turncards-control-size);
-    height: var(--turncards-control-size);
+    width: var(--tc-control-size);
+    height: var(--tc-control-size);
     padding: 0;
     border-radius: 50%;
-    cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    z-index: 2;
     transition:
-      transform 100ms ease-out,
-      filter 100ms ease-out,
-      opacity 100ms ease-out;
+      transform var(--tc-transition-fast),
+      filter var(--tc-transition-fast),
+      opacity var(--tc-transition-fast);
 
     &:hover:not(:disabled) {
       transform: scale(1.1);
@@ -1283,103 +1251,90 @@
     &:active:not(:disabled) {
       transform: scale(0.95);
     }
+
+    &.is-disabled,
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+
+      &:hover {
+        transform: none;
+        filter: grayscale(0.5);
+      }
+    }
   }
 
-  // Shift Labels (pentagon/circle) - bottom left
+  // Shift Labels - bottom left
   .turncard__shift {
-    left: 6px;
+    left: 4px;
+    bottom: calc(var(--tc-nameplate-height) + 4px);
     background: rgba(0, 0, 0, 0.5);
     border: 2px solid rgba(255, 255, 255, 0.7);
 
     i {
-      font-size: 0.9rem;
-      color: var(--turncards-pentagon-color);
-      -webkit-text-stroke: 1px #ffffff;
+      font-size: 0.8rem;
+      color: var(--tc-shift-icon);
+      -webkit-text-stroke: 1px #fff;
       text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
     }
   }
 
-  .turncard__shift--disabled,
-  .turncard__shift:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    filter: grayscale(0.5);
+  // Forward/Bonus - above shift labels
+  .turncard__forward {
+    left: 4px;
+    bottom: calc(var(--tc-nameplate-height) + var(--tc-control-size) + 8px);
+    background: var(--tc-forward-bg);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    color: var(--tc-forward-text);
 
-    &:hover {
-      transform: none;
-      filter: grayscale(0.5);
+    .turncard__forward-value {
+      font-size: 0.75rem;
+      font-weight: 700;
     }
-  }
-
-  // Assist (+1 Forward) - bottom center-right
-  .turncard__assist {
-    right: 42px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 2px solid rgba(76, 175, 80, 0.9);
-    color: #4CAF50;
 
     i {
-      font-size: 0.85rem;
+      font-size: 0.7rem;
     }
 
-    &:hover:not(:disabled) {
-      background: rgba(76, 175, 80, 0.3);
-    }
-  }
+    &.is-readonly {
+      cursor: default;
+      opacity: 0.9;
 
-  .turncard__assist--disabled,
-  .turncard__assist:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
-    filter: grayscale(0.5);
-    border-color: rgba(255, 255, 255, 0.4);
-    color: #888;
-
-    &:hover {
-      transform: none;
-      filter: grayscale(0.5);
-      background: rgba(0, 0, 0, 0.5);
+      &:hover {
+        transform: none;
+        filter: none;
+      }
     }
   }
 
-  // Potential (star) - bottom right
+  // Potential - bottom right
   .turncard__potential {
-    right: 6px;
+    right: 4px;
+    bottom: calc(var(--tc-nameplate-height) + 4px);
     background: rgba(55, 55, 43, 0.7);
-    border: 2px solid #ffffff;
+    border: 2px solid #fff;
     overflow: hidden;
 
     &::before {
       content: "";
       position: absolute;
       inset: auto 0 0 0;
-      height: var(--masks-turncards-potential-fill, 0%);
-      background: var(--turncards-potential-fill);
-      transition: height 200ms ease-out;
+      height: var(--potential-fill, 0%);
+      background: var(--tc-potential-fill);
+      transition: height var(--tc-transition-smooth);
     }
 
     i {
       position: relative;
       z-index: 1;
-      color: #ffffff;
-      font-size: 0.85rem;
+      color: #fff;
+      font-size: 0.8rem;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     }
 
     &.is-bump {
-      animation: masks-turncards-bump 200ms ease-out;
-    }
-  }
-
-  .turncard__potential--disabled,
-  .turncard__potential:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    filter: grayscale(0.5);
-
-    &:hover {
-      transform: none;
-      filter: grayscale(0.5);
+      animation: tc-bump 200ms ease-out;
     }
   }
 
@@ -1389,12 +1344,13 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
   }
 
   .turncard__team-label {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -1402,9 +1358,9 @@
   }
 
   .turncard__team-value {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 900;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     color: #fdf7e5;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     line-height: 1;
@@ -1412,26 +1368,25 @@
 
   .turncard__team-controls {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     margin-top: 4px;
   }
 
   .turncard__team-btn {
-    width: var(--turncards-control-size);
-    height: var(--turncards-control-size);
+    width: var(--tc-control-size);
+    height: var(--tc-control-size);
     padding: 0;
     border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    background: rgba(0, 0, 0, 0.35);
-    color: #ffffff;
-    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     transition:
-      background-color 100ms ease-out,
-      transform 100ms ease-out;
+      background-color var(--tc-transition-fast),
+      transform var(--tc-transition-fast);
 
     &:hover:not(:disabled) {
       background: rgba(255, 255, 255, 0.2);
@@ -1447,9 +1402,31 @@
       cursor: not-allowed;
 
       &:hover {
-        background: rgba(0, 0, 0, 0.35);
+        background: rgba(0, 0, 0, 0.3);
         transform: none;
       }
+    }
+
+    i {
+      font-size: 0.75rem;
+    }
+  }
+
+  // GM Turn button on team card
+  .turncard__gm-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: var(--tc-control-size);
+    height: var(--tc-control-size);
+    border-radius: 4px;
+    background: var(--tc-action-bg);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+
+    &:hover {
+      background: var(--tc-action-hover-bg);
+      transform: scale(1.05);
     }
 
     i {
@@ -1457,31 +1434,9 @@
     }
   }
 
-  // GM Turn button on team card
-  .turncard__gm-action {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: var(--turncards-control-size);
-    height: var(--turncards-control-size);
-    border-radius: 4px;
-    background: var(--turncards-action-bg);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    color: #fff;
-
-    &:hover {
-      background: var(--turncards-action-hover-bg);
-      transform: scale(1.05);
-    }
-
-    i {
-      font-size: 0.9rem;
-    }
-  }
-
   /* --- Animation ----------------------------------------------------------- */
 
-  @keyframes masks-turncards-bump {
+  @keyframes tc-bump {
     0% {
       transform: scale(1);
     }
@@ -1496,10 +1451,10 @@
   }
 }
 
-/* Fallback if aspect-ratio isn't supported */
+/* Fallback for browsers without aspect-ratio */
 @supports not (aspect-ratio: 1) {
   #masks-turncards .turncard {
-    height: 200px;
+    height: 180px;
   }
 }
 

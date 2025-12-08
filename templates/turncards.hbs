@@ -1,41 +1,41 @@
+{{!-- templates/turncards.hbs --}}
 {{!-- Team Turn Cards HUD --}}
 
 <div class="turncards-row" data-team-size="{{teamSize}}" data-max-turns="{{maxTurns}}">
     {{!-- Team Pool Card --}}
     {{#if showTeamCard}}
     <div class="turncard-wrapper turncard-wrapper--team">
-        <article class="turncard turncard--gm turncard--state-team" role="group" aria-label="Team pool">
+        <article class="turncard turncard--team" role="group" aria-label="Team pool">
             <div class="turncard__inner">
                 <div class="turncard__portrait turncard__portrait--team">
-                    {{#if isGM}}
-                    <button type="button" class="turncard__gm-action ui-control plain" data-action="gm-turn"
-                        aria-label="Advance cooldowns for GM and NPC actions"
-                        data-tooltip="GM Turn: Advance all cooldowns">
-                        <i class="fa-solid fa-play"></i>
-                    </button>
-                    {{/if}}
+                    
 
                     <div class="turncard__team">
-                        <div class="turncard__team-label">Team</div>
                         <div class="turncard__team-value" aria-live="polite">{{team}}</div>
+                        {{!-- TODO: This should be an appear on hover thing just like "Action" for a player card --}}
+                        {{#if isGM}}
+                        <button type="button" class="turncard__gm-btn ui-control plain" data-action="gm-turn"
+                            aria-label="GM Turn: Advance all cooldowns" data-tooltip="GM Turn: Advance cooldowns">
+                            <i class="fa-solid fa-play"></i>
+                        </button>
+                        {{/if}}
 
                         <div class="turncard__team-controls">
                             <button type="button" class="turncard__team-btn ui-control plain" data-action="team-minus"
-                                {{#unless teamCanEdit}}disabled{{/unless}} data-tooltip="Spend 1 Team (Shift: 5)"
+                                {{#unless teamCanEdit}}disabled{{/unless}} data-tooltip="Spend Team (Shift: 5)"
                                 aria-label="Spend Team">
                                 <i class="fa-solid fa-minus"></i>
                             </button>
 
-                            <button type="button" class="turncard__team-btn ui-control plain" data-action="team-plus"
-                                {{#unless teamCanEdit}}disabled{{/unless}} data-tooltip="Add 1 Team (Shift: 5)"
-                                aria-label="Add Team">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
-
                             <button type="button" class="turncard__team-btn ui-control plain" data-action="team-reset"
-                                {{#unless teamCanEdit}}disabled{{/unless}} data-tooltip="Reset Team to 0"
+                                {{#unless teamCanEdit}}disabled{{/unless}} data-tooltip="Reset Team"
                                 aria-label="Reset Team">
                                 <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+
+                            <button type="button" class="turncard__team-btn ui-control plain" data-action="team-plus" {{#unless
+                                teamCanEdit}}disabled{{/unless}} data-tooltip="Add Team (Shift: 5)" aria-label="Add Team">
+                                <i class="fa-solid fa-plus"></i>
                             </button>
                         </div>
                     </div>
@@ -61,54 +61,58 @@
                 <div class="turncard__portrait">
                     <img src="{{card.img}}" alt="{{card.name}}" loading="lazy" />
 
+                    {{!-- Cooldown bar --}}
                     {{#if card.showStatusBar}}
-                    <div class="turncard__status">
-                        <div class="turncard__status-track"></div>
-                        {{#if card.showCooldownBar}}
-                        <div class="turncard__cooldown-fill"
-                            style="--masks-turncards-cooldown-frac:{{card.cooldownFrac}};">
-                        </div>
-                        {{/if}}
-                        <span class="turncard__status-label">{{card.statusLabel}}</span>
+                    <div class="turncard__cooldown">
+                        <div class="turncard__cooldown-bar" style="--cooldown-frac: {{card.cooldownFrac}};"></div>
+                        <span class="turncard__cooldown-label">{{card.statusLabel}}</span>
                     </div>
                     {{/if}}
 
-                    {{!-- Action OR Aid overlay --}}
+                    {{!-- Action button overlay --}}
+                    {{#if card.canMarkTurn}}
                     <button type="button"
-                        class="turncard__action ui-control {{#if card.actionDisabled}}turncard__action--disabled{{/if}}"
-                        data-action="{{card.actionAction}}" data-actor-id="{{card.actorId}}"
-                        aria-label="{{card.actionAria}}" data-tooltip="{{card.actionAria}}" {{#if
-                        card.actionDisabled}}disabled{{/if}}>
-                        <span class="turncard__action-label">{{card.actionLabel}}</span>
+                        class="turncard__action ui-control {{#if card.actionDisabled}}is-disabled{{/if}}"
+                        data-action="card-action" data-actor-id="{{card.actorId}}" aria-label="{{card.actionAria}}"
+                        data-tooltip="{{card.actionAria}}" {{#if card.actionDisabled}}disabled{{/if}}>
+                        <span class="turncard__action-label">Action</span>
                     </button>
+                    {{/if}}
 
-                    {{!-- Shift Labels (pentagon) --}}
+                    {{!-- Bottom-left: Shift Labels (circle) --}}
                     <button type="button"
-                        class="turncard__shift ui-control plain {{#unless card.canShiftLabels}}turncard__shift--disabled{{/unless}}"
+                        class="turncard__shift ui-control plain {{#unless card.canShiftLabels}}is-disabled{{/unless}}"
                         data-action="shift-labels" data-actor-id="{{card.actorId}}"
                         aria-label="Shift Labels for {{card.name}}" data-tooltip="Shift Labels" {{#unless
                         card.canShiftLabels}}disabled{{/unless}}>
                         <i class="fa-solid fa-circle"></i>
                     </button>
 
-                    {{!-- Potential (star) --}}
+                    {{!-- Above Shift Labels: Forward/Bonus button --}}
+                    {{#if card.showBonus}}
                     <button type="button"
-                        class="turncard__potential ui-control plain {{#unless card.canEditPotential}}turncard__potential--disabled{{/unless}}"
-                        data-action="potential" {{#unless card.canEditPotential}}disabled{{/unless}}
+                        class="turncard__forward ui-control plain {{#unless card.canEditForward}}is-readonly{{/unless}}"
+                        data-action="forward" data-actor-id="{{card.actorId}}"
+                        aria-label="Forward: {{card.forward}}, Ongoing: {{card.ongoing}} (Click +1, Right-click -1)"
+                        data-tooltip="Forward: {{card.forward}} | Ongoing: {{card.ongoing}}" {{#unless
+                        card.canEditForward}}disabled{{/unless}}>
+                        {{#if (gt card.effectiveBonus 0)}}
+                        <span class="turncard__forward-value">+{{card.effectiveBonus}}</span>
+                        {{else}}
+                        <i class="fa-solid fa-plus"></i>
+                        {{/if}}
+                    </button>
+                    {{/if}}
+
+                    {{!-- Bottom-right: Potential (star) --}}
+                    <button type="button"
+                        class="turncard__potential ui-control plain {{#unless card.canEditPotential}}is-disabled{{/unless}}"
+                        data-action="potential" data-actor-id="{{card.actorId}}" {{#unless
+                        card.canEditPotential}}disabled{{/unless}}
                         aria-label="Potential: {{card.potential}} of {{card.potentialMax}} (Click +1, Right-click -1)"
                         data-tooltip="Potential: {{card.potential}}/{{card.potentialMax}}"
-                        style="--masks-turncards-potential-fill:{{card.potentialPct}};">
+                        style="--potential-fill: {{card.potentialPct}};">
                         <i class="fa-solid fa-star"></i>
-                    </button>
-
-                    {{!-- Aid/Team Forward button (separate from main action) --}}
-                    <button type="button"
-                        class="turncard__assist ui-control plain {{#unless card.canTeamForward}}turncard__assist--disabled{{/unless}}"
-                        data-action="team-forward" data-actor-id="{{card.actorId}}"
-                        aria-label="Spend 1 Team to give {{card.name}} +1 Forward"
-                        data-tooltip="Aid: +1 Forward (costs 1 Team)" {{#unless
-                        card.canTeamForward}}disabled{{/unless}}>
-                        <i class="fa-solid fa-up"></i>
                     </button>
                 </div>
 

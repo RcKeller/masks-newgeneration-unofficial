@@ -318,6 +318,19 @@ Hooks.on("renderSettings", (app, html) => {
     }
 });
 
+Hooks.once("init", () => {
+    // Register handlebars helpers
+    Handlebars.registerHelper("gt", function(a, b) {
+        return Number(a) > Number(b);
+    });
+    
+    Handlebars.registerHelper("gte", function(a, b) {
+        return Number(a) >= Number(b);
+    });
+    
+    // ... rest of existing init code
+});
+
 import './influence.mjs';
 import './team.mjs';
 import './tools.mjs';
