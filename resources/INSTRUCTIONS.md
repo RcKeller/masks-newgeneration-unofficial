@@ -1,6 +1,7 @@
 We recently implemented "Turn Cards" for my Foundry v13 module adaptation of Masks: A New Generation. These serve as an enriched initiative tracker and are supposed to deeply integrate, providing an ongoing turn tracker/cooldown system that makes it clear which players in the encounter are available to act and when. I've finished my rough draft implementation, however there are several flaws and ways the design and implementation can be improved or completed.
 
 Please keep in mind that the code we have thus far is a VERY ROUGH DRAFT and I personally would love to revise it.
+There are a ton of critical bugs that MUST be fixed.
 
 ---
 
@@ -13,6 +14,9 @@ FIX THE FOLLOWING BUGS:
 - Restyle the "Downed" tag so that it is in the same place as the cooldown bar/"Busy" would be.
 - When adding Forward to yourself, or when the GM does it, do not deduct team. Otherwise, make sure `@UUID[Compendium.masks-newgeneration-unofficial.moves.H7mJLUYVlQ3ZPGHK]{Aid a Teammate}` is appended to the message sent out to the chat.
 - The "Aid" feature where a player can add forward to another character by spending a team point is broken. The click is a no-op even if the player does have team to spend... fix this.
+- CRITICAL BUG: Players aren't advancing from 1 cooldown remaining > ready state when anything else ticks a turn. They SHOULD be updated anytime a turn is taken.
+- CRITICAL BUG: The "Aid" feature isn't working for players. Clicking the advantage button on a turn card of another player. This should have a disabled state if team is depleted or the player has been downed. They also should
+- CRITICAL BUG: Players marking Action aren't actually registering/taking their turn in the system!
 
 The javascript for turn-cards is also extremely messy and convoluted due to lots of iteration, please simplify.
 
