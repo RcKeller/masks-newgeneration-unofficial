@@ -4,55 +4,22 @@ Please keep in mind that the code we have thus far is a VERY ROUGH DRAFT and I p
 
 ---
 
-- I think the "context" isn't being passed along to handlebars templates OR is completely incorrect! GMs are barred from a lot of basic stuff like taking actions for players who cannot at that time.
-- The team pool card is taller than player cards and does not match the style of the others. The scripts for it are incorrect and don't even work. I need you to significantly improve and standardize the appearance and functionality here. It needs to have parity with the original, fire the same notifications in chat when adjusted, etc.
-- The Shift Labels button DOES open a modal that CAN adjust labels, BUT it doesn't fire the same notification that the Shift Labels button on the character sheet does.
-- I want the styles / sizes of the buttons on the cards themselves to be more aligned with base foundry. Use the "ui-control plain" classnames and make sure buttons are set up to be 32px height and width. The class styles are provided below so you can see what we are working with
-    flex: none;
-    width: var(--control-size);
-    height: var(--control-size);
-    justify-content: center;
-    align-content: center;
-    background: var(--control-bg-color);
-    border: 1px solid var(--control-border-color);
-    border-radius: 4px;
-    color: var(--control-icon-color);
-    font-size: var(--font-size-16);
-    pointer-events: all;
-    transition: border 0.25s, color 0.25s;
-    text-shadow: none;
-}
-- GMs can always take an Action, it isn't disabled for them even if the actor isn't ready yet.
-- The "Busy" bar flows in the wrong direction, the bar should drain from right-to-left (currently it drains left-to-right). ALSO, very important, the styles should have TRANSITIONS and animation so the bars deplete smoothly on tick
-- Remove the "Aid" button that appears on hover - that will instead be the Aid button that appears above the Shift Labels button (requirements provided below)
-- The state management for who has gone in that turn should reset if we ever advance to another round in the encounter. However, the cooldowns should advance on an ongoing basis. It is possible for a player to go multiple times in a round as long as their cooldown bar is depleted properly. This is possible because NPCs may act/react at will and when they do so the GM takes a turn in that round which advances the cooldowns.
-- Move the functionality of the old team point HUD (team.hbs and team.mjs) to the Team card in the turncards row. 
-- BUG: When a cooldown bar is about to be depleted for a player, it is not finishing and resetting back to the ready state. Fix this. Again it is possible to go multiple times in a round.
-- Advancing the turn in the encounter tracker counts as an action taken and should advance cooldowns accordingly.
-- NEW: Right clicking a character card should bring up a context menu (using foundry's apis). Options should be
-  - Gain Influence over
-  - Gain Synergy (mutual influence)
-  - Give Influence to
-  - Use Influence against ()
-  (the first three have already been mechanically implemented in influence.mjs and their chat messages look real nice, you could probably do something similar if not identical)
-The action buttons within a portrait should be as follows:
-    - Bottom left (4px from bottom and left): Circle which opens up the Shift Labels prompt
-    - Bottom left above the Shift Labels: Implement this as the NEW Aid button. If character has an effective bonus (forward + ongoing is >0), everybody will see a blue circle with the number inside (white text). If you are an owner/gm and effective bonus is <= 0, you see a white plus mark icon as the button.
-      - In ANY case, if the player is an owner of that actor, left clicking this button will add +1 forward, and right clicking will subtract 1 forward and announce that to the chat. Whenever it changes, show a system notification. The "tools" mjs already implements some of the scripting for this behavior, you can probably utilize some of that.
-    - Bottom Right: The potential button (which as it is currently implemented is almost perfect)
-    - 
-- Proving "Aid" via the new Aid button should play the following in chat: @UUID[Compendium.masks-newgeneration-unofficial.moves.H7mJLUYVlQ3ZPGHK]{Aid a Teammate}
-- Move the Team point HUD functionality into the "Team" card in the turncard row.
-- Clicking content on a card which changes the state of it temporarily should not make the css animation un-zoom and re-zoom on the card.
-- The Team card in the turncard row isn't even visible to anybody!! And I'm pretty sure it's not wired properly. Review team.mjs to see how we manage team points and adjust accordingly. If there is a better way to manage tracking team, please implement that, but know that the current strategy of tracking it via a journal entry was a workaround to permissions issues before since players could not edit global values.
+FIX THE FOLLOWING BUGS:
+- Taking a turn should reset players at their final tick to a ready to act state. YES, PLAYERS CAN ACT MULTIPLE TIMES PER ROUND IN AN ENCOUNTER. The idea behind the cooldown bar is to "throttle" players from playing too often and making the game unfair for others.
+- BUG: When a GM clicks the Advantage 
+- GMs can add/remove forward from any character
+- Do not show the Action button when hovering over a busy character.
+- Cooldown bars should progress the opposite way - RIGHT TO LEFT ("burn down"). IMPORTANT, these bars should be animated so they smoothly drain with a css animation when applicable.
+- Restyle the "Downed" tag so that it is in the same place as the cooldown bar/"Busy" would be.
+- When adding Forward to yourself, or when the GM does it, do not deduct team. Otherwise, make sure `@UUID[Compendium.masks-newgeneration-unofficial.moves.H7mJLUYVlQ3ZPGHK]{Aid a Teammate}` is appended to the message sent out to the chat.
+- The "Aid" feature where a player can add forward to another character by spending a team point is broken. The click is a no-op even if the player does have team to spend... fix this.
 
-- Take some time to remove any cruft from the styles for #masks-turncards. A lot of them have been made redundant or could be refactored. However, don't break some of the nice things we have like the animations on hover, etc.
-
+The javascript for turn-cards is also extremely messy and convoluted due to lots of iteration, please simplify.
 
 Output the fully revised code (ALL OF IT). No need to re-output other unrelated scss styles, but all of the styling pertaining to turn cards - yeah, reoutput it all.
 
 =======
-ORIGINAL REQUIREMENTS (have mostly been implemented)
+ORIGINAL REQUIREMENTS (have mostly been implemented, and is superseded by any instructions provided immediately above)
 =======
 ### 1. Add a new UI component to display team turn cards
 
@@ -63,7 +30,8 @@ ORIGINAL REQUIREMENTS (have mostly been implemented)
    * **Name plate** – A horizontal bar immediately under the portrait shows the character’s name in ALL CAPS with white text.  Use `text-transform: uppercase` in CSS.  The bar’s background color should be `#bda78a` (the same color as the card).
    * **Downed overlay** – If the actor’s health is zero or they are otherwise flagged as downed, overlay the entire card with a semi‑transparent grey tint and display “DOWNED” at the top.  The downed status should also grey out the card content.
    * **Potential (star)** – At the bottom‑right corner, render a circular icon (white star on a grey circle with white outline).  This represents the actor’s “potential” (0–5).  Use the Font Awesome star icon.  When the actor has zero potential, the circle is empty; as potential increases, fill the circle with `#f9a949` (potential color).  By 5 points it should be completely filled.  Clicking the star increments the actor’s potential by 1 (clamping at 5).  Persist this in a suitable actor property or flag so it survives reloads.
-   * **Pentagon placeholder** – At the bottom‑left corner place a grey pentagon with a white outline.  This is a placeholder for a future feature.  Use the Font Awesome pentagon icon (available in the “Shapes” set) and style it with color `#37372b`.
+   * **Labels shortcut** – At the bottom‑left corner place a grey pentagon with a white outline.  This is a placeholder for a future feature.  Use the Font Awesome pentagon icon (available in the “Shapes” set) and style it with color `#37372b`.
+   * **Advantage Button** – There is a button above the Labels shortcut that allows players to A) add/remove a point of Forward from themselves, or allow a GM to add/remove forward from anybody, and B) allow players to add a point of forward by spending a point of Team, if available.
    * **Clickable card** – Clicking anywhere else on the card (excluding the buttons and potential/star) should open the actor’s character sheet.
 
 3. **Card background and colors** – Use the following palette:
@@ -103,16 +71,6 @@ ORIGINAL REQUIREMENTS (have mostly been implemented)
    * Persist `remainingTurns` and update UI when a combat starts or resumes.
 
 5. **Greying out and reactivating cards** – When `remainingTurns` > 0 or the actor is downed, apply a 25 % opacity to the entire card (except overlays such as the “DOWNED” label).  Remove the opacity once the actor becomes ready.
-
----
-
-### 3. Integrate GM controls
-
-1. **GM turn button on each card** – If the user is a GM, add a full‑width button below each player card labeled “Mark Turn Taken” or a similar phrase.  Clicking this button should call `onActorTurn(actorId)` and then `advanceCooldowns()` to correctly set the cooldown and update all cards.
-
-2. **GM‑only card** – Render one extra card visible only to GMs.  This card represents non‑player actions (villains, NPCs, environmental actions).  The card does not correspond to a specific actor and should instead have a button labeled “GM Turn”.  Pressing this button calls `advanceCooldowns()` to count as if a player had taken a turn, ensuring players’ cooldowns decrease when the GM acts.
-
-3. **Permissions** – Only display the extra GM button and GM card when `game.user.isGM === true`.
 
 ---
 
