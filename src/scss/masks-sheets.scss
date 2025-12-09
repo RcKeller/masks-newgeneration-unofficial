@@ -902,17 +902,8 @@
 }
 
 /* ------------------------------------------------------------------------- */
-/* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                       */
-/* ------------------------------------------------------------------------- */
-
-/* ------------------------------------------------------------------------- */
-/* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                       */
-/* ------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------- */
 /* Turn Cards HUD                                                            */
-/* ------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------- */
-/* Turn Cards HUD                                                            */
+/* Complete rewrite with right-to-left cooldown bars and smooth animations   */
 /* ------------------------------------------------------------------------- */
 
 #masks-turncards {
@@ -921,6 +912,7 @@
   --tc-card-aspect: 3 / 4;
   --tc-control-size: 26px;
   --tc-nameplate-height: 26px;
+  --tc-status-bar-height: 22px;
 
   // Colors
   --tc-card-bg: linear-gradient(180deg, #3a3f4a 0%, #1e2128 100%);
@@ -935,7 +927,8 @@
   --tc-action-bg: #69c0ae;
   --tc-action-hover-bg: #5bb09e;
   --tc-cooldown-bar-bg: #2ab6cb;
-  --tc-cooldown-label-bg: rgba(0, 0, 0, 0.7);
+  --tc-cooldown-label-bg: rgba(0, 0, 0, 0.75);
+  --tc-downed-bg: rgba(180, 50, 50, 0.9);
   --tc-potential-fill: #f9a949;
   --tc-forward-bg: #3b82f6;
   --tc-forward-text: #fff;
@@ -947,7 +940,8 @@
   // Transitions
   --tc-transition-fast: 150ms ease-out;
   --tc-transition-smooth: 400ms cubic-bezier(0.4, 0, 0.2, 1);
-  --tc-transition-bar: 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  // Longer, smoother animation for cooldown bar drain effect
+  --tc-transition-bar: 800ms cubic-bezier(0.25, 0.1, 0.25, 1);
 
   width: 100%;
   pointer-events: none;
@@ -1036,7 +1030,7 @@
       transition: opacity var(--tc-transition-smooth);
     }
 
-    // Downed state
+    // Downed state - more dimmed
     &.is-downed .turncard__inner {
       opacity: var(--tc-downed-opacity);
       transition: opacity var(--tc-transition-smooth);
@@ -1083,61 +1077,67 @@
     background: var(--tc-team-portrait-bg);
   }
 
-  /* --- Status Bar (cooldown/downed - positioned at top) -------------------- */
+  /* --- Status Bar (Downed or Cooldown/Busy) -------------------------------- */
+  /* Both Downed and Busy appear in the SAME location at top of card          */
 
   .turncard__status-bar {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 22px;
+    height: var(--tc-status-bar-height);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    z-index: 1;
+    z-index: 2;
   }
 
+  // Cooldown bar - drains RIGHT TO LEFT (burn down effect)
   .turncard__status-bar--cooldown {
     background: var(--tc-cooldown-label-bg);
   }
 
+  // Downed bar - same position, red background
   .turncard__status-bar--downed {
-    background: rgba(180, 50, 50, 0.9);
+    background: var(--tc-downed-bg);
   }
 
+  // The actual cooldown fill bar - drains from right to left
   .turncard__cooldown-bar {
     position: absolute;
     top: 0;
-    right: 0; // Anchored to right - drains left
     bottom: 0;
-    // Width based on fraction - starts full (100%) and drains to 0
+    // Anchored to RIGHT side - bar drains leftward
+    right: 0;
+    // Width = fraction of cooldown remaining (1.0 = full, 0 = empty)
     width: calc(var(--cooldown-frac, 0) * 100%);
     background: var(--tc-cooldown-bar-bg);
-    // Smooth animated transition when cooldown changes
+    // Smooth animation for the drain effect
     transition: width var(--tc-transition-bar);
   }
 
   .turncard__status-label {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #fdf7e5;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     white-space: nowrap;
   }
 
   /* --- Action Button Overlay ----------------------------------------------- */
+  /* Only appears on hover for ready (non-busy, non-downed) characters        */
 
   .turncard__action {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: var(--tc-nameplate-height);
+    height: var(--tc-status-bar-height);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1148,7 +1148,7 @@
     opacity: 0;
     pointer-events: none;
     transform: translateY(-4px);
-    z-index: 3;
+    z-index: 4;
     transition:
       opacity var(--tc-transition-fast),
       transform var(--tc-transition-fast),
@@ -1174,9 +1174,15 @@
       filter: grayscale(0.5) brightness(0.7);
       cursor: not-allowed;
     }
+
+    // GM action button on team card - always visible
+    &.turncard__action--gm {
+      opacity: 0;
+      pointer-events: none;
+    }
   }
 
-  // Show action on hover
+  // Show action on hover ONLY for ready cards (button existence is controlled by template)
   .turncard:hover .turncard__action,
   .turncard:focus-within .turncard__action {
     opacity: 1;
@@ -1184,9 +1190,19 @@
     transform: translateY(0);
   }
 
-  .turncard.is-downed .turncard__action {
-    opacity: 0;
-    pointer-events: none;
+  // GM action on team card hover
+  .turncard--team:hover .turncard__action--gm,
+  .turncard--team:focus-within .turncard__action--gm {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  // NEVER show action button on downed or cooldown cards
+  // (handled by template - button element not rendered)
+  .turncard.is-downed .turncard__action,
+  .turncard.is-cooldown .turncard__action {
+    display: none !important;
   }
 
   /* --- Nameplate ----------------------------------------------------------- */
@@ -1216,30 +1232,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
-  }
-
-  /* --- Downed Overlay ------------------------------------------------------ */
-
-  .turncard__downed {
-    position: absolute;
-    inset: 0;
-    background: rgba(40, 40, 40, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-  }
-
-  .turncard__downed-label {
-    color: #fff;
-    font-weight: 900;
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: rgba(180, 50, 50, 0.9);
-    padding: 4px 8px;
-    border-radius: 4px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 
   /* --- Corner Buttons (all aligned to bottom) ------------------------------ */
@@ -1305,7 +1297,6 @@
   .turncard__forward {
     left: 4px;
     bottom: calc(var(--tc-nameplate-height) + var(--tc-control-size) + 8px);
-    // Default: transparent with white icon and subtle border
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.5);
     color: #fff;
@@ -1319,7 +1310,6 @@
       font-size: 0.6rem;
     }
 
-    // When has bonus: blue filled circle with visible number
     &.has-bonus {
       background: var(--tc-forward-bg);
       border: 1px solid rgba(255, 255, 255, 0.9);
@@ -1453,11 +1443,9 @@
     0% {
       transform: scale(1);
     }
-
     50% {
       transform: scale(1.25);
     }
-
     100% {
       transform: scale(1);
     }

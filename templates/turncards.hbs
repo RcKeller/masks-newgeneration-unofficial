@@ -1,6 +1,6 @@
 {{!-- templates/turncards.hbs - Team Turn Cards HUD --}}
 
-<div class="turncards-row" data-team-size="{{teamSize}}" data-max-turns="{{maxTurns}}">
+<div class="turncards-row" data-team-size="{{teamSize}}" data-max-cooldown="{{maxCooldown}}">
     {{!-- Team Pool Card --}}
     {{#if showTeamCard}}
     <div class="turncard-wrapper turncard-wrapper--team">
@@ -31,7 +31,7 @@
 
                     {{!-- GM Action button --}}
                     {{#if isGM}}
-                    <button type="button" class="turncard__action" data-action="team-action"
+                    <button type="button" class="turncard__action turncard__action--gm" data-action="team-action"
                         aria-label="GM Turn: Advance all cooldowns" data-tooltip="GM/NPC Turn: Advance cooldowns">
                         <span class="turncard__action-label">Action</span>
                     </button>
@@ -57,19 +57,19 @@
                 <div class="turncard__portrait">
                     <img src="{{card.img}}" alt="{{card.name}}" loading="lazy" />
 
-                    {{!-- Status bar at top: either cooldown or downed --}}
+                    {{!-- Status bar at top: shows Downed OR Cooldown (Busy), never both --}}
                     {{#if card.downed}}
                     <div class="turncard__status-bar turncard__status-bar--downed" id="{{card.downedId}}" role="status">
                         <span class="turncard__status-label">Downed</span>
                     </div>
-                    {{else if card.showStatusBar}}
+                    {{else if card.onCooldown}}
                     <div class="turncard__status-bar turncard__status-bar--cooldown" data-tooltip="{{card.statusTooltip}}">
                         <div class="turncard__cooldown-bar" style="--cooldown-frac: {{card.cooldownFrac}};"></div>
                         <span class="turncard__status-label">Busy</span>
                     </div>
                     {{/if}}
 
-                    {{!-- Action button overlay - only shown when character is ready --}}
+                    {{!-- Action button overlay - only shown when character is ready (not downed, not on cooldown) --}}
                     {{#if card.showActionBtn}}
                     <button type="button" class="turncard__action" data-action="card-action"
                         data-combatant-id="{{card.combatantId}}"

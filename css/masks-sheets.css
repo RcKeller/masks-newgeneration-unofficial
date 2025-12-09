@@ -757,22 +757,15 @@
 }
 
 /* ------------------------------------------------------------------------- */
-/* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                       */
-/* ------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------- */
-/* Turn Cards HUD (mounted into #ui-middle #ui-bottom)                       */
-/* ------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------- */
 /* Turn Cards HUD                                                            */
-/* ------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------- */
-/* Turn Cards HUD                                                            */
+/* Complete rewrite with right-to-left cooldown bars and smooth animations   */
 /* ------------------------------------------------------------------------- */
 #masks-turncards {
   --tc-card-width: clamp(100px, 8vw, 140px);
   --tc-card-aspect: 3 / 4;
   --tc-control-size: 26px;
   --tc-nameplate-height: 26px;
+  --tc-status-bar-height: 22px;
   --tc-card-bg: linear-gradient(180deg, #3a3f4a 0%, #1e2128 100%);
   --tc-card-border: rgba(255, 255, 255, 0.4);
   --tc-card-border-hover: #d1a06e;
@@ -783,7 +776,8 @@
   --tc-action-bg: #69c0ae;
   --tc-action-hover-bg: #5bb09e;
   --tc-cooldown-bar-bg: #2ab6cb;
-  --tc-cooldown-label-bg: rgba(0, 0, 0, 0.7);
+  --tc-cooldown-label-bg: rgba(0, 0, 0, 0.75);
+  --tc-downed-bg: rgba(180, 50, 50, 0.9);
   --tc-potential-fill: #f9a949;
   --tc-forward-bg: #3b82f6;
   --tc-forward-text: #fff;
@@ -792,17 +786,18 @@
   --tc-downed-opacity: 0.4;
   --tc-transition-fast: 150ms ease-out;
   --tc-transition-smooth: 400ms cubic-bezier(0.4, 0, 0.2, 1);
-  --tc-transition-bar: 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  --tc-transition-bar: 800ms cubic-bezier(0.25, 0.1, 0.25, 1);
   width: 100%;
   pointer-events: none;
   z-index: 101;
   padding: 0.25rem 0;
   /* --- Card Base ----------------------------------------------------------- */
   /* --- Portrait ------------------------------------------------------------ */
-  /* --- Status Bar (cooldown/downed - positioned at top) -------------------- */
+  /* --- Status Bar (Downed or Cooldown/Busy) -------------------------------- */
+  /* Both Downed and Busy appear in the SAME location at top of card          */
   /* --- Action Button Overlay ----------------------------------------------- */
+  /* Only appears on hover for ready (non-busy, non-downed) characters        */
   /* --- Nameplate ----------------------------------------------------------- */
-  /* --- Downed Overlay ------------------------------------------------------ */
   /* --- Corner Buttons (all aligned to bottom) ------------------------------ */
   /* --- Team Card Controls -------------------------------------------------- */
   /* --- Animation ----------------------------------------------------------- */
@@ -912,37 +907,37 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 22px;
+  height: var(--tc-status-bar-height);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  z-index: 1;
+  z-index: 2;
 }
 #masks-turncards .turncard__status-bar--cooldown {
   background: var(--tc-cooldown-label-bg);
 }
 #masks-turncards .turncard__status-bar--downed {
-  background: rgba(180, 50, 50, 0.9);
+  background: var(--tc-downed-bg);
 }
 #masks-turncards .turncard__cooldown-bar {
   position: absolute;
   top: 0;
-  right: 0;
   bottom: 0;
+  right: 0;
   width: calc(var(--cooldown-frac, 0) * 100%);
   background: var(--tc-cooldown-bar-bg);
   transition: width var(--tc-transition-bar);
 }
 #masks-turncards .turncard__status-label {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #fdf7e5;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
   white-space: nowrap;
 }
 #masks-turncards .turncard__action {
@@ -950,7 +945,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: var(--tc-nameplate-height);
+  height: var(--tc-status-bar-height);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -961,7 +956,7 @@
   opacity: 0;
   pointer-events: none;
   transform: translateY(-4px);
-  z-index: 3;
+  z-index: 4;
   transition: opacity var(--tc-transition-fast), transform var(--tc-transition-fast), background-color var(--tc-transition-fast);
   width: auto;
   padding: 0 8px;
@@ -981,15 +976,25 @@
   filter: grayscale(0.5) brightness(0.7);
   cursor: not-allowed;
 }
+#masks-turncards .turncard__action.turncard__action--gm {
+  opacity: 0;
+  pointer-events: none;
+}
 #masks-turncards .turncard:hover .turncard__action,
 #masks-turncards .turncard:focus-within .turncard__action {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
 }
-#masks-turncards .turncard.is-downed .turncard__action {
-  opacity: 0;
-  pointer-events: none;
+#masks-turncards .turncard--team:hover .turncard__action--gm,
+#masks-turncards .turncard--team:focus-within .turncard__action--gm {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+#masks-turncards .turncard.is-downed .turncard__action,
+#masks-turncards .turncard.is-cooldown .turncard__action {
+  display: none !important;
 }
 #masks-turncards .turncard__nameplate {
   flex: 0 0 auto;
@@ -1014,26 +1019,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-}
-#masks-turncards .turncard__downed {
-  position: absolute;
-  inset: 0;
-  background: rgba(40, 40, 40, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-#masks-turncards .turncard__downed-label {
-  color: #fff;
-  font-weight: 900;
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  background: rgba(180, 50, 50, 0.9);
-  padding: 4px 8px;
-  border-radius: 4px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 #masks-turncards .turncard__shift,
 #masks-turncards .turncard__forward,
@@ -1225,5 +1210,3 @@
     height: 180px;
   }
 }
-
-/*# sourceMappingURL=masks-sheets.css.map */
