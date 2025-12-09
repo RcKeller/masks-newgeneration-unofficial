@@ -799,7 +799,7 @@
   padding: 0.25rem 0;
   /* --- Card Base ----------------------------------------------------------- */
   /* --- Portrait ------------------------------------------------------------ */
-  /* --- Cooldown Bar (drains right-to-left) --------------------------------- */
+  /* --- Status Bar (cooldown/downed - positioned at top) -------------------- */
   /* --- Action Button Overlay ----------------------------------------------- */
   /* --- Nameplate ----------------------------------------------------------- */
   /* --- Downed Overlay ------------------------------------------------------ */
@@ -907,18 +907,23 @@
   padding: 8px;
   background: var(--tc-team-portrait-bg);
 }
-#masks-turncards .turncard__cooldown {
+#masks-turncards .turncard__status-bar {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 20px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--tc-cooldown-label-bg);
   overflow: hidden;
   z-index: 1;
+}
+#masks-turncards .turncard__status-bar--cooldown {
+  background: var(--tc-cooldown-label-bg);
+}
+#masks-turncards .turncard__status-bar--downed {
+  background: rgba(180, 50, 50, 0.9);
 }
 #masks-turncards .turncard__cooldown-bar {
   position: absolute;
@@ -929,7 +934,7 @@
   background: var(--tc-cooldown-bar-bg);
   transition: width var(--tc-transition-bar);
 }
-#masks-turncards .turncard__cooldown-label {
+#masks-turncards .turncard__status-label {
   position: relative;
   z-index: 2;
   font-size: 0.6rem;

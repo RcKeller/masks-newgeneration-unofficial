@@ -1083,20 +1083,27 @@
     background: var(--tc-team-portrait-bg);
   }
 
-  /* --- Cooldown Bar (drains right-to-left) --------------------------------- */
+  /* --- Status Bar (cooldown/downed - positioned at top) -------------------- */
 
-  .turncard__cooldown {
+  .turncard__status-bar {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 20px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--tc-cooldown-label-bg);
     overflow: hidden;
     z-index: 1;
+  }
+
+  .turncard__status-bar--cooldown {
+    background: var(--tc-cooldown-label-bg);
+  }
+
+  .turncard__status-bar--downed {
+    background: rgba(180, 50, 50, 0.9);
   }
 
   .turncard__cooldown-bar {
@@ -1104,14 +1111,14 @@
     top: 0;
     right: 0; // Anchored to right - drains left
     bottom: 0;
-    // Width based on fraction
+    // Width based on fraction - starts full (100%) and drains to 0
     width: calc(var(--cooldown-frac, 0) * 100%);
     background: var(--tc-cooldown-bar-bg);
     // Smooth animated transition when cooldown changes
     transition: width var(--tc-transition-bar);
   }
 
-  .turncard__cooldown-label {
+  .turncard__status-label {
     position: relative;
     z-index: 2;
     font-size: 0.6rem;
