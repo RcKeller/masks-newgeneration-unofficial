@@ -11,15 +11,16 @@ import {
 /**
  * masks-newgeneration-unofficial / turn-cards.mjs
  * ----------------------------------------------------------------------------
- * Team Turn Cards HUD - Revised Implementation v2
+ * Team Turn Cards HUD - Revised Implementation v4
  *
  * Features:
  * - Shows playable Characters (actor.type === "character") in the active Combat
- * - Cooldown system: can't act again until all other PCs have acted
- * - Team pool integration with +/- controls (replaces separate team HUD)
+ * - Cooldown system: can't act again until cooldown depletes to 0
+ * - Team pool integration with +/- controls
  * - Potential (XP) tracking via star icon
  * - Shift Labels via circle icon (with chat announcements)
  * - Forward/Ongoing display and controls
+ * - Aid teammate functionality (spend team to give +1 forward)
  * - Context menu for Influence actions
  * - Proper permission handling for GMs and players
  */
@@ -30,19 +31,11 @@ import {
 
 	// Combat flag: cooldown remaining turns by combatant id
 	const FLAG_COOLDOWN_MAP = "turnCardsCooldownMap";
-	// Combat flag: track who has acted this round (resets on round change)
-	const FLAG_ACTED_THIS_ROUND = "turnCardsActedThisRound";
 
 	// Actor fallback flag for potential if the sheet doesn't have system.attributes.xp
 	const FLAG_POTENTIAL_FALLBACK = "turnCardsPotential";
 
 	const POTENTIAL_MAX = 5;
-
-	// Compendium links for chat messages
-	const TEAM_SPEND_UUID =
-		"@UUID[Compendium.masks-newgeneration-unofficial.moves.Item.H7mJLUYVlQ3ZPGHK]{Spending Team}";
-	const AID_TEAMMATE_UUID =
-		"@UUID[Compendium.masks-newgeneration-unofficial.moves.Item.H7mJLUYVlQ3ZPGHK]{Aid a Teammate}";
 
 	// Influence settings (already registered by tools.mjs)
 	const KEY_ANNOUNCE_INFLUENCE = "announceInfluenceChanges";
@@ -136,10 +129,6 @@ import {
 		return Number.isFinite(v) ? v : 0;
 	}
 
-	function getActorEffectiveBonus(actor) {
-		return getActorForward(actor) + getActorOngoing(actor);
-	}
-
 	function isDowned(cbt) {
 		const defeated = cbt?.defeated === true;
 		const hp = Number(
@@ -165,42 +154,85 @@ import {
 		return { lo, hi };
 	}
 
+	function getActorLabelValue(actor, key) {
+		const v = Number(
+			foundry.utils.getProperty(actor, `system.stats.${key}.value`)
+		);
+		return Number.isFinite(v) ? v : 0;
+	}
+
+	/**
+	 * Returns which labels can legally be shifted up or down
+	 */
+	function getShiftableLabels(actor) {
+		const { lo, hi } = shiftBounds();
+		const canShiftUp = [];
+		const canShiftDown = [];
+
+		for (const key of LABEL_KEYS) {
+			const val = getActorLabelValue(actor, key);
+			if (val < hi) canShiftUp.push(key);
+			if (val > lo) canShiftDown.push(key);
+		}
+
+		return { canShiftUp, canShiftDown };
+	}
+
 	async function promptShiftLabels(actor, { title = null } = {}) {
+		const { canShiftUp, canShiftDown } = getShiftableLabels(actor);
+
+		if (canShiftUp.length === 0 || canShiftDown.length === 0) {
+			ui.notifications?.warn?.("No valid label shifts available (all at limits).");
+			return null;
+		}
+
 		const labels = LABEL_KEYS.map((k) => ({
 			key: k,
 			label: String(statLabel(actor, k)),
+			value: getActorLabelValue(actor, k),
 		}));
 
 		const escape = (s) => foundry.utils.escapeHTML(String(s));
+		const { lo, hi } = shiftBounds();
 
 		const optsUp = labels
-			.map(
-				(l, i) =>
-					`<option value="${l.key}" ${i === 0 ? "selected" : ""}>${escape(
-						l.label
-					)}</option>`
-			)
+			.map((l) => {
+				const disabled = !canShiftUp.includes(l.key);
+				const atMax = l.value >= hi;
+				const suffix = atMax ? ` (at max ${hi})` : "";
+				return `<option value="${l.key}" ${disabled ? "disabled" : ""}>${escape(
+					l.label
+				)} [${l.value}]${suffix}</option>`;
+			})
 			.join("");
 
-		const downDefaultIndex = labels.length > 1 ? 1 : 0;
 		const optsDown = labels
-			.map(
-				(l, i) =>
-					`<option value="${l.key}" ${
-						i === downDefaultIndex ? "selected" : ""
-					}>${escape(l.label)}</option>`
-			)
+			.map((l) => {
+				const disabled = !canShiftDown.includes(l.key);
+				const atMin = l.value <= lo;
+				const suffix = atMin ? ` (at min ${lo})` : "";
+				return `<option value="${l.key}" ${disabled ? "disabled" : ""}>${escape(
+					l.label
+				)} [${l.value}]${suffix}</option>`;
+			})
 			.join("");
+
+		// Find first valid defaults
+		const defaultUp = canShiftUp[0] || LABEL_KEYS[0];
+		const defaultDown =
+			canShiftDown.find((k) => k !== defaultUp) ||
+			canShiftDown[0] ||
+			LABEL_KEYS[1];
 
 		const content = `
 			<form>
 				<p style="margin:0 0 0.5rem 0;">Choose one Label to shift <b>up</b> and one to shift <b>down</b>.</p>
 				<div class="form-group">
-					<label>Shift up:</label>
+					<label>Shift up (+1):</label>
 					<select name="up">${optsUp}</select>
 				</div>
 				<div class="form-group">
-					<label>Shift down:</label>
+					<label>Shift down (-1):</label>
 					<select name="down">${optsDown}</select>
 				</div>
 				<p class="notes" style="margin:0.35rem 0 0 0; opacity:0.8;">(They must be different.)</p>
@@ -223,6 +255,19 @@ import {
 								ui.notifications?.warn?.("Choose two different Labels to shift.");
 								return resolve(null);
 							}
+							// Validate they're actually legal
+							if (!canShiftUp.includes(up)) {
+								ui.notifications?.warn?.(
+									`Cannot shift ${statLabel(actor, up)} up (already at max).`
+								);
+								return resolve(null);
+							}
+							if (!canShiftDown.includes(down)) {
+								ui.notifications?.warn?.(
+									`Cannot shift ${statLabel(actor, down)} down (already at min).`
+								);
+								return resolve(null);
+							}
 							resolve({ up, down });
 						},
 					},
@@ -230,12 +275,19 @@ import {
 				},
 				default: "ok",
 				close: () => resolve(null),
+				render: (html) => {
+					// Set default selections
+					const upSel = html[0]?.querySelector("select[name='up']");
+					const downSel = html[0]?.querySelector("select[name='down']");
+					if (upSel) upSel.value = defaultUp;
+					if (downSel) downSel.value = defaultDown;
+				},
 			}).render(true);
 		});
 	}
 
 	/**
-	 * Apply label shifts and announce to chat (matching character sheet behavior)
+	 * Apply label shifts and announce to chat
 	 */
 	async function applyShiftLabels(actor, upKey, downKey, options = {}) {
 		const { announce = true, reason = "shift", sourceActor = null } = options;
@@ -249,6 +301,20 @@ import {
 
 		if (!Number.isFinite(curUp) || !Number.isFinite(curDown)) {
 			ui.notifications?.warn?.("This actor doesn't have a Labels track to shift.");
+			return false;
+		}
+
+		// Validate bounds
+		if (curUp >= hi) {
+			ui.notifications?.warn?.(
+				`${statLabel(actor, upKey)} is already at maximum (${hi}).`
+			);
+			return false;
+		}
+		if (curDown <= lo) {
+			ui.notifications?.warn?.(
+				`${statLabel(actor, downKey)} is already at minimum (${lo}).`
+			);
 			return false;
 		}
 
@@ -281,7 +347,7 @@ import {
 			return false;
 		}
 
-		// Announce to chat (matching character sheet behavior)
+		// Announce to chat
 		if (announce) {
 			const upLabel = statLabel(actor, upKey);
 			const downLabel = statLabel(actor, downKey);
@@ -561,24 +627,20 @@ import {
 
 	/* ----------------------------- Team Service ------------------------------ */
 
-	// Team pool management - mirrors team.mjs but integrated here
 	const TeamService = {
 		_teamDoc: null,
 		_docId: null,
 
 		async _getTeamDoc({ createIfMissing = false } = {}) {
-			// Try cached
 			if (this._teamDoc && game.journal?.has(this._teamDoc.id))
 				return this._teamDoc;
 
-			// Try stored id
 			const storedId = game.settings.get(NS, "teamDocId");
 			if (storedId) {
 				const found = game.journal?.get(storedId);
 				if (found) return (this._teamDoc = found);
 			}
 
-			// Try by flag
 			const fromFlag = game.journal?.find(
 				(j) => j.getFlag(NS, "isTeamDoc") === true
 			);
@@ -587,7 +649,6 @@ import {
 				return (this._teamDoc = fromFlag);
 			}
 
-			// Try by name
 			const byName = game.journal?.find((j) => j.name === "MASKS • Team Pool");
 			if (byName) {
 				if (game.user.isGM && byName.getFlag(NS, "isTeamDoc") !== true) {
@@ -597,7 +658,6 @@ import {
 				return (this._teamDoc = byName);
 			}
 
-			// Create if GM
 			if (createIfMissing && game.user.isGM) {
 				const OWNER = CONST.DOCUMENT_OWNERSHIP_LEVELS?.OWNER ?? 3;
 				const data = {
@@ -631,7 +691,9 @@ import {
 
 		get canEdit() {
 			const allowBySetting = game.settings.get(NS, "playersCanEdit");
-			return allowBySetting && this._teamDoc?.isOwner === true;
+			return (
+				game.user?.isGM || (allowBySetting && this._teamDoc?.isOwner === true)
+			);
 		},
 
 		get value() {
@@ -640,12 +702,18 @@ import {
 			return Number.isFinite(v) ? Math.max(0, Math.floor(v)) : 0;
 		},
 
-		async change(delta, { announce = true } = {}) {
+		async change(
+			delta,
+			{ announce = true, reason = null, actorName = null } = {}
+		) {
 			const current = this.value;
-			return this.set(current + delta, { announce });
+			return this.set(current + delta, { announce, reason, actorName, delta });
 		},
 
-		async set(n, { announce = true } = {}) {
+		async set(
+			n,
+			{ announce = true, reason = null, actorName = null, delta = null } = {}
+		) {
 			n = Math.max(0, Number.isFinite(Number(n)) ? Math.floor(Number(n)) : 0);
 
 			this._teamDoc ??= await this._getTeamDoc();
@@ -668,12 +736,24 @@ import {
 				await this._teamDoc.setFlag(NS, "team", n);
 
 				if (announce && game.settings.get(NS, "announceChanges")) {
-					const d = n - old;
+					const d = delta ?? n - old;
 					const sign = d > 0 ? "+" : "";
 					const from = game.user?.name ?? "Player";
 
+					let content = `<b>Team Pool</b>: ${old} → <b>${n}</b> (${sign}${d})`;
+
+					if (reason === "aid" && actorName) {
+						content = `<b>${foundry.utils.escapeHTML(
+							from
+						)}</b> spends 1 Team to aid <b>${foundry.utils.escapeHTML(
+							actorName
+						)}</b>! Team Pool: ${old} → <b>${n}</b>`;
+					} else {
+						content += ` <span class="color-muted">— ${from}</span>`;
+					}
+
 					await ChatMessage.create({
-						content: `<b>Team Pool</b>: ${old} → <b>${n}</b> (${sign}${d}) <span class="color-muted">— ${from}</span>`,
+						content,
 						type: CONST.CHAT_MESSAGE_TYPES.OTHER,
 					});
 				}
@@ -690,7 +770,6 @@ import {
 		},
 	};
 
-	// Expose globally for other modules
 	globalThis.MasksTeam = TeamService;
 
 	/* ---------------------------------- HUD ---------------------------------- */
@@ -722,7 +801,6 @@ import {
 			this._registerHooks();
 			this._initSocket();
 
-			// Initialize team service
 			TeamService.ensureReady().then(() => TeamService.init());
 
 			if (game.user?.isGM)
@@ -743,30 +821,26 @@ import {
 
 				const flagChanged =
 					foundry.utils.getProperty(changes, `flags.${NS}.${FLAG_COOLDOWN_MAP}`) !==
-						undefined ||
-					foundry.utils.getProperty(
-						changes,
-						`flags.${NS}.${FLAG_ACTED_THIS_ROUND}`
-					) !== undefined;
+					undefined;
 
-				// Check if round advanced - reset acted-this-round state
-				const roundChanged = Object.prototype.hasOwnProperty.call(
-					changes ?? {},
-					"round"
-				);
-				if (roundChanged && isRelevant && game.user?.isGM) {
-					this._resetActedThisRound(doc).finally(() => this._queueRender());
-					return;
-				}
-
-				// Check if turn advanced in initiative tracker
+				// Check if turn advanced in initiative tracker - this counts as a turn
 				const turnChanged = Object.prototype.hasOwnProperty.call(
 					changes ?? {},
 					"turn"
 				);
 				if (turnChanged && isRelevant && game.user?.isGM) {
-					// Advancing turn in encounter tracker counts as a turn taken
+					// Advance cooldowns for ALL characters (no exclusion)
 					this.advanceCooldowns(null).finally(() => this._queueRender());
+					return;
+				}
+
+				// Round changes - re-render but don't reset cooldowns
+				const roundChanged = Object.prototype.hasOwnProperty.call(
+					changes ?? {},
+					"round"
+				);
+				if (roundChanged && isRelevant) {
+					this._queueRender();
 					return;
 				}
 
@@ -816,7 +890,6 @@ import {
 			});
 
 			Hooks.on("updateJournalEntry", (doc) => {
-				// Re-render if team doc changes
 				if (TeamService._teamDoc && doc.id === TeamService._teamDoc.id) {
 					this._queueRender();
 				}
@@ -837,33 +910,53 @@ import {
 			try {
 				game.socket?.on(SOCKET_NS, async (data) => {
 					if (!data || !data.action) return;
-					if (!game.user?.isGM) return;
 
-					if (data.action === "turnCardsMark") {
-						const actorId = data.actorId;
-						if (!actorId) return;
-						await this.onActorTurn(actorId);
-						await this.advanceCooldowns(actorId);
-						return;
-					}
+					// GM-only actions
+					if (game.user?.isGM) {
+						if (data.action === "turnCardsMark") {
+							const { visibleCombatantId } = data;
+							if (!visibleCombatantId) return;
+							await this._gmHandleMarkTurn(visibleCombatantId);
+							return;
+						}
 
-					if (data.action === "turnCardsForwardChange") {
-						const { actorId, delta, userId } = data;
-						if (!actorId) return;
-						await this._gmApplyForwardChange(actorId, delta, userId);
-						return;
-					}
+						if (data.action === "turnCardsGmTurn") {
+							// GM turn (from team card action or initiative advance)
+							await this.advanceCooldowns(null);
+							return;
+						}
 
-					if (data.action === "turnCardsShiftLabels") {
-						const { targetActorId, sourceActorId, up, down, reason } = data;
-						if (!targetActorId || !up || !down) return;
-						await this._gmApplyShiftLabels({
-							targetActorId,
-							sourceActorId: sourceActorId ?? null,
-							up,
-							down,
-							reason: reason ?? "shift",
-						});
+						if (data.action === "turnCardsForwardChange") {
+							const { actorId, delta, userId, isAid, sourceActorId } = data;
+							if (!actorId) return;
+							await this._gmApplyForwardChange(
+								actorId,
+								delta,
+								userId,
+								isAid,
+								sourceActorId
+							);
+							return;
+						}
+
+						if (data.action === "turnCardsShiftLabels") {
+							const { targetActorId, sourceActorId, up, down, reason } = data;
+							if (!targetActorId || !up || !down) return;
+							await this._gmApplyShiftLabels({
+								targetActorId,
+								sourceActorId: sourceActorId ?? null,
+								up,
+								down,
+								reason: reason ?? "shift",
+							});
+							return;
+						}
+
+						if (data.action === "turnCardsTeamChange") {
+							const { delta, reason, actorName } = data;
+							await TeamService.change(delta, { announce: true, reason, actorName });
+							return;
+						}
 					}
 				});
 			} catch (err) {
@@ -936,7 +1029,7 @@ import {
 						ev.preventDefault();
 						ev.stopPropagation();
 						ev.stopImmediatePropagation?.();
-						await this._handleForwardClick(fwdBtn, -1);
+						await this._handleForwardClick(fwdBtn, -1, ev);
 						return;
 					}
 				},
@@ -967,23 +1060,26 @@ import {
 					break;
 
 				case "forward":
-					await this._handleForwardClick(actionEl, +1);
+					await this._handleForwardClick(actionEl, +1, ev);
 					break;
 
-				case "gm-turn":
-					if (!game.user?.isGM) return;
-					await this.advanceCooldowns(null);
+				case "team-action":
+					// Team card action - counts as a GM/NPC turn, advances all cooldowns
+					if (game.user?.isGM) {
+						await this.advanceCooldowns(null);
+					} else {
+						this._requestGmTurn();
+					}
 					break;
 
 				case "card-action": {
-					const actorId = actionEl.dataset.actorId ?? null;
-					if (!actorId) return;
+					const combatantId = actionEl.dataset.combatantId ?? null;
+					if (!combatantId) return;
 
 					if (game.user?.isGM) {
-						await this.onActorTurn(actorId);
-						await this.advanceCooldowns(actorId);
+						await this._gmHandleMarkTurn(combatantId);
 					} else {
-						this._requestGmMarkActorTurn(actorId);
+						this._requestGmMarkTurn(combatantId);
 					}
 					break;
 				}
@@ -994,18 +1090,30 @@ import {
 
 				case "team-minus": {
 					const step = ev.shiftKey ? -5 : -1;
-					await TeamService.change(step);
+					if (game.user?.isGM || TeamService.canEdit) {
+						await TeamService.change(step);
+					} else {
+						this._requestGmTeamChange(step);
+					}
 					break;
 				}
 
 				case "team-plus": {
 					const step = ev.shiftKey ? 5 : 1;
-					await TeamService.change(step);
+					if (game.user?.isGM || TeamService.canEdit) {
+						await TeamService.change(step);
+					} else {
+						this._requestGmTeamChange(step);
+					}
 					break;
 				}
 
 				case "team-reset":
-					await TeamService.set(0);
+					if (game.user?.isGM || TeamService.canEdit) {
+						await TeamService.set(0);
+					} else {
+						ui.notifications?.warn?.("Only the GM can reset the Team pool.");
+					}
 					break;
 			}
 		},
@@ -1137,7 +1245,6 @@ import {
 				return;
 			}
 
-			// Verify src has Influence over target
 			const has = InfluenceIndex.hasEdgeFromKeyToKey(
 				compositeKey(src.actor),
 				compositeKey(targetActor)
@@ -1200,52 +1307,126 @@ import {
 			actionEl.classList.add("is-bump");
 		},
 
-		async _handleForwardClick(actionEl, delta) {
-			const actorId = actionEl.dataset.actorId ?? null;
-			if (!actorId) return;
+		/**
+		 * Handle forward button click
+		 * - Left click on own card: +1 forward to self
+		 * - Left click on other's card: Aid teammate (spend 1 team, give +1 forward)
+		 * - Right click: -1 forward (self only)
+		 */
+		async _handleForwardClick(actionEl, delta, ev) {
+			const targetActorId = actionEl.dataset.actorId ?? null;
+			if (!targetActorId) return;
 
-			const actor = game.actors?.get?.(actorId);
-			if (!actor) return;
+			const targetActor = game.actors?.get?.(targetActorId);
+			if (!targetActor) return;
 
-			if (canEditActor(actor)) {
-				const forwardPath = "system.resources.forward.value";
-				const current = getActorForward(actor);
-				const next = Math.max(0, current + delta);
+			// Determine the source (clicking user's character)
+			const src = await this._resolveInfluenceSource();
+			const sourceActor = src?.actor ?? null;
+			const isSelf = sourceActor && sourceActor.id === targetActorId;
 
-				if (next === current) return;
-
-				try {
-					await actor.update({ [forwardPath]: next });
-
-					const safeName =
-						foundry.utils.escapeHTML?.(actor.name ?? "Character") ??
-						actor.name ??
-						"Character";
-					const sign = delta > 0 ? "+" : "";
-					ui.notifications?.info?.(
-						`${safeName}: Forward ${current} → ${next} (${sign}${delta})`
-					);
-
-					// Announce significant changes to chat
-					if (delta > 0) {
-						await ChatMessage.create({
-							content: `${AID_TEAMMATE_UUID} — <b>${safeName}</b> gains <b>+${delta} Forward</b>.`,
-							type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-						});
-					}
-				} catch (err) {
-					console.error(`[${NS}] Failed to update Forward for ${actor.name}`, err);
-					ui.notifications?.error?.("Couldn't update Forward (see console).");
-				}
-			} else {
-				// Relay to GM
-				if (!game.socket || !hasAnyActiveGM()) {
+			// Right-click always subtracts from self only
+			if (delta < 0) {
+				if (!isSelf) {
 					ui.notifications?.warn?.(
-						"A GM must be online to change that character's Forward."
+						"You can only remove Forward from your own character."
 					);
 					return;
 				}
-				this._requestGmForwardChange(actorId, delta);
+				if (!canEditActor(targetActor)) {
+					ui.notifications?.warn?.(
+						"You don't have permission to edit that character."
+					);
+					return;
+				}
+				await this._applyForwardChange(targetActor, delta, false, null);
+				return;
+			}
+
+			// Left click (+1)
+			if (isSelf) {
+				// Adding forward to self
+				if (!canEditActor(targetActor)) {
+					ui.notifications?.warn?.(
+						"You don't have permission to edit that character."
+					);
+					return;
+				}
+				await this._applyForwardChange(targetActor, delta, false, null);
+			} else {
+				// Aid teammate: spend 1 team, give +1 forward
+				const teamValue = TeamService.value;
+				if (teamValue < 1) {
+					ui.notifications?.warn?.(
+						"Not enough Team to aid a teammate (requires 1)."
+					);
+					return;
+				}
+
+				// Check if we can edit either the team pool or need GM relay
+				const canEditTeam = TeamService.canEdit || game.user?.isGM;
+				const canEditTarget = canEditActor(targetActor);
+
+				if (canEditTeam && canEditTarget) {
+					// We can do everything locally
+					await TeamService.change(-1, {
+						announce: true,
+						reason: "aid",
+						actorName: targetActor.name,
+					});
+					await this._applyForwardChange(targetActor, 1, true, sourceActor);
+				} else if (game.user?.isGM) {
+					// GM can always do it
+					await TeamService.change(-1, {
+						announce: true,
+						reason: "aid",
+						actorName: targetActor.name,
+					});
+					await this._applyForwardChange(targetActor, 1, true, sourceActor);
+				} else {
+					// Need GM relay
+					if (!hasAnyActiveGM()) {
+						ui.notifications?.warn?.("A GM must be online to aid a teammate.");
+						return;
+					}
+					this._requestGmAidTeammate(targetActorId, sourceActor?.id);
+				}
+			}
+		},
+
+		async _applyForwardChange(actor, delta, isAid = false, sourceActor = null) {
+			const forwardPath = "system.resources.forward.value";
+			const current = getActorForward(actor);
+			const next = Math.max(0, current + delta);
+
+			if (next === current) return;
+
+			try {
+				await actor.update({ [forwardPath]: next });
+
+				const safeName =
+					foundry.utils.escapeHTML?.(actor.name ?? "Character") ??
+					actor.name ??
+					"Character";
+
+				// Always announce Forward changes to chat (but not as "Aid" if it's just self-adjustment)
+				const sign = delta > 0 ? "+" : "";
+
+				if (isAid && sourceActor) {
+					// Aid message is already sent by TeamService, just show the forward gain
+					await ChatMessage.create({
+						content: `<b>${safeName}</b> gains <b>+1 Forward</b> (now ${next}).`,
+						type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+					});
+				} else {
+					await ChatMessage.create({
+						content: `<b>${safeName}</b>: Forward ${current} → <b>${next}</b> (${sign}${delta})`,
+						type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+					});
+				}
+			} catch (err) {
+				console.error(`[${NS}] Failed to update Forward for ${actor.name}`, err);
+				ui.notifications?.error?.("Couldn't update Forward (see console).");
 			}
 		},
 
@@ -1263,6 +1444,15 @@ import {
 				return;
 			}
 
+			// Check if any shifts are possible
+			const { canShiftUp, canShiftDown } = getShiftableLabels(actor);
+			if (canShiftUp.length === 0 || canShiftDown.length === 0) {
+				ui.notifications?.warn?.(
+					"No valid label shifts available (all at limits)."
+				);
+				return;
+			}
+
 			const picked = await promptShiftLabels(actor, {
 				title: `Shift Labels: ${actor.name}`,
 			});
@@ -1274,44 +1464,28 @@ import {
 			});
 		},
 
-		async _gmApplyForwardChange(actorId, delta, userId = null) {
+		async _gmApplyForwardChange(
+			actorId,
+			delta,
+			userId = null,
+			isAid = false,
+			sourceActorId = null
+		) {
 			const actor = game.actors?.get?.(actorId);
 			if (!actor) return;
 
-			const forwardPath = "system.resources.forward.value";
-			const current = getActorForward(actor);
-			const next = Math.max(0, current + delta);
+			const sourceActor = sourceActorId ? game.actors?.get?.(sourceActorId) : null;
 
-			if (next === current) return;
-
-			try {
-				await actor.update({ [forwardPath]: next });
-
-				const safeName =
-					foundry.utils.escapeHTML?.(actor.name ?? "Character") ??
-					actor.name ??
-					"Character";
-				const by = userId ? game.users?.get?.(userId)?.name ?? null : null;
-
-				if (delta > 0) {
-					const content =
-						`${AID_TEAMMATE_UUID} — <b>${safeName}</b> gains <b>+${delta} Forward</b>.` +
-						(by
-							? ` <span class="color-muted">— requested by ${foundry.utils.escapeHTML(
-									by
-							  )}</span>`
-							: "");
-					await ChatMessage.create({
-						content,
-						type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-					});
-				}
-			} catch (err) {
-				console.error(
-					`[${NS}] GM failed to apply Forward change for ${actor.name}`,
-					err
-				);
+			if (isAid) {
+				// Deduct team first
+				await TeamService.change(-1, {
+					announce: true,
+					reason: "aid",
+					actorName: actor.name,
+				});
 			}
+
+			await this._applyForwardChange(actor, delta, isAid, sourceActor);
 		},
 
 		async _gmApplyShiftLabels({
@@ -1343,9 +1517,28 @@ import {
 			});
 		},
 
-		_requestGmMarkActorTurn(actorId) {
+		/**
+		 * GM handler for when a player marks their turn
+		 */
+		async _gmHandleMarkTurn(combatantId) {
+			const combat = getActiveCombat();
+			if (!combat) return;
+
+			const cbt = combat.combatants?.get?.(combatantId);
+			if (!cbt) return;
+
+			// Mark the actor as having acted (set cooldown)
+			await this.onActorTurn(cbt.actor?.id);
+			// Advance all OTHER cooldowns
+			await this.advanceCooldowns(cbt.actor?.id);
+		},
+
+		_requestGmMarkTurn(combatantId) {
 			try {
-				game.socket?.emit(SOCKET_NS, { action: "turnCardsMark", actorId });
+				game.socket?.emit(SOCKET_NS, {
+					action: "turnCardsMark",
+					visibleCombatantId: combatantId,
+				});
 			} catch (err) {
 				console.warn(
 					`[${NS}] Socket emit failed; Turn Cards mark requires GM permissions.`,
@@ -1354,19 +1547,42 @@ import {
 			}
 		},
 
-		_requestGmForwardChange(actorId, delta) {
+		_requestGmTurn() {
+			try {
+				game.socket?.emit(SOCKET_NS, { action: "turnCardsGmTurn" });
+			} catch (err) {
+				console.warn(
+					`[${NS}] Socket emit failed; GM turn requires GM permissions.`,
+					err
+				);
+			}
+		},
+
+		_requestGmTeamChange(delta, reason = null, actorName = null) {
+			try {
+				game.socket?.emit(SOCKET_NS, {
+					action: "turnCardsTeamChange",
+					delta,
+					reason,
+					actorName,
+				});
+			} catch (err) {
+				console.warn(`[${NS}] Socket emit failed; Team change requires GM.`, err);
+			}
+		},
+
+		_requestGmAidTeammate(targetActorId, sourceActorId) {
 			try {
 				game.socket?.emit(SOCKET_NS, {
 					action: "turnCardsForwardChange",
-					actorId,
-					delta,
+					actorId: targetActorId,
+					delta: 1,
 					userId: game.user?.id ?? null,
+					isAid: true,
+					sourceActorId,
 				});
 			} catch (err) {
-				console.warn(
-					`[${NS}] Socket emit failed; Forward change requires GM.`,
-					err
-				);
+				console.warn(`[${NS}] Socket emit failed; Aid teammate requires GM.`, err);
 			}
 		},
 
@@ -1404,6 +1620,7 @@ import {
 		_teamSizeAndMaxTurns(combat) {
 			const team = getTeamCombatants(combat);
 			const size = team.length;
+			// Max cooldown = team size - 1 (minimum 0)
 			const maxTurns = Math.max(0, size - 1);
 			return { team, size, maxTurns };
 		},
@@ -1427,38 +1644,10 @@ import {
 			}
 		},
 
-		_readActedThisRound(combat) {
-			const raw = combat?.getFlag?.(NS, FLAG_ACTED_THIS_ROUND);
-			if (!raw || typeof raw !== "object") return {};
-			return foundry.utils.deepClone(raw);
-		},
-
-		async _writeActedThisRound(combat, mapObj) {
-			if (!combat) return;
-			const map = mapObj && typeof mapObj === "object" ? mapObj : {};
-
-			try {
-				await combat.setFlag(NS, FLAG_ACTED_THIS_ROUND, map);
-			} catch (err) {
-				console.warn(`[${NS}] Failed to write acted-this-round map`, err);
-			}
-		},
-
 		_getRemainingFromMap(map, combatantId, maxTurns) {
 			const raw = Number(map?.[combatantId] ?? NaN);
 			const n = Number.isFinite(raw) ? Math.max(0, Math.floor(raw)) : 0;
 			return Math.min(n, Math.max(0, maxTurns));
-		},
-
-		/**
-		 * Reset acted-this-round state (called on round change)
-		 */
-		async _resetActedThisRound(combat) {
-			if (!combat) combat = getActiveCombat();
-			if (!combat) return;
-			if (!game.user?.isGM) return;
-
-			await this._writeActedThisRound(combat, {});
 		},
 
 		/**
@@ -1506,6 +1695,7 @@ import {
 
 		/**
 		 * GM-only: Called when a character takes a turn.
+		 * Sets their cooldown to teamSize - 1.
 		 */
 		async onActorTurn(actorId) {
 			const combat = getActiveCombat();
@@ -1521,19 +1711,17 @@ import {
 			const acting = team.find((cbt) => cbt?.actor?.id === actorId);
 			if (!acting) return;
 
-			// Set cooldown
+			// Set cooldown to maxTurns (teamSize - 1)
 			const map = this._readCooldownMap(combat);
 			map[acting.id] = maxTurns;
 			await this._writeCooldownMap(combat, map);
-
-			// Mark acted this round
-			const actedMap = this._readActedThisRound(combat);
-			actedMap[acting.id] = true;
-			await this._writeActedThisRound(combat, actedMap);
 		},
 
 		/**
 		 * GM-only: Decrement remainingTurns for every combatant currently > 0.
+		 * Characters with cooldown reaching 0 become READY again.
+		 *
+		 * @param {string|null} excludeActorId - Actor ID to exclude from decrement (the one who just acted)
 		 */
 		async advanceCooldowns(excludeActorId = null) {
 			const combat = getActiveCombat();
@@ -1553,6 +1741,7 @@ import {
 				const a = cbt?.actor;
 				if (!a) continue;
 
+				// Don't decrement the actor who just acted
 				if (excludeActorId && a.id === excludeActorId) continue;
 
 				const cur = this._getRemainingFromMap(map, cbt.id, maxTurns);
@@ -1560,6 +1749,7 @@ import {
 
 				const next = cur - 1;
 				if (next <= 0) {
+					// Cooldown depleted - remove from map (ready state)
 					delete map[cbt.id];
 				} else {
 					map[cbt.id] = next;
@@ -1589,7 +1779,6 @@ import {
 
 			this.root.style.display = "";
 
-			// Refresh team doc reference
 			await TeamService.init();
 
 			const teamValue = TeamService.value;
@@ -1598,17 +1787,23 @@ import {
 			const isGM = game.user?.isGM === true;
 			const cooldownMap = this._readCooldownMap(combat);
 
+			// Get the current user's actor for determining "self" vs "other"
+			const myActor = game.user?.character;
+			const myActorId = myActor?.id ?? null;
+
 			const cards = team.map((cbt) => {
 				const actor = cbt.actor;
 
 				const ownsActor = canEditActor(actor);
 				const ownsCombatant = canEditCombatant(cbt);
 				const downed = isDowned(cbt);
+				const isSelf = myActorId && actor.id === myActorId;
 
 				const remaining = this._getRemainingFromMap(cooldownMap, cbt.id, maxTurns);
 				const onCooldown = remaining > 0 && maxTurns > 0;
 
 				// Cooldown fraction: 1 = full bar (just acted), 0 = ready
+				// Bar drains right-to-left
 				const cooldownFrac =
 					onCooldown && maxTurns > 0
 						? Math.max(0, Math.min(1, remaining / maxTurns))
@@ -1624,15 +1819,16 @@ import {
 				const ongoing = getActorOngoing(actor);
 				const effectiveBonus = forward + ongoing;
 
+				// Status for card state
 				const status = downed ? "down" : onCooldown ? "busy" : "ready";
-				const statusLabel = downed
-					? "Downed"
-					: onCooldown
-					? `Cooldown (${remaining})`
-					: "Ready";
+
+				// Tooltip shows cooldown details
+				const statusTooltip = `Cooldown: ${remaining} turn${
+					remaining !== 1 ? "s" : ""
+				} remaining`;
 
 				// GMs can always take actions regardless of cooldown
-				// Owners can only act when ready
+				// Owners can only act when ready (cooldown === 0)
 				const canMarkTurn = isGM || ownsCombatant;
 				const readyToAct = !downed && !onCooldown;
 				const canAction = isGM ? !downed : canMarkTurn && readyToAct;
@@ -1653,6 +1849,14 @@ import {
 				].filter(Boolean);
 
 				const downedId = downed ? `turncard-downed-${cbt.id}` : null;
+
+				// Forward button logic:
+				// - Always show for all players (they can aid teammates)
+				// - Show + if no bonus, show number with blue bg if bonus exists
+				// - Tooltip explains the action based on self vs other
+				const forwardTooltip = isSelf
+					? `Forward: ${forward} | Ongoing: ${ongoing} (Click +1, Right-click -1)`
+					: `Aid ${actor.name}: Spend 1 Team to give +1 Forward`;
 
 				return {
 					type: "character",
@@ -1677,11 +1881,14 @@ import {
 					forward,
 					ongoing,
 					effectiveBonus,
-					showBonus: effectiveBonus > 0 || ownsActor,
-					canEditForward: ownsActor,
+					showBonus: true, // Always show for everyone
+					hasBonus: effectiveBonus > 0,
+					canEditForward: true, // Everyone can click (self = adjust, other = aid)
+					forwardTooltip,
+					isSelf,
 
 					status,
-					statusLabel,
+					statusTooltip,
 					showStatusBar: onCooldown,
 
 					// Action button
@@ -1689,10 +1896,9 @@ import {
 					actionAria,
 					canMarkTurn,
 
-					// Shift Labels
+					// Shift Labels - only for owners
 					canShiftLabels: ownsActor,
 
-					// Is this the current user's character?
 					isOwner: ownsActor,
 				};
 			});
@@ -1713,7 +1919,6 @@ import {
 			);
 			this.root.innerHTML = html;
 
-			// Setup context menu after render
 			this._setupContextMenu();
 		},
 	};
