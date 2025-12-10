@@ -1092,11 +1092,11 @@
 }
 #masks-turncards .turncard__forward {
   left: 6px;
-  bottom: calc(var(--tc-control-size) - 1px);
+  bottom: calc(var(--tc-control-size) - 0.5px);
   background: transparent;
   border: 1px solid transparent;
   color: #fff;
-  z-index: 1;
+  z-index: 3;
   height: 28px;
   width: 28px;
   border: 1px solid rgba(255, 255, 255, 0.95);
