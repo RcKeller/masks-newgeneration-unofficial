@@ -3,6 +3,7 @@
 	"title": "Masks: A New Generation (Bear Edition)",
 	"description": "Masks: A New Generation from Magpie Games, customized by Andrew Barrows",
 	"version": "#{VERSION}#",
+	"socket": true,
 	"compatibility": {
 		"minimum": 13,
 		"verified": 13.35,

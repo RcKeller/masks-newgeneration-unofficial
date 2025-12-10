@@ -1,7 +1,7 @@
 // module/turn-cards.mjs
-// Turn Cards HUD - Refactored for clarity and reliability
+// Turn Cards HUD - Using v13 Query System for reliable GM delegation
 // Handles: Team Pool, Cooldown System, Potential, Forward/Aid, Label Shifting
-/* global Hooks, game, ui, foundry, renderTemplate, ChatMessage, CONST, canvas, Dialog, ContextMenu */
+/* global Hooks, game, ui, foundry, renderTemplate, ChatMessage, CONST, canvas, Dialog, ContextMenu, CONFIG */
 
 import {
 	normalize,
@@ -38,7 +38,7 @@ const pendingOps = new Set();
 // ────────────────────────────────────────────────────────────────────────────
 
 const isGM = () => game.user?.isGM === true;
-const hasActiveGM = () => game.users?.contents?.some((u) => u?.isGM && u?.active) ?? false;
+const hasActiveGM = () => game.users?.activeGM != null;
 const escape = (s) => foundry.utils.escapeHTML(String(s ?? ""));
 const getProp = (obj, path) => foundry.utils.getProperty(obj, path);
 const clampInt = (n, lo, hi) => Math.min(hi, Math.max(lo, Math.floor(Number(n) || 0)));
@@ -250,29 +250,6 @@ async function setPotentialDirect(actor, val) {
 	const hasXp = getProp(actor, "system.attributes.xp") !== undefined;
 	if (hasXp) await actor.update({ "system.attributes.xp.value": val });
 	else await actor.setFlag(NS, FLAG_POTENTIAL_FALLBACK, val);
-}
-
-async function setPotential(actor, delta) {
-	const cur = getPotential(actor);
-	const next = clampInt(cur + delta, 0, POTENTIAL_MAX);
-	if (next === cur) return;
-
-	if (canEditActor(actor)) {
-		await setPotentialDirect(actor, next);
-		return;
-	}
-
-	if (!hasActiveGM()) {
-		ui.notifications?.warn?.("GM must be online to change Potential.");
-		return;
-	}
-
-	game.socket?.emit(SOCKET_NS, {
-		action: "turnCardsPotentialChange",
-		actorId: actor.id,
-		delta,
-		userId: game.user?.id,
-	});
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -668,74 +645,165 @@ const CooldownSystem = {
 			});
 		}
 	},
-
-	async requestTakeTurn(combat, cbt) {
-		if (!combat || !cbt) return;
-
-		const opKey = `turn-${combat.id}-${cbt.id}`;
-		if (pendingOps.has(opKey)) return;
-		pendingOps.add(opKey);
-		setTimeout(() => pendingOps.delete(opKey), 1500);
-
-		const myActor = getMyActor();
-		const isSelf = myActor && cbt.actor?.id === myActor.id;
-
-		if (!isSelf && !isGM()) {
-			ui.notifications?.warn?.("Can only take action for your own character.");
-			return;
-		}
-
-		if (isDowned(cbt)) {
-			ui.notifications?.warn?.("Downed characters cannot take actions.");
-			return;
-		}
-
-		const team = getTeamCombatants(combat);
-		const maxCd = this.maxCooldown(team.length);
-		const rem = this.remaining(cbt, maxCd);
-
-		if (rem > 0) {
-			ui.notifications?.warn?.(`Still on cooldown (${rem} more turn(s)).`);
-			return;
-		}
-
-		// GM: apply directly
-		if (isGM()) {
-			await this.gmApplyTurn(combat, cbt.id);
-			await this.gmAnnounceTurn(combat, cbt.id);
-			return;
-		}
-
-		// Player: relay to GM via socket
-		if (!hasActiveGM()) {
-			ui.notifications?.warn?.("GM must be online to register actions.");
-			return;
-		}
-
-		console.log(`[${NS}] Emitting turnCardsMarkAction for combatant ${cbt.id}`);
-		game.socket?.emit(SOCKET_NS, {
-			action: "turnCardsMarkAction",
-			combatId: combat.id,
-			combatantId: cbt.id,
-			userId: game.user?.id,
-		});
-	},
-
-	async requestGmTick(combat) {
-		if (!combat || !isGM()) return;
-
-		const opKey = `gmtick-${combat.id}`;
-		if (pendingOps.has(opKey)) return;
-		pendingOps.add(opKey);
-		setTimeout(() => pendingOps.delete(opKey), 1000);
-
-		await this.gmApplyTurn(combat, null);
-		await this.gmAnnounceTurn(combat, null);
-	},
 };
 
 // ────────────────────────────────────────────────────────────────────────────
-// Socket Handler (GM receives player requests)
+// Query Handlers (v13 Query System - GM executes these on behalf of players)
+// ────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Register query handlers in CONFIG.queries during init hook.
+ * Players use User#query to invoke these on the active GM.
+ */
+function registerQueryHandlers() {
+	// Mark Action - Player takes their turn
+	CONFIG.queries[`${NS}.markAction`] = async function (data) {
+		const { combatId, combatantId, userId } = data;
+		const combat = game.combats?.get?.(combatId) ?? getActiveCombat();
+		const cbt = combat?.combatants?.get?.(combatantId);
+		const user = game.users?.get?.(userId);
+
+		if (!combat || !cbt || !user) {
+			return { success: false, error: "Invalid combat/combatant/user" };
+		}
+
+		// Ownership check
+		if (!userOwnsActor(user, cbt.actor)) {
+			return { success: false, error: "User does not own actor" };
+		}
+
+		await CooldownSystem.gmApplyTurn(combat, cbt.id);
+		await CooldownSystem.gmAnnounceTurn(combat, cbt.id);
+		return { success: true };
+	};
+
+	// Aid Teammate - Player spends team to give another player +1 Forward
+	CONFIG.queries[`${NS}.aidTeammate`] = async function (data) {
+		const { targetActorId, sourceUserId } = data;
+		const target = game.actors?.get?.(targetActorId);
+		const sourceUser = game.users?.get?.(sourceUserId);
+
+		if (!target || !sourceUser) {
+			return { success: false, error: "Invalid target or source user" };
+		}
+
+		if (target.type !== "character") {
+			return { success: false, error: "Target is not a character" };
+		}
+
+		await TeamService.ensureReady();
+		await TeamService.init();
+
+		// Check if target is downed
+		const combat = getActiveCombat();
+		const cbt = combat ? getTeamCombatants(combat).find((c) => c.actor?.id === target.id) : null;
+		if (cbt && isDowned(cbt)) {
+			return { success: false, error: `${target.name} is Downed` };
+		}
+
+		const teamOld = TeamService.value;
+		if (teamOld < 1) {
+			return { success: false, error: "Not enough Team" };
+		}
+
+		// Spend 1 team
+		const teamRes = await TeamService.set(teamOld - 1, { announce: false, delta: -1 });
+		if (!teamRes.ok) {
+			return { success: false, error: "Could not spend Team" };
+		}
+
+		// Apply +1 Forward
+		const fwdBefore = getForward(target);
+		await target.update({ "system.resources.forward.value": fwdBefore + 1 });
+
+		// Announce with Aid link
+		const content = `<b>${escape(sourceUser.name)}</b> spends <b>1 Team</b> to aid <b>${escape(target.name)}</b>!<br/>
+Team Pool: ${teamOld} → <b>${teamOld - 1}</b><br/>
+<b>${escape(target.name)}</b> gains <b>+1 Forward</b> (now ${fwdBefore + 1}).<br/>
+${AID_MOVE_UUID}`;
+
+		await ChatMessage.create({ content, type: CONST.CHAT_MESSAGE_TYPES.OTHER });
+		return { success: true };
+	};
+
+	// Change Potential
+	CONFIG.queries[`${NS}.changePotential`] = async function (data) {
+		const { actorId, delta, userId } = data;
+		const actor = game.actors?.get?.(actorId);
+		const user = game.users?.get?.(userId);
+
+		if (!actor || !user) {
+			return { success: false, error: "Invalid actor or user" };
+		}
+
+		if (!userOwnsActor(user, actor)) {
+			return { success: false, error: "User does not own actor" };
+		}
+
+		const cur = getPotential(actor);
+		const next = clampInt(cur + Number(delta || 0), 0, POTENTIAL_MAX);
+		if (next !== cur) await setPotentialDirect(actor, next);
+		return { success: true, newValue: next };
+	};
+
+	// Change Forward
+	CONFIG.queries[`${NS}.changeForward`] = async function (data) {
+		const { actorId, delta, userId } = data;
+		const actor = game.actors?.get?.(actorId);
+		const user = game.users?.get?.(userId);
+
+		if (!actor || !user) {
+			return { success: false, error: "Invalid actor or user" };
+		}
+
+		if (!userOwnsActor(user, actor)) {
+			return { success: false, error: "User does not own actor" };
+		}
+
+		await adjustForward(actor, Number(delta || 0), { announce: true, includeAidLink: false, byUser: user });
+		return { success: true };
+	};
+
+	// Change Team Pool
+	CONFIG.queries[`${NS}.changeTeam`] = async function (data) {
+		const { delta } = data;
+		if (!delta) return { success: false, error: "No delta" };
+		await TeamService.ensureReady();
+		await TeamService.init();
+		await TeamService.change(delta);
+		return { success: true };
+	};
+
+	// Shift Labels
+	CONFIG.queries[`${NS}.shiftLabels`] = async function (data) {
+		const { targetActorId, up, down, reason, sourceActorId } = data;
+		const target = game.actors?.get?.(targetActorId);
+		if (!target || !up || !down) {
+			return { success: false, error: "Invalid parameters" };
+		}
+
+		let sourceActor = null;
+		if (reason === "useInfluence" && sourceActorId) {
+			sourceActor = game.actors?.get?.(sourceActorId);
+			if (!sourceActor) return { success: false, error: "Invalid source actor" };
+			if (!InfluenceIndex.hasEdgeFromKeyToKey(compositeKey(sourceActor), compositeKey(target))) {
+				return { success: false, error: "No influence over target" };
+			}
+		}
+
+		await applyShiftLabels(target, up, down, {
+			announce: true,
+			reason: reason ?? "shift",
+			sourceActor,
+		});
+		return { success: true };
+	};
+
+	console.log(`[${NS}] Query handlers registered`);
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Socket Handler (for broadcasts only - Team sync)
 // ────────────────────────────────────────────────────────────────────────────
 
 function registerSocketHandler() {
@@ -758,161 +826,38 @@ function registerSocketHandler() {
 			return;
 		}
 
-		// GM-only handlers
-		if (!isGM()) return;
-
-		switch (data.action) {
-			case "turnCardsTeamSyncRequest": {
-				console.log(`[${NS}] Received team sync request from user ${data.userId}`);
-				await TeamService.init();
-				TeamService._broadcast(TeamService.value, data.userId ?? null);
-				break;
-			}
-
-			case "turnCardsMarkAction": {
-				console.log(`[${NS}] Received markAction request:`, data);
-				const combat = game.combats?.get?.(data.combatId) ?? getActiveCombat();
-				const cbt = combat?.combatants?.get?.(data.combatantId);
-				const user = game.users?.get?.(data.userId);
-				if (!combat || !cbt || !user) {
-					console.warn(`[${NS}] markAction: missing combat, combatant, or user`);
-					return;
-				}
-
-				// Ownership check
-				if (!userOwnsActor(user, cbt.actor)) {
-					console.warn(`[${NS}] markAction: user does not own actor`);
-					return;
-				}
-
-				await CooldownSystem.gmApplyTurn(combat, cbt.id);
-				await CooldownSystem.gmAnnounceTurn(combat, cbt.id);
-				break;
-			}
-
-			case "turnCardsGmTurn": {
-				const combat = game.combats?.get?.(data.combatId) ?? getActiveCombat();
-				if (!combat) return;
-				await CooldownSystem.gmApplyTurn(combat, null);
-				await CooldownSystem.gmAnnounceTurn(combat, null);
-				break;
-			}
-
-			case "turnCardsAidTeammate": {
-				console.log(`[${NS}] Received aidTeammate request:`, data);
-				const target = game.actors?.get?.(data.targetActorId);
-				const sourceUser = game.users?.get?.(data.sourceUserId);
-				if (!target || !sourceUser) {
-					console.warn(`[${NS}] aidTeammate: missing target or sourceUser`);
-					return;
-				}
-
-				if (target.type !== "character") return;
-
-				await TeamService.ensureReady();
-				await TeamService.init();
-
-				// Check if target is downed
-				const combat = getActiveCombat();
-				const cbt = combat ? getTeamCombatants(combat).find((c) => c.actor?.id === target.id) : null;
-				if (cbt && isDowned(cbt)) {
-					await ChatMessage.create({
-						content: `Aid failed: <b>${escape(target.name)}</b> is Downed.`,
-						type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-						whisper: [sourceUser.id],
-					});
-					return;
-				}
-
-				const teamOld = TeamService.value;
-				if (teamOld < 1) {
-					await ChatMessage.create({
-						content: `Aid failed: Not enough <b>Team</b>.`,
-						type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-						whisper: [sourceUser.id],
-					});
-					return;
-				}
-
-				// Spend 1 team
-				const teamRes = await TeamService.set(teamOld - 1, { announce: false, delta: -1 });
-				if (!teamRes.ok) {
-					await ChatMessage.create({
-						content: `Aid failed: could not spend Team.`,
-						type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-						whisper: [sourceUser.id],
-					});
-					return;
-				}
-
-				// Apply +1 Forward
-				const fwdBefore = getForward(target);
-				await target.update({ "system.resources.forward.value": fwdBefore + 1 });
-
-				// Announce with Aid link
-				const content = `<b>${escape(sourceUser.name)}</b> spends <b>1 Team</b> to aid <b>${escape(target.name)}</b>!<br/>
-Team Pool: ${teamOld} → <b>${teamOld - 1}</b><br/>
-<b>${escape(target.name)}</b> gains <b>+1 Forward</b> (now ${fwdBefore + 1}).<br/>
-${AID_MOVE_UUID}`;
-
-				await ChatMessage.create({ content, type: CONST.CHAT_MESSAGE_TYPES.OTHER });
-				break;
-			}
-
-			case "turnCardsTeamChange": {
-				const delta = Number(data.delta) || 0;
-				if (!delta) return;
-				await TeamService.ensureReady();
-				await TeamService.init();
-				await TeamService.change(delta);
-				break;
-			}
-
-			case "turnCardsShiftLabels": {
-				const target = game.actors?.get?.(data.targetActorId);
-				if (!target || !data.up || !data.down) return;
-
-				let sourceActor = null;
-				if (data.reason === "useInfluence" && data.sourceActorId) {
-					sourceActor = game.actors?.get?.(data.sourceActorId);
-					if (!sourceActor) return;
-					if (!InfluenceIndex.hasEdgeFromKeyToKey(compositeKey(sourceActor), compositeKey(target))) return;
-				}
-
-				await applyShiftLabels(target, data.up, data.down, {
-					announce: true,
-					reason: data.reason ?? "shift",
-					sourceActor,
-				});
-				break;
-			}
-
-			case "turnCardsPotentialChange": {
-				const actor = game.actors?.get?.(data.actorId);
-				const user = game.users?.get?.(data.userId);
-				if (!actor || !user) return;
-				if (!userOwnsActor(user, actor)) return;
-
-				const cur = getPotential(actor);
-				const next = clampInt(cur + Number(data.delta || 0), 0, POTENTIAL_MAX);
-				if (next !== cur) await setPotentialDirect(actor, next);
-				break;
-			}
-
-			case "turnCardsForwardChange": {
-				const actor = game.actors?.get?.(data.actorId);
-				const user = game.users?.get?.(data.userId);
-				if (!actor || !user) return;
-				if (!userOwnsActor(user, actor)) return;
-
-				const delta = Number(data.delta || 0);
-				await adjustForward(actor, delta, { announce: true, includeAidLink: false, byUser: user });
-				break;
-			}
+		// GM handles sync requests
+		if (data.action === "turnCardsTeamSyncRequest" && isGM()) {
+			await TeamService.init();
+			TeamService._broadcast(TeamService.value, data.userId ?? null);
 		}
 	});
 
 	console.log(`[${NS}] Socket handler registered`);
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// GM Query Helper - Players use this to request GM actions
+// ────────────────────────────────────────────────────────────────────────────
+
+async function queryGM(queryName, data, options = {}) {
+	const gm = game.users?.activeGM;
+	if (!gm) {
+		ui.notifications?.warn?.("GM must be online.");
+		return null;
+	}
+
+	try {
+		const result = await gm.query(`${NS}.${queryName}`, data, { timeout: options.timeout ?? 10000 });
+		if (result && !result.success && result.error) {
+			ui.notifications?.warn?.(result.error);
+		}
+		return result;
+	} catch (err) {
+		console.error(`[${NS}] Query failed:`, err);
+		ui.notifications?.error?.("Request timed out or failed.");
+		return null;
+	}
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -1020,14 +965,17 @@ const TurnCardsHUD = {
 
 			case "team-action": {
 				const combat = getActiveCombat();
-				if (combat) await CooldownSystem.requestGmTick(combat);
+				if (combat && isGM()) {
+					await CooldownSystem.gmApplyTurn(combat, null);
+					await CooldownSystem.gmAnnounceTurn(combat, null);
+				}
 				break;
 			}
 
 			case "card-action": {
 				const combat = getActiveCombat();
 				const cbt = combat?.combatants?.get?.(el.dataset.combatantId);
-				if (combat && cbt) await CooldownSystem.requestTakeTurn(combat, cbt);
+				if (combat && cbt) await this._handleTakeTurn(combat, cbt);
 				break;
 			}
 
@@ -1050,6 +998,56 @@ const TurnCardsHUD = {
 		}
 	},
 
+	async _handleTakeTurn(combat, cbt) {
+		if (!combat || !cbt) return;
+
+		const opKey = `turn-${combat.id}-${cbt.id}`;
+		if (pendingOps.has(opKey)) return;
+		pendingOps.add(opKey);
+		setTimeout(() => pendingOps.delete(opKey), 1500);
+
+		const myActor = getMyActor();
+		const isSelf = myActor && cbt.actor?.id === myActor.id;
+
+		if (!isSelf && !isGM()) {
+			ui.notifications?.warn?.("Can only take action for your own character.");
+			return;
+		}
+
+		if (isDowned(cbt)) {
+			ui.notifications?.warn?.("Downed characters cannot take actions.");
+			return;
+		}
+
+		const team = getTeamCombatants(combat);
+		const maxCd = CooldownSystem.maxCooldown(team.length);
+		const rem = CooldownSystem.remaining(cbt, maxCd);
+
+		if (rem > 0) {
+			ui.notifications?.warn?.(`Still on cooldown (${rem} more turn(s)).`);
+			return;
+		}
+
+		// GM: apply directly
+		if (isGM()) {
+			await CooldownSystem.gmApplyTurn(combat, cbt.id);
+			await CooldownSystem.gmAnnounceTurn(combat, cbt.id);
+			return;
+		}
+
+		// Player: use Query system to ask GM
+		if (!hasActiveGM()) {
+			ui.notifications?.warn?.("GM must be online to register actions.");
+			return;
+		}
+
+		await queryGM("markAction", {
+			combatId: combat.id,
+			combatantId: cbt.id,
+			userId: game.user?.id,
+		});
+	},
+
 	async _handlePotential(el, delta) {
 		const actor = game.actors?.get?.(el.dataset.actorId);
 		if (!actor) return;
@@ -1062,7 +1060,20 @@ const TurnCardsHUD = {
 			return;
 		}
 
-		await setPotential(actor, delta);
+		if (canEditActor(actor)) {
+			const cur = getPotential(actor);
+			const next = clampInt(cur + delta, 0, POTENTIAL_MAX);
+			if (next !== cur) await setPotentialDirect(actor, next);
+		} else if (hasActiveGM()) {
+			await queryGM("changePotential", {
+				actorId: actor.id,
+				delta,
+				userId: game.user?.id,
+			});
+		} else {
+			ui.notifications?.warn?.("GM must be online to change Potential.");
+			return;
+		}
 
 		el.classList.remove("is-bump");
 		void el.offsetHeight;
@@ -1086,8 +1097,7 @@ const TurnCardsHUD = {
 			if (canEditActor(targetActor)) {
 				await adjustForward(targetActor, delta, { announce: true, includeAidLink: false });
 			} else if (hasActiveGM()) {
-				game.socket?.emit(SOCKET_NS, {
-					action: "turnCardsForwardChange",
+				await queryGM("changeForward", {
 					actorId: targetActor.id,
 					delta,
 					userId: game.user?.id,
@@ -1103,12 +1113,10 @@ const TurnCardsHUD = {
 		// - Self: free, no team cost, no aid link
 		// - Other player: costs 1 Team, includes aid link
 		if (isGM() || isSelf) {
-			// Free +1 forward to self or as GM
 			if (canEditActor(targetActor)) {
 				await adjustForward(targetActor, +1, { announce: true, includeAidLink: false });
 			} else if (hasActiveGM()) {
-				game.socket?.emit(SOCKET_NS, {
-					action: "turnCardsForwardChange",
+				await queryGM("changeForward", {
 					actorId: targetActor.id,
 					delta: +1,
 					userId: game.user?.id,
@@ -1140,9 +1148,7 @@ const TurnCardsHUD = {
 			return;
 		}
 
-		console.log(`[${NS}] Emitting turnCardsAidTeammate for actor ${targetActor.id}`);
-		game.socket?.emit(SOCKET_NS, {
-			action: "turnCardsAidTeammate",
+		await queryGM("aidTeammate", {
 			targetActorId: targetActor.id,
 			sourceUserId: game.user?.id,
 		});
@@ -1172,8 +1178,7 @@ const TurnCardsHUD = {
 		if (canEditActor(actor)) {
 			await applyShiftLabels(actor, picked.up, picked.down, { announce: true, reason: "shift" });
 		} else if (hasActiveGM()) {
-			game.socket?.emit(SOCKET_NS, {
-				action: "turnCardsShiftLabels",
+			await queryGM("shiftLabels", {
 				targetActorId: actor.id,
 				up: picked.up,
 				down: picked.down,
@@ -1195,7 +1200,7 @@ const TurnCardsHUD = {
 			return;
 		}
 
-		game.socket?.emit(SOCKET_NS, { action: "turnCardsTeamChange", delta });
+		await queryGM("changeTeam", { delta });
 	},
 
 	_registerHooks() {
@@ -1382,8 +1387,7 @@ const TurnCardsHUD = {
 				sourceActor: src.actor,
 			});
 		} else if (hasActiveGM()) {
-			game.socket?.emit(SOCKET_NS, {
-				action: "turnCardsShiftLabels",
+			await queryGM("shiftLabels", {
 				targetActorId: targetActor.id,
 				sourceActorId: src.actor.id,
 				up: picked.up,
@@ -1399,7 +1403,6 @@ const TurnCardsHUD = {
 		if (!this.root) return;
 		const bars = this.root.querySelectorAll(".turncard__cooldown-bar[data-cooldown-target]");
 
-		// Use requestAnimationFrame to ensure the initial width is painted first
 		requestAnimationFrame(() => {
 			requestAnimationFrame(() => {
 				for (const bar of bars) {
@@ -1471,9 +1474,7 @@ const TurnCardsHUD = {
 			const status = downed ? "down" : onCooldown ? "busy" : "ready";
 
 			// Aid availability: player aiding someone else
-			// Can aid if: not self, not GM, target not downed, and team >= 1
 			const canAid = !isSelf && !isGM() && !downed && teamValue >= 1;
-			// Forward button is disabled if: not self, not GM, and can't aid
 			const forwardDisabled = !isSelf && !isGM() && !canAid;
 
 			const showActionBtn = status === "ready" && (isGM() || isSelf);
@@ -1545,6 +1546,11 @@ const TurnCardsHUD = {
 // ────────────────────────────────────────────────────────────────────────────
 // Initialization
 // ────────────────────────────────────────────────────────────────────────────
+
+// Register query handlers during init (before ready)
+Hooks.once("init", () => {
+	registerQueryHandlers();
+});
 
 Hooks.once("ready", () => {
 	try {
