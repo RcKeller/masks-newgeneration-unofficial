@@ -34,9 +34,9 @@
   --masks-turncards-primary-bg: #f4e7d7;
   --masks-turncards-secondary-bg: #ead0b0;
   --masks-turncards-active-bg: #d1a06e;
-  --masks-turncards-action-bg: #69c0ae;
-  --masks-turncards-cooldown-bar: #2ab6cb;
-  --masks-turncards-potential-fill-color: #f9a949;
+  --masks-turncards-action-bg: #87b07e;
+  --masks-turncards-cooldown-bar: #3f8aa0;
+  --masks-turncards-potential-fill-color: #e7a345;
   --masks-turncards-pentagon-color: #37372b;
   --masks-turncards-cooldown-opacity: 0.75;
 }
@@ -776,7 +776,7 @@
   --tc-card-width: clamp(104px, 7.8vw, 130px);
   --tc-card-aspect: 3 / 4;
   /* Do NOT change button sizes */
-  --tc-control-size: 32px;
+  --tc-control-size: 28px;
   --tc-forward-size: 28px;
   --tc-nameplate-height: 32px;
   --tc-status-bar-height: 26px;
@@ -791,8 +791,8 @@
   --tc-cooldown-bar-bg: var(--masks-turncards-cooldown-bar, #2ab6cb);
   --tc-cooldown-label-bg: rgba(0, 0, 0, 0.72);
   --tc-downed-bg: rgba(104, 59, 71, 0.92);
-  --tc-potential-fill: var(--masks-turncards-potential-fill-color, #f9a949);
-  --tc-forward-bg: #3b82f6;
+  --tc-potential-fill: var(--masks-turncards-potential-fill-color, #e7a345);
+  --tc-forward-bg: #3f8aa0;
   --tc-cooldown-opacity: var(--masks-turncards-cooldown-opacity, 0.75);
   --tc-downed-opacity: 0.45;
   /* Bottom-right notch shading on nameplates */
@@ -929,12 +929,12 @@
   left: 0;
   width: calc(var(--cooldown-frac, 0) * 100%);
   background: var(--tc-cooldown-bar-bg);
-  opacity: 0.95;
+  opacity: 0.7;
   transition: width var(--tc-transition-bar);
   z-index: 1;
 }
 #masks-turncards .turncard__status-bar--downed .turncard__cooldown-bar {
-  opacity: 0;
+  opacity: 0.7;
 }
 #masks-turncards .turncard__status-label {
   position: relative;
@@ -1074,7 +1074,7 @@
   width: var(--tc-control-size);
   height: var(--tc-control-size);
   background: rgba(0, 0, 0, 0.55);
-  border: 2px solid rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.85);
 }
 #masks-turncards .turncard__shift i {
   font-size: 0.75rem;
@@ -1088,7 +1088,7 @@
   width: var(--tc-forward-size);
   height: var(--tc-forward-size);
   background: rgba(0, 0, 0, 0.35);
-  border: 2px solid rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.92);
   color: #fff;
 }
 #masks-turncards .turncard__forward .turncard__forward-value {
@@ -1108,7 +1108,7 @@
   width: var(--tc-control-size);
   height: var(--tc-control-size);
   background: rgba(55, 55, 43, 0.75);
-  border: 2px solid rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.92);
   overflow: hidden;
 }
 #masks-turncards .turncard__potential::before {
@@ -1156,11 +1156,10 @@
 }
 #masks-turncards .turncard__team-controls {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   /* lets it remain responsive at smaller widths without changing btn sizes */
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 4px;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
 }
 #masks-turncards .turncard__team-btn {
   box-sizing: border-box;
