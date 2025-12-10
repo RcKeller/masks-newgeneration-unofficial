@@ -777,7 +777,7 @@
   --tc-card-aspect: 3 / 4;
   /* Do NOT change button sizes */
   --tc-control-size: 28px;
-  --tc-forward-size: 28px;
+  --tc-forward-size: 24px;
   --tc-nameplate-height: 32px;
   --tc-status-bar-height: 26px;
   --tc-portrait-pad: 3px;
@@ -1010,7 +1010,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: linear-gradient(135deg, transparent 0 55%, var(--tc-notch) 55% 100%);
+  background: linear-gradient(135deg, transparent 75% 55%, var(--tc-notch) 55% 100%);
   pointer-events: none;
 }
 #masks-turncards .turncard__name {
@@ -1076,17 +1076,12 @@
   background: rgba(0, 0, 0, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.85);
 }
-#masks-turncards .turncard__shift i {
-  font-size: 0.75rem;
-  color: var(--tc-border-outer);
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.95);
-  text-shadow: 0 0 3px rgba(255, 255, 255, 0.55);
-}
 #masks-turncards .turncard__forward {
   left: 6px;
-  bottom: calc(var(--tc-control-size) - 0.5px);
+  bottom: calc(var(--tc-control-size) + 2px);
   width: var(--tc-forward-size);
   height: var(--tc-forward-size);
+  font-size: 0.75rem;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.92);
   color: #fff;
