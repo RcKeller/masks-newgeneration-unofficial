@@ -628,23 +628,6 @@ const CooldownSystem = {
 			await combat.updateEmbeddedDocuments("Combatant", updates);
 		}
 	},
-
-	async gmAnnounceTurn(combat, actingCombatantId = null) {
-		if (!combat) return;
-		if (actingCombatantId) {
-			const cbt = combat.combatants?.get?.(actingCombatantId);
-			const name = cbt?.actor?.name ?? cbt?.name ?? "Unknown";
-			await ChatMessage.create({
-				content: `<b>${escape(name)}</b> takes action!`,
-				type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-			});
-		} else {
-			await ChatMessage.create({
-				content: `<b>GM/NPC</b> takes action!`,
-				type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-			});
-		}
-	},
 };
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -673,7 +656,6 @@ function registerQueryHandlers() {
 		}
 
 		await CooldownSystem.gmApplyTurn(combat, cbt.id);
-		await CooldownSystem.gmAnnounceTurn(combat, cbt.id);
 		return { success: true };
 	};
 
@@ -967,7 +949,6 @@ const TurnCardsHUD = {
 				const combat = getActiveCombat();
 				if (combat && isGM()) {
 					await CooldownSystem.gmApplyTurn(combat, null);
-					await CooldownSystem.gmAnnounceTurn(combat, null);
 				}
 				break;
 			}
@@ -1031,7 +1012,6 @@ const TurnCardsHUD = {
 		// GM: apply directly
 		if (isGM()) {
 			await CooldownSystem.gmApplyTurn(combat, cbt.id);
-			await CooldownSystem.gmAnnounceTurn(combat, cbt.id);
 			return;
 		}
 
