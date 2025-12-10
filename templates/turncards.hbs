@@ -76,12 +76,12 @@
                 </button>
                 {{/if}}
 
-                {{!-- Bottom-left: Shift Labels --}}
-                <button type="button" class="turncard__shift {{#unless card.canShiftLabels}}is-disabled{{/unless}}"
+                {{!-- Bottom-left: Labels Graph (Pentagon visualization) --}}
+                <button type="button" class="turncard__shift turncard__labels-graph {{#unless card.canShiftLabels}}is-disabled{{/unless}} {{#if card.labelsGraph.hasCondition}}has-condition{{/if}} {{#if card.labelsGraph.hasBonus}}has-bonus{{/if}}"
                     data-action="shift-labels" data-actor-id="{{card.actorId}}"
                     aria-label="Shift Labels for {{card.name}}" data-tooltip="Shift Labels" {{#unless
                     card.canShiftLabels}}disabled{{/unless}}>
-                    <i class="fa-solid fa-circle"></i>
+                    {{{card.labelsGraph.svg}}}
                 </button>
 
                 {{!-- Forward/Aid button --}}

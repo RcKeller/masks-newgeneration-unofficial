@@ -10,6 +10,8 @@ import {
 	InfluenceIndex,
 } from "./helpers/influence.mjs";
 
+import { createLabelsGraphData } from "./labels-graph.mjs";
+
 const NS = "masks-newgeneration-unofficial";
 const SOCKET_NS = `module.${NS}`;
 const TEMPLATE = `modules/${NS}/templates/turncards.hbs`;
@@ -1469,6 +1471,13 @@ const TurnCardsHUD = {
 					? "Cannot aid (Downed)"
 					: "Cannot aid (No Team)";
 
+			// Generate Labels Graph data for pentagon visualization
+			const labelsGraph = createLabelsGraphData(actor) ?? {
+				svg: "",
+				hasBonus: false,
+				hasCondition: false,
+			};
+
 			return {
 				combatantId: cbt.id,
 				actorId: actor.id,
@@ -1502,6 +1511,7 @@ const TurnCardsHUD = {
 				showActionBtn,
 				actionAria: showActionBtn ? `Take action as ${actor.name}` : "",
 				canShiftLabels: isSelf || isGM(),
+				labelsGraph,
 			};
 		});
 
