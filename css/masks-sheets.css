@@ -798,7 +798,8 @@
   /* --- Card Base ----------------------------------------------------------- */
   /* --- Portrait ------------------------------------------------------------ */
   /* --- Status Bar (always present) ---------------------------------------- */
-  /* Cooldown drains RIGHT -> LEFT via width anchored on the right            */
+  /* Cooldown drains RIGHT -> LEFT: bar anchored on LEFT, width shrinks       */
+  /* so the right edge moves leftward as cooldown decreases                   */
   /* --- Action Button Overlay ----------------------------------------------- */
   /* Only exists in template for ready characters; never shows for busy/downed */
   /* --- Nameplate ----------------------------------------------------------- */
@@ -935,7 +936,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  right: 0;
+  left: 0;
   width: calc(var(--cooldown-frac, 0) * 100%);
   background: var(--tc-cooldown-bar-bg);
   transition: width var(--tc-transition-bar);
@@ -1219,5 +1220,3 @@
     height: 180px;
   }
 }
-
-/*# sourceMappingURL=masks-sheets.css.map */

@@ -1083,7 +1083,8 @@
   }
 
   /* --- Status Bar (always present) ---------------------------------------- */
-  /* Cooldown drains RIGHT -> LEFT via width anchored on the right            */
+  /* Cooldown drains RIGHT -> LEFT: bar anchored on LEFT, width shrinks       */
+  /* so the right edge moves leftward as cooldown decreases                   */
 
   .turncard__status-bar {
     position: absolute;
@@ -1115,9 +1116,10 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 0; // anchor right so it burns down leftward
+    left: 0; // anchor LEFT so bar drains from RIGHT to LEFT
     width: calc(var(--cooldown-frac, 0) * 100%);
     background: var(--tc-cooldown-bar-bg);
+    // Smooth animated transition for the width change
     transition: width var(--tc-transition-bar);
     z-index: 1;
   }

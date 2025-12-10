@@ -56,13 +56,13 @@
                 <div class="turncard__portrait">
                     <img src="{{card.img}}" alt="{{card.name}}" loading="lazy" />
 
-                    {{!-- Status bar ALWAYS present (cooldown drain animates to 0) --}}
+                    {{!-- Status bar ALWAYS present (cooldown drain animates right-to-left) --}}
                     <div class="turncard__status-bar
               {{#if card.downed}}turncard__status-bar--downed{{else if card.onCooldown}}turncard__status-bar--cooldown{{else}}turncard__status-bar--ready{{/if}}"
                         {{#if card.downedId}}id="{{card.downedId}}" {{/if}} role="status" {{#if
                         card.statusTooltip}}data-tooltip="{{card.statusTooltip}}" {{/if}}>
                         <div class="turncard__cooldown-bar" style="--cooldown-frac: {{card.cooldownFrac}};"
-                            data-cooldown-frac="{{card.cooldownFracTarget}}">
+                            data-cooldown-target="{{card.cooldownFracTarget}}">
                         </div>
                         <span class="turncard__status-label">
                             {{#if card.downed}}Downed{{else if card.onCooldown}}Busy{{/if}}
