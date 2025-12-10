@@ -760,6 +760,10 @@
 /* Turn Cards HUD                                                            */
 /* Complete rewrite with right-to-left cooldown bars and smooth animations   */
 /* ------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------- */
+/* Turn Cards HUD                                                            */
+/* Right-to-left cooldown burn-down + smooth drain transitions               */
+/* ------------------------------------------------------------------------- */
 #masks-turncards {
   --tc-card-width: clamp(100px, 8vw, 140px);
   --tc-card-aspect: 3 / 4;
@@ -770,7 +774,7 @@
   --tc-card-border: #bda78a;
   --tc-card-border-hover: #d1a06e;
   --tc-nameplate-bg: #bda78a;
-  --tc-nameplate-text: rgba(0,0,0,0.85);
+  --tc-nameplate-text: rgba(0, 0, 0, 0.85);
   --tc-team-portrait-bg: linear-gradient(180deg, #6b5b95 0%, #4a3f6b 100%);
   --tc-team-nameplate-bg: #bda78a;
   --tc-action-bg: #69c0ae;
@@ -793,12 +797,16 @@
   padding: 0;
   /* --- Card Base ----------------------------------------------------------- */
   /* --- Portrait ------------------------------------------------------------ */
-  /* --- Status Bar (Downed or Cooldown/Busy) -------------------------------- */
-  /* Both Downed and Busy appear in the SAME location at top of card          */
+  /* --- Status Bar (always present) ---------------------------------------- */
+  /* Cooldown drains RIGHT -> LEFT via width anchored on the right            */
   /* --- Action Button Overlay ----------------------------------------------- */
-  /* Only appears on hover for ready (non-busy, non-downed) characters        */
+  /* Only exists in template for ready characters; never shows for busy/downed */
   /* --- Nameplate ----------------------------------------------------------- */
-  /* --- Corner Buttons (all aligned to bottom) ------------------------------ */
+  /* --- Corner Buttons ------------------------------------------------------ */
+  /* Forward/Aid button
+     - If no bonus, border/background should be transparent.
+     - If bonus, show number with blue background + white border.
+  */
   /* --- Team Card Controls -------------------------------------------------- */
   /* --- Animation ----------------------------------------------------------- */
 }
@@ -920,6 +928,9 @@
 #masks-turncards .turncard__status-bar--downed {
   background: var(--tc-downed-bg);
 }
+#masks-turncards .turncard__status-bar--ready {
+  background: transparent;
+}
 #masks-turncards .turncard__cooldown-bar {
   position: absolute;
   top: 0;
@@ -928,6 +939,10 @@
   width: calc(var(--cooldown-frac, 0) * 100%);
   background: var(--tc-cooldown-bar-bg);
   transition: width var(--tc-transition-bar);
+  z-index: 1;
+}
+#masks-turncards .turncard__status-bar--downed .turncard__cooldown-bar {
+  opacity: 0;
 }
 #masks-turncards .turncard__status-label {
   position: relative;
@@ -939,6 +954,9 @@
   color: #fdf7e5;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
   white-space: nowrap;
+}
+#masks-turncards .turncard__status-bar--ready .turncard__status-label {
+  opacity: 0;
 }
 #masks-turncards .turncard__action {
   position: absolute;
@@ -972,7 +990,7 @@
   color: #fdf7e5;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
-#masks-turncards .turncard__action.is-disabled, #masks-turncards .turncard__action:disabled {
+#masks-turncards .turncard__action:disabled {
   filter: grayscale(0.5) brightness(0.7);
   cursor: not-allowed;
 }
@@ -991,10 +1009,6 @@
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
-}
-#masks-turncards .turncard.is-downed .turncard__action,
-#masks-turncards .turncard.is-cooldown .turncard__action {
-  display: none !important;
 }
 #masks-turncards .turncard__nameplate {
   flex: 0 0 auto;
@@ -1079,7 +1093,7 @@
   left: 6px;
   bottom: calc(var(--tc-control-size) - 2px);
   background: transparent;
-  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid transparent;
   color: #fff;
   z-index: 1;
   height: 28px;
@@ -1094,17 +1108,9 @@
 }
 #masks-turncards .turncard__forward.has-bonus {
   background: var(--tc-forward-bg);
-  border: 0.5px solid rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.95);
   color: var(--tc-forward-text);
   box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
-}
-#masks-turncards .turncard__forward.is-readonly {
-  cursor: default;
-  opacity: 0.9;
-}
-#masks-turncards .turncard__forward.is-readonly:hover {
-  transform: none;
-  filter: none;
 }
 #masks-turncards .turncard__potential {
   right: 4px;
