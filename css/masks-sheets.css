@@ -132,6 +132,19 @@
 .pbta.sheet .cell--image {
   border: 1px solid var(--masks-cell-title-border-color);
 }
+.pbta.sheet .cell--image .labels-graph-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+  padding: 4px;
+  cursor: help;
+}
+.pbta.sheet .cell--image .labels-graph-container .labels-graph-svg {
+  width: 80px;
+  height: 80px;
+  display: block;
+}
 .pbta.sheet .window-header {
   background-color: var(--masks-interactive-bg-color);
 }
@@ -1056,9 +1069,8 @@
 #masks-turncards .turncard__forward:disabled,
 #masks-turncards .turncard__potential.is-disabled,
 #masks-turncards .turncard__potential:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  filter: grayscale(0.5);
+  opacity: 1;
+  cursor: default;
 }
 #masks-turncards .turncard__shift.is-disabled:hover, #masks-turncards .turncard__shift:disabled:hover,
 #masks-turncards .turncard__forward.is-disabled:hover,
@@ -1066,7 +1078,7 @@
 #masks-turncards .turncard__potential.is-disabled:hover,
 #masks-turncards .turncard__potential:disabled:hover {
   transform: none;
-  filter: grayscale(0.5);
+  filter: none;
 }
 #masks-turncards .turncard__shift {
   left: 4px;
@@ -1101,12 +1113,12 @@
   transform: scale(1.05);
 }
 #masks-turncards .turncard__labels-graph.is-disabled, #masks-turncards .turncard__labels-graph:disabled {
-  opacity: 0.5;
-  filter: grayscale(0.6);
+  opacity: 1;
+  cursor: default;
 }
 #masks-turncards .turncard__labels-graph.is-disabled:hover, #masks-turncards .turncard__labels-graph:disabled:hover {
   transform: none;
-  filter: grayscale(0.6);
+  filter: none;
 }
 #masks-turncards .turncard__forward {
   left: 6px;

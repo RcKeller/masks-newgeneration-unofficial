@@ -1472,8 +1472,15 @@ const TurnCardsHUD = {
 					: "Cannot aid (No Team)";
 
 			// Generate Labels Graph data for pentagon visualization
-			const labelsGraph = createLabelsGraphData(actor) ?? {
+			// Use showInnerLines=false, showVertexDots=false for cleaner turn card display
+			const labelsGraph = createLabelsGraphData(actor, {
+				size: 32,
+				borderWidth: 1.5,
+				showInnerLines: false,
+				showVertexDots: false,
+			}) ?? {
 				svg: "",
+				tooltip: "",
 				hasBonus: false,
 				hasCondition: false,
 			};

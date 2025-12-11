@@ -11,6 +11,11 @@
 			<section class="sheet-attributes flexrow">
 				<div class="cell cell--image">
 					<img class="profile-img" src="{{actor.img}}" data-edit="img" height="100" width="100"/>
+					{{#if labelsGraph}}
+					<div class="labels-graph-container" data-tooltip="{{labelsGraph.tooltip}}">
+						{{{labelsGraph.svg}}}
+					</div>
+					{{/if}}
 				</div>
 
 				{{> "pbta.actor-stats" }}

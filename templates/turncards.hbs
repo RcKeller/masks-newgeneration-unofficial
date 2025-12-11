@@ -79,7 +79,7 @@
                 {{!-- Bottom-left: Labels Graph (Pentagon visualization) --}}
                 <button type="button" class="turncard__shift turncard__labels-graph {{#unless card.canShiftLabels}}is-disabled{{/unless}} {{#if card.labelsGraph.hasCondition}}has-condition{{/if}} {{#if card.labelsGraph.hasBonus}}has-bonus{{/if}}"
                     data-action="shift-labels" data-actor-id="{{card.actorId}}"
-                    aria-label="Shift Labels for {{card.name}}" data-tooltip="Shift Labels" {{#unless
+                    aria-label="Shift Labels for {{card.name}}" data-tooltip="{{card.labelsGraph.tooltip}}" {{#unless
                     card.canShiftLabels}}disabled{{/unless}}>
                     {{{card.labelsGraph.svg}}}
                 </button>

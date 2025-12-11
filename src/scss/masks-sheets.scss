@@ -153,6 +153,22 @@
 
   .cell--image {
     border: 1px solid var(--masks-cell-title-border-color);
+
+    // Labels Graph visualization below profile image
+    .labels-graph-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 8px;
+      padding: 4px;
+      cursor: help;
+
+      .labels-graph-svg {
+        width: 80px;
+        height: 80px;
+        display: block;
+      }
+    }
   }
 
   .window-header {
@@ -1271,13 +1287,12 @@
 
     &.is-disabled,
     &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      filter: grayscale(0.5);
+      opacity: 1;
+      cursor: default;
 
       &:hover {
         transform: none;
-        filter: grayscale(0.5);
+        filter: none;
       }
     }
   }
@@ -1328,15 +1343,15 @@
       transform: scale(1.05);
     }
 
-    // Disabled state
+    // Disabled state - keep full opacity but indicate non-interactive
     &.is-disabled,
     &:disabled {
-      opacity: 0.5;
-      filter: grayscale(0.6);
+      opacity: 1;
+      cursor: default;
 
       &:hover {
         transform: none;
-        filter: grayscale(0.6);
+        filter: none;
       }
     }
   }
