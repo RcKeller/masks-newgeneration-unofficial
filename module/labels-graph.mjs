@@ -66,7 +66,7 @@ const COLORS = Object.freeze({
 
 	// Pentagon background
 	pentagonBg: "rgba(30, 30, 25, 0.7)",        // Dark background inside pentagon
-	pentagonBorder: "rgba(180, 160, 90, 0.8)", // Border around pentagon
+	pentagonBorder: "rgba(255, 255, 255, 0.85)", // White border around pentagon
 });
 
 /**
@@ -146,7 +146,7 @@ export function extractLabelsData(actor) {
  * @param {Object} options - Configuration options
  * @param {Object} options.labels - Object with label values (danger, freak, savior, mundane, superior)
  * @param {Set<string>} options.affectedLabels - Set of label keys affected by conditions
- * @param {boolean} options.hasBonus - Whether the character has an effective bonus
+ * @param {number} [options.effectiveBonus=0] - The effective bonus value (Forward + Ongoing)
  * @param {number} [options.size=28] - Size of the SVG in pixels
  * @param {number} [options.minValue=-3] - Minimum label value
  * @param {number} [options.maxValue=4] - Maximum label value (effective cap)
@@ -159,7 +159,7 @@ export function generateLabelsGraphSVG(options) {
 	const {
 		labels = {},
 		affectedLabels = new Set(),
-		hasBonus = false,
+		effectiveBonus = 0,
 		size = 28,
 		minValue = -3,
 		maxValue = 4,
@@ -212,17 +212,17 @@ export function generateLabelsGraphSVG(options) {
 		};
 	});
 
-	// Determine colors
-	// Red takes precedence over blue
-	const hasAnyCondition = affectedLabels.size > 0;
-
+	// Determine colors based on effective bonus value
+	// effectiveBonus > 0: Blue (positive bonus)
+	// effectiveBonus < 0: Red (negative/penalty)
+	// effectiveBonus === 0: Yellow (default)
 	let fillColor, strokeColor;
-	if (hasAnyCondition) {
-		fillColor = COLORS.fillCondition;
-		strokeColor = COLORS.strokeCondition;
-	} else if (hasBonus) {
+	if (effectiveBonus > 0) {
 		fillColor = COLORS.fillBonus;
 		strokeColor = COLORS.strokeBonus;
+	} else if (effectiveBonus < 0) {
+		fillColor = COLORS.fillCondition;
+		strokeColor = COLORS.strokeCondition;
 	} else {
 		fillColor = COLORS.fillDefault;
 		strokeColor = COLORS.strokeDefault;
@@ -317,7 +317,7 @@ export function createLabelsGraphData(actor, svgOptions = {}) {
 	const svg = generateLabelsGraphSVG({
 		labels: data.labels,
 		affectedLabels: data.affectedLabels,
-		hasBonus: data.hasBonus,
+		effectiveBonus: data.effectiveBonus,
 		size,
 		borderWidth,
 		showInnerLines,
@@ -401,7 +401,7 @@ export class LabelsGraph {
 		const svg = generateLabelsGraphSVG({
 			labels: this._data.labels,
 			affectedLabels: this._data.affectedLabels,
-			hasBonus: this._data.hasBonus,
+			effectiveBonus: this._data.effectiveBonus,
 			size: this.size,
 			borderWidth: this.borderWidth,
 			showInnerLines: this.showInnerLines,
@@ -452,7 +452,7 @@ export class LabelsGraph {
 		return generateLabelsGraphSVG({
 			labels: data.labels,
 			affectedLabels: data.affectedLabels,
-			hasBonus: data.hasBonus,
+			effectiveBonus: data.effectiveBonus,
 			size,
 			borderWidth,
 			showInnerLines,

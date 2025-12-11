@@ -1475,7 +1475,7 @@ const TurnCardsHUD = {
 			// Use showInnerLines=false, showVertexDots=false for cleaner turn card display
 			const labelsGraph = createLabelsGraphData(actor, {
 				size: 32,
-				borderWidth: 1.5,
+				borderWidth: 0.5,
 				showInnerLines: false,
 				showVertexDots: false,
 			}) ?? {
