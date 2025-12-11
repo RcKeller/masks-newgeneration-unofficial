@@ -104,7 +104,7 @@ function polygonPath(points) {
 /**
  * Extract label data from an actor
  * @param {Actor} actor - The Foundry actor
- * @returns {Object} Label data object
+ * @returns {Object} Label data object with effective values (conditions applied)
  */
 export function extractLabelsData(actor) {
 	if (!actor) return null;
@@ -114,13 +114,16 @@ export function extractLabelsData(actor) {
 	const forward = Number(foundry.utils.getProperty(actor, "system.resources.forward.value")) || 0;
 	const ongoing = Number(foundry.utils.getProperty(actor, "system.resources.ongoing.value")) || 0;
 
-	// Get label values
-	const labels = {};
+	// Get base label values
+	const baseLabels = {};
 	for (const key of LABEL_ORDER) {
-		labels[key] = Number(stats[key]?.value) || 0;
+		baseLabels[key] = Number(stats[key]?.value) || 0;
 	}
 
 	// Determine which labels are affected by conditions
+	// Conditions give -2 to specific labels:
+	// Afraid: -2 Danger, Angry: -2 Mundane, Guilty: -2 Superior,
+	// Hopeless: -2 Freak, Insecure: -2 Savior
 	const affectedLabels = new Set();
 	for (const [idx, opt] of Object.entries(conditions)) {
 		if (opt?.value === true) {
@@ -129,11 +132,24 @@ export function extractLabelsData(actor) {
 		}
 	}
 
+	// Calculate effective label values (base - 2 for each active condition)
+	// Maximum effective value is 4, minimum can go to -4 (base -2 with condition -2)
+	const effectiveLabels = {};
+	for (const key of LABEL_ORDER) {
+		let value = baseLabels[key];
+		if (affectedLabels.has(key)) {
+			value -= 2; // Apply condition penalty
+		}
+		// Clamp to max of 4 (visualization handles min)
+		effectiveLabels[key] = Math.min(4, value);
+	}
+
 	// Calculate effective bonus
 	const effectiveBonus = forward + ongoing;
 
 	return {
-		labels,
+		labels: effectiveLabels, // Effective values for visualization
+		baseLabels,              // Original values for reference
 		affectedLabels,
 		effectiveBonus,
 		hasBonus: effectiveBonus > 0,
@@ -147,8 +163,9 @@ export function extractLabelsData(actor) {
  * @param {Object} options.labels - Object with label values (danger, freak, savior, mundane, superior)
  * @param {Set<string>} options.affectedLabels - Set of label keys affected by conditions
  * @param {number} [options.effectiveBonus=0] - The effective bonus value (Forward + Ongoing)
+ * @param {boolean} [options.hasCondition=false] - Whether the character has any active conditions
  * @param {number} [options.size=28] - Size of the SVG in pixels
- * @param {number} [options.minValue=-3] - Minimum label value
+ * @param {number} [options.minValue=-4] - Minimum label value (supports -4 with condition penalties)
  * @param {number} [options.maxValue=4] - Maximum label value (effective cap)
  * @param {number} [options.borderWidth=1.5] - Width of the outer pentagon border
  * @param {boolean} [options.showInnerLines=true] - Whether to show inner grid lines and spokes
@@ -160,8 +177,9 @@ export function generateLabelsGraphSVG(options) {
 		labels = {},
 		affectedLabels = new Set(),
 		effectiveBonus = 0,
+		hasCondition = false,
 		size = 28,
-		minValue = -3,
+		minValue = -4,
 		maxValue = 4,
 		borderWidth = 1.5,
 		showInnerLines = true,
@@ -212,17 +230,17 @@ export function generateLabelsGraphSVG(options) {
 		};
 	});
 
-	// Determine colors based on effective bonus value
-	// effectiveBonus > 0: Blue (positive bonus)
-	// effectiveBonus < 0: Red (negative/penalty)
-	// effectiveBonus === 0: Yellow (default)
+	// Determine colors based on conditions and effective bonus
+	// Red takes precedence: if player has any conditions (which give -2 penalties)
+	// Blue: if effectiveBonus > 0 (Forward + Ongoing bonus)
+	// Yellow: default state
 	let fillColor, strokeColor;
-	if (effectiveBonus > 0) {
-		fillColor = COLORS.fillBonus;
-		strokeColor = COLORS.strokeBonus;
-	} else if (effectiveBonus < 0) {
+	if (hasCondition) {
 		fillColor = COLORS.fillCondition;
 		strokeColor = COLORS.strokeCondition;
+	} else if (effectiveBonus > 0) {
+		fillColor = COLORS.fillBonus;
+		strokeColor = COLORS.strokeBonus;
 	} else {
 		fillColor = COLORS.fillDefault;
 		strokeColor = COLORS.strokeDefault;
@@ -318,6 +336,7 @@ export function createLabelsGraphData(actor, svgOptions = {}) {
 		labels: data.labels,
 		affectedLabels: data.affectedLabels,
 		effectiveBonus: data.effectiveBonus,
+		hasCondition: data.hasCondition,
 		size,
 		borderWidth,
 		showInnerLines,
@@ -402,6 +421,7 @@ export class LabelsGraph {
 			labels: this._data.labels,
 			affectedLabels: this._data.affectedLabels,
 			effectiveBonus: this._data.effectiveBonus,
+			hasCondition: this._data.hasCondition,
 			size: this.size,
 			borderWidth: this.borderWidth,
 			showInnerLines: this.showInnerLines,
@@ -453,6 +473,7 @@ export class LabelsGraph {
 			labels: data.labels,
 			affectedLabels: data.affectedLabels,
 			effectiveBonus: data.effectiveBonus,
+			hasCondition: data.hasCondition,
 			size,
 			borderWidth,
 			showInnerLines,
