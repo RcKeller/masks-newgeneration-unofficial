@@ -42,6 +42,38 @@ Hooks.once("init", () => {
 
     // Preload Handlebars stuff.
     utils.preloadHandlebarsTemplates();
+
+    // Register handlebars helpers for V2 sheets
+    Handlebars.registerHelper("gt", function(a, b) {
+        return Number(a) > Number(b);
+    });
+
+    Handlebars.registerHelper("gte", function(a, b) {
+        return Number(a) >= Number(b);
+    });
+
+    Handlebars.registerHelper("lte", function(a, b) {
+        return Number(a) <= Number(b);
+    });
+
+    Handlebars.registerHelper("lt", function(a, b) {
+        return Number(a) < Number(b);
+    });
+
+    // times helper - iterate N times (1-indexed)
+    Handlebars.registerHelper("times", function(n, block) {
+        let result = "";
+        for (let i = 1; i <= n; i++) {
+            result += block.fn(i);
+        }
+        return result;
+    });
+
+    // getLabel helper for move types
+    Handlebars.registerHelper("getLabel", function(obj, key) {
+        if (!obj || !key) return "";
+        return obj[key]?.label ?? key;
+    });
 });
 
 Hooks.once('ready', async function () {
@@ -316,19 +348,6 @@ Hooks.on("renderSettings", (app, html) => {
             console.warn(`${game.i18n.localize(MODULE_CONFIG.headingKey)} | Could not find '#settings-game' section in V12 settings panel.`);
         }
     }
-});
-
-Hooks.once("init", () => {
-    // Register handlebars helpers
-    Handlebars.registerHelper("gt", function(a, b) {
-        return Number(a) > Number(b);
-    });
-    
-    Handlebars.registerHelper("gte", function(a, b) {
-        return Number(a) >= Number(b);
-    });
-    
-    // ... rest of existing init code
 });
 
 import './influence.mjs';

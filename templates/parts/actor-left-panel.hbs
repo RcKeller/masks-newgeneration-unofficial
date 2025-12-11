@@ -1,0 +1,32 @@
+{{!-- Left Panel: Character portrait, identity, and conditions --}}
+<section class="masks-left-panel">
+	{{!-- Character Portrait --}}
+	<div class="character-portrait">
+		<img class="profile-img" src="{{actor.img}}" data-edit="img" />
+	</div>
+
+	{{!-- Character Identity --}}
+	<div class="character-identity">
+		<input class="character-name" name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'PBTA.Name'}}" />
+		<input class="character-real-name" name="system.attributes.realName.value" type="text" value="{{system.attributes.realName.value}}" placeholder="{{system.attributes.realName.label}}" />
+
+		<div class="playbook-row">
+			<select class="playbook-select" name="system.playbook.uuid">
+				{{selectOptions playbooks selected=system.playbook.uuid valueAttr="uuid" labelAttr="name" blank=(localize "PBTA.Playbook") sort=true}}
+			</select>
+			<button type="button" class="playbook-link {{#if system.playbook.uuid}}active{{/if}}"
+				data-playbook="{{system.playbook.uuid}}"
+				data-tooltip="{{localize 'PBTA.ViewPlaybook'}}"
+				data-tooltip-direction="UP">
+				{{#if system.playbook.uuid}}
+				<i class="fas fa-eye"></i>
+				{{else}}
+				<i class="fas fa-eye-slash"></i>
+				{{/if}}
+			</button>
+		</div>
+	</div>
+
+	{{!-- Conditions Panel --}}
+	{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-conditions.hbs"}}
+</section>

@@ -1,28 +1,50 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form class="{{cssClass}} masks-sheet-v2" autocomplete="off">
+	{{#if isCharacter}}
+	{{!-- New Character Sheet Layout --}}
+	<div class="masks-sheet">
+		{{!-- Left Panel: Portrait, Identity, Conditions --}}
+		{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-left-panel.hbs"}}
 
-	<div class="sheet-wrapper">
+		{{!-- Right Section: Tabs + Stats Sidebar --}}
+		<div class="masks-sheet__right">
+			{{!-- Tabs Container --}}
+			<div class="tabs-container">
+				{{!-- Tab Navigation --}}
+				<nav class="sheet-tabs tabs" data-group="primary">
+					<a class="tab-btn active" data-tab="info">
+						<i class="fas fa-info-circle"></i>
+						<span>Info</span>
+					</a>
+					<a class="tab-btn" data-tab="powers">
+						<i class="fas fa-bolt"></i>
+						<span>Powers</span>
+					</a>
+					<a class="tab-btn" data-tab="playbook">
+						<i class="fas fa-book-open"></i>
+						<span>Playbook</span>
+					</a>
+				</nav>
 
+				{{!-- Tab Content --}}
+				<div class="tab-content">
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-info-tab.hbs"}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-powers-tab.hbs"}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-playbook-tab.hbs"}}
+				</div>
+			</div>
+
+			{{!-- Stats Sidebar --}}
+			{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-labels-sidebar.hbs"}}
+		</div>
+	</div>
+
+	{{else}}
+	{{!-- NPC Sheet - Keep existing layout for now --}}
+	<div class="sheet-wrapper npc-sheet">
 		{{!-- Sheet Header --}}
 		{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-header.hbs" }}
 
 		<section class="sheet-top flexcol">
-			{{#if isCharacter}}
-			{{!-- Attributes --}}
-			<section class="sheet-attributes flexrow">
-				<div class="cell cell--image">
-					<img class="profile-img" src="{{actor.img}}" data-edit="img" height="100" width="100"/>
-					{{#if labelsGraph}}
-					<div class="labels-graph-container" data-tooltip="{{labelsGraph.tooltip}}">
-						{{{labelsGraph.svg}}}
-					</div>
-					{{/if}}
-				</div>
-
-				{{> "pbta.actor-stats" }}
-
-			</section>
-			{{/if}}
-
 			<section class="sheet-attributes-top">
 				{{~> "modules/masks-newgeneration-unofficial/templates/parts/actor-attributes.hbs" attrs=system.attrTop cssClass="cell--attributes-top flexrow" owner=owner editable=editable ~}}
 			</section>
@@ -44,8 +66,6 @@
 				<nav class="sheet-tabs tabs" data-group="primary">
 					<a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
 					<a class="item" data-tab="moves">{{localize "PBTA.Moves"}}</a>
-					<a class="item" data-tab="social">Social</a>
-					<a class="item" data-tab="adv-tab">Advancement</a>
 				</nav>
 
 				{{!-- Sheet Body --}}
@@ -55,14 +75,9 @@
 
 					{{!-- Moves Tab --}}
 					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-movelist.hbs" }}
-
-					{{!-- Social Tab --}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-social.hbs" }}
-
-					{{!-- Personal advancement Tab --}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-advancement.hbs" }}
 				</section>
 			</section>
 		</section>
 	</div>
-	</form>
+	{{/if}}
+</form>

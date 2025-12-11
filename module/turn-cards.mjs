@@ -1557,3 +1557,8 @@ Hooks.once("ready", () => {
 		console.error(`[${NS}] Failed to initialize TurnCardsHUD`, e);
 	}
 });
+
+// ────────────────────────────────────────────────────────────────────────────
+// Exports for external usage (e.g., actor sheet shift labels)
+// ────────────────────────────────────────────────────────────────────────────
+export { promptShiftLabels, applyShiftLabels };

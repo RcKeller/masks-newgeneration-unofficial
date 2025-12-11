@@ -1,0 +1,31 @@
+{{!-- Individual Move Item --}}
+<div class="move-content">
+	<div class="move-header">
+		<span class="move-name">{{item.name}}</span>
+		<div class="move-actions">
+			{{!-- Share in chat --}}
+			<button type="button" class="move-action move-share" data-action="share-move" data-tooltip="{{localize 'PBTA.ShareMove'}}" data-tooltip-direction="UP">
+				<i class="fas fa-comment"></i>
+			</button>
+			{{!-- Roll the move --}}
+			{{#if item.system.moveType}}
+			<button type="button" class="move-action move-roll" data-action="roll-move" data-tooltip="{{localize 'PBTA.Roll'}}" data-tooltip-direction="UP">
+				<i class="fas fa-dice-d20"></i>
+			</button>
+			{{/if}}
+			{{!-- Edit move --}}
+			<button type="button" class="move-action move-edit" data-action="edit-item" data-tooltip="{{localize 'PBTA.Edit'}}" data-tooltip-direction="UP">
+				<i class="fas fa-edit"></i>
+			</button>
+			{{!-- Delete move --}}
+			<button type="button" class="move-action move-delete" data-action="delete-item" data-tooltip="{{localize 'PBTA.Delete'}}" data-tooltip-direction="UP">
+				<i class="fas fa-trash"></i>
+			</button>
+		</div>
+	</div>
+	{{#if item.system.description}}
+	<div class="move-description collapsed">
+		{{{item.system.description}}}
+	</div>
+	{{/if}}
+</div>

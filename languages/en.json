@@ -37,7 +37,14 @@
         "Influence-Lock": "Lock This Influence",
         "Influence-Unlock": "Unlock This Influence",
         "InfluenceCreate": "Create Influence",
+        "Delete-Influence": "Delete Influence",
         "Person-Name": "Person's Name",
+        "NoInfluences": "No influences tracked yet.",
+        "Labels": {
+            "Lock": "Lock this label (prevents shifting)",
+            "Unlock": "Unlock this label"
+        },
+        "PlaybookFeatures": "Playbook Features",
         "Shift-Labels": {
             "label": "Shift Labels",
             "stat": "Label",
@@ -72,6 +79,7 @@
                 "success": "Success!"
             },
             "stats": {
+                "labels": "Labels",
                 "danger": "Danger",
                 "freak": "Freak",
                 "savior": "Savior",

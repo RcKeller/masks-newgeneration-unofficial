@@ -1,0 +1,140 @@
+{{!-- Stats Sidebar: Labels, Potential, Forward, Ongoing, Playbook attributes --}}
+<aside class="stats-sidebar">
+	{{!-- Labels Visualization --}}
+	<div class="labels-section">
+		<h3 class="sidebar-title">{{localize "MASKS-SHEETS.CharacterSheets.stats.labels"}}</h3>
+
+		{{!-- Pentagon graph (clickable to open shift modal) --}}
+		{{#if labelsGraph}}
+		<div class="labels-graph-clickable" data-action="shift-labels" data-tooltip="{{labelsGraph.tooltip}}">
+			{{{labelsGraph.svg}}}
+		</div>
+		{{/if}}
+
+		{{!-- Individual label rows --}}
+		<div class="labels-list">
+			{{#each labelRows as |label key|}}
+			<div class="label-row label--{{key}} {{#if label.isLocked}}locked{{/if}}" data-label="{{key}}">
+				<div class="label-header">
+					<i class="label-icon {{label.icon}}"></i>
+					<span class="label-name">{{label.displayName}}</span>
+					<button type="button" class="label-lock" data-action="toggle-lock" data-label="{{key}}"
+						data-tooltip="{{#if label.isLocked}}{{localize 'MASKS-SHEETS.Labels.Unlock'}}{{else}}{{localize 'MASKS-SHEETS.Labels.Lock'}}{{/if}}"
+						data-tooltip-direction="LEFT">
+						<i class="fas {{#if label.isLocked}}fa-lock{{else}}fa-lock-open{{/if}}"></i>
+					</button>
+				</div>
+				<div class="label-controls">
+					<button type="button" class="label-btn label-decrement" data-action="decrement" data-label="{{key}}" {{#if label.atMin}}disabled{{/if}}>
+						<i class="fas fa-minus"></i>
+					</button>
+					<input type="number" class="label-value" name="system.stats.{{key}}.value"
+						value="{{label.value}}" min="-4" max="4" />
+					<button type="button" class="label-btn label-increment" data-action="increment" data-label="{{key}}" {{#if label.atMax}}disabled{{/if}}>
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
+			</div>
+			{{/each}}
+		</div>
+	</div>
+
+	{{!-- Potential (XP) --}}
+	<div class="potential-section">
+		<h3 class="sidebar-title">{{system.attributes.xp.label}}</h3>
+		<div class="potential-tracker">
+			<div class="potential-pips">
+				{{#times 5}}
+				<span class="potential-pip {{#if (lte this ../system.attributes.xp.value)}}filled{{/if}}"
+					data-pip="{{this}}" data-action="set-potential"></span>
+				{{/times}}
+			</div>
+			<span class="potential-count">{{system.attributes.xp.value}} / 5</span>
+		</div>
+	</div>
+
+	{{!-- Forward --}}
+	<div class="modifier-section modifier--forward">
+		<div class="modifier-row">
+			<span class="modifier-label">{{localize "PBTA.Forward"}}</span>
+			<div class="modifier-controls">
+				<button type="button" class="modifier-btn" data-action="decrease" data-attr="resources.forward.value">
+					<i class="fas fa-minus"></i>
+				</button>
+				<input type="number" class="modifier-value" name="system.resources.forward.value"
+					value="{{system.resources.forward.value}}" data-dtype="Number" />
+				<button type="button" class="modifier-btn" data-action="increase" data-attr="resources.forward.value">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+
+	{{!-- Ongoing --}}
+	<div class="modifier-section modifier--ongoing">
+		<div class="modifier-row">
+			<span class="modifier-label">{{localize "PBTA.Ongoing"}}</span>
+			<div class="modifier-controls">
+				<button type="button" class="modifier-btn" data-action="decrease" data-attr="resources.ongoing.value">
+					<i class="fas fa-minus"></i>
+				</button>
+				<input type="number" class="modifier-value" name="system.resources.ongoing.value"
+					value="{{system.resources.ongoing.value}}" data-dtype="Number" />
+				<button type="button" class="modifier-btn" data-action="increase" data-attr="resources.ongoing.value">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+
+	{{!-- Playbook-specific attributes --}}
+	{{#if playbookAttributes}}
+	<div class="playbook-attrs-section">
+		<h3 class="sidebar-title">{{localize "MASKS-SHEETS.PlaybookFeatures"}}</h3>
+		{{#each playbookAttributes as |attr key|}}
+		<div class="playbook-attr playbook-attr--{{key}}">
+			{{#if (eq attr.type "Clock")}}
+			{{!-- Clock type (e.g., Doom Track) --}}
+			<label class="attr-label">{{attr.label}}</label>
+			<div class="clock-pips">
+				{{#times attr.max}}
+				<span class="clock-pip {{#if (lte this ../attr.value)}}filled{{/if}}"
+					data-pip="{{this}}" data-attr="{{../key}}" data-action="set-clock"></span>
+				{{/times}}
+			</div>
+			{{else if (eq attr.type "Number")}}
+			{{!-- Number type (e.g., Soldier, Nova, Harbinger) --}}
+			<label class="attr-label">{{attr.label}}</label>
+			<div class="number-controls">
+				<button type="button" class="attr-btn" data-action="decrease" data-attr="attributes.{{key}}.value">-</button>
+				<input type="number" name="system.attributes.{{key}}.value" value="{{attr.value}}"
+					{{#if attr.max}}max="{{attr.max}}"{{/if}} />
+				<button type="button" class="attr-btn" data-action="increase" data-attr="attributes.{{key}}.value">+</button>
+			</div>
+			{{else if (eq attr.type "LongText")}}
+			{{!-- LongText type (e.g., Bull, Protege) --}}
+			<label class="attr-label">{{attr.label}}</label>
+			<textarea name="system.attributes.{{key}}.value" rows="2">{{attr.value}}</textarea>
+			{{else if (eq attr.type "ListMany")}}
+			{{!-- ListMany type (e.g., Brain's Shame) --}}
+			<label class="attr-label">{{attr.label}}</label>
+			<ul class="attr-checklist">
+				{{#each attr.options as |opt optKey|}}
+				<li>
+					<label>
+						<input type="checkbox" name="system.attributes.{{../key}}.options.{{optKey}}.value" {{checked opt.value}} />
+						{{#if (eq opt.label "[Text]")}}
+						<input type="text" name="system.attributes.{{../key}}.options.{{optKey}}.userLabel" value="{{opt.userLabel}}" placeholder="..." />
+						{{else}}
+						{{opt.label}}
+						{{/if}}
+					</label>
+				</li>
+				{{/each}}
+			</ul>
+			{{/if}}
+		</div>
+		{{/each}}
+	</div>
+	{{/if}}
+</aside>

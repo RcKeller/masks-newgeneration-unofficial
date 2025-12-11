@@ -1,0 +1,150 @@
+{{!-- Powers Tab: Moves organized with Playbook moves first, then Basic moves --}}
+<div class="tab powers" data-group="primary" data-tab="powers">
+	<section class="sheet-tab powers-tab">
+		{{!-- Roll modifiers bar --}}
+		<div class="powers-modifiers">
+			{{#if (not sheetSettings.hideRollFormula)}}
+			<div class="modifier-field">
+				<label>{{localize "PBTA.RollFormulaOverride"}}</label>
+				<input type="text" name="system.resources.rollFormula" value="{{system.resources.rollFormula}}" placeholder="ex: 3d6kh2"/>
+			</div>
+			{{/if}}
+
+			{{#if (not sheetSettings.hideHold)}}
+			<div class="modifier-field">
+				<label>{{localize "PBTA.Hold"}}</label>
+				<div class="modifier-stepper">
+					<button type="button" data-action="decrease" data-attr="resources.hold.value">-</button>
+					<input type="number" name="system.resources.hold.value" value="{{system.resources.hold.value}}" data-dtype="Number"/>
+					<button type="button" data-action="increase" data-attr="resources.hold.value">+</button>
+				</div>
+			</div>
+			{{/if}}
+
+			{{#if (not sheetSettings.hideRollMode)}}
+			<div class="modifier-field">
+				<label>{{localize "PBTA.RollMode"}}</label>
+				{{radioBoxes 'flags.pbta.rollMode' config.rollModes checked=flags.pbta.rollMode localize=true}}
+			</div>
+			{{/if}}
+		</div>
+
+		{{!-- Moves List - Playbook moves first, then Basic --}}
+		<div class="moves-container">
+			{{!-- Playbook Moves (unique to character) --}}
+			{{#if moves.playbook}}
+			<div class="moves-group moves-group--playbook" data-move-type="playbook">
+				<div class="moves-group-header" data-action="toggle-collapse">
+					<h3 class="moves-group-title">
+						<i class="fas fa-star"></i>
+						{{getLabel moveTypes "playbook"}}
+					</h3>
+					<span class="moves-collapse-icon"><i class="fas fa-chevron-up"></i></span>
+					<button type="button" class="moves-add-btn" data-type="move" data-move-type="playbook">
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
+				<ol class="moves-list">
+					{{#each moves.playbook as |item id|}}
+					<li class="move-item" data-item-id="{{item._id}}" draggable="true">
+						{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+					</li>
+					{{/each}}
+				</ol>
+			</div>
+			{{/if}}
+
+			{{!-- Basic Moves --}}
+			{{#if moves.basic}}
+			<div class="moves-group moves-group--basic" data-move-type="basic">
+				<div class="moves-group-header" data-action="toggle-collapse">
+					<h3 class="moves-group-title">
+						<i class="fas fa-dice-d20"></i>
+						{{getLabel moveTypes "basic"}}
+					</h3>
+					<span class="moves-collapse-icon"><i class="fas fa-chevron-up"></i></span>
+					<button type="button" class="moves-add-btn" data-type="move" data-move-type="basic">
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
+				<ol class="moves-list">
+					{{#each moves.basic as |item id|}}
+					<li class="move-item" data-item-id="{{item._id}}" draggable="true">
+						{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+					</li>
+					{{/each}}
+				</ol>
+			</div>
+			{{/if}}
+
+			{{!-- Adult Moves --}}
+			{{#if moves.adult}}
+			<div class="moves-group moves-group--adult" data-move-type="adult">
+				<div class="moves-group-header" data-action="toggle-collapse">
+					<h3 class="moves-group-title">
+						<i class="fas fa-user-graduate"></i>
+						{{getLabel moveTypes "adult"}}
+					</h3>
+					<span class="moves-collapse-icon"><i class="fas fa-chevron-up"></i></span>
+					<button type="button" class="moves-add-btn" data-type="move" data-move-type="adult">
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
+				<ol class="moves-list">
+					{{#each moves.adult as |item id|}}
+					<li class="move-item" data-item-id="{{item._id}}" draggable="true">
+						{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+					</li>
+					{{/each}}
+				</ol>
+			</div>
+			{{/if}}
+
+			{{!-- Rules/Other Moves --}}
+			{{#if moves.rules}}
+			<div class="moves-group moves-group--rules" data-move-type="rules">
+				<div class="moves-group-header" data-action="toggle-collapse">
+					<h3 class="moves-group-title">
+						<i class="fas fa-book"></i>
+						{{getLabel moveTypes "rules"}}
+					</h3>
+					<span class="moves-collapse-icon"><i class="fas fa-chevron-up"></i></span>
+					<button type="button" class="moves-add-btn" data-type="move" data-move-type="rules">
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
+				<ol class="moves-list">
+					{{#each moves.rules as |item id|}}
+					<li class="move-item" data-item-id="{{item._id}}" draggable="true">
+						{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+					</li>
+					{{/each}}
+				</ol>
+			</div>
+			{{/if}}
+
+			{{!-- Other moves that don't fit categories --}}
+			{{#if moves.PBTA_OTHER}}
+			<div class="moves-group moves-group--other" data-move-type="PBTA_OTHER">
+				<div class="moves-group-header" data-action="toggle-collapse">
+					<h3 class="moves-group-title">
+						<i class="fas fa-ellipsis-h"></i>
+						{{localize "PBTA_OTHER"}}
+					</h3>
+					<span class="moves-collapse-icon"><i class="fas fa-chevron-up"></i></span>
+					<button type="button" class="moves-add-btn" data-type="move" data-move-type="PBTA_OTHER">
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
+				<ol class="moves-list">
+					{{#each moves.PBTA_OTHER as |item id|}}
+					<li class="move-item" data-item-id="{{item._id}}" draggable="true">
+						{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+					</li>
+					{{/each}}
+				</ol>
+			</div>
+			{{/if}}
+		</div>
+	</section>
+</div>

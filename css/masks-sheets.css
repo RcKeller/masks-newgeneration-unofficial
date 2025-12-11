@@ -1257,3 +1257,1166 @@
     height: calc(var(--tc-card-width) * 4 / 3);
   }
 }
+/* =========================================================================== */
+/* MASKS SHEET V2 - Redesigned Character Sheet                                 */
+/* =========================================================================== */
+:root {
+  /* Layout */
+  --masks-v2-sheet-min-width: 900px;
+  --masks-v2-left-panel-width: 280px;
+  --masks-v2-sidebar-width: 220px;
+  --masks-v2-corner-radius: 2px;
+  --masks-v2-transition-speed: 150ms;
+  --masks-v2-transition-smooth: 300ms;
+  /* Label Colors */
+  --masks-danger-color: #e05252;
+  --masks-danger-color-light: rgba(224, 82, 82, 0.15);
+  --masks-freak-color: #9b59b6;
+  --masks-freak-color-light: rgba(155, 89, 182, 0.15);
+  --masks-savior-color: #3498db;
+  --masks-savior-color-light: rgba(52, 152, 219, 0.15);
+  --masks-superior-color: #f39c12;
+  --masks-superior-color-light: rgba(243, 156, 18, 0.15);
+  --masks-mundane-color: #27ae60;
+  --masks-mundane-color-light: rgba(39, 174, 96, 0.15);
+  /* Condition Colors (matching affected labels) */
+  --masks-afraid-color: var(--masks-danger-color);
+  --masks-angry-color: var(--masks-mundane-color);
+  --masks-guilty-color: var(--masks-superior-color);
+  --masks-hopeless-color: var(--masks-freak-color);
+  --masks-insecure-color: var(--masks-savior-color);
+  /* V2 Theme */
+  --masks-v2-panel-bg: rgba(20, 30, 45, 0.95);
+  --masks-v2-sidebar-bg: rgba(30, 40, 55, 0.92);
+  --masks-v2-tab-bg: rgba(40, 50, 65, 0.9);
+  --masks-v2-tab-active-bg: rgba(60, 75, 95, 0.95);
+  --masks-v2-text-primary: #ffffff;
+  --masks-v2-text-secondary: rgba(255, 255, 255, 0.75);
+  --masks-v2-text-muted: rgba(255, 255, 255, 0.5);
+  --masks-v2-border-color: rgba(255, 255, 255, 0.15);
+  --masks-v2-border-accent: rgba(61, 167, 219, 0.5);
+  --masks-v2-input-bg: rgba(0, 0, 0, 0.3);
+  --masks-v2-accent-color: #3da7db;
+}
+
+/* Main Sheet Container */
+.pbta.sheet.actor .masks-sheet-v2 {
+  background: transparent;
+}
+
+.masks-sheet-v2 .masks-sheet {
+  display: grid;
+  grid-template-columns: var(--masks-v2-left-panel-width) 1fr;
+  height: 100%;
+  min-height: 600px;
+  gap: 0;
+  background: var(--masks-v2-panel-bg);
+  border-radius: var(--masks-v2-corner-radius);
+  overflow: hidden;
+}
+
+/* =========================================================================== */
+/* LEFT PANEL - Portrait, Identity, Conditions                                  */
+/* =========================================================================== */
+.masks-sheet-v2 .masks-left-panel {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(20, 30, 45, 0.98) 0%, rgba(15, 25, 40, 0.98) 100%);
+  border-right: 1px solid var(--masks-v2-border-color);
+  padding: 16px;
+  gap: 16px;
+}
+
+/* Character Portrait */
+.masks-sheet-v2 .character-portrait {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--masks-v2-corner-radius);
+  overflow: hidden;
+  border: 2px solid var(--masks-v2-border-accent);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+.masks-sheet-v2 .character-portrait .profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  cursor: pointer;
+  transition: transform var(--masks-v2-transition-smooth) ease;
+}
+.masks-sheet-v2 .character-portrait .profile-img:hover {
+  transform: scale(1.02);
+}
+
+/* Character Identity */
+.masks-sheet-v2 .character-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.masks-sheet-v2 .character-identity .character-name {
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-primary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--masks-v2-border-accent);
+  padding: 4px 0;
+  width: 100%;
+}
+.masks-sheet-v2 .character-identity .character-name::placeholder {
+  color: var(--masks-v2-text-muted);
+}
+.masks-sheet-v2 .character-identity .character-name:focus {
+  outline: none;
+  border-bottom-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .character-identity .character-real-name {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--masks-v2-text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--masks-v2-border-color);
+  padding: 4px 0;
+  width: 100%;
+}
+.masks-sheet-v2 .character-identity .character-real-name::placeholder {
+  color: var(--masks-v2-text-muted);
+  font-style: italic;
+}
+.masks-sheet-v2 .character-identity .character-real-name:focus {
+  outline: none;
+  border-bottom-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .character-identity .playbook-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+.masks-sheet-v2 .character-identity .playbook-row .playbook-select {
+  flex: 1;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  padding: 6px 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.masks-sheet-v2 .character-identity .playbook-row .playbook-select:focus {
+  outline: none;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .character-identity .playbook-row .playbook-select option {
+  background: var(--masks-v2-panel-bg);
+  color: var(--masks-v2-text-primary);
+}
+.masks-sheet-v2 .character-identity .playbook-row .playbook-link {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-muted);
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .character-identity .playbook-row .playbook-link:hover {
+  background: var(--masks-v2-accent-color);
+  color: var(--masks-v2-text-primary);
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .character-identity .playbook-row .playbook-link.active {
+  color: var(--masks-v2-accent-color);
+}
+
+/* =========================================================================== */
+/* CONDITIONS PANEL                                                             */
+/* =========================================================================== */
+.masks-sheet-v2 .conditions-panel {
+  margin-top: auto;
+}
+.masks-sheet-v2 .conditions-panel .conditions-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--masks-v2-text-muted);
+  margin-bottom: 8px;
+}
+.masks-sheet-v2 .conditions-panel .conditions-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.masks-sheet-v2 .conditions-panel .condition-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+  /* Condition colors when active */
+  /* Inactive state with color hint */
+}
+.masks-sheet-v2 .conditions-panel .condition-tag i {
+  font-size: 0.75rem;
+}
+.masks-sheet-v2 .conditions-panel .condition-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.masks-sheet-v2 .conditions-panel .condition-tag.condition--afraid.active {
+  background: var(--masks-afraid-color);
+  border-color: var(--masks-afraid-color);
+  color: white;
+}
+.masks-sheet-v2 .conditions-panel .condition-tag.condition--angry.active {
+  background: var(--masks-angry-color);
+  border-color: var(--masks-angry-color);
+  color: white;
+}
+.masks-sheet-v2 .conditions-panel .condition-tag.condition--guilty.active {
+  background: var(--masks-guilty-color);
+  border-color: var(--masks-guilty-color);
+  color: white;
+}
+.masks-sheet-v2 .conditions-panel .condition-tag.condition--hopeless.active {
+  background: var(--masks-hopeless-color);
+  border-color: var(--masks-hopeless-color);
+  color: white;
+}
+.masks-sheet-v2 .conditions-panel .condition-tag.condition--insecure.active {
+  background: var(--masks-insecure-color);
+  border-color: var(--masks-insecure-color);
+  color: white;
+}
+.masks-sheet-v2 .conditions-panel .condition-tag.condition--afraid:not(.active) {
+  border-left: 3px solid var(--masks-afraid-color);
+}
+.masks-sheet-v2 .conditions-panel .condition-tag.condition--angry:not(.active) {
+  border-left: 3px solid var(--masks-angry-color);
+}
+.masks-sheet-v2 .conditions-panel .condition-tag.condition--guilty:not(.active) {
+  border-left: 3px solid var(--masks-guilty-color);
+}
+.masks-sheet-v2 .conditions-panel .condition-tag.condition--hopeless:not(.active) {
+  border-left: 3px solid var(--masks-hopeless-color);
+}
+.masks-sheet-v2 .conditions-panel .condition-tag.condition--insecure:not(.active) {
+  border-left: 3px solid var(--masks-insecure-color);
+}
+
+/* =========================================================================== */
+/* RIGHT SECTION - Tabs + Sidebar                                               */
+/* =========================================================================== */
+.masks-sheet-v2 .masks-sheet__right {
+  display: grid;
+  grid-template-columns: 1fr var(--masks-v2-sidebar-width);
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Tabs Container */
+.masks-sheet-v2 .tabs-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Tab Navigation */
+.masks-sheet-v2 .sheet-tabs.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 8px 12px 0;
+  background: var(--masks-v2-tab-bg);
+  border-bottom: none;
+}
+.masks-sheet-v2 .sheet-tabs.tabs .tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  border-radius: var(--masks-v2-corner-radius) var(--masks-v2-corner-radius) 0 0;
+  color: var(--masks-v2-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .sheet-tabs.tabs .tab-btn i {
+  font-size: 0.9rem;
+}
+.masks-sheet-v2 .sheet-tabs.tabs .tab-btn:hover {
+  color: var(--masks-v2-text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+}
+.masks-sheet-v2 .sheet-tabs.tabs .tab-btn.active {
+  color: var(--masks-v2-text-primary);
+  background: var(--masks-v2-tab-active-bg);
+}
+
+/* Tab Content */
+.masks-sheet-v2 .tab-content {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--masks-v2-tab-active-bg);
+  padding: 16px;
+}
+.masks-sheet-v2 .tab-content .tab {
+  display: none;
+}
+.masks-sheet-v2 .tab-content .tab.active {
+  display: block;
+}
+.masks-sheet-v2 .tab-content .sheet-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Section Styling */
+.masks-sheet-v2 .section-title,
+.masks-sheet-v2 .sidebar-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--masks-v2-accent-color);
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--masks-v2-border-color);
+}
+
+.masks-sheet-v2 .section-description {
+  font-size: 0.85rem;
+  color: var(--masks-v2-text-muted);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+/* Editor Styling */
+.masks-sheet-v2 .editor {
+  min-height: 100px;
+}
+.masks-sheet-v2 .editor .editor-content {
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  padding: 8px;
+  min-height: 80px;
+}
+
+/* =========================================================================== */
+/* STATS SIDEBAR                                                                */
+/* =========================================================================== */
+.masks-sheet-v2 .stats-sidebar {
+  background: var(--masks-v2-sidebar-bg);
+  border-left: 1px solid var(--masks-v2-border-color);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+/* Labels Section */
+.masks-sheet-v2 .labels-section .labels-graph-clickable {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: transform var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .labels-section .labels-graph-clickable:hover {
+  transform: scale(1.05);
+}
+.masks-sheet-v2 .labels-section .labels-graph-clickable .labels-graph-svg {
+  width: 100px;
+  height: 100px;
+}
+.masks-sheet-v2 .labels-section .labels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.masks-sheet-v2 .labels-section .label-row {
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  padding: 8px;
+  transition: all var(--masks-v2-transition-speed) ease;
+  /* Label-specific colors */
+}
+.masks-sheet-v2 .labels-section .label-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.masks-sheet-v2 .labels-section .label-row.locked {
+  opacity: 0.6;
+}
+.masks-sheet-v2 .labels-section .label-row.label--danger {
+  border-left: 3px solid var(--masks-danger-color);
+}
+.masks-sheet-v2 .labels-section .label-row.label--danger .label-icon {
+  color: var(--masks-danger-color);
+}
+.masks-sheet-v2 .labels-section .label-row.label--freak {
+  border-left: 3px solid var(--masks-freak-color);
+}
+.masks-sheet-v2 .labels-section .label-row.label--freak .label-icon {
+  color: var(--masks-freak-color);
+}
+.masks-sheet-v2 .labels-section .label-row.label--savior {
+  border-left: 3px solid var(--masks-savior-color);
+}
+.masks-sheet-v2 .labels-section .label-row.label--savior .label-icon {
+  color: var(--masks-savior-color);
+}
+.masks-sheet-v2 .labels-section .label-row.label--superior {
+  border-left: 3px solid var(--masks-superior-color);
+}
+.masks-sheet-v2 .labels-section .label-row.label--superior .label-icon {
+  color: var(--masks-superior-color);
+}
+.masks-sheet-v2 .labels-section .label-row.label--mundane {
+  border-left: 3px solid var(--masks-mundane-color);
+}
+.masks-sheet-v2 .labels-section .label-row.label--mundane .label-icon {
+  color: var(--masks-mundane-color);
+}
+.masks-sheet-v2 .labels-section .label-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.masks-sheet-v2 .labels-section .label-header .label-icon {
+  font-size: 0.85rem;
+  width: 16px;
+  text-align: center;
+}
+.masks-sheet-v2 .labels-section .label-header .label-name {
+  flex: 1;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-primary);
+}
+.masks-sheet-v2 .labels-section .label-header .label-lock {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--masks-v2-text-muted);
+  cursor: pointer;
+  font-size: 0.7rem;
+  transition: color var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .labels-section .label-header .label-lock:hover {
+  color: var(--masks-v2-text-primary);
+}
+.masks-sheet-v2 .labels-section .label-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.masks-sheet-v2 .labels-section .label-controls .label-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-secondary);
+  cursor: pointer;
+  font-size: 0.7rem;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .labels-section .label-controls .label-btn:hover:not(:disabled) {
+  background: var(--masks-v2-accent-color);
+  color: white;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .labels-section .label-controls .label-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.masks-sheet-v2 .labels-section .label-controls .label-value {
+  flex: 1;
+  text-align: center;
+  background: transparent;
+  border: none;
+  color: var(--masks-v2-text-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+  /* Hide spinner buttons */
+  -moz-appearance: textfield;
+}
+.masks-sheet-v2 .labels-section .label-controls .label-value:focus {
+  outline: none;
+}
+.masks-sheet-v2 .labels-section .label-controls .label-value::-webkit-outer-spin-button, .masks-sheet-v2 .labels-section .label-controls .label-value::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Potential Section */
+.masks-sheet-v2 .potential-section .potential-tracker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.masks-sheet-v2 .potential-section .potential-pips {
+  display: flex;
+  gap: 4px;
+}
+.masks-sheet-v2 .potential-section .potential-pips .potential-pip {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--masks-v2-input-bg);
+  border: 2px solid var(--masks-v2-border-color);
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .potential-section .potential-pips .potential-pip:hover {
+  border-color: var(--masks-turncards-potential-fill-color);
+  transform: scale(1.1);
+}
+.masks-sheet-v2 .potential-section .potential-pips .potential-pip.filled {
+  background: var(--masks-turncards-potential-fill-color);
+  border-color: var(--masks-turncards-potential-fill-color);
+}
+.masks-sheet-v2 .potential-section .potential-count {
+  font-size: 0.75rem;
+  color: var(--masks-v2-text-muted);
+}
+
+/* Modifier Sections (Forward/Ongoing) */
+.masks-sheet-v2 .modifier-section .modifier-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+}
+.masks-sheet-v2 .modifier-section .modifier-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-secondary);
+}
+.masks-sheet-v2 .modifier-section .modifier-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.masks-sheet-v2 .modifier-section .modifier-controls .modifier-btn {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-secondary);
+  cursor: pointer;
+  font-size: 0.65rem;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .modifier-section .modifier-controls .modifier-btn:hover {
+  background: var(--masks-v2-accent-color);
+  color: white;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .modifier-section .modifier-controls .modifier-value {
+  width: 40px;
+  text-align: center;
+  background: transparent;
+  border: none;
+  color: var(--masks-v2-text-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  -moz-appearance: textfield;
+}
+.masks-sheet-v2 .modifier-section .modifier-controls .modifier-value:focus {
+  outline: none;
+}
+.masks-sheet-v2 .modifier-section .modifier-controls .modifier-value::-webkit-outer-spin-button, .masks-sheet-v2 .modifier-section .modifier-controls .modifier-value::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Playbook Attributes Section */
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr {
+  margin-bottom: 12px;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-muted);
+  margin-bottom: 4px;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-pips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-pips .clock-pip {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--masks-v2-input-bg);
+  border: 2px solid var(--masks-v2-border-color);
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-pips .clock-pip:hover {
+  border-color: var(--masks-danger-color);
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-pips .clock-pip.filled {
+  background: var(--masks-danger-color);
+  border-color: var(--masks-danger-color);
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .number-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .number-controls .attr-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-secondary);
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .number-controls .attr-btn:hover {
+  background: var(--masks-v2-accent-color);
+  color: white;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .number-controls input {
+  width: 50px;
+  text-align: center;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  font-weight: 600;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .number-controls input:focus {
+  outline: none;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr textarea {
+  width: 100%;
+  min-height: 60px;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  padding: 6px;
+  font-size: 0.8rem;
+  resize: vertical;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr textarea:focus {
+  outline: none;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-checklist li {
+  margin-bottom: 4px;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-checklist li label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--masks-v2-text-secondary);
+  cursor: pointer;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-checklist li label input[type=checkbox] {
+  accent-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-checklist li label input[type=text] {
+  flex: 1;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  padding: 2px 6px;
+  font-size: 0.8rem;
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-checklist li label input[type=text]:focus {
+  outline: none;
+  border-color: var(--masks-v2-accent-color);
+}
+
+/* =========================================================================== */
+/* INFO TAB                                                                     */
+/* =========================================================================== */
+.masks-sheet-v2 .info-tab .info-section {
+  margin-bottom: 16px;
+}
+.masks-sheet-v2 .info-tab .info-section:last-child {
+  margin-bottom: 0;
+}
+.masks-sheet-v2 .info-tab .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.masks-sheet-v2 .info-tab .section-header .section-title {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.masks-sheet-v2 .info-tab .section-header .influence-create {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--masks-v2-accent-color);
+  border: none;
+  border-radius: var(--masks-v2-corner-radius);
+  color: white;
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .info-tab .section-header .influence-create:hover {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+.masks-sheet-v2 .info-tab .influences-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.masks-sheet-v2 .info-tab .influence-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+}
+.masks-sheet-v2 .info-tab .influence-item .influence-name-row {
+  flex: 1;
+}
+.masks-sheet-v2 .info-tab .influence-item .influence-name-row .influence-name-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  color: var(--masks-v2-text-primary);
+  font-size: 0.9rem;
+  padding: 2px 0;
+}
+.masks-sheet-v2 .info-tab .influence-item .influence-name-row .influence-name-input:focus {
+  outline: none;
+  border-bottom-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .info-tab .influence-item .influence-controls {
+  display: flex;
+  gap: 4px;
+}
+.masks-sheet-v2 .info-tab .influence-item .influence-controls .influence-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-muted);
+  cursor: pointer;
+  font-size: 0.55rem;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .info-tab .influence-item .influence-controls .influence-btn i {
+  font-size: 0.65rem;
+}
+.masks-sheet-v2 .info-tab .influence-item .influence-controls .influence-btn span {
+  display: none;
+}
+.masks-sheet-v2 .info-tab .influence-item .influence-controls .influence-btn:hover {
+  background: var(--masks-v2-accent-color);
+  color: white;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .info-tab .influence-item .influence-controls .influence-btn.active {
+  background: var(--masks-v2-accent-color);
+  color: white;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .info-tab .influence-item .influence-controls .influence-btn.influence-delete-btn:hover {
+  background: var(--masks-danger-color);
+  border-color: var(--masks-danger-color);
+}
+.masks-sheet-v2 .info-tab .no-influences {
+  font-size: 0.85rem;
+  color: var(--masks-v2-text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 16px;
+}
+
+/* =========================================================================== */
+/* POWERS TAB                                                                   */
+/* =========================================================================== */
+.masks-sheet-v2 .powers-tab .powers-modifiers {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+}
+.masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-muted);
+  white-space: nowrap;
+}
+.masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field input[type=text] {
+  width: 80px;
+  background: var(--masks-v2-sidebar-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+.masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field input[type=text]:focus {
+  outline: none;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field .modifier-stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field .modifier-stepper button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--masks-v2-sidebar-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-secondary);
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field .modifier-stepper button:hover {
+  background: var(--masks-v2-accent-color);
+  color: white;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field .modifier-stepper input {
+  width: 40px;
+  text-align: center;
+  background: var(--masks-v2-sidebar-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  font-weight: 600;
+}
+.masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field .modifier-stepper input:focus {
+  outline: none;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .powers-tab .moves-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.masks-sheet-v2 .powers-tab .moves-group {
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  overflow: hidden;
+}
+.masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-list {
+  display: none;
+}
+.masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-collapse-icon i {
+  transform: rotate(180deg);
+}
+.masks-sheet-v2 .powers-tab .moves-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .powers-tab .moves-group-header:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.masks-sheet-v2 .powers-tab .moves-group-header .moves-group-title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-primary);
+}
+.masks-sheet-v2 .powers-tab .moves-group-header .moves-group-title i {
+  color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .powers-tab .moves-group-header .moves-collapse-icon {
+  color: var(--masks-v2-text-muted);
+  transition: transform var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .powers-tab .moves-group-header .moves-collapse-icon i {
+  font-size: 0.75rem;
+}
+.masks-sheet-v2 .powers-tab .moves-group-header .moves-add-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--masks-v2-accent-color);
+  border: none;
+  border-radius: var(--masks-v2-corner-radius);
+  color: white;
+  cursor: pointer;
+  font-size: 0.7rem;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .powers-tab .moves-group-header .moves-add-btn:hover {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+.masks-sheet-v2 .powers-tab .moves-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.masks-sheet-v2 .powers-tab .move-item {
+  border-top: 1px solid var(--masks-v2-border-color);
+}
+.masks-sheet-v2 .powers-tab .move-item:first-child {
+  border-top: none;
+}
+.masks-sheet-v2 .powers-tab .move-content {
+  padding: 10px 12px;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--masks-v2-text-primary);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0.5;
+  transition: opacity var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-muted);
+  cursor: pointer;
+  font-size: 0.7rem;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action:hover {
+  background: var(--masks-v2-accent-color);
+  color: white;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action.move-roll:hover {
+  background: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action.move-delete:hover {
+  background: var(--masks-danger-color);
+  border-color: var(--masks-danger-color);
+}
+.masks-sheet-v2 .powers-tab .move-content:hover .move-actions {
+  opacity: 1;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-description {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--masks-v2-text-secondary);
+  line-height: 1.5;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-description.collapsed {
+  display: none;
+}
+
+/* =========================================================================== */
+/* PLAYBOOK TAB                                                                 */
+/* =========================================================================== */
+.masks-sheet-v2 .playbook-tab .playbook-section {
+  margin-bottom: 20px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section:last-child {
+  margin-bottom: 0;
+}
+.masks-sheet-v2 .playbook-tab .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.masks-sheet-v2 .playbook-tab .section-header .section-title {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.masks-sheet-v2 .playbook-tab .section-header .moment-unlock-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--masks-v2-text-muted);
+  cursor: pointer;
+}
+.masks-sheet-v2 .playbook-tab .section-header .moment-unlock-toggle input {
+  accent-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-tab .advancements-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.masks-sheet-v2 .playbook-tab .advancement-item .advancement-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .playbook-tab .advancement-item .advancement-label:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.masks-sheet-v2 .playbook-tab .advancement-item .advancement-label .advancement-checkboxes {
+  display: flex;
+  gap: 4px;
+}
+.masks-sheet-v2 .playbook-tab .advancement-item .advancement-label .advancement-check {
+  accent-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-tab .advancement-item .advancement-label .advancement-text {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--masks-v2-text-secondary);
+}
+.masks-sheet-v2 .playbook-tab .advancement-item .advancement-label .advancement-custom-text {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--masks-v2-border-color);
+  color: var(--masks-v2-text-primary);
+  font-size: 0.85rem;
+  padding: 2px 0;
+}
+.masks-sheet-v2 .playbook-tab .advancement-item .advancement-label .advancement-custom-text:focus {
+  outline: none;
+  border-bottom-color: var(--masks-v2-accent-color);
+}
+
+/* =========================================================================== */
+/* NPC SHEET - Keep existing styling                                           */
+/* =========================================================================== */
+.masks-sheet-v2 .npc-sheet {
+  /* NPC sheets use original styling */
+}
