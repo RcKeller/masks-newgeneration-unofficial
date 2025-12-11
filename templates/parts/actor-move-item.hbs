@@ -1,20 +1,8 @@
 {{!-- Individual Move Item --}}
 <div class="move-content {{#if item.system.rollType}}has-roll{{/if}} {{#if item.system.rollFormula}}has-roll{{/if}}">
 	<div class="move-header">
-		{{!-- Move icon based on type --}}
-		<span class="move-icon">
-			{{#if (eq item.system.moveType "playbook")}}
-			<i class="fas fa-star"></i>
-			{{else if (eq item.system.moveType "basic")}}
-			<i class="fas fa-dice-d20"></i>
-			{{else if (eq item.system.moveType "adult")}}
-			<i class="fas fa-user-graduate"></i>
-			{{else if (eq item.system.moveType "peripheral")}}
-			<i class="fas fa-cog"></i>
-			{{else}}
-			<i class="fas fa-scroll"></i>
-			{{/if}}
-		</span>
+		{{!-- Move icon - use item image --}}
+		<img class="move-icon" src="{{item.img}}" alt="{{item.name}}" />
 		<span class="move-name">{{item.name}}</span>
 		{{!-- Tags section --}}
 		{{#if item.system.rollType}}
@@ -27,7 +15,7 @@
 			<button type="button" class="move-action move-share" data-action="share-move" data-tooltip="{{localize 'PBTA.ShareMove'}}" data-tooltip-direction="UP">
 				<i class="fas fa-comment"></i>
 			</button>
-			{{!-- Roll the move (only if it has a roll type) --}}
+			{{!-- Roll the move (only if it has a roll type or formula) --}}
 			{{#if item.system.rollType}}
 			<button type="button" class="move-action move-roll" data-action="roll-move" data-tooltip="{{localize 'PBTA.Roll'}}" data-tooltip-direction="UP">
 				<i class="fas fa-dice-d20"></i>

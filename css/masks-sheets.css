@@ -2322,16 +2322,19 @@
 }
 .masks-sheet-v2 .powers-tab .move-content .move-header .move-icon {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--masks-v2-input-bg);
+  width: 28px;
+  height: 28px;
   border: 1px solid var(--masks-v2-border-color);
   border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-accent-color);
-  font-size: 0.7rem;
+  background: var(--masks-v2-input-bg);
+  object-fit: cover;
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-icon:hover {
+  transform: scale(1.1);
+  border-color: var(--masks-v2-accent-color);
+  box-shadow: 0 2px 8px rgba(61, 167, 219, 0.3);
 }
 .masks-sheet-v2 .powers-tab .move-content .move-header .move-name {
   flex: 1;
@@ -2441,11 +2444,89 @@
 /* =========================================================================== */
 /* PLAYBOOK TAB                                                                 */
 /* =========================================================================== */
+.masks-sheet-v2 .playbook-tab {
+  /* Playbook Features Section (uses PbtA attribute renderer) */
+}
 .masks-sheet-v2 .playbook-tab .playbook-section {
   margin-bottom: 20px;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section:last-child {
   margin-bottom: 0;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Style PbtA cell types within playbook features */
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell {
+  margin-bottom: 0;
+  padding: 12px;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  /* LongText editors */
+  /* ListMany checkboxes */
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-secondary);
+  margin-bottom: 8px;
+  /* Remove the decorative before/after bars from original styling */
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__title::before, .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__title::after {
+  display: none;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__description {
+  font-size: 0.75rem;
+  color: var(--masks-v2-text-muted);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .editor {
+  min-height: 80px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .editor .editor-content {
+  background: var(--masks-v2-sidebar-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  padding: 8px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__checkboxes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__checkboxes label.flexrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--masks-v2-corner-radius);
+  margin-bottom: 4px;
+  color: var(--masks-v2-text-secondary);
+  font-size: 0.85rem;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__checkboxes label.flexrow input[type=checkbox] {
+  accent-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__checkboxes label.flexrow input[type=text] {
+  flex: 1;
+  background: var(--masks-v2-sidebar-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__checkboxes label.flexrow input[type=text]:focus {
+  outline: none;
+  border-color: var(--masks-v2-accent-color);
 }
 .masks-sheet-v2 .playbook-tab .section-header {
   display: flex;

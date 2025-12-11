@@ -1,7 +1,8 @@
 {{!-- Powers Tab: Moves organized with Playbook moves first, then Basic moves --}}
 <div class="tab powers" data-group="primary" data-tab="powers">
 	<section class="sheet-tab powers-tab">
-		{{!-- Roll modifiers bar --}}
+		{{!-- Roll modifiers bar (only show if at least one is visible) --}}
+		{{#if (or (not sheetSettings.hideRollFormula) (not sheetSettings.hideHold) (not sheetSettings.hideRollMode))}}
 		<div class="powers-modifiers">
 			{{#if (not sheetSettings.hideRollFormula)}}
 			<div class="modifier-field">
@@ -28,6 +29,7 @@
 			</div>
 			{{/if}}
 		</div>
+		{{/if}}
 
 		{{!-- Moves List - Playbook moves first, then Basic --}}
 		<div class="moves-container">

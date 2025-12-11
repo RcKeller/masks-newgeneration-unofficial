@@ -40,6 +40,11 @@
         "Delete-Influence": "Delete Influence",
         "Person-Name": "Person's Name",
         "NoInfluences": "No influences tracked yet.",
+        "PlaybookChange": {
+            "Title": "Playbook Change",
+            "Description": "When you change playbooks, you may take a move from your new playbook:",
+            "NoMove": "-- No move --"
+        },
         "Labels": {
             "Lock": "Lock this label (prevents shifting)",
             "Unlock": "Unlock this label"

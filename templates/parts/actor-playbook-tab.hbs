@@ -1,6 +1,14 @@
-{{!-- Playbook Tab: Moment of Truth, Advancements --}}
+{{!-- Playbook Tab: Playbook Features, Moment of Truth, Advancements --}}
 <div class="tab playbook" data-group="primary" data-tab="playbook">
 	<section class="sheet-tab playbook-tab">
+		{{!-- Playbook-Specific Features (uses PbtA system's attribute renderer for proper editor support) --}}
+		{{#if (objLen system.attrLeft)}}
+		<div class="playbook-section playbook-section--features">
+			<label class="section-title">{{localize "MASKS-SHEETS.PlaybookFeatures"}}</label>
+			{{> "pbta.actor-attributes" attrs=system.attrLeft cssClass="cell--attributes-left playbook-features" owner=owner editable=editable}}
+		</div>
+		{{/if}}
+
 		{{!-- Moment of Truth --}}
 		<div class="playbook-section playbook-section--moment">
 			<div class="section-header">

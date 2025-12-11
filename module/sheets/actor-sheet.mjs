@@ -96,8 +96,12 @@ export function MasksActorSheetMixin(Base) {
 				// Prepare condition tags
 				context.conditionTags = this._prepareConditionTags();
 
-				// Prepare playbook-specific attributes for sidebar
+				// Prepare playbook-specific attributes for sidebar (position: Top)
 				context.playbookAttributes = this._preparePlaybookAttributes();
+
+				// Prepare playbook-specific attributes for Info tab (position: Left)
+				// These include things like The Doomed's Sanctuary, The Bull's Heart, etc.
+				context.playbookLeftAttributes = this._preparePlaybookLeftAttributes();
 			}
 
 			return context;
@@ -163,12 +167,13 @@ export function MasksActorSheetMixin(Base) {
 		}
 
 		/**
-		 * Prepare playbook-specific attributes for sidebar
+		 * Prepare playbook-specific attributes for sidebar (position: Top)
 		 * @returns {Object|null} Playbook attributes or null if none
 		 */
 		_preparePlaybookAttributes() {
 			const attrs = this.actor.system.attributes ?? {};
 			const playbook = this.actor.system.playbook?.name ?? "";
+			const configAttrs = game.pbta.sheetConfig?.actorTypes?.character?.attributes ?? {};
 			const result = {};
 			let hasAny = false;
 
@@ -177,14 +182,57 @@ export function MasksActorSheetMixin(Base) {
 				if (!attr.playbook || attr.playbook === true) continue;
 				// Skip if playbook doesn't match
 				if (attr.playbook && attr.playbook !== playbook) continue;
-				// Skip position=Left attributes (they go elsewhere)
+				// Skip position=Left attributes (they go in the playbook tab)
 				if (attr.position === "Left") continue;
+
+				// Get max from config if not on actor (for Clock types)
+				const configAttr = configAttrs[key] ?? {};
+				const max = attr.max ?? configAttr.max ?? 5;
 
 				result[key] = {
 					key,
 					type: attr.type,
 					label: attr.label,
+					description: attr.description,
+					value: Number(attr.value) || 0,
+					max: max,
+					options: attr.options,
+				};
+				hasAny = true;
+			}
+
+			return hasAny ? result : null;
+		}
+
+		/**
+		 * Prepare playbook-specific attributes for the Info tab (position: Left)
+		 * These are the unique playbook features like The Doomed's sanctuary
+		 * @returns {Object|null} Playbook attributes or null if none
+		 */
+		_preparePlaybookLeftAttributes() {
+			const attrs = this.actor.system.attributes ?? {};
+			const playbook = this.actor.system.playbook?.name ?? "";
+			const result = {};
+			let hasAny = false;
+
+			for (const [key, attr] of Object.entries(attrs)) {
+				// Skip non-playbook attributes (must have a specific playbook name, not just true)
+				if (!attr.playbook || attr.playbook === true) continue;
+				// Skip if playbook doesn't match
+				if (attr.playbook !== playbook) continue;
+				// Only include position=Left attributes
+				if (attr.position !== "Left") continue;
+				// Skip conditions (they're handled separately)
+				if (attr.condition) continue;
+
+				result[key] = {
+					key,
+					type: attr.type,
+					label: attr.label,
+					description: attr.description,
 					value: attr.value,
+					enriched: attr.enriched,
+					attrName: `system.attributes.${key}.value`,
 					max: attr.max,
 					options: attr.options,
 				};
@@ -295,6 +343,9 @@ export function MasksActorSheetMixin(Base) {
 
 			// Playbook link
 			html.on("click", ".playbook-link", this._onPlaybookLink.bind(this));
+
+			// Playbook select change - trigger advancement prompt
+			html.on("change", ".playbook-select", this._onPlaybookChange.bind(this));
 
 			// Tab handling
 			html.on("click", ".tab-btn", this._onTabClick.bind(this));
@@ -546,11 +597,16 @@ export function MasksActorSheetMixin(Base) {
 			event.preventDefault();
 			event.stopPropagation();
 			const btn = event.currentTarget;
-			const moveType = btn.dataset.moveType ?? "move";
+			const moveType = btn.dataset.moveType ?? "playbook";
 
-			// Create a new move item
+			// Create a new move item with localized name
+			const moveTypeName = game.pbta.sheetConfig?.actorTypes?.character?.moveTypes?.[moveType]?.label
+				?? game.i18n.localize("PBTA.Move");
+			const newMoveName = game.i18n.format("PBTA.NewMoveType", { type: moveTypeName })
+				|| `New ${moveTypeName}`;
+
 			const itemData = {
-				name: game.i18n.localize("PBTA.NewMove"),
+				name: newMoveName,
 				type: "move",
 				system: {
 					moveType: moveType,
@@ -667,6 +723,97 @@ export function MasksActorSheetMixin(Base) {
 			const playbook = await fromUuid(playbookUuid);
 			if (playbook) {
 				playbook.sheet.render(true);
+			}
+		}
+
+		/**
+		 * Handle playbook change via select dropdown
+		 * This overrides the default PbtA behavior to ensure proper advancement handling
+		 */
+		async _onPlaybookChange(event) {
+			event.preventDefault();
+			const select = event.currentTarget;
+			const newPlaybookUuid = select.value;
+			const oldPlaybookUuid = this.actor.system.playbook?.uuid;
+
+			// If no change, do nothing
+			if (newPlaybookUuid === oldPlaybookUuid) return;
+
+			// If clearing the playbook, just update
+			if (!newPlaybookUuid) {
+				await this.actor.update({ "system.playbook": null });
+				return;
+			}
+
+			// Get the new playbook document
+			const newPlaybook = await fromUuid(newPlaybookUuid);
+			if (!newPlaybook) return;
+
+			// Check if this is a playbook change (not initial selection)
+			const isChange = !!oldPlaybookUuid && oldPlaybookUuid !== newPlaybookUuid;
+
+			// Delegate to the PbtA system's playbook change handler if available
+			if (typeof this.actor.setPlaybook === "function") {
+				await this.actor.setPlaybook(newPlaybook, { promptForAdvancement: isChange });
+			} else {
+				// Fallback: manually update the playbook
+				await this.actor.update({
+					"system.playbook": {
+						uuid: newPlaybookUuid,
+						name: newPlaybook.name,
+						slug: newPlaybook.system?.slug ?? newPlaybook.name.slugify(),
+					},
+				});
+
+				// If changing playbooks, show advancement dialog
+				if (isChange) {
+					this._promptPlaybookChangeAdvancement(newPlaybook);
+				}
+			}
+		}
+
+		/**
+		 * Prompt the user to take an advancement when changing playbooks
+		 * @param {Item} newPlaybook - The new playbook being selected
+		 */
+		async _promptPlaybookChangeAdvancement(newPlaybook) {
+			const playbookMoves = newPlaybook.system?.moves ?? [];
+			if (playbookMoves.length === 0) return;
+
+			// Build a list of available moves from the new playbook
+			const moveOptions = playbookMoves.map((move) => {
+				return `<option value="${move.uuid}">${move.name}</option>`;
+			}).join("");
+
+			const content = `
+				<p>${game.i18n.localize("MASKS-SHEETS.PlaybookChange.Description") || "You may take a move from your new playbook:"}</p>
+				<div class="form-group">
+					<label>${game.i18n.localize("PBTA.Move") || "Move"}</label>
+					<select name="moveUuid">
+						<option value="">${game.i18n.localize("MASKS-SHEETS.PlaybookChange.NoMove") || "-- No move --"}</option>
+						${moveOptions}
+					</select>
+				</div>
+			`;
+
+			const result = await Dialog.prompt({
+				title: game.i18n.localize("MASKS-SHEETS.PlaybookChange.Title") || "Playbook Change",
+				content: content,
+				callback: (html) => {
+					const form = html[0].querySelector("form") ?? html[0];
+					const select = form.querySelector("select[name='moveUuid']");
+					return select?.value || null;
+				},
+				rejectClose: false,
+			});
+
+			// If a move was selected, add it to the character
+			if (result) {
+				const moveItem = await fromUuid(result);
+				if (moveItem) {
+					await this.actor.createEmbeddedDocuments("Item", [moveItem.toObject()]);
+					ui.notifications.info(`Added ${moveItem.name} to ${this.actor.name}`);
+				}
 			}
 		}
 
