@@ -1,14 +1,38 @@
 {{!-- Individual Move Item --}}
-<div class="move-content">
+<div class="move-content {{#if item.system.rollType}}has-roll{{/if}} {{#if item.system.rollFormula}}has-roll{{/if}}">
 	<div class="move-header">
+		{{!-- Move icon based on type --}}
+		<span class="move-icon">
+			{{#if (eq item.system.moveType "playbook")}}
+			<i class="fas fa-star"></i>
+			{{else if (eq item.system.moveType "basic")}}
+			<i class="fas fa-dice-d20"></i>
+			{{else if (eq item.system.moveType "adult")}}
+			<i class="fas fa-user-graduate"></i>
+			{{else if (eq item.system.moveType "peripheral")}}
+			<i class="fas fa-cog"></i>
+			{{else}}
+			<i class="fas fa-scroll"></i>
+			{{/if}}
+		</span>
 		<span class="move-name">{{item.name}}</span>
+		{{!-- Tags section --}}
+		{{#if item.system.rollType}}
+		<span class="move-tag move-tag--roll label-{{item.system.rollType}}">
+			{{#with (lookup ../statSettings item.system.rollType)}}{{this.label}}{{else}}{{item.system.rollType}}{{/with}}
+		</span>
+		{{/if}}
 		<div class="move-actions">
 			{{!-- Share in chat --}}
 			<button type="button" class="move-action move-share" data-action="share-move" data-tooltip="{{localize 'PBTA.ShareMove'}}" data-tooltip-direction="UP">
 				<i class="fas fa-comment"></i>
 			</button>
-			{{!-- Roll the move --}}
-			{{#if item.system.moveType}}
+			{{!-- Roll the move (only if it has a roll type) --}}
+			{{#if item.system.rollType}}
+			<button type="button" class="move-action move-roll" data-action="roll-move" data-tooltip="{{localize 'PBTA.Roll'}}" data-tooltip-direction="UP">
+				<i class="fas fa-dice-d20"></i>
+			</button>
+			{{else if item.system.rollFormula}}
 			<button type="button" class="move-action move-roll" data-action="roll-move" data-tooltip="{{localize 'PBTA.Roll'}}" data-tooltip-direction="UP">
 				<i class="fas fa-dice-d20"></i>
 			</button>

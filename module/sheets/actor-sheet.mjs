@@ -57,12 +57,28 @@ export function MasksActorSheetMixin(Base) {
 				width: 900,
 				height: 700,
 				classes: ["pbta", "sheet", "actor"],
+				tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".tab-content", initial: "info" }],
 			});
 		}
+
+		/**
+		 * Track the currently active tab
+		 * @type {string}
+		 */
+		_activeTab = "info";
+
+		/**
+		 * Track scroll position for restoration
+		 * @type {number}
+		 */
+		_scrollTop = 0;
 
 		/** @override */
 		async getData() {
 			const context = await super.getData();
+
+			// Pass the active tab to template
+			context.activeTab = this._activeTab;
 
 			// Only add v2 data for character sheets
 			if (this.actor?.type === "character") {
@@ -179,6 +195,53 @@ export function MasksActorSheetMixin(Base) {
 		}
 
 		/** @override */
+		async _render(force = false, options = {}) {
+			// Save scroll position before re-render
+			const tabContent = this.element?.[0]?.querySelector(".tab-content");
+			if (tabContent) {
+				this._scrollTop = tabContent.scrollTop;
+			}
+
+			// Save active tab
+			const activeTabBtn = this.element?.[0]?.querySelector(".tab-btn.active");
+			if (activeTabBtn?.dataset.tab) {
+				this._activeTab = activeTabBtn.dataset.tab;
+			}
+
+			await super._render(force, options);
+
+			// Restore scroll position after render
+			const newTabContent = this.element?.[0]?.querySelector(".tab-content");
+			if (newTabContent && this._scrollTop > 0) {
+				newTabContent.scrollTop = this._scrollTop;
+			}
+
+			// Restore active tab
+			this._restoreActiveTab();
+		}
+
+		/**
+		 * Restore the active tab after re-render
+		 */
+		_restoreActiveTab() {
+			const html = this.element;
+			if (!html?.length) return;
+
+			const form = html[0];
+			const tabBtn = form.querySelector(`.tab-btn[data-tab="${this._activeTab}"]`);
+			if (!tabBtn) return;
+
+			// Update tab buttons
+			form.querySelectorAll(".tab-btn").forEach((t) => t.classList.remove("active"));
+			tabBtn.classList.add("active");
+
+			// Update tab content
+			form.querySelectorAll(".tab-content > .tab").forEach((t) => {
+				t.classList.toggle("active", t.dataset.tab === this._activeTab);
+			});
+		}
+
+		/** @override */
 		activateListeners(html) {
 			super.activateListeners(html);
 
@@ -220,6 +283,9 @@ export function MasksActorSheetMixin(Base) {
 			// Move header click to expand description
 			html.on("click", ".move-header .move-name", this._onMoveHeaderClick.bind(this));
 
+			// Add move button
+			html.on("click", ".moves-add-btn", this._onAddMove.bind(this));
+
 			// Influence controls
 			html.on("click", "[data-action='create-influence']", this._onInfluenceCreate.bind(this));
 			html.on("click", "[data-action='toggle-influence']", this._onInfluenceToggle.bind(this));
@@ -258,6 +324,10 @@ export function MasksActorSheetMixin(Base) {
 			const label = btn.dataset.label;
 			if (!label) return;
 
+			// Check if label is locked
+			const lockedLabels = this.actor.getFlag(NS, "lockedLabels") ?? {};
+			if (lockedLabels[label]) return;
+
 			const path = `system.stats.${label}.value`;
 			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
 			if (current >= 4) return;
@@ -274,6 +344,10 @@ export function MasksActorSheetMixin(Base) {
 			const btn = event.currentTarget;
 			const label = btn.dataset.label;
 			if (!label) return;
+
+			// Check if label is locked
+			const lockedLabels = this.actor.getFlag(NS, "lockedLabels") ?? {};
+			if (lockedLabels[label]) return;
 
 			const path = `system.stats.${label}.value`;
 			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
@@ -466,6 +540,31 @@ export function MasksActorSheetMixin(Base) {
 		}
 
 		/**
+		 * Handle add move button click
+		 */
+		async _onAddMove(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			const btn = event.currentTarget;
+			const moveType = btn.dataset.moveType ?? "move";
+
+			// Create a new move item
+			const itemData = {
+				name: game.i18n.localize("PBTA.NewMove"),
+				type: "move",
+				system: {
+					moveType: moveType,
+					description: "",
+				},
+			};
+
+			const [newItem] = await this.actor.createEmbeddedDocuments("Item", [itemData]);
+			if (newItem) {
+				newItem.sheet.render(true);
+			}
+		}
+
+		/**
 		 * Handle influence create
 		 */
 		async _onInfluenceCreate(event) {
@@ -495,6 +594,9 @@ export function MasksActorSheetMixin(Base) {
 			const influences = foundry.utils.deepClone(this.actor.getFlag(NS, "influences") ?? []);
 			const idx = influences.findIndex((i) => i.id === influenceId);
 			if (idx < 0) return;
+
+			// Check if influence is locked
+			if (influences[idx].locked) return;
 
 			influences[idx][direction] = !influences[idx][direction];
 			await this.actor.setFlag(NS, "influences", influences);
@@ -527,6 +629,11 @@ export function MasksActorSheetMixin(Base) {
 			if (!influenceId) return;
 
 			const influences = this.actor.getFlag(NS, "influences") ?? [];
+			const influence = influences.find((i) => i.id === influenceId);
+
+			// Don't delete locked influences
+			if (influence?.locked) return;
+
 			const filtered = influences.filter((i) => i.id !== influenceId);
 			await this.actor.setFlag(NS, "influences", filtered);
 		}
@@ -572,6 +679,9 @@ export function MasksActorSheetMixin(Base) {
 			const tabId = btn.dataset.tab;
 			if (!tabId) return;
 
+			// Save the active tab
+			this._activeTab = tabId;
+
 			const form = btn.closest("form");
 			if (!form) return;
 
@@ -583,6 +693,13 @@ export function MasksActorSheetMixin(Base) {
 			form.querySelectorAll(".tab-content > .tab").forEach((t) => {
 				t.classList.toggle("active", t.dataset.tab === tabId);
 			});
+
+			// Reset scroll position when switching tabs
+			const tabContent = form.querySelector(".tab-content");
+			if (tabContent) {
+				tabContent.scrollTop = 0;
+				this._scrollTop = 0;
+			}
 		}
 	};
 }

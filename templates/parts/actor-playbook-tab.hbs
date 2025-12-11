@@ -1,4 +1,4 @@
-{{!-- Playbook Tab: Moment of Truth, Team Questions, Relationship Questions, Advancements --}}
+{{!-- Playbook Tab: Moment of Truth, Advancements --}}
 <div class="tab playbook" data-group="primary" data-tab="playbook">
 	<section class="sheet-tab playbook-tab">
 		{{!-- Moment of Truth --}}
@@ -14,24 +14,6 @@
 			<p class="section-description">{{system.attributes.momentOfTruth.description}}</p>
 			{{/if}}
 			{{editor system.attributes.momentOfTruth.value target="system.attributes.momentOfTruth.value" button=true owner=owner editable=editable}}
-		</div>
-
-		{{!-- Team Questions --}}
-		<div class="playbook-section playbook-section--team">
-			<label class="section-title">{{system.attributes.teamQuestion.label}}</label>
-			{{#if system.attributes.teamQuestion.description}}
-			<p class="section-description">{{system.attributes.teamQuestion.description}}</p>
-			{{/if}}
-			{{editor system.attributes.teamQuestion.value target="system.attributes.teamQuestion.value" button=true owner=owner editable=editable}}
-		</div>
-
-		{{!-- Relationship Questions --}}
-		<div class="playbook-section playbook-section--relationships">
-			<label class="section-title">{{system.attributes.relationshipQuestions.label}}</label>
-			{{#if system.attributes.relationshipQuestions.description}}
-			<p class="section-description">{{system.attributes.relationshipQuestions.description}}</p>
-			{{/if}}
-			{{editor system.attributes.relationshipQuestions.value target="system.attributes.relationshipQuestions.value" button=true owner=owner editable=editable}}
 		</div>
 
 		{{!-- Advancements --}}
