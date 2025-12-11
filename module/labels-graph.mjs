@@ -104,7 +104,16 @@ function polygonPath(points) {
 /**
  * Extract label data from an actor
  * @param {Actor} actor - The Foundry actor
- * @returns {Object} Label data object with effective values (conditions applied)
+ * @returns {Object} Label data with effective roll values
+ *
+ * Effective value formula per label:
+ *   effective = base - conditionPenalty + globalBonus
+ *   (clamped to range -4 to +4)
+ *
+ * Where:
+ *   - base: the label's base value from character sheet
+ *   - conditionPenalty: -2 if that label's condition is active, else 0
+ *   - globalBonus: Forward + Ongoing (applies to all labels)
  */
 export function extractLabelsData(actor) {
 	if (!actor) return null;
@@ -113,190 +122,106 @@ export function extractLabelsData(actor) {
 	const conditions = foundry.utils.getProperty(actor, "system.attributes.conditions.options") ?? {};
 	const forward = Number(foundry.utils.getProperty(actor, "system.resources.forward.value")) || 0;
 	const ongoing = Number(foundry.utils.getProperty(actor, "system.resources.ongoing.value")) || 0;
+	const globalBonus = forward + ongoing;
 
-	// Get base label values
-	const baseLabels = {};
-	for (const key of LABEL_ORDER) {
-		baseLabels[key] = Number(stats[key]?.value) || 0;
-	}
-
-	// Determine which labels are affected by conditions
-	// Conditions give -2 to specific labels:
-	// Afraid: -2 Danger, Angry: -2 Mundane, Guilty: -2 Superior,
-	// Hopeless: -2 Freak, Insecure: -2 Savior
+	// Determine which labels are affected by conditions (-2 each)
 	const affectedLabels = new Set();
 	for (const [idx, opt] of Object.entries(conditions)) {
 		if (opt?.value === true) {
-			const affectedLabel = CONDITION_TO_LABEL[idx];
-			if (affectedLabel) affectedLabels.add(affectedLabel);
+			const label = CONDITION_TO_LABEL[idx];
+			if (label) affectedLabels.add(label);
 		}
 	}
 
-	// Calculate effective label values (base - 2 for each active condition)
-	// Maximum effective value is 4, minimum can go to -4 (base -2 with condition -2)
-	const effectiveLabels = {};
+	// Calculate effective values: base - conditionPenalty + globalBonus (clamped -4 to +4)
+	const totalPenalty = affectedLabels.size * 2;
+	const labels = {};
 	for (const key of LABEL_ORDER) {
-		let value = baseLabels[key];
-		if (affectedLabels.has(key)) {
-			value -= 2; // Apply condition penalty
-		}
-		// Clamp to max of 4 (visualization handles min)
-		effectiveLabels[key] = Math.min(4, value);
+		const base = Number(stats[key]?.value) || 0;
+		const penalty = affectedLabels.has(key) ? 2 : 0;
+		labels[key] = Math.max(-4, Math.min(4, base - penalty + globalBonus));
 	}
-
-	// Calculate effective bonus
-	const effectiveBonus = forward + ongoing;
 
 	return {
-		labels: effectiveLabels, // Effective values for visualization
-		baseLabels,              // Original values for reference
+		labels,
 		affectedLabels,
-		effectiveBonus,
-		hasBonus: effectiveBonus > 0,
-		hasCondition: affectedLabels.size > 0,
+		globalBonus,
+		totalPenalty,
+		// Color: blue if bonus >= penalties, red if penalties win, yellow if neutral
+		isPositive: globalBonus >= totalPenalty && globalBonus > 0,
+		isNegative: totalPenalty > globalBonus,
 	};
 }
 
 /**
  * Generate SVG markup for the labels graph
  * @param {Object} options - Configuration options
- * @param {Object} options.labels - Object with label values (danger, freak, savior, mundane, superior)
- * @param {Set<string>} options.affectedLabels - Set of label keys affected by conditions
- * @param {number} [options.effectiveBonus=0] - The effective bonus value (Forward + Ongoing)
- * @param {boolean} [options.hasCondition=false] - Whether the character has any active conditions
+ * @param {Object} options.labels - Label values (already includes all modifiers)
+ * @param {boolean} [options.isPositive=false] - Blue state: bonus >= penalties
+ * @param {boolean} [options.isNegative=false] - Red state: penalties > bonus
  * @param {number} [options.size=28] - Size of the SVG in pixels
- * @param {number} [options.minValue=-4] - Minimum label value (supports -4 with condition penalties)
- * @param {number} [options.maxValue=4] - Maximum label value (effective cap)
  * @param {number} [options.borderWidth=1.5] - Width of the outer pentagon border
- * @param {boolean} [options.showInnerLines=true] - Whether to show inner grid lines and spokes
- * @param {boolean} [options.showVertexDots=false] - Whether to show dots at each data vertex
+ * @param {boolean} [options.showInnerLines=true] - Show inner grid lines and spokes
  * @returns {string} SVG markup string
  */
 export function generateLabelsGraphSVG(options) {
 	const {
 		labels = {},
-		affectedLabels = new Set(),
-		effectiveBonus = 0,
-		hasCondition = false,
+		isPositive = false,
+		isNegative = false,
 		size = 28,
-		minValue = -4,
-		maxValue = 4,
 		borderWidth = 1.5,
 		showInnerLines = true,
-		showVertexDots = false,
 	} = options;
 
 	const cx = size / 2;
 	const cy = size / 2;
-	const outerRadius = (size / 2) - 2; // Leave margin for stroke
-	const gridLevels = 4; // Number of concentric pentagons for the web
+	const outerRadius = (size / 2) - 2;
+	const minValue = -4, maxValue = 4, range = 8;
 
-	// Normalize values to 0-1 range
-	const range = maxValue - minValue;
-	const normalizeValue = (v) => {
-		const clamped = Math.max(minValue, Math.min(maxValue, v));
-		return (clamped - minValue) / range;
-	};
+	// Normalize value to 0-1 range for radius calculation
+	const normalize = (v) => (Math.max(minValue, Math.min(maxValue, v)) - minValue) / range;
 
-	// Generate outer pentagon vertices
+	// Pentagon vertices
 	const outerVerts = getPentagonVertices(cx, cy, outerRadius);
 
-	// Generate grid/web lines (only if showInnerLines)
-	const gridPaths = [];
+	// Data polygon vertices
+	const dataVerts = LABEL_ORDER.map((key, i) => {
+		const norm = normalize(labels[key] ?? 0);
+		const r = outerRadius * Math.max(0.08, norm);
+		const angle = ((i * 72) - 90) * (Math.PI / 180);
+		return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+	});
+
+	// Color: blue if positive, red if negative, yellow default
+	const [fill, stroke] = isPositive
+		? [COLORS.fillBonus, COLORS.strokeBonus]
+		: isNegative
+		? [COLORS.fillCondition, COLORS.strokeCondition]
+		: [COLORS.fillDefault, COLORS.strokeDefault];
+
+	// Build SVG
+	const parts = [
+		`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" class="labels-graph-svg">`,
+		`<path d="${polygonPath(outerVerts)}" fill="${COLORS.pentagonBg}" stroke="${COLORS.pentagonBorder}" stroke-width="${borderWidth}" />`,
+	];
+
+	// Inner grid lines and spokes
 	if (showInnerLines) {
-		for (let level = 1; level < gridLevels; level++) { // Note: < not <= (outer is drawn separately)
-			const r = (outerRadius * level) / gridLevels;
-			const verts = getPentagonVertices(cx, cy, r);
-			gridPaths.push(polygonPath(verts));
+		for (let level = 1; level < 4; level++) {
+			const verts = getPentagonVertices(cx, cy, (outerRadius * level) / 4);
+			parts.push(`<path d="${polygonPath(verts)}" fill="none" stroke="${COLORS.gridLines}" stroke-width="0.5" />`);
+		}
+		for (const v of outerVerts) {
+			parts.push(`<path d="M ${cx} ${cy} L ${v.x} ${v.y}" stroke="${COLORS.gridLines}" stroke-width="0.5" />`);
 		}
 	}
 
-	// Generate spoke lines (from center to each vertex) - only if showInnerLines
-	const spokePaths = showInnerLines
-		? outerVerts.map((v) => `M ${cx} ${cy} L ${v.x} ${v.y}`)
-		: [];
-
-	// Generate data polygon vertices based on label values
-	const dataVerts = LABEL_ORDER.map((key, i) => {
-		const value = labels[key] ?? 0;
-		const norm = normalizeValue(value);
-		const r = outerRadius * Math.max(0.08, norm); // Minimum visible radius
-		const angle = ((i * 72) - 90) * (Math.PI / 180);
-		return {
-			x: cx + r * Math.cos(angle),
-			y: cy + r * Math.sin(angle),
-			key,
-			isAffected: affectedLabels.has(key),
-		};
-	});
-
-	// Determine colors based on conditions and effective bonus
-	// Calculate total penalty from conditions (-2 per condition)
-	const totalPenalty = affectedLabels.size * 2;
-
-	// Blue: if bonus exceeds total penalties (even with conditions, net positive)
-	// Red: if has conditions and bonus doesn't exceed penalties (net negative/neutral)
-	// Yellow: default state (no conditions, no bonus)
-	let fillColor, strokeColor;
-	if (effectiveBonus >= totalPenalty) {
-		// Bonus exceeds penalties - show blue
-		fillColor = COLORS.fillBonus;
-		strokeColor = COLORS.strokeBonus;
-	} else if (hasCondition) {
-		// Has conditions that aren't fully offset by bonus - show red
-		fillColor = COLORS.fillCondition;
-		strokeColor = COLORS.strokeCondition;
-	} else {
-		// Default - no conditions and bonus <= 0
-		fillColor = COLORS.fillDefault;
-		strokeColor = COLORS.strokeDefault;
-	}
-
-	// Build SVG
-	const svgParts = [
-		`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" class="labels-graph-svg">`,
-		// Pentagon background (dark fill with border)
-		`<path class="labels-graph-bg" d="${polygonPath(outerVerts)}" fill="${COLORS.pentagonBg}" stroke="${COLORS.pentagonBorder}" stroke-width="${borderWidth}" />`,
-	];
-
-	// Inner grid lines (only if showInnerLines)
-	if (showInnerLines && gridPaths.length > 0) {
-		svgParts.push(
-			`<g class="labels-graph-grid" stroke="${COLORS.gridLines}" fill="none" stroke-width="0.5">`,
-			...gridPaths.map((d) => `<path d="${d}" />`),
-			`</g>`
-		);
-	}
-
-	// Spokes (only if showInnerLines)
-	if (showInnerLines && spokePaths.length > 0) {
-		svgParts.push(
-			`<g class="labels-graph-spokes" stroke="${COLORS.gridLines}" stroke-width="0.5">`,
-			...spokePaths.map((d) => `<path d="${d}" />`),
-			`</g>`
-		);
-	}
-
 	// Data polygon
-	svgParts.push(
-		`<path class="labels-graph-data" d="${polygonPath(dataVerts)}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="${Math.max(1, borderWidth - 0.5)}" />`
-	);
+	parts.push(`<path d="${polygonPath(dataVerts)}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, borderWidth - 0.5)}" />`);
+	parts.push(`</svg>`);
 
-	// Data vertices (small dots at each point) - only if showVertexDots
-	if (showVertexDots) {
-		svgParts.push(
-			`<g class="labels-graph-vertices">`,
-			...dataVerts.map((v) => {
-				const dotColor = v.isAffected ? COLORS.strokeCondition : strokeColor;
-				return `<circle cx="${v.x}" cy="${v.y}" r="1.5" fill="${dotColor}" />`;
-			}),
-			`</g>`
-		);
-	}
-
-	svgParts.push(`</svg>`);
-
-	return svgParts.join("");
+	return parts.join("");
 }
 
 /**
@@ -321,32 +246,19 @@ export function generateLabelsTooltip(labels, affectedLabels = new Set()) {
  * Create labels graph data for template rendering
  * @param {Actor} actor - The Foundry actor
  * @param {Object} [svgOptions] - Optional SVG generation options
- * @param {number} [svgOptions.size=28] - Size of the SVG
- * @param {number} [svgOptions.borderWidth=1.5] - Border width
- * @param {boolean} [svgOptions.showInnerLines=true] - Show inner grid lines
- * @param {boolean} [svgOptions.showVertexDots=false] - Show vertex dots
  * @returns {Object|null} Data object for template or null if invalid
  */
 export function createLabelsGraphData(actor, svgOptions = {}) {
 	const data = extractLabelsData(actor);
 	if (!data) return null;
 
-	const {
-		size = 28,
-		borderWidth = 1.5,
-		showInnerLines = true,
-		showVertexDots = false,
-	} = svgOptions;
-
 	const svg = generateLabelsGraphSVG({
 		labels: data.labels,
-		affectedLabels: data.affectedLabels,
-		effectiveBonus: data.effectiveBonus,
-		hasCondition: data.hasCondition,
-		size,
-		borderWidth,
-		showInnerLines,
-		showVertexDots,
+		isPositive: data.isPositive,
+		isNegative: data.isNegative,
+		size: svgOptions.size ?? 28,
+		borderWidth: svgOptions.borderWidth ?? 1.5,
+		showInnerLines: svgOptions.showInnerLines ?? true,
 	});
 
 	const tooltip = generateLabelsTooltip(data.labels, data.affectedLabels);
@@ -354,11 +266,11 @@ export function createLabelsGraphData(actor, svgOptions = {}) {
 	return {
 		svg,
 		tooltip,
-		hasBonus: data.hasBonus,
-		hasCondition: data.hasCondition,
-		effectiveBonus: data.effectiveBonus,
-		labels: data.labels,
-		affectedLabels: [...data.affectedLabels],
+		isPositive: data.isPositive,
+		isNegative: data.isNegative,
+		// For template conditionals (backward compat)
+		hasBonus: data.isPositive,
+		hasCondition: data.isNegative,
 	};
 }
 
@@ -366,124 +278,47 @@ export function createLabelsGraphData(actor, svgOptions = {}) {
  * LabelsGraph class for programmatic usage
  */
 export class LabelsGraph {
-	/**
-	 * @param {Object} options
-	 * @param {HTMLElement} options.container - Container element to render into
-	 * @param {Actor} [options.actor] - Foundry actor to display
-	 * @param {number} [options.size=28] - Size in pixels
-	 * @param {number} [options.borderWidth=1.5] - Border width
-	 * @param {boolean} [options.showInnerLines=true] - Show inner grid lines
-	 * @param {boolean} [options.showVertexDots=false] - Show vertex dots
-	 */
 	constructor(options = {}) {
 		this.container = options.container;
 		this.size = options.size ?? 28;
 		this.borderWidth = options.borderWidth ?? 1.5;
 		this.showInnerLines = options.showInnerLines ?? true;
-		this.showVertexDots = options.showVertexDots ?? false;
-		this._actor = null;
 		this._data = null;
-
-		if (options.actor) {
-			this.setActor(options.actor);
-		}
+		if (options.actor) this.setActor(options.actor);
 	}
 
-	/**
-	 * Set the actor and update the display
-	 * @param {Actor} actor
-	 */
 	setActor(actor) {
-		this._actor = actor;
 		this._data = extractLabelsData(actor);
 		this.render();
 	}
 
-	/**
-	 * Update with raw data (for non-actor contexts)
-	 * @param {Object} data
-	 * @param {Object} data.labels - Label values
-	 * @param {Array<string>} data.affectedLabels - Affected label keys
-	 * @param {boolean} data.hasBonus - Whether there's an effective bonus
-	 */
-	setData(data) {
-		this._data = {
-			labels: data.labels ?? {},
-			affectedLabels: new Set(data.affectedLabels ?? []),
-			hasBonus: !!data.hasBonus,
-			hasCondition: (data.affectedLabels?.length ?? 0) > 0,
-			effectiveBonus: data.effectiveBonus ?? 0,
-		};
-		this.render();
-	}
-
-	/**
-	 * Render the graph to the container
-	 */
 	render() {
 		if (!this.container || !this._data) return;
-
-		const svg = generateLabelsGraphSVG({
+		this.container.innerHTML = generateLabelsGraphSVG({
 			labels: this._data.labels,
-			affectedLabels: this._data.affectedLabels,
-			effectiveBonus: this._data.effectiveBonus,
-			hasCondition: this._data.hasCondition,
+			isPositive: this._data.isPositive,
+			isNegative: this._data.isNegative,
 			size: this.size,
 			borderWidth: this.borderWidth,
 			showInnerLines: this.showInnerLines,
-			showVertexDots: this.showVertexDots,
 		});
-
-		this.container.innerHTML = svg;
 	}
 
-	/**
-	 * Get current data
-	 * @returns {Object|null}
-	 */
-	getData() {
-		return this._data;
-	}
-
-	/**
-	 * Get tooltip text for current data
-	 * @returns {string}
-	 */
 	getTooltip() {
 		if (!this._data) return "";
 		return generateLabelsTooltip(this._data.labels, this._data.affectedLabels);
 	}
 
-	/**
-	 * Static factory method to create graph HTML from actor
-	 * @param {Actor} actor
-	 * @param {Object} [options] - SVG options
-	 * @param {number} [options.size=28] - Size in pixels
-	 * @param {number} [options.borderWidth=1.5] - Border width
-	 * @param {boolean} [options.showInnerLines=true] - Show inner grid lines
-	 * @param {boolean} [options.showVertexDots=false] - Show vertex dots
-	 * @returns {string} SVG HTML string
-	 */
 	static fromActor(actor, options = {}) {
 		const data = extractLabelsData(actor);
 		if (!data) return "";
-
-		const {
-			size = 28,
-			borderWidth = 1.5,
-			showInnerLines = true,
-			showVertexDots = false,
-		} = options;
-
 		return generateLabelsGraphSVG({
 			labels: data.labels,
-			affectedLabels: data.affectedLabels,
-			effectiveBonus: data.effectiveBonus,
-			hasCondition: data.hasCondition,
-			size,
-			borderWidth,
-			showInnerLines,
-			showVertexDots,
+			isPositive: data.isPositive,
+			isNegative: data.isNegative,
+			size: options.size ?? 28,
+			borderWidth: options.borderWidth ?? 1.5,
+			showInnerLines: options.showInnerLines ?? true,
 		});
 	}
 }
