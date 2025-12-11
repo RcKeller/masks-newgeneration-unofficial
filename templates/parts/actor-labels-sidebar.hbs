@@ -11,25 +11,29 @@
 		</div>
 		{{/if}}
 
-		{{!-- Individual label rows - Single row: Icon | Name | Lock | - | Value | + --}}
+		{{!-- Individual label rows - 2-row layout --}}
 		<div class="labels-list">
 			{{#each labelRows as |label key|}}
 			<div class="label-row label--{{key}} {{#if label.isLocked}}locked{{/if}}" data-label="{{key}}">
-				<i class="label-icon {{label.icon}}"></i>
-				<span class="label-name">{{label.displayName}}</span>
-				<button type="button" class="label-lock" data-action="toggle-lock" data-label="{{key}}"
-					data-tooltip="{{#if label.isLocked}}{{localize 'MASKS-SHEETS.Labels.Unlock'}}{{else}}{{localize 'MASKS-SHEETS.Labels.Lock'}}{{/if}}"
-					data-tooltip-direction="LEFT">
-					<i class="fas {{#if label.isLocked}}fa-lock{{else}}fa-lock-open{{/if}}"></i>
-				</button>
-				<button type="button" class="label-btn label-decrement" data-action="decrement" data-label="{{key}}" {{#if label.atMin}}disabled{{/if}}>
-					<i class="fas fa-minus"></i>
-				</button>
-				<input type="number" class="label-value" name="system.stats.{{key}}.value"
-					value="{{label.value}}" min="-4" max="4" />
-				<button type="button" class="label-btn label-increment" data-action="increment" data-label="{{key}}" {{#if label.atMax}}disabled{{/if}}>
-					<i class="fas fa-plus"></i>
-				</button>
+				<div class="label-row-top">
+					<i class="label-icon {{label.icon}}"></i>
+					<span class="label-name">{{label.displayName}}</span>
+					<button type="button" class="label-lock" data-action="toggle-lock" data-label="{{key}}"
+						data-tooltip="{{#if label.isLocked}}{{localize 'MASKS-SHEETS.Labels.Unlock'}}{{else}}{{localize 'MASKS-SHEETS.Labels.Lock'}}{{/if}}"
+						data-tooltip-direction="LEFT">
+						<i class="fas {{#if label.isLocked}}fa-lock{{else}}fa-lock-open{{/if}}"></i>
+					</button>
+				</div>
+				<div class="label-row-bottom">
+					<button type="button" class="label-btn label-decrement" data-action="decrement" data-label="{{key}}" {{#if label.atMin}}disabled{{/if}}>
+						<i class="fas fa-minus"></i>
+					</button>
+					<input type="number" class="label-value" name="system.stats.{{key}}.value"
+						value="{{label.value}}" min="-4" max="4" />
+					<button type="button" class="label-btn label-increment" data-action="increment" data-label="{{key}}" {{#if label.atMax}}disabled{{/if}}>
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
 			</div>
 			{{/each}}
 		</div>

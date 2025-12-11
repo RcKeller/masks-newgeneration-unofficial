@@ -26,6 +26,18 @@ const LABEL_DISPLAY_NAMES = Object.freeze({
 });
 
 /**
+ * Font Awesome icons for labels (unicode characters for SVG text)
+ * These correspond to Font Awesome 6 Solid icons
+ */
+const LABEL_ICONS = Object.freeze({
+	danger: { unicode: "\uf06d", class: "fa-fire" },       // fire
+	freak: { unicode: "\uf756", class: "fa-burst" },      // burst/explosion
+	savior: { unicode: "\uf132", class: "fa-shield" },    // shield (using simpler icon)
+	mundane: { unicode: "\uf007", class: "fa-user" },     // user
+	superior: { unicode: "\uf521", class: "fa-crown" },   // crown
+});
+
+/**
  * Condition to Label mapping
  * Each condition applies -2 to a specific label
  */
@@ -162,6 +174,7 @@ export function extractLabelsData(actor) {
  * @param {number} [options.size=28] - Size of the SVG in pixels
  * @param {number} [options.borderWidth=1.5] - Width of the outer pentagon border
  * @param {boolean} [options.showInnerLines=true] - Show inner grid lines and spokes
+ * @param {boolean} [options.showIcons=false] - Show label icons at vertices
  * @returns {string} SVG markup string
  */
 export function generateLabelsGraphSVG(options) {
@@ -172,10 +185,15 @@ export function generateLabelsGraphSVG(options) {
 		size = 28,
 		borderWidth = 1.5,
 		showInnerLines = true,
+		showIcons = false,
 	} = options;
 
-	const cx = size / 2;
-	const cy = size / 2;
+	// When showing icons, we need extra padding around the pentagon
+	const iconPadding = showIcons ? size * 0.22 : 0;
+	const totalSize = size + (iconPadding * 2);
+
+	const cx = totalSize / 2;
+	const cy = totalSize / 2;
 	const outerRadius = (size / 2) - 2;
 	const minValue = -4, maxValue = 4, range = 8;
 
@@ -200,9 +218,9 @@ export function generateLabelsGraphSVG(options) {
 		? [COLORS.fillCondition, COLORS.strokeCondition]
 		: [COLORS.fillDefault, COLORS.strokeDefault];
 
-	// Build SVG
+	// Build SVG - use totalSize for viewBox when icons are shown
 	const parts = [
-		`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" class="labels-graph-svg">`,
+		`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalSize} ${totalSize}" width="${totalSize}" height="${totalSize}" class="labels-graph-svg">`,
 		`<path d="${polygonPath(outerVerts)}" fill="${COLORS.pentagonBg}" stroke="${COLORS.pentagonBorder}" stroke-width="${borderWidth}" />`,
 	];
 
@@ -219,6 +237,29 @@ export function generateLabelsGraphSVG(options) {
 
 	// Data polygon
 	parts.push(`<path d="${polygonPath(dataVerts)}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, borderWidth - 0.5)}" />`);
+
+	// Label icons at vertices (positioned just outside the pentagon)
+	if (showIcons) {
+		const iconRadius = outerRadius + (size * 0.18); // Position icons outside the pentagon
+		const fontSize = size * 0.12; // Scale font size with SVG size
+		LABEL_ORDER.forEach((key, i) => {
+			const icon = LABEL_ICONS[key];
+			if (!icon) return;
+			const angle = ((i * 72) - 90) * (Math.PI / 180);
+			const x = cx + iconRadius * Math.cos(angle);
+			const y = cy + iconRadius * Math.sin(angle);
+			// Use Font Awesome font-family for the icon unicode
+			parts.push(
+				`<text x="${x}" y="${y}" ` +
+				`font-family="'Font Awesome 6 Free', 'Font Awesome 6 Pro', 'FontAwesome'" ` +
+				`font-weight="900" font-size="${fontSize}" ` +
+				`fill="rgba(255,255,255,0.85)" ` +
+				`text-anchor="middle" dominant-baseline="central" ` +
+				`class="label-icon-vertex label-icon-${key}">${icon.unicode}</text>`
+			);
+		});
+	}
+
 	parts.push(`</svg>`);
 
 	return parts.join("");
@@ -259,6 +300,7 @@ export function createLabelsGraphData(actor, svgOptions = {}) {
 		size: svgOptions.size ?? 28,
 		borderWidth: svgOptions.borderWidth ?? 1.5,
 		showInnerLines: svgOptions.showInnerLines ?? true,
+		showIcons: svgOptions.showIcons ?? false,
 	});
 
 	const tooltip = generateLabelsTooltip(data.labels, data.affectedLabels);
@@ -324,4 +366,4 @@ export class LabelsGraph {
 }
 
 // Export constants for external use
-export { LABEL_ORDER, LABEL_DISPLAY_NAMES, CONDITION_TO_LABEL, COLORS };
+export { LABEL_ORDER, LABEL_DISPLAY_NAMES, LABEL_ICONS, CONDITION_TO_LABEL, COLORS };

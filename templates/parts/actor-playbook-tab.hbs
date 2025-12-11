@@ -1,11 +1,42 @@
 {{!-- Playbook Tab: Playbook Features, Moment of Truth, Advancements --}}
 <div class="tab playbook" data-group="primary" data-tab="playbook">
 	<section class="sheet-tab playbook-tab">
-		{{!-- Playbook-Specific Features (uses PbtA system's attribute renderer for proper editor support) --}}
-		{{#if (objLen system.attrLeft)}}
+		{{!-- Playbook-Specific Features (filtered to exclude conditions) --}}
+		{{#if playbookLeftAttributes}}
 		<div class="playbook-section playbook-section--features">
 			<label class="section-title">{{localize "MASKS-SHEETS.PlaybookFeatures"}}</label>
-			{{> "pbta.actor-attributes" attrs=system.attrLeft cssClass="cell--attributes-left playbook-features" owner=owner editable=editable}}
+			<div class="playbook-features-list">
+				{{#each playbookLeftAttributes as |attr key|}}
+				<div class="playbook-feature playbook-feature--{{attr.type}}">
+					<label class="feature-label">{{attr.label}}</label>
+					{{#if attr.description}}
+					<p class="feature-description">{{attr.description}}</p>
+					{{/if}}
+					{{#if (eq attr.type "LongText")}}
+					{{editor attr.value target=attr.attrName button=true owner=../owner editable=../editable}}
+					{{else if (eq attr.type "ListMany")}}
+					<ul class="feature-options">
+						{{#each attr.options as |opt optKey|}}
+						<li>
+							<label>
+								<input type="checkbox" name="system.attributes.{{../attr.key}}.options.{{optKey}}.value" {{checked opt.value}} />
+								{{#if (eq opt.label "[Text]")}}
+								<input type="text" name="system.attributes.{{../attr.key}}.options.{{optKey}}.userLabel" value="{{opt.userLabel}}" placeholder="..." />
+								{{else}}
+								<span>{{opt.label}}</span>
+								{{/if}}
+							</label>
+						</li>
+						{{/each}}
+					</ul>
+					{{else if (eq attr.type "Text")}}
+					<input type="text" name="{{attr.attrName}}" value="{{attr.value}}" />
+					{{else if (eq attr.type "Number")}}
+					<input type="number" name="{{attr.attrName}}" value="{{attr.value}}" />
+					{{/if}}
+				</div>
+				{{/each}}
+			</div>
 		</div>
 		{{/if}}
 

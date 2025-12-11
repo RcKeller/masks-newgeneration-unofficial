@@ -87,7 +87,7 @@ export function MasksActorSheetMixin(Base) {
 					size: 100,
 					borderWidth: 2,
 					showInnerLines: true,
-					showVertexDots: false,
+					showIcons: true,
 				});
 
 				// Prepare label rows for the sidebar
@@ -178,25 +178,31 @@ export function MasksActorSheetMixin(Base) {
 			let hasAny = false;
 
 			for (const [key, attr] of Object.entries(attrs)) {
-				// Skip non-playbook attributes
-				if (!attr.playbook || attr.playbook === true) continue;
-				// Skip if playbook doesn't match
-				if (attr.playbook && attr.playbook !== playbook) continue;
-				// Skip position=Left attributes (they go in the playbook tab)
-				if (attr.position === "Left") continue;
-
-				// Get max from config if not on actor (for Clock types)
+				// Get config defaults for this attribute (actor may not have all properties)
 				const configAttr = configAttrs[key] ?? {};
+
+				// Merge config with actor data (actor data takes precedence)
+				const mergedPlaybook = attr.playbook ?? configAttr.playbook;
+				const mergedPosition = attr.position ?? configAttr.position;
+				const mergedType = attr.type ?? configAttr.type;
+
+				// Skip non-playbook attributes (must have a specific playbook name)
+				if (!mergedPlaybook || mergedPlaybook === true) continue;
+				// Skip if playbook doesn't match
+				if (mergedPlaybook !== playbook) continue;
+				// Skip position=Left attributes (they go in the playbook tab)
+				if (mergedPosition === "Left") continue;
+
 				const max = attr.max ?? configAttr.max ?? 5;
 
 				result[key] = {
 					key,
-					type: attr.type,
-					label: attr.label,
-					description: attr.description,
+					type: mergedType,
+					label: attr.label ?? configAttr.label,
+					description: attr.description ?? configAttr.description,
 					value: Number(attr.value) || 0,
 					max: max,
-					options: attr.options,
+					options: attr.options ?? configAttr.options,
 				};
 				hasAny = true;
 			}
@@ -212,29 +218,39 @@ export function MasksActorSheetMixin(Base) {
 		_preparePlaybookLeftAttributes() {
 			const attrs = this.actor.system.attributes ?? {};
 			const playbook = this.actor.system.playbook?.name ?? "";
+			const configAttrs = game.pbta.sheetConfig?.actorTypes?.character?.attributes ?? {};
 			const result = {};
 			let hasAny = false;
 
 			for (const [key, attr] of Object.entries(attrs)) {
+				// Get config defaults for this attribute (actor may not have all properties)
+				const configAttr = configAttrs[key] ?? {};
+
+				// Merge config with actor data (actor data takes precedence)
+				const mergedPlaybook = attr.playbook ?? configAttr.playbook;
+				const mergedPosition = attr.position ?? configAttr.position;
+				const mergedType = attr.type ?? configAttr.type;
+				const mergedCondition = attr.condition ?? configAttr.condition;
+
 				// Skip non-playbook attributes (must have a specific playbook name, not just true)
-				if (!attr.playbook || attr.playbook === true) continue;
+				if (!mergedPlaybook || mergedPlaybook === true) continue;
 				// Skip if playbook doesn't match
-				if (attr.playbook !== playbook) continue;
+				if (mergedPlaybook !== playbook) continue;
 				// Only include position=Left attributes
-				if (attr.position !== "Left") continue;
+				if (mergedPosition !== "Left") continue;
 				// Skip conditions (they're handled separately)
-				if (attr.condition) continue;
+				if (mergedCondition) continue;
 
 				result[key] = {
 					key,
-					type: attr.type,
-					label: attr.label,
-					description: attr.description,
+					type: mergedType,
+					label: attr.label ?? configAttr.label,
+					description: attr.description ?? configAttr.description,
 					value: attr.value,
 					enriched: attr.enriched,
 					attrName: `system.attributes.${key}.value`,
-					max: attr.max,
-					options: attr.options,
+					max: attr.max ?? configAttr.max,
+					options: attr.options ?? configAttr.options,
 				};
 				hasAny = true;
 			}
@@ -323,6 +339,7 @@ export function MasksActorSheetMixin(Base) {
 			html.on("click", ".moves-group-header", this._onMoveGroupCollapse.bind(this));
 
 			// Move actions
+			html.on("click", ".move-icon", this._onMoveIconClick.bind(this));
 			html.on("click", ".move-share", this._onMoveShare.bind(this));
 			html.on("click", ".move-roll", this._onMoveRoll.bind(this));
 			html.on("click", ".move-edit", this._onMoveEdit.bind(this));
@@ -520,6 +537,25 @@ export function MasksActorSheetMixin(Base) {
 		}
 
 		/**
+		 * Handle move icon click - rolls if rollable, otherwise shares to chat
+		 */
+		async _onMoveIconClick(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			const icon = event.currentTarget;
+			const action = icon.dataset.action;
+			const itemId = icon.closest("[data-item-id]")?.dataset.itemId;
+			const item = this.actor.items.get(itemId);
+			if (!item) return;
+
+			if (action === "roll-move") {
+				await item.roll();
+			} else {
+				await item.toChat();
+			}
+		}
+
+		/**
 		 * Handle move share in chat
 		 */
 		async _onMoveShare(event) {
@@ -602,8 +638,7 @@ export function MasksActorSheetMixin(Base) {
 			// Create a new move item with localized name
 			const moveTypeName = game.pbta.sheetConfig?.actorTypes?.character?.moveTypes?.[moveType]?.label
 				?? game.i18n.localize("PBTA.Move");
-			const newMoveName = game.i18n.format("PBTA.NewMoveType", { type: moveTypeName })
-				|| `New ${moveTypeName}`;
+			const newMoveName = `New ${moveTypeName}`;
 
 			const itemData = {
 				name: newMoveName,
@@ -735,6 +770,7 @@ export function MasksActorSheetMixin(Base) {
 			const select = event.currentTarget;
 			const newPlaybookUuid = select.value;
 			const oldPlaybookUuid = this.actor.system.playbook?.uuid;
+			const oldPlaybookName = this.actor.system.playbook?.name;
 
 			// If no change, do nothing
 			if (newPlaybookUuid === oldPlaybookUuid) return;
@@ -752,9 +788,23 @@ export function MasksActorSheetMixin(Base) {
 			// Check if this is a playbook change (not initial selection)
 			const isChange = !!oldPlaybookUuid && oldPlaybookUuid !== newPlaybookUuid;
 
+			// If changing playbooks, ask about deleting old moves first
+			if (isChange) {
+				const deleteOldMoves = await this._promptDeleteOldPlaybookMoves(oldPlaybookName);
+				if (deleteOldMoves === null) {
+					// User cancelled, revert select
+					select.value = oldPlaybookUuid;
+					return;
+				}
+
+				if (deleteOldMoves) {
+					await this._deletePlaybookMoves();
+				}
+			}
+
 			// Delegate to the PbtA system's playbook change handler if available
 			if (typeof this.actor.setPlaybook === "function") {
-				await this.actor.setPlaybook(newPlaybook, { promptForAdvancement: isChange });
+				await this.actor.setPlaybook(newPlaybook, { promptForAdvancement: false });
 			} else {
 				// Fallback: manually update the playbook
 				await this.actor.update({
@@ -764,12 +814,74 @@ export function MasksActorSheetMixin(Base) {
 						slug: newPlaybook.system?.slug ?? newPlaybook.name.slugify(),
 					},
 				});
-
-				// If changing playbooks, show advancement dialog
-				if (isChange) {
-					this._promptPlaybookChangeAdvancement(newPlaybook);
-				}
 			}
+
+			// If changing playbooks, show advancement dialog
+			if (isChange) {
+				await this._promptPlaybookChangeAdvancement(newPlaybook);
+			}
+		}
+
+		/**
+		 * Prompt user to delete old playbook moves
+		 * @param {string} oldPlaybookName - Name of the old playbook
+		 * @returns {boolean|null} true to delete, false to keep, null if cancelled
+		 */
+		async _promptDeleteOldPlaybookMoves(oldPlaybookName) {
+			// Find playbook moves that belong to the old playbook
+			const playbookMoves = this.actor.items.filter(
+				(i) => i.type === "move" && i.system.moveType === "playbook"
+			);
+
+			if (playbookMoves.length === 0) return false;
+
+			const moveList = playbookMoves.map((m) => `<li>${m.name}</li>`).join("");
+			const content = `
+				<p>You are changing from <strong>${oldPlaybookName}</strong>.</p>
+				<p>Do you want to delete your old playbook moves?</p>
+				<ul style="max-height: 150px; overflow-y: auto; margin: 10px 0;">${moveList}</ul>
+			`;
+
+			return new Promise((resolve) => {
+				new Dialog({
+					title: "Delete Old Playbook Moves?",
+					content: content,
+					buttons: {
+						delete: {
+							icon: '<i class="fas fa-trash"></i>',
+							label: "Delete Moves",
+							callback: () => resolve(true),
+						},
+						keep: {
+							icon: '<i class="fas fa-save"></i>',
+							label: "Keep Moves",
+							callback: () => resolve(false),
+						},
+						cancel: {
+							icon: '<i class="fas fa-times"></i>',
+							label: "Cancel",
+							callback: () => resolve(null),
+						},
+					},
+					default: "keep",
+					close: () => resolve(null),
+				}).render(true);
+			});
+		}
+
+		/**
+		 * Delete all playbook moves from the character
+		 */
+		async _deletePlaybookMoves() {
+			const playbookMoves = this.actor.items.filter(
+				(i) => i.type === "move" && i.system.moveType === "playbook"
+			);
+
+			if (playbookMoves.length === 0) return;
+
+			const moveIds = playbookMoves.map((m) => m.id);
+			await this.actor.deleteEmbeddedDocuments("Item", moveIds);
+			ui.notifications.info(`Deleted ${moveIds.length} playbook move(s) from ${this.actor.name}`);
 		}
 
 		/**

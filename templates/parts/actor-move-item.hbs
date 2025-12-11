@@ -1,12 +1,22 @@
 {{!-- Individual Move Item --}}
-<div class="move-content {{#if item.system.rollType}}has-roll{{/if}} {{#if item.system.rollFormula}}has-roll{{/if}}">
+<div class="move-content {{#if item.system.rollType}}has-roll roll-{{item.system.rollType}}{{/if}} {{#if item.system.rollFormula}}has-roll{{/if}}">
 	<div class="move-header">
-		{{!-- Move icon - use item image --}}
-		<img class="move-icon" src="{{item.img}}" alt="{{item.name}}" />
+		{{!-- Move icon - clickable: rolls if has roll type/formula, otherwise shares --}}
+		<img class="move-icon {{#if item.system.rollType}}rollable{{else if item.system.rollFormula}}rollable{{/if}}"
+			src="{{item.img}}" alt="{{item.name}}"
+			data-action="{{#if item.system.rollType}}roll-move{{else if item.system.rollFormula}}roll-move{{else}}share-move{{/if}}"
+			data-tooltip="{{#if item.system.rollType}}{{localize 'PBTA.Roll'}}{{else if item.system.rollFormula}}{{localize 'PBTA.Roll'}}{{else}}{{localize 'PBTA.ShareMove'}}{{/if}}"
+			data-tooltip-direction="UP" />
 		<span class="move-name">{{item.name}}</span>
-		{{!-- Tags section --}}
+		{{!-- Tags section with label icon --}}
 		{{#if item.system.rollType}}
 		<span class="move-tag move-tag--roll label-{{item.system.rollType}}">
+			{{#if (eq item.system.rollType "danger")}}<i class="fa-solid fa-fire"></i>
+			{{else if (eq item.system.rollType "freak")}}<i class="fa-solid fa-burst"></i>
+			{{else if (eq item.system.rollType "savior")}}<i class="fa-solid fa-shield-heart"></i>
+			{{else if (eq item.system.rollType "superior")}}<i class="fa-solid fa-crown"></i>
+			{{else if (eq item.system.rollType "mundane")}}<i class="fa-solid fa-user"></i>
+			{{/if}}
 			{{#with (lookup ../statSettings item.system.rollType)}}{{this.label}}{{else}}{{item.system.rollType}}{{/with}}
 		</span>
 		{{/if}}
@@ -36,7 +46,7 @@
 		</div>
 	</div>
 	{{#if item.system.description}}
-	<div class="move-description collapsed">
+	<div class="move-description">
 		{{{item.system.description}}}
 	</div>
 	{{/if}}
