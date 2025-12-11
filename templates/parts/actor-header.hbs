@@ -1,44 +1,38 @@
-<header class="sheet-header">
-	{{#if (or isNPC limited)}}
-	<div class="cell cell--image">
-		<img class="profile-img" src="{{actor.img}}" data-edit="img" height="100" width="100"/>
+{{!-- Left Column: Profile Section --}}
+<div class="profile-section">
+	{{!-- Profile Image --}}
+	<div class="profile-image-container">
+		<img class="profile-img" src="{{actor.img}}" data-edit="img"/>
+	</div>
+
+	{{!-- Hero Name --}}
+	<div class="name-field">
+		<input class="input--hero-name" name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'MASKS-SHEETS.Placeholders.HeroName'}}"/>
+	</div>
+
+	{{!-- Real Name --}}
+	{{#if system.attributes.realName}}
+	<div class="name-field realname-field">
+		<input type="text" class="input--real-name" name="system.attributes.realName.value" value="{{system.attributes.realName.value}}" placeholder="{{system.attributes.realName.label}}"/>
 	</div>
 	{{/if}}
-	<div class="sheet-header__fields flexrow">
-		<input class="input--title" name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
-		{{#if (and isCharacter (not limited))}}
-		<input type="text" class="input input--title" name="system.attributes.realName.value" value="{{system.attributes.realName.value}}"  placeholder="{{actor.system.attributes.realName.label}}"/>
-		<div class="sheet-playbook flexrow">
-			<div class="view-playbook {{#if system.playbook.uuid}}active{{/if}}"
-				data-playbook="{{system.playbook.uuid}}"
-				data-tooltip="{{localize 'PBTA.ViewPlaybook'}}"
-				data-tooltip-direction="UP"
-			>
-				{{#if system.playbook.uuid}}
-				<i class="fas fa-eye"></i>
-				{{else}}
-				<i class="fas fa-eye-slash"></i>
-				{{/if}}
-			</div>
-			<select class="input--title charplaybook">
+
+	{{!-- Playbook Selector --}}
+	<div class="playbook-selector">
+		<select class="input--playbook charplaybook">
 			{{selectOptions playbooks selected=system.playbook.uuid valueAttr="uuid" labelAttr="name" blank=(localize "PBTA.Playbook") sort=true}}
-			</select>
-			<input class="input--title advancement"
-				type="number"
-				name="system.advancements"
-				value="{{system.advancements}}"
-				min="0"
-				data-tooltip="PBTA.Advancement"
-				data-tooltip-direction="UP"
-			>
-			<div class="advancement {{#if canAdvance}}active{{/if}}"
-				data-action="advancement"
-				data-tooltip="PBTA.Advance"
-				data-tooltip-direction="UP"
-			>
-				<i class="fas fa-arrow-up"></i>
-			</div>
-		</div>
-		{{/if}}
+		</select>
 	</div>
-</header>
+
+	{{!-- View Playbook Button --}}
+	<div class="playbook-view">
+		<button type="button" class="view-playbook-btn {{#if system.playbook.uuid}}active{{/if}}"
+			data-playbook="{{system.playbook.uuid}}"
+			data-tooltip="{{localize 'PBTA.ViewPlaybook'}}"
+			data-tooltip-direction="UP"
+			{{#unless system.playbook.uuid}}disabled{{/unless}}>
+			<i class="fas fa-book-open"></i>
+			<span>{{localize "MASKS-SHEETS.ViewPlaybook"}}</span>
+		</button>
+	</div>
+</div>

@@ -1,68 +1,100 @@
-<form class="{{cssClass}}" autocomplete="off">
-
+<form class="{{cssClass}} masks-redesign" autocomplete="off">
 	<div class="sheet-wrapper">
+		{{#if isCharacter}}
+		{{!-- 3-Column Layout for Character Sheets --}}
 
-		{{!-- Sheet Header --}}
-		{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-header.hbs" }}
+		{{!-- Left Column: Profile --}}
+		<section class="sheet-left-column">
+			{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-header.hbs" }}
+		</section>
 
-		<section class="sheet-top flexcol">
-			{{#if isCharacter}}
-			{{!-- Attributes --}}
-			<section class="sheet-attributes flexrow">
-				<div class="cell cell--image">
+		{{!-- Center Column: Tabs & Content --}}
+		<section class="sheet-center">
+			{{!-- Tab Navigation --}}
+			<nav class="sheet-tabs tabs" data-group="primary">
+				<a class="item" data-tab="info">
+					<i class="fas fa-info-circle"></i>
+					<span>{{localize "MASKS-SHEETS.Tabs.Info"}}</span>
+				</a>
+				<a class="item" data-tab="powers">
+					<i class="fas fa-star"></i>
+					<span>{{localize "MASKS-SHEETS.Tabs.Powers"}}</span>
+				</a>
+				<a class="item" data-tab="playbook">
+					<i class="fas fa-book-open"></i>
+					<span>{{localize "MASKS-SHEETS.Tabs.Playbook"}}</span>
+				</a>
+			</nav>
+
+			{{!-- Tab Content --}}
+			<section class="sheet-body">
+				{{!-- Info Tab (merged Description + Social) --}}
+				{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-info.hbs" }}
+
+				{{!-- Powers Tab (Moves) --}}
+				{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-movelist.hbs" }}
+
+				{{!-- Playbook Tab (Playbook features + Advancement) --}}
+				{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-playbook.hbs" }}
+			</section>
+		</section>
+
+		{{!-- Right Column: Sidebar --}}
+		<section class="sheet-right-sidebar">
+			{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-sidebar.hbs" }}
+		</section>
+
+		{{else}}
+		{{!-- NPC Sheet Layout --}}
+		<section class="sheet-npc-wrapper">
+			{{!-- NPC Header --}}
+			<header class="sheet-npc-header">
+				<div class="npc-profile">
 					<img class="profile-img" src="{{actor.img}}" data-edit="img" height="100" width="100"/>
-					{{#if labelsGraph}}
-					<div class="labels-graph-container" data-tooltip="{{labelsGraph.tooltip}}">
-						{{{labelsGraph.svg}}}
+				</div>
+				<div class="npc-identity">
+					<input class="input--title npc-name" name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+					{{#if system.attributes.realName}}
+					<input type="text" class="input input--subtitle npc-realname" name="system.attributes.realName.value" value="{{system.attributes.realName.value}}" placeholder="{{system.attributes.realName.label}}"/>
+					{{/if}}
+					{{#if system.attributes.generation}}
+					<div class="npc-generation">
+						<label>{{system.attributes.generation.label}}</label>
+						<input type="text" name="system.attributes.generation.value" value="{{system.attributes.generation.value}}" placeholder="Generation"/>
 					</div>
 					{{/if}}
 				</div>
+			</header>
 
-				{{> "pbta.actor-stats" }}
-
-			</section>
-			{{/if}}
-
-			<section class="sheet-attributes-top">
-				{{~> "modules/masks-newgeneration-unofficial/templates/parts/actor-attributes.hbs" attrs=system.attrTop cssClass="cell--attributes-top flexrow" owner=owner editable=editable ~}}
-			</section>
-		</section>
-
-		<section class="sheet-bottom flexrow">
-			{{!-- Sidebar --}}
-			{{#if (objLen system.attrLeft)}}
-			<section class="sheet-look">
-				<div class="cell cell--aesthetics">
-					{{> "pbta.actor-attributes" attrs=system.attrLeft cssClass="cell--attributes-left" owner=owner editable=editable}}
+			{{!-- NPC Conditions as Tags --}}
+			{{#if system.attributes.conditions}}
+			<section class="npc-conditions">
+				<div class="conditions-tags">
+					{{#each system.attributes.conditions.options as |option optionKey|}}
+					<label class="condition-tag {{#if option.value}}active{{/if}}" data-condition="{{optionKey}}">
+						<input type="checkbox" name="system.attributes.conditions.options.{{optionKey}}.value" {{checked option.value}} hidden/>
+						<span>{{option.label}}</span>
+					</label>
+					{{/each}}
 				</div>
 			</section>
 			{{/if}}
 
-			{{!-- Main --}}
-			<section class="sheet-main flexcol">
-				{{!-- Sheet Tab Navigation --}}
-				<nav class="sheet-tabs tabs" data-group="primary">
-					<a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
-					<a class="item" data-tab="moves">{{localize "PBTA.Moves"}}</a>
-					<a class="item" data-tab="social">Social</a>
-					<a class="item" data-tab="adv-tab">Advancement</a>
-				</nav>
+			{{!-- NPC Tabs --}}
+			<nav class="sheet-tabs tabs" data-group="primary">
+				<a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
+				<a class="item" data-tab="moves">{{localize "PBTA.Moves"}}</a>
+			</nav>
 
-				{{!-- Sheet Body --}}
-				<section class="sheet-body">
-					{{!-- Main Tab --}}
-					{{> "pbta.actor-description" }}
+			{{!-- NPC Tab Content --}}
+			<section class="sheet-body npc-body">
+				{{!-- Description Tab --}}
+				{{> "pbta.actor-description" }}
 
-					{{!-- Moves Tab --}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-movelist.hbs" }}
-
-					{{!-- Social Tab --}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-social.hbs" }}
-
-					{{!-- Personal advancement Tab --}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-advancement.hbs" }}
-				</section>
+				{{!-- Moves Tab --}}
+				{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-movelist.hbs" }}
 			</section>
 		</section>
+		{{/if}}
 	</div>
-	</form>
+</form>
