@@ -231,17 +231,23 @@ export function generateLabelsGraphSVG(options) {
 	});
 
 	// Determine colors based on conditions and effective bonus
-	// Red takes precedence: if player has any conditions (which give -2 penalties)
-	// Blue: if effectiveBonus > 0 (Forward + Ongoing bonus)
-	// Yellow: default state
+	// Calculate total penalty from conditions (-2 per condition)
+	const totalPenalty = affectedLabels.size * 2;
+
+	// Blue: if bonus exceeds total penalties (even with conditions, net positive)
+	// Red: if has conditions and bonus doesn't exceed penalties (net negative/neutral)
+	// Yellow: default state (no conditions, no bonus)
 	let fillColor, strokeColor;
-	if (hasCondition) {
-		fillColor = COLORS.fillCondition;
-		strokeColor = COLORS.strokeCondition;
-	} else if (effectiveBonus > 0) {
+	if (effectiveBonus >= totalPenalty) {
+		// Bonus exceeds penalties - show blue
 		fillColor = COLORS.fillBonus;
 		strokeColor = COLORS.strokeBonus;
+	} else if (hasCondition) {
+		// Has conditions that aren't fully offset by bonus - show red
+		fillColor = COLORS.fillCondition;
+		strokeColor = COLORS.strokeCondition;
 	} else {
+		// Default - no conditions and bonus <= 0
 		fillColor = COLORS.fillDefault;
 		strokeColor = COLORS.strokeDefault;
 	}
