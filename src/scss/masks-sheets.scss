@@ -855,7 +855,7 @@
   padding: 0;
 
   .turncards-row {
-    pointer-events: auto;
+    pointer-events: none;
     display: flex;
     flex-wrap: wrap-reverse;
     gap: var(--tc-gap);
@@ -868,6 +868,7 @@
   }
 
   .turncard {
+    pointer-events: auto;
     box-sizing: border-box;
     flex: 0 0 var(--tc-card-width);
     width: var(--tc-card-width);
@@ -1701,13 +1702,15 @@
     .label-row-top {
       display: flex;
       align-items: center;
+      text-align: center;
+      padding-left: 4px;
       gap: 6px;
     }
 
     .label-row-bottom {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       gap: 4px;
     }
 
@@ -1920,6 +1923,8 @@
   .modifier-row-top {
     display: flex;
     align-items: center;
+    text-align: center;
+    padding: 0 28px 0 4px;
     gap: 6px;
   }
 
@@ -1947,7 +1952,7 @@
   .modifier-controls {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 4px;
 
     .modifier-btn {

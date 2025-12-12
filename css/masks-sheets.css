@@ -850,7 +850,7 @@
   /* --- Team Card Internals --- */
 }
 #masks-turncards .turncards-row {
-  pointer-events: auto;
+  pointer-events: none;
   display: flex;
   flex-wrap: wrap-reverse;
   gap: var(--tc-gap);
@@ -862,6 +862,7 @@
   padding: 8px 12px;
 }
 #masks-turncards .turncard {
+  pointer-events: auto;
   box-sizing: border-box;
   flex: 0 0 var(--tc-card-width);
   width: var(--tc-card-width);
@@ -1693,12 +1694,14 @@
 .masks-sheet-v2 .labels-section .label-row .label-row-top {
   display: flex;
   align-items: center;
+  text-align: center;
+  padding-left: 4px;
   gap: 6px;
 }
 .masks-sheet-v2 .labels-section .label-row .label-row-bottom {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 4px;
 }
 .masks-sheet-v2 .labels-section .label-row.label--danger {
@@ -1923,6 +1926,8 @@
 .masks-sheet-v2 .modifier-section .modifier-row-top {
   display: flex;
   align-items: center;
+  text-align: center;
+  padding: 0 28px 0 4px;
   gap: 6px;
 }
 .masks-sheet-v2 .modifier-section .modifier-icon {
@@ -1947,7 +1952,7 @@
 .masks-sheet-v2 .modifier-section .modifier-controls {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 4px;
 }
 .masks-sheet-v2 .modifier-section .modifier-controls .modifier-btn {
@@ -3061,3 +3066,5 @@
   outline: none;
   border-color: var(--masks-accent);
 }
+
+/*# sourceMappingURL=masks-sheets.css.map */
