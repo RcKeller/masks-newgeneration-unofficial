@@ -310,9 +310,12 @@ const getLabelValue = (actor, key) => Number(getProp(actor, `system.stats.${key}
 
 function getShiftableLabels(actor) {
 	const { lo, hi } = shiftBounds();
+	const lockedLabels = actor?.getFlag?.(NS, "lockedLabels") ?? {};
 	const up = [];
 	const down = [];
 	for (const k of LABEL_KEYS) {
+		// Skip locked labels
+		if (lockedLabels[k]) continue;
 		const v = getLabelValue(actor, k);
 		if (v < hi) up.push(k);
 		if (v > lo) down.push(k);
