@@ -94,7 +94,8 @@
   padding: 0;
 }
 .pbta.window-app .window-content a.content-link, .pbta.window-app .window-content a.inline-roll {
-  color: var(--masks-input-text-color);
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
 }
 .pbta.window-app input, .pbta.window-app button, .pbta.window-app select, .pbta.window-app textarea {
   background: var(--masks-input-bg-color);
@@ -105,7 +106,7 @@
 }
 .pbta.window-app input:disabled, .pbta.window-app button:disabled, .pbta.window-app select:disabled, .pbta.window-app textarea:disabled {
   background: rgba(153, 153, 153, 0.25);
-  color: var(--masks-input-disabled-color);
+  color: var(--masks-text-secondary);
 }
 .pbta.window-app input::placeholder {
   color: var(--masks-input-placeholder-color) !important;
@@ -1281,6 +1282,13 @@
 /* =============================================================================
    MASKS SHEET V2 - Modern Character Sheet Layout
    ============================================================================= */
+.masks-sheet-v2 input:disabled,
+.masks-sheet-v2 button:disabled,
+.masks-sheet-v2 select:disabled,
+.masks-sheet-v2 textarea:disabled {
+  color: var(--masks-text-secondary);
+}
+
 /* Main Sheet Container */
 .pbta.sheet.actor .masks-sheet-v2 {
   background: transparent;
