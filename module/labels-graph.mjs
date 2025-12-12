@@ -246,8 +246,8 @@ export function generateLabelsGraphSVG(options) {
 		}
 	}
 
-	// Data polygon
-	parts.push(`<path d="${polygonPath(dataVerts)}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, borderWidth - 0.5)}" />`);
+	// Data polygon - with class for CSS transitions and data attributes for animation
+	parts.push(`<path class="labels-graph-data" d="${polygonPath(dataVerts)}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, borderWidth - 0.5)}" style="transition: d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease;" />`);
 
 	// Label icons at vertices (positioned close to the pentagon vertices)
 	if (showIcons) {
@@ -292,6 +292,91 @@ export function generateLabelsTooltip(labels, affectedLabels = new Set()) {
 			return isAffected ? `${displayName}: ${value}*` : `${displayName}: ${value}`;
 		})
 		.join(" | ");
+}
+
+/**
+ * Calculate the data path and colors for given label values
+ * Used for both initial render and animated updates
+ * @param {Object} options - Configuration options
+ * @returns {Object} Object with path, fill, and stroke
+ */
+export function calculateLabelsGraphPath(options) {
+	const {
+		labels = {},
+		isPositive = false,
+		isNegative = false,
+		size = 28,
+		showIcons = false,
+	} = options;
+
+	const iconPadding = showIcons ? size * 0.15 : 0;
+	const totalSize = size + (iconPadding * 2);
+	const cx = totalSize / 2;
+	const cy = totalSize / 2;
+	const outerRadius = (size / 2) - 2;
+	const minValue = -3, maxValue = 4, range = 7;
+
+	const normalize = (v) => (Math.max(minValue, Math.min(maxValue, v)) - minValue) / range;
+
+	const dataVerts = LABEL_ORDER.map((key, i) => {
+		const norm = normalize(labels[key] ?? 0);
+		const r = outerRadius * Math.max(0.08, norm);
+		const angle = ((i * 72) - 90) * (Math.PI / 180);
+		return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+	});
+
+	const [fill, stroke] = isPositive
+		? [COLORS.fillBonus, COLORS.strokeBonus]
+		: isNegative
+		? [COLORS.fillCondition, COLORS.strokeCondition]
+		: [COLORS.fillDefault, COLORS.strokeDefault];
+
+	return {
+		path: polygonPath(dataVerts),
+		fill,
+		stroke,
+	};
+}
+
+/**
+ * Update an existing labels graph SVG in-place for smooth animation
+ * @param {HTMLElement} container - Container element holding the SVG
+ * @param {Actor} actor - The actor to get data from
+ * @param {Object} [options] - SVG options (size, showIcons)
+ * @returns {boolean} True if update was performed, false if full re-render needed
+ */
+export function updateLabelsGraphAnimated(container, actor, options = {}) {
+	if (!container || !actor) return false;
+
+	const svg = container.querySelector(".labels-graph-svg");
+	const dataPath = svg?.querySelector(".labels-graph-data");
+
+	// If SVG structure doesn't exist, need full re-render
+	if (!svg || !dataPath) return false;
+
+	const data = extractLabelsData(actor);
+	if (!data) return false;
+
+	const { path, fill, stroke } = calculateLabelsGraphPath({
+		labels: data.labels,
+		isPositive: data.isPositive,
+		isNegative: data.isNegative,
+		size: options.size ?? 28,
+		showIcons: options.showIcons ?? false,
+	});
+
+	// Update path attributes - CSS transition will animate these
+	dataPath.setAttribute("d", path);
+	dataPath.setAttribute("fill", fill);
+	dataPath.setAttribute("stroke", stroke);
+
+	// Update tooltip if container has data-tooltip
+	const tooltip = generateLabelsTooltip(data.labels, data.affectedLabels);
+	if (container.hasAttribute("data-tooltip")) {
+		container.setAttribute("data-tooltip", tooltip);
+	}
+
+	return true;
 }
 
 /**

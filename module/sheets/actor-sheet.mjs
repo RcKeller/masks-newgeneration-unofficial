@@ -96,6 +96,12 @@ export function MasksActorSheetMixin(Base) {
 		 */
 		_expandedPowerCardId = null;
 
+		/**
+		 * Track previous labels graph path for animation
+		 * @type {{path: string, fill: string, stroke: string}|null}
+		 */
+		_previousLabelsGraphState = null;
+
 		/** @override */
 		async getData() {
 			const context = await super.getData();
@@ -335,6 +341,16 @@ export function MasksActorSheetMixin(Base) {
 				this._expandedPowerCardId = radioId?.replace("power-", "") ?? null;
 			}
 
+			// Save current labels graph state for animation
+			const oldDataPath = this.element?.[0]?.querySelector(".labels-graph-data");
+			if (oldDataPath) {
+				this._previousLabelsGraphState = {
+					path: oldDataPath.getAttribute("d"),
+					fill: oldDataPath.getAttribute("fill"),
+					stroke: oldDataPath.getAttribute("stroke"),
+				};
+			}
+
 			await super._render(force, options);
 
 			// Restore scroll position after render
@@ -348,6 +364,9 @@ export function MasksActorSheetMixin(Base) {
 
 			// Restore expanded power card
 			this._restoreExpandedPowerCard();
+
+			// Animate labels graph transition
+			this._animateLabelsGraph();
 		}
 
 		/**
@@ -384,6 +403,50 @@ export function MasksActorSheetMixin(Base) {
 			if (radio) {
 				radio.checked = true;
 			}
+		}
+
+		/**
+		 * Animate the labels graph from previous state to new state
+		 * Uses CSS transitions by briefly setting the old values then updating to new
+		 */
+		_animateLabelsGraph() {
+			const prev = this._previousLabelsGraphState;
+			if (!prev) return;
+
+			const html = this.element;
+			if (!html?.length) return;
+
+			const dataPath = html[0].querySelector(".labels-graph-data");
+			if (!dataPath) return;
+
+			// Get the new (target) values that were just rendered
+			const newPath = dataPath.getAttribute("d");
+			const newFill = dataPath.getAttribute("fill");
+			const newStroke = dataPath.getAttribute("stroke");
+
+			// Only animate if values actually changed
+			if (prev.path === newPath && prev.fill === newFill && prev.stroke === newStroke) {
+				this._previousLabelsGraphState = null;
+				return;
+			}
+
+			// Temporarily disable transition, set old values
+			dataPath.style.transition = "none";
+			dataPath.setAttribute("d", prev.path);
+			dataPath.setAttribute("fill", prev.fill);
+			dataPath.setAttribute("stroke", prev.stroke);
+
+			// Force reflow to apply old values immediately
+			void dataPath.getBoundingClientRect();
+
+			// Re-enable transition and set new values - this triggers the animation
+			dataPath.style.transition = "d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease";
+			dataPath.setAttribute("d", newPath);
+			dataPath.setAttribute("fill", newFill);
+			dataPath.setAttribute("stroke", newStroke);
+
+			// Clear the saved state
+			this._previousLabelsGraphState = null;
 		}
 
 		/** @override */
