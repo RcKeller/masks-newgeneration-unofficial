@@ -1,4 +1,4 @@
-{{!-- Powers Tab: Moves organized with Playbook moves first, then Basic moves --}}
+{{!-- Powers Tab: Moves as standalone accordion cards --}}
 <div class="tab powers" data-group="primary" data-tab="powers">
 	<section class="sheet-tab powers-tab">
 		{{!-- Roll modifiers bar (only show if at least one is visible) --}}
@@ -31,131 +31,91 @@
 		</div>
 		{{/if}}
 
-		{{!-- Moves List - Playbook moves first, then Basic --}}
-		<div class="moves-container">
-			{{!-- Playbook Moves (unique to character) - expanded by default --}}
-			{{#if moves.playbook}}
-			<div class="moves-group moves-group--playbook" data-move-type="playbook">
-				<div class="moves-group-header" data-action="toggle-collapse">
-					<h3 class="moves-group-title">
-						<i class="fas fa-bolt"></i>
-						{{getLabel moveTypes "playbook"}}
-					</h3>
-					<span class="moves-collapse-icon"><i class="fas fa-chevron-up"></i></span>
-					<button type="button" class="moves-add-btn" data-type="move" data-move-type="playbook">
+		{{!-- Powers List - Organized by section --}}
+		<div class="powers-sections">
+			{{!-- Playbook Moves --}}
+			{{#if moves.playbook.length}}
+			<section class="powers-section" data-move-type="playbook">
+				<header class="powers-section__header">
+					<h3 class="powers-section__title">{{getLabel moveTypes "playbook"}}</h3>
+					<button type="button" class="powers-section__add" data-action="add-move" data-move-type="playbook" data-tooltip="Add Move">
 						<i class="fas fa-plus"></i>
 					</button>
+				</header>
+				<div class="powers-section__cards">
+					{{#each moves.playbook as |item id|}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings}}
+					{{/each}}
 				</div>
-				<div class="moves-list-wrapper">
-					<ol class="moves-list">
-						{{#each moves.playbook as |item id|}}
-						<li class="move-item" data-item-id="{{item._id}}" draggable="true">
-							{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-						</li>
-						{{/each}}
-					</ol>
-				</div>
-			</div>
+			</section>
 			{{/if}}
 
-			{{!-- Basic Moves - collapsed by default --}}
-			{{#if moves.basic}}
-			<div class="moves-group moves-group--basic collapsed" data-move-type="basic">
-				<div class="moves-group-header" data-action="toggle-collapse">
-					<h3 class="moves-group-title">
-						<i class="fas fa-hand-fist"></i>
-						{{getLabel moveTypes "basic"}}
-					</h3>
-					<span class="moves-collapse-icon"><i class="fas fa-chevron-up"></i></span>
-					<button type="button" class="moves-add-btn" data-type="move" data-move-type="basic">
+			{{!-- Basic Moves --}}
+			{{#if moves.basic.length}}
+			<section class="powers-section" data-move-type="basic">
+				<header class="powers-section__header">
+					<h3 class="powers-section__title">{{getLabel moveTypes "basic"}}</h3>
+					<button type="button" class="powers-section__add" data-action="add-move" data-move-type="basic" data-tooltip="Add Move">
 						<i class="fas fa-plus"></i>
 					</button>
+				</header>
+				<div class="powers-section__cards">
+					{{#each moves.basic as |item id|}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings}}
+					{{/each}}
 				</div>
-				<div class="moves-list-wrapper">
-					<ol class="moves-list">
-						{{#each moves.basic as |item id|}}
-						<li class="move-item" data-item-id="{{item._id}}" draggable="true">
-							{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-						</li>
-						{{/each}}
-					</ol>
-				</div>
-			</div>
+			</section>
 			{{/if}}
 
-			{{!-- Adult Moves - collapsed by default --}}
-			{{#if moves.adult}}
-			<div class="moves-group moves-group--adult collapsed" data-move-type="adult">
-				<div class="moves-group-header" data-action="toggle-collapse">
-					<h3 class="moves-group-title">
-						<i class="fas fa-readme"></i>
-						{{getLabel moveTypes "adult"}}
-					</h3>
-					<span class="moves-collapse-icon"><i class="fas fa-chevron-up"></i></span>
-					<button type="button" class="moves-add-btn" data-type="move" data-move-type="adult">
+			{{!-- Adult Moves --}}
+			{{#if moves.adult.length}}
+			<section class="powers-section" data-move-type="adult">
+				<header class="powers-section__header">
+					<h3 class="powers-section__title">{{getLabel moveTypes "adult"}}</h3>
+					<button type="button" class="powers-section__add" data-action="add-move" data-move-type="adult" data-tooltip="Add Move">
 						<i class="fas fa-plus"></i>
 					</button>
+				</header>
+				<div class="powers-section__cards">
+					{{#each moves.adult as |item id|}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings}}
+					{{/each}}
 				</div>
-				<div class="moves-list-wrapper">
-					<ol class="moves-list">
-						{{#each moves.adult as |item id|}}
-						<li class="move-item" data-item-id="{{item._id}}" draggable="true">
-							{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-						</li>
-						{{/each}}
-					</ol>
-				</div>
-			</div>
+			</section>
 			{{/if}}
 
-			{{!-- Rules/Other Moves - collapsed by default --}}
-			{{#if moves.rules}}
-			<div class="moves-group moves-group--rules collapsed" data-move-type="rules">
-				<div class="moves-group-header" data-action="toggle-collapse">
-					<h3 class="moves-group-title">
-						<i class="fas fa-book"></i>
-						{{getLabel moveTypes "rules"}}
-					</h3>
-					<span class="moves-collapse-icon"><i class="fas fa-chevron-up"></i></span>
-					<button type="button" class="moves-add-btn" data-type="move" data-move-type="rules">
+			{{!-- Rules Moves --}}
+			{{#if moves.rules.length}}
+			<section class="powers-section" data-move-type="rules">
+				<header class="powers-section__header">
+					<h3 class="powers-section__title">{{getLabel moveTypes "rules"}}</h3>
+					<button type="button" class="powers-section__add" data-action="add-move" data-move-type="rules" data-tooltip="Add Move">
 						<i class="fas fa-plus"></i>
 					</button>
+				</header>
+				<div class="powers-section__cards">
+					{{#each moves.rules as |item id|}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings}}
+					{{/each}}
 				</div>
-				<div class="moves-list-wrapper">
-					<ol class="moves-list">
-						{{#each moves.rules as |item id|}}
-						<li class="move-item" data-item-id="{{item._id}}" draggable="true">
-							{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-						</li>
-						{{/each}}
-					</ol>
-				</div>
-			</div>
+			</section>
 			{{/if}}
 
-			{{!-- Other moves that don't fit categories - collapsed by default --}}
-			{{#if moves.PBTA_OTHER}}
-			<div class="moves-group moves-group--other collapsed" data-move-type="PBTA_OTHER">
-				<div class="moves-group-header" data-action="toggle-collapse">
-					<h3 class="moves-group-title">
-						<i class="fas fa-ellipsis-h"></i>
-						{{localize "PBTA_OTHER"}}
-					</h3>
-					<span class="moves-collapse-icon"><i class="fas fa-chevron-up"></i></span>
-					<button type="button" class="moves-add-btn" data-type="move" data-move-type="PBTA_OTHER">
+			{{!-- Other Moves --}}
+			{{#if moves.PBTA_OTHER.length}}
+			<section class="powers-section" data-move-type="PBTA_OTHER">
+				<header class="powers-section__header">
+					<h3 class="powers-section__title">{{localize "PBTA_OTHER"}}</h3>
+					<button type="button" class="powers-section__add" data-action="add-move" data-move-type="PBTA_OTHER" data-tooltip="Add Move">
 						<i class="fas fa-plus"></i>
 					</button>
+				</header>
+				<div class="powers-section__cards">
+					{{#each moves.PBTA_OTHER as |item id|}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings}}
+					{{/each}}
 				</div>
-				<div class="moves-list-wrapper">
-					<ol class="moves-list">
-						{{#each moves.PBTA_OTHER as |item id|}}
-						<li class="move-item" data-item-id="{{item._id}}" draggable="true">
-							{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-						</li>
-						{{/each}}
-					</ol>
-				</div>
-			</div>
+			</section>
 			{{/if}}
 		</div>
 	</section>

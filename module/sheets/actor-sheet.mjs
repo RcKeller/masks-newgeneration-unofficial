@@ -415,6 +415,21 @@ export function MasksActorSheetMixin(Base) {
 
 			// Tab handling
 			html.on("click", ".tab-btn", this._onTabClick.bind(this));
+
+			// Power card actions (new accordion style)
+			html.on("click", ".power-card__icon", this._onMoveIconClick.bind(this));
+			html.on("click", ".power-card__action[data-action='share-move']", this._onMoveShare.bind(this));
+			html.on("click", ".power-card__action[data-action='edit-item']", this._onMoveEdit.bind(this));
+			html.on("click", ".power-card__action[data-action='delete-item']", this._onMoveDelete.bind(this));
+
+			// Power card header click - allow re-toggle to collapse (radio buttons don't naturally toggle off)
+			html.on("click", ".power-card__header", this._onPowerCardHeaderClick.bind(this));
+
+			// Powers section add button
+			html.on("click", ".powers-section__add", this._onAddMove.bind(this));
+
+			// Power card drag - creates compendium link when dragged to chat
+			html.on("dragstart", ".power-card", this._onPowerCardDragStart.bind(this));
 		}
 
 		/**
@@ -745,6 +760,59 @@ export function MasksActorSheetMixin(Base) {
 				if (confirmed) {
 					await item.delete();
 				}
+			}
+		}
+
+		/**
+		 * Handle power card header click - allows collapsing already-open cards
+		 * Radio buttons don't toggle off naturally, so we handle it manually
+		 */
+		_onPowerCardHeaderClick(event) {
+			// Don't interfere with icon clicks (they have their own handler)
+			if (event.target.closest(".power-card__icon")) return;
+
+			const header = event.currentTarget;
+			const card = header.closest(".power-card");
+			const radio = card?.querySelector(".power-card__radio");
+			if (!radio) return;
+
+			// If already checked, uncheck it to collapse
+			if (radio.checked) {
+				event.preventDefault();
+				radio.checked = false;
+			}
+		}
+
+		/**
+		 * Handle power card drag start - creates proper drag data with UUID for compendium links
+		 */
+		_onPowerCardDragStart(event) {
+			const card = event.currentTarget;
+			const itemId = card.dataset.itemId;
+			const item = this.actor.items.get(itemId);
+			if (!item) return;
+
+			// Build drag data that Foundry can use to create @UUID links when dropped in chat
+			const dragData = item.toDragData();
+			event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+
+			// Create a custom drag image showing just the card header
+			const header = card.querySelector(".power-card__header");
+			if (header) {
+				const clone = header.cloneNode(true);
+				clone.style.cssText = `
+					position: absolute;
+					top: -9999px;
+					left: -9999px;
+					background: var(--masks-bg-card, #1a1a2e);
+					padding: 8px 12px;
+					border-radius: 4px;
+					border-left: 3px solid var(--masks-accent, #e67e22);
+					box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+				`;
+				document.body.appendChild(clone);
+				event.originalEvent.dataTransfer.setDragImage(clone, 0, 0);
+				setTimeout(() => clone.remove(), 0);
 			}
 		}
 

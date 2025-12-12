@@ -20,5 +20,6 @@ export const preloadHandlebarsTemplates = async function () {
       'modules/masks-newgeneration-unofficial/templates/parts/actor-playbook-tab.hbs',
       'modules/masks-newgeneration-unofficial/templates/parts/actor-labels-sidebar.hbs',
       'modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs',
+      'modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs',
     ]);
 };

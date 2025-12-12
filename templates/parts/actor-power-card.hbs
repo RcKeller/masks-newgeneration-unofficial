@@ -1,0 +1,52 @@
+{{!-- Power Card: Individual move as an accordion item --}}
+{{!-- Uses CSS-only accordion with radio inputs for mutual exclusion --}}
+<div class="power-card item {{#if item.system.rollType}}power-card--{{item.system.rollType}}{{else}}power-card--prompt{{/if}}"
+	data-item-id="{{item._id}}" draggable="true">
+	{{!-- Hidden radio for accordion behavior --}}
+	<input type="radio" name="{{accordionName}}" id="power-{{item._id}}" class="power-card__radio" />
+
+	{{!-- Clickable header/label --}}
+	<label for="power-{{item._id}}" class="power-card__header">
+		<img class="power-card__icon item-image {{#if item.system.rollType}}rollable{{else if item.system.rollFormula}}rollable{{/if}}"
+			src="{{item.img}}" alt="{{item.name}}"
+			data-action="{{#if item.system.rollType}}roll-move{{else if item.system.rollFormula}}roll-move{{else}}share-move{{/if}}"
+			data-tooltip="{{#if item.system.rollType}}{{localize 'PBTA.Roll'}}{{else if item.system.rollFormula}}{{localize 'PBTA.Roll'}}{{else}}{{localize 'PBTA.ShareMove'}}{{/if}}"
+			data-tooltip-direction="UP" />
+		<span class="power-card__name">{{item.name}}</span>
+		{{#if item.system.rollType}}
+		<span class="power-card__tag">
+			{{#if (eq item.system.rollType "danger")}}<i class="fa-solid fa-hand-fist"></i>
+			{{else if (eq item.system.rollType "freak")}}<i class="fa-solid fa-hat-wizard"></i>
+			{{else if (eq item.system.rollType "savior")}}<i class="fa-solid fa-shield-heart"></i>
+			{{else if (eq item.system.rollType "superior")}}<i class="fa-solid fa-graduation-cap"></i>
+			{{else if (eq item.system.rollType "mundane")}}<i class="fa-solid fa-hat-cowboy"></i>
+			{{/if}}
+			{{#with (lookup statSettings item.system.rollType)}}{{this.label}}{{else}}{{item.system.rollType}}{{/with}}
+		</span>
+		{{else}}
+		<span class="power-card__tag power-card__tag--prompt">Prompt</span>
+		{{/if}}
+	</label>
+
+	{{!-- Expandable content (description + actions) --}}
+	<div class="power-card__content">
+		<div class="power-card__inner">
+			{{#if item.system.description}}
+			<div class="power-card__description">
+				{{{item.system.description}}}
+			</div>
+			{{/if}}
+			<div class="power-card__actions">
+				<button type="button" class="power-card__action" data-action="share-move" data-tooltip="{{localize 'PBTA.ShareMove'}}" data-tooltip-direction="UP">
+					<i class="fas fa-comment"></i>
+				</button>
+				<button type="button" class="power-card__action" data-action="edit-item" data-tooltip="{{localize 'PBTA.Edit'}}" data-tooltip-direction="UP">
+					<i class="fas fa-edit"></i>
+				</button>
+				<button type="button" class="power-card__action power-card__action--delete" data-action="delete-item" data-tooltip="{{localize 'PBTA.Delete'}}" data-tooltip-direction="UP">
+					<i class="fas fa-trash"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
