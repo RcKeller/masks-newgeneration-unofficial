@@ -1,24 +1,6 @@
 {{!-- Info Tab: Team Questions, Relationships, Biography, Look, Abilities, Notes, Influences --}}
 <div class="tab info active" data-group="primary" data-tab="info">
 	<section class="sheet-tab info-tab">
-		{{!-- Team Question (When our team first came together...) --}}
-		<div class="info-section info-section--team">
-			<label class="section-title">{{system.attributes.teamQuestion.label}}</label>
-			{{#if system.attributes.teamQuestion.description}}
-			<p class="section-description">{{system.attributes.teamQuestion.description}}</p>
-			{{/if}}
-			{{editor system.attributes.teamQuestion.value target="system.attributes.teamQuestion.value" button=true owner=owner editable=editable}}
-		</div>
-
-		{{!-- Relationship Questions --}}
-		<div class="info-section info-section--relationships">
-			<label class="section-title">{{system.attributes.relationshipQuestions.label}}</label>
-			{{#if system.attributes.relationshipQuestions.description}}
-			<p class="section-description">{{system.attributes.relationshipQuestions.description}}</p>
-			{{/if}}
-			{{editor system.attributes.relationshipQuestions.value target="system.attributes.relationshipQuestions.value" button=true owner=owner editable=editable}}
-		</div>
-
 		{{!-- Biography --}}
 		<div class="info-section info-section--biography">
 			<label class="section-title">{{system.details.biography.label}}</label>
@@ -41,6 +23,26 @@
 		<div class="info-section info-section--backstory">
 			<label class="section-title">{{system.details.backstory.label}}</label>
 			{{editor system.details.backstory.value target="system.details.backstory.value" button=true owner=owner editable=editable}}
+		</div>
+
+		{{!-- Team Question (When our team first came together...) --}}
+		<div class="info-section info-section--team">
+			<label class="section-title">{{system.attributes.teamQuestion.label}}</label>
+			{{#if system.attributes.teamQuestion.description}}
+			<p class="section-description">{{system.attributes.teamQuestion.description}}</p>
+			{{/if}}
+			{{editor system.attributes.teamQuestion.value target="system.attributes.teamQuestion.value" button=true owner=owner
+			editable=editable}}
+		</div>
+		
+		{{!-- Relationship Questions --}}
+		<div class="info-section info-section--relationships">
+			<label class="section-title">{{system.attributes.relationshipQuestions.label}}</label>
+			{{#if system.attributes.relationshipQuestions.description}}
+			<p class="section-description">{{system.attributes.relationshipQuestions.description}}</p>
+			{{/if}}
+			{{editor system.attributes.relationshipQuestions.value target="system.attributes.relationshipQuestions.value"
+			button=true owner=owner editable=editable}}
 		</div>
 
 		{{!-- Influences --}}

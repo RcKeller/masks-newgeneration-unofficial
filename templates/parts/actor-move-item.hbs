@@ -11,11 +11,11 @@
 		{{!-- Tags section with label icon --}}
 		{{#if item.system.rollType}}
 		<span class="move-tag move-tag--roll label-{{item.system.rollType}}">
-			{{#if (eq item.system.rollType "danger")}}<i class="fa-solid fa-fire"></i>
-			{{else if (eq item.system.rollType "freak")}}<i class="fa-solid fa-burst"></i>
+			{{#if (eq item.system.rollType "danger")}}<i class="fa-solid fa-hand-fist"></i>
+			{{else if (eq item.system.rollType "freak")}}<i class="fa-solid fa-hat-wizard"></i>
 			{{else if (eq item.system.rollType "savior")}}<i class="fa-solid fa-shield-heart"></i>
-			{{else if (eq item.system.rollType "superior")}}<i class="fa-solid fa-crown"></i>
-			{{else if (eq item.system.rollType "mundane")}}<i class="fa-solid fa-user"></i>
+			{{else if (eq item.system.rollType "superior")}}<i class="fa-solid fa-graduation-cap"></i>
+			{{else if (eq item.system.rollType "mundane")}}<i class="fa-solid fa-hat-cowboy"></i>
 			{{/if}}
 			{{#with (lookup ../statSettings item.system.rollType)}}{{this.label}}{{else}}{{item.system.rollType}}{{/with}}
 		</span>
