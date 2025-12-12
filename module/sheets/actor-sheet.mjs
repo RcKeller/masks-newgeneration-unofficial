@@ -9,12 +9,12 @@ const NS = "masks-newgeneration-unofficial";
 const LABEL_CONFIG = Object.freeze({
 	danger: {
 		key: "danger",
-		icon: "fa-solid fa-fire",
+		icon: "fa-solid fa-hand-fist",
 		color: "danger",
 	},
 	freak: {
 		key: "freak",
-		icon: "fa-solid fa-burst",
+		icon: "fa-solid fa-hat-wizard",
 		color: "freak",
 	},
 	savior: {
@@ -24,12 +24,12 @@ const LABEL_CONFIG = Object.freeze({
 	},
 	superior: {
 		key: "superior",
-		icon: "fa-solid fa-crown",
+		icon: "fa-solid fa-graduation-cap",
 		color: "superior",
 	},
 	mundane: {
 		key: "mundane",
-		icon: "fa-solid fa-user",
+		icon: "fa-solid fa-hat-cowboy",
 		color: "mundane",
 	},
 });
@@ -282,8 +282,8 @@ export function MasksActorSheetMixin(Base) {
 			// Modifier buttons (Forward/Ongoing)
 			html.on("click", ".modifier-btn", this._onModifierClick.bind(this));
 
-			// Clock pips (playbook attributes)
-			html.on("click", ".clock-pip", this._onClockPipClick.bind(this));
+			// NOTE: Clock pips now use PbtA's built-in _onClockClick handler via class="attr-clock"
+			// Do NOT add custom clock pip handlers that would conflict with PbtA's handler
 
 			// Playbook attribute steppers (both old .attr-btn and new .tracker-btn)
 			html.on("click", ".tracker-btn, .attr-btn", this._onAttrStepperClick.bind(this));
@@ -440,23 +440,6 @@ export function MasksActorSheetMixin(Base) {
 			await this.actor.update({ [path]: current + delta });
 		}
 
-		/**
-		 * Handle clock pip click (e.g., Doom Track)
-		 */
-		async _onClockPipClick(event) {
-			event.preventDefault();
-			const pip = event.currentTarget;
-			const pipValue = Number(pip.dataset.pip);
-			const attrKey = pip.dataset.attr;
-			if (isNaN(pipValue) || !attrKey) return;
-
-			const path = `system.attributes.${attrKey}.value`;
-			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
-			// Toggle: if clicking current max, decrease; otherwise set to clicked value
-			const newValue = pipValue === current ? current - 1 : pipValue;
-
-			await this.actor.update({ [path]: Math.max(0, newValue) });
-		}
 
 		/**
 		 * Handle playbook attribute stepper click
@@ -738,7 +721,7 @@ export function MasksActorSheetMixin(Base) {
 
 		/**
 		 * Handle playbook change via select dropdown
-		 * This overrides the default PbtA behavior to ensure proper advancement handling
+		 * Uses PbtA's built-in handleChoices() and grantChoices() for proper election handling
 		 */
 		async _onPlaybookChange(event) {
 			event.preventDefault();
@@ -756,7 +739,7 @@ export function MasksActorSheetMixin(Base) {
 				return;
 			}
 
-			// Get the new playbook document
+			// Get the new playbook document from compendium
 			const newPlaybook = await fromUuid(newPlaybookUuid);
 			if (!newPlaybook) return;
 
@@ -777,11 +760,10 @@ export function MasksActorSheetMixin(Base) {
 				}
 			}
 
-			// Delegate to the PbtA system's playbook change handler if available
+			// Set the playbook on the actor - this should add it as an embedded item
 			if (typeof this.actor.setPlaybook === "function") {
 				await this.actor.setPlaybook(newPlaybook, { promptForAdvancement: false });
 			} else {
-				// Fallback: manually update the playbook
 				await this.actor.update({
 					"system.playbook": {
 						uuid: newPlaybookUuid,
@@ -791,9 +773,16 @@ export function MasksActorSheetMixin(Base) {
 				});
 			}
 
-			// If changing playbooks, show advancement dialog
-			if (isChange) {
-				await this._promptPlaybookChangeAdvancement(newPlaybook);
+			const actorPlaybook = this.actor.items.find((i) => i.type === "playbook");
+			if (actorPlaybook && typeof actorPlaybook.handleChoices === "function") {
+				const choiceUpdate = await actorPlaybook.handleChoices(actorPlaybook);
+				if (choiceUpdate && Object.keys(choiceUpdate).length > 0) {
+					await actorPlaybook.update(choiceUpdate);
+					if (typeof actorPlaybook.grantChoices === "function") {
+						const grantedItems = await actorPlaybook.grantChoices(choiceUpdate);
+						await actorPlaybook.update({ "flags.pbta": { grantedItems } });
+					}
+				}
 			}
 		}
 
@@ -859,90 +848,8 @@ export function MasksActorSheetMixin(Base) {
 			ui.notifications.info(`Deleted ${moveIds.length} playbook move(s) from ${this.actor.name}`);
 		}
 
-		/**
-		 * Extract move UUIDs from playbook description
-		 * @param {string} description - The playbook's HTML description
-		 * @returns {Array<{uuid: string, name: string}>} Array of move objects
-		 */
-		_extractMoveUuidsFromDescription(description) {
-			if (!description) return [];
-			const moves = [];
-			// Match @UUID[...]{name} patterns for moves (Items)
-			const uuidRegex = /@UUID\[([^\]]+\.Item\.[^\]]+)\]\{([^}]+)\}/g;
-			let match;
-			while ((match = uuidRegex.exec(description)) !== null) {
-				moves.push({
-					uuid: match[1],
-					name: match[2],
-				});
-			}
-			return moves;
-		}
-
-		/**
-		 * Prompt the user to take an advancement when changing playbooks
-		 * @param {Item} newPlaybook - The new playbook being selected
-		 */
-		async _promptPlaybookChangeAdvancement(newPlaybook) {
-			// Extract moves from the playbook description
-			const playbookMoves = this._extractMoveUuidsFromDescription(newPlaybook.system?.description);
-
-			// Filter to only actual playbook moves (exclude basic moves, team moves, etc.)
-			// Look for moves in the playbook's own compendium
-			const playbookPackName = newPlaybook.pack;
-			const filteredMoves = playbookMoves.filter((m) => {
-				// Include moves from the same compendium pack as the playbook
-				// or from a pack with similar naming (e.g., basic-playbook-bull)
-				return m.uuid.includes(playbookPackName) ||
-					m.uuid.includes("-playbook-") ||
-					// Exclude basic moves, other moves
-					(!m.uuid.includes(".moves.") && !m.uuid.includes(".moves-basic.") && !m.uuid.includes(".moves-other."));
-			});
-
-			if (filteredMoves.length === 0) {
-				ui.notifications.info(`No playbook moves found for ${newPlaybook.name}`);
-				return;
-			}
-
-			// Build a list of available moves from the new playbook
-			const moveOptions = filteredMoves.map((move) => {
-				return `<option value="${move.uuid}">${move.name}</option>`;
-			}).join("");
-
-			const content = `
-				<p>${game.i18n.localize("MASKS-SHEETS.PlaybookChange.Description") || "You may take a move from your new playbook:"}</p>
-				<div class="form-group">
-					<label>${game.i18n.localize("PBTA.Move") || "Move"}</label>
-					<select name="moveUuid">
-						<option value="">${game.i18n.localize("MASKS-SHEETS.PlaybookChange.NoMove") || "-- No move --"}</option>
-						${moveOptions}
-					</select>
-				</div>
-			`;
-
-			const result = await Dialog.prompt({
-				title: game.i18n.localize("MASKS-SHEETS.PlaybookChange.Title") || "Playbook Change",
-				content: content,
-				callback: (html) => {
-					const form = html[0].querySelector("form") ?? html[0];
-					const select = form.querySelector("select[name='moveUuid']");
-					return select?.value || null;
-				},
-				rejectClose: false,
-			});
-
-			// If a move was selected, add it to the character
-			if (result) {
-				const moveItem = await fromUuid(result);
-				if (moveItem) {
-					const itemData = moveItem.toObject();
-					// Mark as a playbook move
-					itemData.system.moveType = "playbook";
-					await this.actor.createEmbeddedDocuments("Item", [itemData]);
-					ui.notifications.info(`Added ${moveItem.name} to ${this.actor.name}`);
-				}
-			}
-		}
+		// NOTE: Playbook change advancement is now handled by PbtA's built-in
+		// handleChoices() and grantChoices() methods in _onPlaybookChange()
 
 		/**
 		 * Handle tab click

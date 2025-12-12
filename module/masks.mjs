@@ -60,14 +60,9 @@ Hooks.once("init", () => {
         return Number(a) < Number(b);
     });
 
-    // times helper - iterate N times (1-indexed)
-    Handlebars.registerHelper("times", function(n, block) {
-        let result = "";
-        for (let i = 1; i <= n; i++) {
-            result += block.fn(i);
-        }
-        return result;
-    });
+    // NOTE: Do NOT register a custom "times" helper - PbtA provides one that is 0-indexed
+    // and provides @index, @first, @last via the Handlebars data frame. Our custom 1-indexed
+    // version was breaking Clock/Xp pips. Use {{sum @index 1}} if you need 1-indexed display.
 
     // getLabel helper for move types
     Handlebars.registerHelper("getLabel", function(obj, key) {

@@ -116,8 +116,8 @@
   display: none;
 }
 .pbta.sheet input::placeholder,
-.pbta.sheet .sheet-header select.charplaybook:has(option[value=""]:checked),
-.pbta.sheet .sheet-header select.charplaybook option[value=""] {
+.pbta.sheet .sheet-header .playbook-select:has(option[value=""]:checked),
+.pbta.sheet .sheet-header .playbook-select option[value=""] {
   color: var(--masks-input-placeholder-color);
   font-style: italic;
 }
@@ -2558,6 +2558,10 @@
 /* =========================================================================== */
 .masks-sheet-v2 .playbook-tab {
   /* Playbook Features Section (uses PbtA attribute renderer) */
+  /* Moment of Truth Section - Fix styling */
+  /* Later Advances Section */
+  /* PbtA Clock Pattern Styling (used by Doom Track, etc.) */
+  /* PbtA ListMany Pattern Styling (used by Advancements, features) */
 }
 .masks-sheet-v2 .playbook-tab .playbook-section {
   margin-bottom: 20px;
@@ -2834,7 +2838,7 @@
   align-items: center;
   gap: 6px;
   font-size: 0.8rem;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-v2-text-secondary);
   cursor: pointer;
 }
 .masks-sheet-v2 .playbook-tab .section-header .moment-unlock-toggle input {
@@ -2886,6 +2890,100 @@
 .masks-sheet-v2 .playbook-tab .advancement-item .advancement-label .advancement-custom-text:focus {
   outline: none;
   border-bottom-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--moment {
+  padding: 12px;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--moment .editor {
+  min-height: 100px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--moment .editor .editor-content {
+  background: var(--masks-v2-sidebar-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  padding: 8px;
+  min-height: 80px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--later-advances {
+  padding: 12px;
+  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  border-left: 3px solid var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-tab .cell__clock {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.masks-sheet-v2 .playbook-tab .cell__clock .attr-clock {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--masks-v2-sidebar-bg);
+  border: 2px solid var(--masks-danger-color);
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+  margin: 0;
+}
+.masks-sheet-v2 .playbook-tab .cell__clock .attr-clock:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 8px var(--masks-danger-color);
+}
+.masks-sheet-v2 .playbook-tab .cell__clock .attr-clock:checked {
+  background: var(--masks-danger-color);
+}
+.masks-sheet-v2 .playbook-tab .clock-count {
+  font-size: 0.85rem;
+  color: var(--masks-v2-text-secondary);
+  margin-left: 8px;
+}
+.masks-sheet-v2 .playbook-tab .cell__checkboxes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.masks-sheet-v2 .playbook-tab .cell__checkboxes label.flexrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--masks-v2-corner-radius);
+  margin-bottom: 4px;
+  color: var(--masks-v2-text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.masks-sheet-v2 .playbook-tab .cell__checkboxes label.flexrow:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.masks-sheet-v2 .playbook-tab .cell__checkboxes label.flexrow input[type=checkbox].attr-list {
+  accent-color: var(--masks-v2-accent-color);
+  flex-shrink: 0;
+  margin: 0;
+}
+.masks-sheet-v2 .playbook-tab .cell__checkboxes label.flexrow input[type=text].input-title {
+  flex: 1;
+  background: var(--masks-v2-sidebar-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+.masks-sheet-v2 .playbook-tab .cell__checkboxes label.flexrow input[type=text].input-title:focus {
+  outline: none;
+  border-color: var(--masks-v2-accent-color);
 }
 
 /* =========================================================================== */
