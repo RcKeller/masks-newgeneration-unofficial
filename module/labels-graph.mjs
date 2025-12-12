@@ -18,11 +18,11 @@ const LABEL_ORDER = Object.freeze([
  * Display names for labels (capitalized)
  */
 const LABEL_DISPLAY_NAMES = Object.freeze({
-	danger: "Danger",
-	freak: "Freak",
-	savior: "Savior",
-	mundane: "Mundane",
-	superior: "Superior",
+	danger: "DAN",
+	freak: "FRE",
+	savior: "SAV",
+	mundane: "MUN",
+	superior: "SUP",
 });
 
 /**

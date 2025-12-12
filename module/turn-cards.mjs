@@ -189,7 +189,7 @@ const TeamService = {
 		return 0;
 	},
 
-	async set(n, { announce = true, delta = null, reason = null, actorName = null } = {}) {
+	async set(n, { announce = true, delta = null } = {}) {
 		n = Math.max(0, Math.floor(Number(n) || 0));
 		this._doc ??= await this._getDoc(false);
 
@@ -213,15 +213,8 @@ const TeamService = {
 		if (announce && game.settings.get(NS, "announceChanges")) {
 			const d = delta ?? n - old;
 			const sign = d > 0 ? "+" : "";
-			const from = game.user?.name ?? "Player";
-
-			let content;
-			if (reason === "aid" && actorName) {
-				content = `<b>${escape(from)}</b> spends 1 Team to aid <b>${escape(actorName)}</b>!<br/>Team Pool: ${old} → <b>${n}</b>`;
-			} else {
-				content = `<b>Team Pool</b>: ${old} → <b>${n}</b> (${sign}${d})`;
-			}
-			await ChatMessage.create({ content, type: CONST.CHAT_MESSAGE_TYPES.OTHER });
+			// Use notifications instead of chat for team pool changes
+			ui.notifications?.info?.(`Team Pool: ${old} → ${n} (${sign}${d})`);
 		}
 
 		Hooks.callAll("masksTeamUpdated");
@@ -265,7 +258,7 @@ const FORWARD_MAX = 8;
 const getForward = (actor) => Number(getProp(actor, "system.resources.forward.value")) || 0;
 const getOngoing = (actor) => Number(getProp(actor, "system.resources.ongoing.value")) || 0;
 
-async function adjustForward(actor, delta, { announce = true, includeAidLink = false, byUser = null } = {}) {
+async function adjustForward(actor, delta, { announce = true, isAid = false, byUser = null } = {}) {
 	if (!actor) return;
 
 	const cur = getForward(actor);
@@ -277,9 +270,14 @@ async function adjustForward(actor, delta, { announce = true, includeAidLink = f
 	if (announce) {
 		const sign = delta > 0 ? "+" : "";
 		const who = byUser?.name ?? game.user?.name ?? "Player";
-		const aid = includeAidLink ? `<br/>${AID_MOVE_UUID}` : "";
-		const content = `<b>${escape(who)}</b>: <b>${escape(actor.name)}</b> Forward ${cur} → <b>${next}</b> (${sign}${delta})${aid}`;
-		await ChatMessage.create({ content, type: CONST.CHAT_MESSAGE_TYPES.OTHER });
+
+		// Aid from one player to another uses chat; self/GM adjustments use notifications
+		if (isAid) {
+			const content = `<b>${escape(who)}</b>: <b>${escape(actor.name)}</b> Forward ${cur} → <b>${next}</b> (${sign}${delta})<br/>${AID_MOVE_UUID}`;
+			await ChatMessage.create({ content, type: CONST.CHAT_MESSAGE_TYPES.OTHER });
+		} else {
+			ui.notifications?.info?.(`${actor.name} Forward: ${cur} → ${next} (${sign}${delta})`);
+		}
 	}
 }
 
@@ -409,7 +407,9 @@ async function applyShiftLabels(actor, upKey, downKey, { announce = true, reason
 		return false;
 	}
 
-	await actor.update({ [p(upKey)]: curUp + 1, [p(downKey)]: curDown - 1 });
+	const newUp = curUp + 1;
+	const newDown = curDown - 1;
+	await actor.update({ [p(upKey)]: newUp, [p(downKey)]: newDown });
 
 	if (announce) {
 		const upLabel = statLabel(actor, upKey);
@@ -418,10 +418,12 @@ async function applyShiftLabels(actor, upKey, downKey, { announce = true, reason
 
 		let content =
 			reason === "useInfluence" && sourceActor
-				? `<b>${escape(sourceActor.name)}</b> uses Influence to shift <b>${name}</b>'s Labels: `
-				: `<b>${name}</b> shifts their Labels: `;
+				? `<b>${escape(sourceActor.name)}</b> uses Influence to shift <b>${name}</b>'s Labels:<br/>`
+				: `<b>${name}</b> shifts their Labels:<br/>`;
 
-		content += `<span class="shift up">+${escape(upLabel)}</span>, <span class="shift down">-${escape(downLabel)}</span>`;
+		// Show actual value changes like other resource messages
+		content += `<span class="shift up">${escape(upLabel)}: ${curUp} → <b>${newUp}</b></span>, `;
+		content += `<span class="shift down">${escape(downLabel)}: ${curDown} → <b>${newDown}</b></span>`;
 		await ChatMessage.create({ content, type: CONST.CHAT_MESSAGE_TYPES.OTHER });
 	}
 
@@ -991,7 +993,7 @@ const TurnCardsHUD = {
 				break;
 
 			case "team-reset":
-				if (isGM() || TeamService.canEdit) await TeamService.set(0);
+				if (isGM() || TeamService.canEdit) await TeamService.set(1);
 				else ui.notifications?.warn?.("No permission to reset Team.");
 				break;
 		}
@@ -1480,12 +1482,12 @@ const TurnCardsHUD = {
 
 			const forwardTooltip =
 				isGM() || isSelf
-					? `Forward: ${forward} | Ongoing: ${ongoing} (Click +1, Right-click -1)`
+					? `Forward: ${forward} | Ongoing: ${ongoing}`
 					: canAid
-					? `Aid ${actor.name}: Spend 1 Team for +1 Forward`
+					? `Aid ${actor.name} (Spend 1 Team to give +1 Forward)`
 					: downed
 					? "Cannot aid (Downed)"
-					: "Cannot aid (No Team)";
+					: "Cannot aid (Team Pool Empty)";
 
 			// Generate Labels Graph data for pentagon visualization
 			// Use showInnerLines=false, showVertexDots=false for cleaner turn card display
