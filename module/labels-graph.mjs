@@ -30,11 +30,11 @@ const LABEL_DISPLAY_NAMES = Object.freeze({
  * These correspond to Font Awesome 6 Solid icons
  */
 const LABEL_ICONS = Object.freeze({
-	danger: { unicode: "\uf06d", class: "fa-fire" },       // fire
-	freak: { unicode: "\uf756", class: "fa-burst" },      // burst/explosion
-	savior: { unicode: "\uf132", class: "fa-shield" },    // shield (using simpler icon)
-	mundane: { unicode: "\uf007", class: "fa-user" },     // user
-	superior: { unicode: "\uf521", class: "fa-crown" },   // crown
+	danger: { unicode: "\uf06d", class: "fa-fire", color: "#e05252" },       // fire - red
+	freak: { unicode: "\uf756", class: "fa-burst", color: "#9b59b6" },      // burst - purple
+	savior: { unicode: "\uf132", class: "fa-shield", color: "#3498db" },    // shield - blue
+	mundane: { unicode: "\uf007", class: "fa-user", color: "#27ae60" },     // user - green
+	superior: { unicode: "\uf521", class: "fa-crown", color: "#f39c12" },   // crown - gold
 });
 
 /**
@@ -189,11 +189,13 @@ export function generateLabelsGraphSVG(options) {
 	} = options;
 
 	// When showing icons, we need extra padding around the pentagon
-	const iconPadding = showIcons ? size * 0.22 : 0;
+	// Keep pentagon at full size, just add space for icons
+	const iconPadding = showIcons ? size * 0.15 : 0;
 	const totalSize = size + (iconPadding * 2);
 
 	const cx = totalSize / 2;
 	const cy = totalSize / 2;
+	// Pentagon stays at full size (not reduced)
 	const outerRadius = (size / 2) - 2;
 	const minValue = -4, maxValue = 4, range = 8;
 
@@ -238,22 +240,22 @@ export function generateLabelsGraphSVG(options) {
 	// Data polygon
 	parts.push(`<path d="${polygonPath(dataVerts)}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, borderWidth - 0.5)}" />`);
 
-	// Label icons at vertices (positioned just outside the pentagon)
+	// Label icons at vertices (positioned close to the pentagon vertices)
 	if (showIcons) {
-		const iconRadius = outerRadius + (size * 0.18); // Position icons outside the pentagon
-		const fontSize = size * 0.12; // Scale font size with SVG size
+		const iconRadius = outerRadius + (size * 0.08); // Position icons just outside vertices
+		const fontSize = size * 0.14; // Bigger icons
 		LABEL_ORDER.forEach((key, i) => {
 			const icon = LABEL_ICONS[key];
 			if (!icon) return;
 			const angle = ((i * 72) - 90) * (Math.PI / 180);
 			const x = cx + iconRadius * Math.cos(angle);
 			const y = cy + iconRadius * Math.sin(angle);
-			// Use Font Awesome font-family for the icon unicode
+			// Use Font Awesome font-family for the icon unicode with label-specific color
 			parts.push(
 				`<text x="${x}" y="${y}" ` +
 				`font-family="'Font Awesome 6 Free', 'Font Awesome 6 Pro', 'FontAwesome'" ` +
 				`font-weight="900" font-size="${fontSize}" ` +
-				`fill="rgba(255,255,255,0.85)" ` +
+				`fill="${icon.color}" ` +
 				`text-anchor="middle" dominant-baseline="central" ` +
 				`class="label-icon-vertex label-icon-${key}">${icon.unicode}</text>`
 			);

@@ -1,27 +1,63 @@
 {{!-- Playbook Tab: Playbook Features, Moment of Truth, Advancements --}}
 <div class="tab playbook" data-group="primary" data-tab="playbook">
 	<section class="sheet-tab playbook-tab">
-		{{!-- Playbook-Specific Features (filtered to exclude conditions) --}}
-		{{#if playbookLeftAttributes}}
+		{{!-- Playbook-Specific Features (all types) --}}
+		{{#if playbookAttributes}}
 		<div class="playbook-section playbook-section--features">
 			<label class="section-title">{{localize "MASKS-SHEETS.PlaybookFeatures"}}</label>
 			<div class="playbook-features-list">
-				{{#each playbookLeftAttributes as |attr key|}}
-				<div class="playbook-feature playbook-feature--{{attr.type}}">
+				{{#each playbookAttributes as |attr key|}}
+				<div class="playbook-feature playbook-feature--{{attr.type}}" data-attr-key="{{attr.key}}">
 					<label class="feature-label">{{attr.label}}</label>
 					{{#if attr.description}}
 					<p class="feature-description">{{attr.description}}</p>
 					{{/if}}
-					{{#if (eq attr.type "LongText")}}
+					{{#if (eq attr.type "Clock")}}
+					{{!-- Clock type (e.g., Doom Track) - clickable pips --}}
+					<div class="clock-tracker" data-attr="{{attr.key}}" data-max="{{attr.max}}">
+						<div class="clock-pips">
+							{{#times attr.max}}
+							<span class="clock-pip {{#if (lte this ../attr.value)}}filled{{/if}}"
+								data-pip="{{this}}" data-attr="{{../attr.key}}" data-action="set-clock"></span>
+							{{/times}}
+						</div>
+						<span class="clock-count">{{attr.value}} / {{attr.max}}</span>
+					</div>
+					{{else if (eq attr.type "Number")}}
+					{{!-- Number type (e.g., Nova's Burn, Soldier's Fight) --}}
+					<div class="number-tracker">
+						<button type="button" class="tracker-btn" data-action="decrease" data-attr="attributes.{{attr.key}}.value">
+							<i class="fas fa-minus"></i>
+						</button>
+						<input type="number" class="tracker-value" name="system.attributes.{{attr.key}}.value" value="{{attr.value}}"
+							{{#if attr.max}}max="{{attr.max}}"{{/if}} />
+						<button type="button" class="tracker-btn" data-action="increase" data-attr="attributes.{{attr.key}}.value">
+							<i class="fas fa-plus"></i>
+						</button>
+					</div>
+					{{else if (eq attr.type "LongText")}}
+					{{!-- LongText type (e.g., Bull's Heart, Protege's Mentor) --}}
 					{{editor attr.value target=attr.attrName button=true owner=../owner editable=../editable}}
 					{{else if (eq attr.type "ListMany")}}
+					{{!-- ListMany type (e.g., Brain's Shame, Doomed's Sanctuary) --}}
+					{{!-- Access options directly from system.attributes to avoid stale prepared data on re-render --}}
+					{{#with (lookup ../system.attributes attr.key) as |sysAttr|}}
 					<ul class="feature-options">
-						{{#each attr.options as |opt optKey|}}
+						{{#each sysAttr.options as |opt optKey|}}
 						<li>
-							<label>
-								<input type="checkbox" name="system.attributes.{{../attr.key}}.options.{{optKey}}.value" {{checked opt.value}} />
+							<label class="feature-option-label">
+								{{!-- Handle nested values (e.g., The Scion, The Reformed) --}}
+								{{#if opt.values}}
+								<span class="feature-checkboxes">
+									{{#each opt.values as |subopt subKey|}}
+									<input type="checkbox" class="feature-sub-check" name="system.attributes.{{../../../attr.key}}.options.{{../optKey}}.values.{{subKey}}.value" {{checked subopt.value}} />
+									{{/each}}
+								</span>
+								{{else}}
+								<input type="checkbox" name="system.attributes.{{../../attr.key}}.options.{{optKey}}.value" {{checked opt.value}} />
+								{{/if}}
 								{{#if (eq opt.label "[Text]")}}
-								<input type="text" name="system.attributes.{{../attr.key}}.options.{{optKey}}.userLabel" value="{{opt.userLabel}}" placeholder="..." />
+								<input type="text" class="feature-option-text" name="system.attributes.{{../../attr.key}}.options.{{optKey}}.userLabel" value="{{opt.userLabel}}" placeholder="..." />
 								{{else}}
 								<span>{{opt.label}}</span>
 								{{/if}}
@@ -29,10 +65,10 @@
 						</li>
 						{{/each}}
 					</ul>
+					{{/with}}
 					{{else if (eq attr.type "Text")}}
+					{{!-- Text type --}}
 					<input type="text" name="{{attr.attrName}}" value="{{attr.value}}" />
-					{{else if (eq attr.type "Number")}}
-					<input type="number" name="{{attr.attrName}}" value="{{attr.value}}" />
 					{{/if}}
 				</div>
 				{{/each}}

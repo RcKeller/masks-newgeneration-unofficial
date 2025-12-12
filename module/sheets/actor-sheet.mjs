@@ -1,3 +1,4 @@
+/* global ChatMessage, CONST, Dialog, game, foundry, ui */
 import { createLabelsGraphData, LABEL_ORDER } from "../labels-graph.mjs";
 
 const NS = "masks-newgeneration-unofficial";
@@ -96,12 +97,9 @@ export function MasksActorSheetMixin(Base) {
 				// Prepare condition tags
 				context.conditionTags = this._prepareConditionTags();
 
-				// Prepare playbook-specific attributes for sidebar (position: Top)
-				context.playbookAttributes = this._preparePlaybookAttributes();
-
-				// Prepare playbook-specific attributes for Info tab (position: Left)
-				// These include things like The Doomed's Sanctuary, The Bull's Heart, etc.
-				context.playbookLeftAttributes = this._preparePlaybookLeftAttributes();
+				// Prepare ALL playbook-specific attributes for the Playbook tab
+				// This includes both position: Top (like Doom track, Burn) and position: Left (like Sanctuary)
+				context.playbookAttributes = this._prepareAllPlaybookAttributes();
 			}
 
 			return context;
@@ -167,10 +165,11 @@ export function MasksActorSheetMixin(Base) {
 		}
 
 		/**
-		 * Prepare playbook-specific attributes for sidebar (position: Top)
+		 * Prepare ALL playbook-specific attributes for the Playbook tab
+		 * Includes both position: Top (like Doom track) and position: Left (like Sanctuary)
 		 * @returns {Object|null} Playbook attributes or null if none
 		 */
-		_preparePlaybookAttributes() {
+		_prepareAllPlaybookAttributes() {
 			const attrs = this.actor.system.attributes ?? {};
 			const playbook = this.actor.system.playbook?.name ?? "";
 			const configAttrs = game.pbta.sheetConfig?.actorTypes?.character?.attributes ?? {};
@@ -183,15 +182,15 @@ export function MasksActorSheetMixin(Base) {
 
 				// Merge config with actor data (actor data takes precedence)
 				const mergedPlaybook = attr.playbook ?? configAttr.playbook;
-				const mergedPosition = attr.position ?? configAttr.position;
 				const mergedType = attr.type ?? configAttr.type;
+				const mergedCondition = attr.condition ?? configAttr.condition;
 
-				// Skip non-playbook attributes (must have a specific playbook name)
+				// Skip non-playbook attributes (must have a specific playbook name, not just true)
 				if (!mergedPlaybook || mergedPlaybook === true) continue;
 				// Skip if playbook doesn't match
 				if (mergedPlaybook !== playbook) continue;
-				// Skip position=Left attributes (they go in the playbook tab)
-				if (mergedPosition === "Left") continue;
+				// Skip conditions (they're handled separately in the header)
+				if (mergedCondition) continue;
 
 				const max = attr.max ?? configAttr.max ?? 5;
 
@@ -200,56 +199,10 @@ export function MasksActorSheetMixin(Base) {
 					type: mergedType,
 					label: attr.label ?? configAttr.label,
 					description: attr.description ?? configAttr.description,
-					value: Number(attr.value) || 0,
-					max: max,
-					options: attr.options ?? configAttr.options,
-				};
-				hasAny = true;
-			}
-
-			return hasAny ? result : null;
-		}
-
-		/**
-		 * Prepare playbook-specific attributes for the Info tab (position: Left)
-		 * These are the unique playbook features like The Doomed's sanctuary
-		 * @returns {Object|null} Playbook attributes or null if none
-		 */
-		_preparePlaybookLeftAttributes() {
-			const attrs = this.actor.system.attributes ?? {};
-			const playbook = this.actor.system.playbook?.name ?? "";
-			const configAttrs = game.pbta.sheetConfig?.actorTypes?.character?.attributes ?? {};
-			const result = {};
-			let hasAny = false;
-
-			for (const [key, attr] of Object.entries(attrs)) {
-				// Get config defaults for this attribute (actor may not have all properties)
-				const configAttr = configAttrs[key] ?? {};
-
-				// Merge config with actor data (actor data takes precedence)
-				const mergedPlaybook = attr.playbook ?? configAttr.playbook;
-				const mergedPosition = attr.position ?? configAttr.position;
-				const mergedType = attr.type ?? configAttr.type;
-				const mergedCondition = attr.condition ?? configAttr.condition;
-
-				// Skip non-playbook attributes (must have a specific playbook name, not just true)
-				if (!mergedPlaybook || mergedPlaybook === true) continue;
-				// Skip if playbook doesn't match
-				if (mergedPlaybook !== playbook) continue;
-				// Only include position=Left attributes
-				if (mergedPosition !== "Left") continue;
-				// Skip conditions (they're handled separately)
-				if (mergedCondition) continue;
-
-				result[key] = {
-					key,
-					type: mergedType,
-					label: attr.label ?? configAttr.label,
-					description: attr.description ?? configAttr.description,
-					value: attr.value,
+					value: mergedType === "LongText" ? attr.value : (Number(attr.value) || 0),
 					enriched: attr.enriched,
 					attrName: `system.attributes.${key}.value`,
-					max: attr.max ?? configAttr.max,
+					max: max,
 					options: attr.options ?? configAttr.options,
 				};
 				hasAny = true;
@@ -332,8 +285,8 @@ export function MasksActorSheetMixin(Base) {
 			// Clock pips (playbook attributes)
 			html.on("click", ".clock-pip", this._onClockPipClick.bind(this));
 
-			// Playbook attribute steppers
-			html.on("click", ".playbook-attr .attr-btn", this._onAttrStepperClick.bind(this));
+			// Playbook attribute steppers (both old .attr-btn and new .tracker-btn)
+			html.on("click", ".tracker-btn, .attr-btn", this._onAttrStepperClick.bind(this));
 
 			// Move group collapse
 			html.on("click", ".moves-group-header", this._onMoveGroupCollapse.bind(this));
@@ -551,7 +504,7 @@ export function MasksActorSheetMixin(Base) {
 			if (action === "roll-move") {
 				await item.roll();
 			} else {
-				await item.toChat();
+				await this._shareMoveToChat(item);
 			}
 		}
 
@@ -564,8 +517,30 @@ export function MasksActorSheetMixin(Base) {
 			const itemId = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
 			const item = this.actor.items.get(itemId);
 			if (item) {
-				await item.toChat();
+				await this._shareMoveToChat(item);
 			}
+		}
+
+		/**
+		 * Share a move to chat as a chat card
+		 * @param {Item} item - The move item to share
+		 */
+		async _shareMoveToChat(item) {
+			const content = `
+				<div class="move-card">
+					<header class="card-header">
+						<img src="${item.img}" alt="${item.name}" width="36" height="36" />
+						<h3 class="move-name">${item.name}</h3>
+					</header>
+					${item.system.description ? `<div class="card-content">${item.system.description}</div>` : ""}
+				</div>
+			`;
+
+			await ChatMessage.create({
+				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+				content: content,
+				type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+			});
 		}
 
 		/**
@@ -885,15 +860,52 @@ export function MasksActorSheetMixin(Base) {
 		}
 
 		/**
+		 * Extract move UUIDs from playbook description
+		 * @param {string} description - The playbook's HTML description
+		 * @returns {Array<{uuid: string, name: string}>} Array of move objects
+		 */
+		_extractMoveUuidsFromDescription(description) {
+			if (!description) return [];
+			const moves = [];
+			// Match @UUID[...]{name} patterns for moves (Items)
+			const uuidRegex = /@UUID\[([^\]]+\.Item\.[^\]]+)\]\{([^}]+)\}/g;
+			let match;
+			while ((match = uuidRegex.exec(description)) !== null) {
+				moves.push({
+					uuid: match[1],
+					name: match[2],
+				});
+			}
+			return moves;
+		}
+
+		/**
 		 * Prompt the user to take an advancement when changing playbooks
 		 * @param {Item} newPlaybook - The new playbook being selected
 		 */
 		async _promptPlaybookChangeAdvancement(newPlaybook) {
-			const playbookMoves = newPlaybook.system?.moves ?? [];
-			if (playbookMoves.length === 0) return;
+			// Extract moves from the playbook description
+			const playbookMoves = this._extractMoveUuidsFromDescription(newPlaybook.system?.description);
+
+			// Filter to only actual playbook moves (exclude basic moves, team moves, etc.)
+			// Look for moves in the playbook's own compendium
+			const playbookPackName = newPlaybook.pack;
+			const filteredMoves = playbookMoves.filter((m) => {
+				// Include moves from the same compendium pack as the playbook
+				// or from a pack with similar naming (e.g., basic-playbook-bull)
+				return m.uuid.includes(playbookPackName) ||
+					m.uuid.includes("-playbook-") ||
+					// Exclude basic moves, other moves
+					(!m.uuid.includes(".moves.") && !m.uuid.includes(".moves-basic.") && !m.uuid.includes(".moves-other."));
+			});
+
+			if (filteredMoves.length === 0) {
+				ui.notifications.info(`No playbook moves found for ${newPlaybook.name}`);
+				return;
+			}
 
 			// Build a list of available moves from the new playbook
-			const moveOptions = playbookMoves.map((move) => {
+			const moveOptions = filteredMoves.map((move) => {
 				return `<option value="${move.uuid}">${move.name}</option>`;
 			}).join("");
 
@@ -923,7 +935,10 @@ export function MasksActorSheetMixin(Base) {
 			if (result) {
 				const moveItem = await fromUuid(result);
 				if (moveItem) {
-					await this.actor.createEmbeddedDocuments("Item", [moveItem.toObject()]);
+					const itemData = moveItem.toObject();
+					// Mark as a playbook move
+					itemData.system.moveType = "playbook";
+					await this.actor.createEmbeddedDocuments("Item", [itemData]);
 					ui.notifications.info(`Added ${moveItem.name} to ${this.actor.name}`);
 				}
 			}

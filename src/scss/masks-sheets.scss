@@ -1786,56 +1786,61 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* Condition colors when active */
+    /* Condition colors when active - match the LABEL they affect */
+    /* Afraid affects Danger (red) */
     &.condition--afraid.active {
-      background: rgba(139, 69, 19, 0.7);
-      border-color: var(--masks-afraid-color);
+      background: rgba(224, 82, 82, 0.7);
+      border-color: var(--masks-danger-color);
       color: white;
     }
 
+    /* Angry affects Mundane (green) */
     &.condition--angry.active {
-      background: rgba(220, 53, 69, 0.7);
-      border-color: var(--masks-angry-color);
+      background: rgba(39, 174, 96, 0.7);
+      border-color: var(--masks-mundane-color);
       color: white;
     }
 
+    /* Guilty affects Superior (gold) */
     &.condition--guilty.active {
-      background: rgba(108, 117, 125, 0.7);
-      border-color: var(--masks-guilty-color);
+      background: rgba(243, 156, 18, 0.7);
+      border-color: var(--masks-superior-color);
       color: white;
     }
 
+    /* Hopeless affects Freak (purple) */
     &.condition--hopeless.active {
-      background: rgba(111, 66, 193, 0.7);
-      border-color: var(--masks-hopeless-color);
+      background: rgba(155, 89, 182, 0.7);
+      border-color: var(--masks-freak-color);
       color: white;
     }
 
+    /* Insecure affects Savior (blue) */
     &.condition--insecure.active {
-      background: rgba(23, 162, 184, 0.7);
-      border-color: var(--masks-insecure-color);
+      background: rgba(52, 152, 219, 0.7);
+      border-color: var(--masks-savior-color);
       color: white;
     }
 
-    /* Inactive state with color hint */
+    /* Inactive state with color hint - match the LABEL they affect */
     &.condition--afraid:not(.active) {
-      border-left: 3px solid var(--masks-afraid-color);
+      border-left: 3px solid var(--masks-danger-color);
     }
 
     &.condition--angry:not(.active) {
-      border-left: 3px solid var(--masks-angry-color);
+      border-left: 3px solid var(--masks-mundane-color);
     }
 
     &.condition--guilty:not(.active) {
-      border-left: 3px solid var(--masks-guilty-color);
+      border-left: 3px solid var(--masks-superior-color);
     }
 
     &.condition--hopeless:not(.active) {
-      border-left: 3px solid var(--masks-hopeless-color);
+      border-left: 3px solid var(--masks-freak-color);
     }
 
     &.condition--insecure:not(.active) {
-      border-left: 3px solid var(--masks-insecure-color);
+      border-left: 3px solid var(--masks-savior-color);
     }
   }
 }
@@ -2679,9 +2684,8 @@
     overflow: hidden;
 
     &.collapsed .moves-list {
-      max-height: 0;
+      grid-template-rows: 0fr;
       opacity: 0;
-      overflow: hidden;
     }
 
     &.collapsed .moves-collapse-icon i {
@@ -2754,9 +2758,15 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 2000px;
+    /* Use grid for smooth height animation */
+    display: grid;
+    grid-template-rows: 1fr;
     opacity: 1;
-    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    transition: grid-template-rows 0.2s ease-out, opacity 0.2s ease-out;
+
+    > * {
+      overflow: hidden;
+    }
   }
 
   .move-item {
@@ -2966,14 +2976,19 @@
       font-size: 0.85rem;
       color: var(--masks-v2-text-secondary);
       line-height: 1.5;
-      max-height: 500px;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin 0.3s ease-out;
+
+      /* Use grid for smooth height animation */
+      display: grid;
+      grid-template-rows: 1fr;
+      transition: grid-template-rows 0.2s ease-out, opacity 0.2s ease-out;
       opacity: 1;
 
+      > * {
+        overflow: hidden;
+      }
+
       &.collapsed {
-        max-height: 0;
-        margin-top: 0;
+        grid-template-rows: 0fr;
         opacity: 0;
       }
     }
@@ -3155,6 +3170,17 @@
                 flex-shrink: 0;
               }
 
+              /* Multiple checkboxes per option (e.g., The Scion, The Reformed) */
+              .feature-checkboxes {
+                display: flex;
+                gap: 4px;
+                flex-shrink: 0;
+
+                input[type="checkbox"] {
+                  margin: 0;
+                }
+              }
+
               input[type="text"] {
                 flex: 1;
                 background: var(--masks-v2-sidebar-bg);
@@ -3187,6 +3213,90 @@
           &:focus {
             outline: none;
             border-color: var(--masks-v2-accent-color);
+          }
+        }
+
+        /* Clock tracker (e.g., Doom Track) */
+        .clock-tracker {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .clock-pips {
+            display: flex;
+            gap: 6px;
+
+            .clock-pip {
+              width: 24px;
+              height: 24px;
+              border-radius: 50%;
+              background: var(--masks-v2-sidebar-bg);
+              border: 2px solid var(--masks-danger-color);
+              cursor: pointer;
+              transition: all var(--masks-v2-transition-speed) ease;
+
+              &:hover {
+                transform: scale(1.1);
+                box-shadow: 0 0 8px var(--masks-danger-color);
+              }
+
+              &.filled {
+                background: var(--masks-danger-color);
+              }
+            }
+          }
+
+          .clock-count {
+            font-size: 0.85rem;
+            color: var(--masks-v2-text-secondary);
+          }
+        }
+
+        /* Number tracker (e.g., Burn, Fight the Fight) */
+        .number-tracker {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          .tracker-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--masks-v2-corner-radius);
+            background: var(--masks-v2-sidebar-bg);
+            border: 1px solid var(--masks-v2-border-color);
+            color: var(--masks-v2-text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--masks-v2-transition-speed) ease;
+
+            &:hover {
+              background: var(--masks-v2-accent-color);
+              color: var(--masks-v2-text-primary);
+              border-color: var(--masks-v2-accent-color);
+            }
+
+            i {
+              font-size: 0.75rem;
+            }
+          }
+
+          .tracker-value {
+            width: 50px;
+            text-align: center;
+            background: var(--masks-v2-sidebar-bg);
+            border: 1px solid var(--masks-v2-border-color);
+            border-radius: var(--masks-v2-corner-radius);
+            color: var(--masks-v2-text-primary);
+            padding: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+
+            &:focus {
+              outline: none;
+              border-color: var(--masks-v2-accent-color);
+            }
           }
         }
       }

@@ -1500,8 +1500,13 @@
   letter-spacing: 0.05em;
   cursor: pointer;
   transition: all var(--masks-v2-transition-speed) ease;
-  /* Condition colors when active */
-  /* Inactive state with color hint */
+  /* Condition colors when active - match the LABEL they affect */
+  /* Afraid affects Danger (red) */
+  /* Angry affects Mundane (green) */
+  /* Guilty affects Superior (gold) */
+  /* Hopeless affects Freak (purple) */
+  /* Insecure affects Savior (blue) */
+  /* Inactive state with color hint - match the LABEL they affect */
 }
 .masks-sheet-v2 .conditions-panel .condition-tag i {
   font-size: 0.75rem;
@@ -1511,44 +1516,44 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 .masks-sheet-v2 .conditions-panel .condition-tag.condition--afraid.active {
-  background: rgba(139, 69, 19, 0.7);
-  border-color: var(--masks-afraid-color);
+  background: rgba(224, 82, 82, 0.7);
+  border-color: var(--masks-danger-color);
   color: white;
 }
 .masks-sheet-v2 .conditions-panel .condition-tag.condition--angry.active {
-  background: rgba(220, 53, 69, 0.7);
-  border-color: var(--masks-angry-color);
+  background: rgba(39, 174, 96, 0.7);
+  border-color: var(--masks-mundane-color);
   color: white;
 }
 .masks-sheet-v2 .conditions-panel .condition-tag.condition--guilty.active {
-  background: rgba(108, 117, 125, 0.7);
-  border-color: var(--masks-guilty-color);
+  background: rgba(243, 156, 18, 0.7);
+  border-color: var(--masks-superior-color);
   color: white;
 }
 .masks-sheet-v2 .conditions-panel .condition-tag.condition--hopeless.active {
-  background: rgba(111, 66, 193, 0.7);
-  border-color: var(--masks-hopeless-color);
+  background: rgba(155, 89, 182, 0.7);
+  border-color: var(--masks-freak-color);
   color: white;
 }
 .masks-sheet-v2 .conditions-panel .condition-tag.condition--insecure.active {
-  background: rgba(23, 162, 184, 0.7);
-  border-color: var(--masks-insecure-color);
+  background: rgba(52, 152, 219, 0.7);
+  border-color: var(--masks-savior-color);
   color: white;
 }
 .masks-sheet-v2 .conditions-panel .condition-tag.condition--afraid:not(.active) {
-  border-left: 3px solid var(--masks-afraid-color);
+  border-left: 3px solid var(--masks-danger-color);
 }
 .masks-sheet-v2 .conditions-panel .condition-tag.condition--angry:not(.active) {
-  border-left: 3px solid var(--masks-angry-color);
+  border-left: 3px solid var(--masks-mundane-color);
 }
 .masks-sheet-v2 .conditions-panel .condition-tag.condition--guilty:not(.active) {
-  border-left: 3px solid var(--masks-guilty-color);
+  border-left: 3px solid var(--masks-superior-color);
 }
 .masks-sheet-v2 .conditions-panel .condition-tag.condition--hopeless:not(.active) {
-  border-left: 3px solid var(--masks-hopeless-color);
+  border-left: 3px solid var(--masks-freak-color);
 }
 .masks-sheet-v2 .conditions-panel .condition-tag.condition--insecure:not(.active) {
-  border-left: 3px solid var(--masks-insecure-color);
+  border-left: 3px solid var(--masks-savior-color);
 }
 
 /* =========================================================================== */
@@ -2286,9 +2291,8 @@
   overflow: hidden;
 }
 .masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-list {
-  max-height: 0;
+  grid-template-rows: 0fr;
   opacity: 0;
-  overflow: hidden;
 }
 .masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-collapse-icon i {
   transform: rotate(180deg);
@@ -2350,9 +2354,14 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 2000px;
+  /* Use grid for smooth height animation */
+  display: grid;
+  grid-template-rows: 1fr;
   opacity: 1;
-  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+  transition: grid-template-rows 0.2s ease-out, opacity 0.2s ease-out;
+}
+.masks-sheet-v2 .powers-tab .moves-list > * {
+  overflow: hidden;
 }
 .masks-sheet-v2 .powers-tab .move-item {
   border-top: 1px solid var(--masks-v2-border-color);
@@ -2530,14 +2539,17 @@
   font-size: 0.85rem;
   color: var(--masks-v2-text-secondary);
   line-height: 1.5;
-  max-height: 500px;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin 0.3s ease-out;
+  /* Use grid for smooth height animation */
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.2s ease-out, opacity 0.2s ease-out;
   opacity: 1;
 }
+.masks-sheet-v2 .powers-tab .move-content .move-description > * {
+  overflow: hidden;
+}
 .masks-sheet-v2 .powers-tab .move-content .move-description.collapsed {
-  max-height: 0;
-  margin-top: 0;
+  grid-template-rows: 0fr;
   opacity: 0;
 }
 
@@ -2644,6 +2656,8 @@
   /* LongText editors - fix height */
   /* ListMany options */
   /* Text and Number inputs */
+  /* Clock tracker (e.g., Doom Track) */
+  /* Number tracker (e.g., Burn, Fight the Fight) */
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-label {
   display: block;
@@ -2689,6 +2703,7 @@
   color: var(--masks-v2-text-secondary);
   font-size: 0.85rem;
   cursor: pointer;
+  /* Multiple checkboxes per option (e.g., The Scion, The Reformed) */
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options li label:hover {
   background: rgba(255, 255, 255, 0.06);
@@ -2696,6 +2711,14 @@
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options li label input[type=checkbox] {
   accent-color: var(--masks-v2-accent-color);
   flex-shrink: 0;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options li label .feature-checkboxes {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options li label .feature-checkboxes input[type=checkbox] {
+  margin: 0;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options li label input[type=text] {
   flex: 1;
@@ -2722,6 +2745,76 @@
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature input[type=text]:focus,
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature input[type=number]:focus {
+  outline: none;
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .clock-tracker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .clock-tracker .clock-pips {
+  display: flex;
+  gap: 6px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .clock-tracker .clock-pips .clock-pip {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--masks-v2-sidebar-bg);
+  border: 2px solid var(--masks-danger-color);
+  cursor: pointer;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .clock-tracker .clock-pips .clock-pip:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 8px var(--masks-danger-color);
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .clock-tracker .clock-pips .clock-pip.filled {
+  background: var(--masks-danger-color);
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .clock-tracker .clock-count {
+  font-size: 0.85rem;
+  color: var(--masks-v2-text-secondary);
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker .tracker-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--masks-v2-corner-radius);
+  background: var(--masks-v2-sidebar-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  color: var(--masks-v2-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker .tracker-btn:hover {
+  background: var(--masks-v2-accent-color);
+  color: var(--masks-v2-text-primary);
+  border-color: var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker .tracker-btn i {
+  font-size: 0.75rem;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker .tracker-value {
+  width: 50px;
+  text-align: center;
+  background: var(--masks-v2-sidebar-bg);
+  border: 1px solid var(--masks-v2-border-color);
+  border-radius: var(--masks-v2-corner-radius);
+  color: var(--masks-v2-text-primary);
+  padding: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker .tracker-value:focus {
   outline: none;
   border-color: var(--masks-v2-accent-color);
 }
