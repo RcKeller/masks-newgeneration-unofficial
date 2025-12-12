@@ -1167,6 +1167,12 @@
       box-shadow: 0 2px 6px rgba(59, 130, 246, 0.35);
       border: 1px solid rgba(255, 255, 255, 0.92);
     }
+
+    &.has-negative {
+      background: var(--masks-danger-color);
+      box-shadow: 0 2px 6px rgba(224, 82, 82, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.92);
+    }
   }
 
   .turncard__potential {

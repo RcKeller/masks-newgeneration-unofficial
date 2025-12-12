@@ -1525,7 +1525,8 @@ const TurnCardsHUD = {
 				forward,
 				ongoing,
 				effectiveBonus,
-				hasBonus: effectiveBonus > 0,
+				hasBonus: effectiveBonus !== 0,
+				hasNegative: effectiveBonus < 0,
 				forwardDisabled,
 				forwardTooltip,
 

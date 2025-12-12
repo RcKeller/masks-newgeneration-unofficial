@@ -1165,6 +1165,11 @@
   box-shadow: 0 2px 6px rgba(59, 130, 246, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.92);
 }
+#masks-turncards .turncard__forward.has-negative {
+  background: var(--masks-danger-color);
+  box-shadow: 0 2px 6px rgba(224, 82, 82, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+}
 #masks-turncards .turncard__potential {
   right: 6px;
   bottom: 6px;
@@ -3066,5 +3071,3 @@
   outline: none;
   border-color: var(--masks-accent);
 }
-
-/*# sourceMappingURL=masks-sheets.css.map */

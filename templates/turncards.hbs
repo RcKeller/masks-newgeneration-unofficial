@@ -86,11 +86,11 @@
 
                 {{!-- Forward/Aid button --}}
                 <button type="button"
-                    class="turncard__forward {{#if card.hasBonus}}has-bonus{{/if}} {{#if card.forwardDisabled}}is-disabled{{/if}}"
+                    class="turncard__forward {{#if card.hasBonus}}has-bonus{{/if}} {{#if card.hasNegative}}has-negative{{/if}} {{#if card.forwardDisabled}}is-disabled{{/if}}"
                     data-action="forward" data-actor-id="{{card.actorId}}" aria-label="{{card.forwardTooltip}}"
                     data-tooltip="{{card.forwardTooltip}}" {{#if card.forwardDisabled}}disabled{{/if}}>
                     {{#if card.hasBonus}}
-                    <span class="turncard__forward-value">+{{card.effectiveBonus}}</span>
+                    <span class="turncard__forward-value">{{#unless card.hasNegative}}+{{/unless}}{{card.effectiveBonus}}</span>
                     {{else}}
                     <i class="fa-solid fa-plus"></i>
                     {{/if}}
