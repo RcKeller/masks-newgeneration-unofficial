@@ -1,78 +1,124 @@
-@charset "UTF-8";
+/* =============================================================================
+   MASKS: A NEW GENERATION - Unified Theme System
+   =============================================================================
+   This file contains all styling for the Masks FoundryVTT module.
+   Color scheme: Blue/dark superhero theme throughout (character sheet + turn cards)
+   ============================================================================= */
+/* =============================================================================
+   THEME VARIABLES - Single source of truth for all colors
+   ============================================================================= */
 :root {
-  --actor-gradient: linear-gradient(
-    to bottom,
-    #58a4fc 0%,
-    #b0c2b8 80%,
-    #fff1b6 100%
-  );
-  --masks-primary-text-color: #ffffff;
-  --masks-secondary-text-color: #000000;
-  --masks-title-text-color: #173f6e;
-  --masks-input-text-color: #000000;
+  /* --- Core Color Palette --- */
+  --masks-blue-dark: #0e2949;
+  --masks-blue-primary: #173f6e;
+  --masks-blue-medium: #1e528f;
+  --masks-blue-light: #3da7db;
+  --masks-blue-accent: #58a4fc;
+  --masks-gold: #ffeb98;
+  --masks-gold-dark: #e7a345;
+  /* --- Label Colors (Masks RPG stats) --- */
+  --masks-danger-color: #e05252;
+  --masks-freak-color: #9b59b6;
+  --masks-savior-color: #3498db;
+  --masks-superior-color: #f39c12;
+  --masks-mundane-color: #27ae60;
+  /* Semi-transparent versions for backgrounds */
+  --masks-danger-bg: rgba(224, 82, 82, 0.15);
+  --masks-freak-bg: rgba(155, 89, 182, 0.15);
+  --masks-savior-bg: rgba(52, 152, 219, 0.15);
+  --masks-superior-bg: rgba(243, 156, 18, 0.15);
+  --masks-mundane-bg: rgba(39, 174, 96, 0.15);
+  /* --- Semantic Colors --- */
+  --masks-text-primary: #ffffff;
+  --masks-text-secondary: rgba(255, 255, 255, 0.75);
+  --masks-text-muted: rgba(255, 255, 255, 0.5);
+  --masks-text-dark: #000000;
+  --masks-bg-panel: rgba(20, 30, 45, 0.95);
+  --masks-bg-sidebar: rgba(30, 40, 55, 0.92);
+  --masks-bg-tab: rgba(40, 50, 65, 0.9);
+  --masks-bg-tab-active: rgba(60, 75, 95, 0.95);
+  --masks-bg-input: rgba(0, 0, 0, 0.3);
+  --masks-bg-input-light: rgba(255, 255, 255, 0.75);
+  --masks-border-color: rgba(255, 255, 255, 0.15);
+  --masks-border-accent: rgba(61, 167, 219, 0.5);
+  /* --- Interactive Elements --- */
+  --masks-interactive-bg: #1e528f;
+  --masks-interactive-hover: #173f6e;
+  --masks-accent: #3da7db;
+  /* --- Sheet Background --- */
+  --masks-gradient: linear-gradient(to bottom, #58a4fc 0%, #b0c2b8 80%, #fff1b6 100%);
+  --masks-window-bg: url("/modules/masks-newgeneration-unofficial/images/skyline.webp"), var(--masks-gradient);
+  /* --- Layout Constants --- */
+  --masks-corner-radius: 2px;
+  --masks-transition-fast: 150ms ease;
+  --masks-transition-smooth: 300ms ease;
+  /* --- Turn Cards Theme (now uses blue scheme) --- */
+  --tc-border-outer: var(--masks-blue-dark);
+  --tc-border-inner: var(--masks-blue-primary);
+  --tc-frame-bg: var(--masks-bg-panel);
+  --tc-nameplate-bg: var(--masks-blue-primary);
+  --tc-hover-inner: var(--masks-blue-medium);
+  --tc-action-bg: var(--masks-mundane-color);
+  --tc-cooldown-bar: var(--masks-blue-light);
+  --tc-cooldown-label-bg: rgba(0, 0, 0, 0.72);
+  --tc-downed-bg: rgba(104, 59, 71, 0.92);
+  --tc-potential-fill: var(--masks-gold-dark);
+  --tc-forward-bg: var(--masks-blue-light);
+  --tc-pentagon-color: var(--masks-blue-dark);
+  --tc-cooldown-opacity: 0.75;
+  --tc-downed-opacity: 0.45;
+  --tc-notch: rgba(0, 0, 0, 0.12);
+  /* --- Legacy compatibility (maps to new system) --- */
+  --masks-input-bg-color: var(--masks-bg-input-light);
+  --masks-input-border-color: rgba(0, 0, 0, 0.75);
+  --masks-input-text-color: var(--masks-text-dark);
   --masks-input-placeholder-color: #979797;
-  --masks-input-disabled-color: #0e2949;
-  --masks-interactive-bg-color: #1e528f;
-  --masks-interactive-bg-hover-color: #173f6e;
-  --masks-option-bg-color: #683b47;
-  --masks-tabs-border-color: #ffeb98;
-  --masks-tab-bg-active-color: #ffeb98;
-  --masks-input-bg-color: rgb(255 255 255 / 75%);
-  --masks-input-border-color: rgb(0 0 0 / 75%);
-  --masks-tox-edit-area-bg-color: rgba(255, 255, 255, 0.5);
-  --masks-resource-border-color: #bcc8de;
-  --masks-resource-control-bg-color: #ffffff;
-  --masks-stats-border-color: rgb(229 222 210 / 37%);
-  --masks-cell-title-border-color: #173f6e;
-  --masks-bio-title-border-color: #3da7db;
-  --masks-header-bg-color: #173f6e;
-  --masks-window-bg-image: url("/modules/masks-newgeneration-unofficial/images/skyline.webp"),
-    var(--actor-gradient);
-  --masks-window-bg-position: bottom left;
+  --masks-input-disabled-color: var(--masks-blue-dark);
+  --masks-header-bg-color: var(--masks-blue-primary);
+  --masks-cell-title-border-color: var(--masks-blue-primary);
+  --masks-bio-title-border-color: var(--masks-blue-light);
+  --masks-title-text-color: var(--masks-blue-primary);
+  --masks-tabs-border-color: var(--masks-gold);
+  --masks-tab-bg-active-color: var(--masks-gold);
   --masks-influence-icon-color: invert(100%);
   --masks-influence-icon-disabled-color: invert(100%) opacity(50%);
-  --masks-turncards-card-base: #bda78a;
-  --masks-turncards-primary-bg: #f4e7d7;
-  --masks-turncards-secondary-bg: #ead0b0;
-  --masks-turncards-active-bg: #d1a06e;
-  --masks-turncards-action-bg: #87b07e;
-  --masks-turncards-cooldown-bar: #3f8aa0;
-  --masks-turncards-potential-fill-color: #e7a345;
-  --masks-turncards-pentagon-color: #37372b;
-  --masks-turncards-cooldown-opacity: 0.75;
 }
 
+/* =============================================================================
+   BASE STYLES - PbtA Sheet Foundation
+   ============================================================================= */
 .pbta.window-app .window-content {
-  color: var(--masks-secondary-text-color);
+  color: var(--masks-text-dark);
   padding: 0;
 }
 .pbta.window-app .window-content a.content-link, .pbta.window-app .window-content a.inline-roll {
   color: var(--masks-input-text-color);
 }
-.pbta.window-app input,
-.pbta.window-app button,
-.pbta.window-app select,
-.pbta.window-app textarea {
+.pbta.window-app input, .pbta.window-app button, .pbta.window-app select, .pbta.window-app textarea {
   background: var(--masks-input-bg-color);
   color: var(--masks-input-text-color);
   border: 0.5px solid var(--masks-input-border-color);
   accent-color: var(--masks-tab-bg-active-color);
   font-weight: bold;
 }
-.pbta.window-app input:disabled,
-.pbta.window-app button:disabled,
-.pbta.window-app select:disabled,
-.pbta.window-app textarea:disabled {
-  background: rgba(153, 153, 153, 0.2509803922);
+.pbta.window-app input:disabled, .pbta.window-app button:disabled, .pbta.window-app select:disabled, .pbta.window-app textarea:disabled {
+  background: rgba(153, 153, 153, 0.25);
   color: var(--masks-input-disabled-color);
 }
 .pbta.window-app input::placeholder {
   color: var(--masks-input-placeholder-color) !important;
 }
 
+/* =============================================================================
+   ACTOR SHEET - Main character sheet styling
+   ============================================================================= */
 .pbta.sheet {
-  /* -- */
-  /** Playbook customizations **/
+  /* --- Influences Section --- */
+  /* --- Sheet Layout --- */
+  /* --- Stats/Labels Section --- */
+  /* --- Styled Section Titles --- */
+  /* --- Tabs --- */
+  /* --- Playbook-specific Customizations --- */
 }
 .pbta.sheet .advancement {
   display: none;
@@ -129,11 +175,10 @@
   height: 15px;
 }
 .pbta.sheet.item label {
-  color: var(--masks-secondary-text-color);
+  color: var(--masks-text-dark);
 }
 .pbta.sheet .cell--image {
   border: 1px solid var(--masks-cell-title-border-color);
-  /* Labels Graph visualization below profile image */
 }
 .pbta.sheet .cell--image .labels-graph-container {
   display: flex;
@@ -149,7 +194,7 @@
   display: block;
 }
 .pbta.sheet .window-header {
-  background-color: var(--masks-interactive-bg-color);
+  background-color: var(--masks-interactive-bg);
 }
 .pbta.sheet .sheet-resources {
   align-items: start;
@@ -164,24 +209,22 @@
 .pbta.sheet .sheet-resources .cell--forward .resource-control,
 .pbta.sheet .sheet-resources .cell--roll-formula .resource-control {
   border: 0.5px solid var(--masks-input-border-color);
-  background: var(--masks-resource-control-bg-color);
+  background: #ffffff;
 }
-.pbta.sheet .cell__checkboxes,
-.pbta.sheet .cell__radio {
+.pbta.sheet .cell__checkboxes, .pbta.sheet .cell__radio {
   margin: 0;
 }
-.pbta.sheet .cell__checkboxes label.flexrow,
-.pbta.sheet .cell__radio label.flexrow {
+.pbta.sheet .cell__checkboxes label.flexrow, .pbta.sheet .cell__radio label.flexrow {
   margin: 0 0 5px 0;
 }
 .pbta.sheet .window-content {
-  background-image: var(--masks-window-bg-image);
-  background-position: var(--masks-window-bg-position);
+  background-image: var(--masks-window-bg);
+  background-position: bottom left;
   background-repeat: repeat-x;
   background-size: auto;
 }
 .pbta.sheet .tox.tox-tinymce .tox-edit-area__iframe {
-  background: var(--masks-tox-edit-area-bg-color);
+  background: rgba(255, 255, 255, 0.5);
 }
 .pbta.sheet .sheet-header__fields {
   width: 100%;
@@ -202,6 +245,43 @@
 }
 .pbta.sheet .cell--influences .open .fas {
   transform: rotate(180deg);
+}
+.pbta.sheet .cell--influences .influence-name {
+  flex: 2;
+  display: flex;
+  gap: 2px;
+}
+.pbta.sheet .cell--influences input.influence--name {
+  width: calc(100% - 36px);
+  font-size: 18px;
+  text-align: left;
+  height: 32px;
+  margin: 0px 0px 8px 0px;
+}
+.pbta.sheet .cell--influences .influence-management {
+  margin: 0px 0px 8px 0px;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  flex: 1;
+}
+.pbta.sheet .cell--influences .influence-management .influence-disabled {
+  filter: var(--masks-influence-icon-disabled-color);
+}
+.pbta.sheet .cell--influences img.influence-icon {
+  flex: 1;
+  vertical-align: top;
+  border: 0;
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  filter: var(--masks-influence-icon-color);
+}
+.pbta.sheet .cell--influences .influence-management .influence-control.influence-delete, .pbta.sheet .cell--influences .influence-management .influence-control.influence-lock, .pbta.sheet .cell--influences .influence-management .influence-control.influence-unlock {
+  font-size: 32px;
+  flex: 1;
 }
 .pbta.sheet .editor-content {
   background: var(--masks-input-bg-color);
@@ -230,9 +310,8 @@
 }
 .pbta.sheet .sheet-wrapper .editor-content {
   background: var(--masks-input-bg-color);
-  color: var(--masks-secondary-text-color);
-  border: 0.5px solid var(--masks-input-border-color);
   color: var(--masks-input-text-color);
+  border: 0.5px solid var(--masks-input-border-color);
   min-height: 31px;
   padding: 0 10px;
 }
@@ -283,43 +362,6 @@
   display: block;
   width: 100%;
 }
-.pbta.sheet .cell--influences .influence-name {
-  flex: 2;
-  display: flex;
-  gap: 2px;
-}
-.pbta.sheet .cell--influences input.influence--name {
-  width: calc(100% - 36px);
-  font-size: 18px;
-  text-align: left;
-  height: 32px;
-  margin: 0px 0px 8px 0px;
-}
-.pbta.sheet .cell--influences .influence-management {
-  margin: 0px 0px 8px 0px;
-  display: flex;
-  flex-direction: row;
-  text-align: center;
-  flex: 1;
-}
-.pbta.sheet .cell--influences .influence-management .influence-disabled {
-  filter: var(--masks-influence-icon-disabled-color);
-}
-.pbta.sheet .cell--influences img.influence-icon {
-  flex: 1;
-  vertical-align: top;
-  border: 0;
-  height: 32px;
-  width: 32px;
-  padding: 0;
-  margin: 0;
-  border-radius: 0;
-  filter: var(--masks-influence-icon-color);
-}
-.pbta.sheet .cell--influences .influence-management .influence-control.influence-delete, .pbta.sheet .cell--influences .influence-management .influence-control.influence-lock, .pbta.sheet .cell--influences .influence-management .influence-control.influence-unlock {
-  font-size: 32px;
-  flex: 1;
-}
 .pbta.sheet .sheet-attributes {
   position: relative;
   padding-top: 8px;
@@ -327,31 +369,30 @@
   padding-right: 8px;
 }
 .pbta.sheet .sheet-attributes .cell--stats .stat {
-  background: var(--masks-interactive-bg-color);
-  color: var(--masks-primary-text-color);
+  background: var(--masks-interactive-bg);
+  color: var(--masks-text-primary);
 }
 .pbta.sheet .sheet-attributes .cell--stats .stat .cell__title {
-  color: var(--masks-primary-text-color);
+  color: var(--masks-text-primary);
 }
 .pbta.sheet .sheet-attributes .cell--stats .stat:hover {
-  background: var(--masks-interactive-bg-hover-color);
+  background: var(--masks-interactive-hover);
 }
 .pbta.sheet .sheet-attributes .cell--stats .stat .stat-value {
-  border: 1px solid var(--masks-stats-border-color);
+  border: 1px solid rgba(229, 222, 210, 0.37);
 }
 .pbta.sheet .bio_style {
   font-style: italic;
   position: relative;
   padding-left: 8px;
   border-bottom: none;
-  color: var(--masks-secondary-text-color);
+  color: var(--masks-text-dark);
   letter-spacing: 0.05rem;
   font-size: 22px;
   font-weight: normal;
   margin: 10px 10px 0px 0px;
 }
 .pbta.sheet .bio_style::before {
-  /* z-index: -1; */
   content: "";
   position: absolute;
   left: 7px;
@@ -362,7 +403,6 @@
   transform: skewX(-15deg);
 }
 .pbta.sheet .bio_style::after {
-  /* z-index: -1; */
   content: "";
   position: absolute;
   left: 0;
@@ -410,27 +450,27 @@
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   font-style: italic;
-  background-color: var(--masks-interactive-bg-color);
-  color: var(--masks-primary-text-color);
+  background-color: var(--masks-interactive-bg);
+  color: var(--masks-text-primary);
 }
 .pbta.sheet .sheet-tabs.tabs > a.item.active, .pbta.sheet .sheet-tabs.tabs > a.item.active:hover {
   background-color: var(--masks-tab-bg-active-color);
-  color: var(--masks-secondary-text-color);
+  color: var(--masks-text-dark);
 }
 .pbta.sheet .sheet-tabs.tabs > a.item:hover, .pbta.sheet .sheet-tabs.tabs > a.item:focus {
-  background-color: var(--masks-interactive-bg-hover-color);
-  color: var(--masks-primary-text-color);
+  background-color: var(--masks-interactive-hover);
+  color: var(--masks-text-primary);
   font-weight: bold;
 }
 .pbta.sheet .sheet-header__fields .view-playbook {
   background: var(--masks-tab-bg-active-color);
-  color: var(--masks-secondary-text-color);
+  color: var(--masks-text-dark);
   opacity: 1;
-  border: 0.5px solid var(--masks-interactive-bg-hover-color);
+  border: 0.5px solid var(--masks-interactive-hover);
 }
 .pbta.sheet .sheet-header__fields .view-playbook:hover {
   opacity: 1;
-  background: var(--masks-interactive-bg-hover-color);
+  background: var(--masks-interactive-hover);
 }
 .pbta.sheet .cell--theReformed input[type=checkbox] {
   margin: 3px 1px;
@@ -481,7 +521,9 @@
   align-items: center;
 }
 
-/** NPCs **/
+/* =============================================================================
+   NPC SHEETS
+   ============================================================================= */
 .pbta.sheet.npc .sheet-main [data-tab=equipment] {
   display: none;
 }
@@ -517,7 +559,9 @@
   height: 100% !important;
 }
 
-/** Items **/
+/* =============================================================================
+   ITEM SHEETS
+   ============================================================================= */
 .pbta.sheet.item.playbook {
   min-height: 600px;
   min-width: 800px;
@@ -539,7 +583,6 @@
   font-size: 22px;
 }
 .pbta.sheet .editor-content .playbook h2::before {
-  /* z-index: -1; */
   content: "";
   position: absolute;
   left: 7px;
@@ -550,7 +593,6 @@
   transform: skewX(-15deg);
 }
 .pbta.sheet .editor-content .playbook h2::after {
-  /* z-index: -1; */
   content: "";
   position: absolute;
   left: 0;
@@ -571,7 +613,6 @@
   font-weight: bold;
 }
 .pbta.sheet .editor-content .playbook .rules {
-  /* background-color: green; */
   display: flex;
   flex-flow: wrap;
   justify-content: space-between;
@@ -589,7 +630,9 @@
   margin-top: 30px;
 }
 
-/* Minimal, Foundry-aligned styling for the GM Whisper control */
+/* =============================================================================
+   X-CARD SAFETY TOOL
+   ============================================================================= */
 #xcard-btn-wrapper {
   display: inline-flex;
   align-items: center;
@@ -604,19 +647,16 @@
   background-color: var(--color-level-error);
 }
 
-/* A lightweight, inline HUD that sits wherever you mount it. */
+/* =============================================================================
+   TEAM POOL HUD (Standalone, outside combat)
+   ============================================================================= */
 #masks-team {
-  /* Make centering in wide containers easy */
   width: 100%;
   display: flex;
   justify-content: center;
-  /* Don't block clicks outside the panel */
   pointer-events: none;
   z-index: 100;
   margin: 0.25rem 0;
-  /* Interactive inner content */
-  /* The only styled element: the "Team" tag */
-  /* Keep native buttons; just a nudge to input width */
 }
 #masks-team .panel {
   pointer-events: auto;
@@ -627,13 +667,13 @@
   background: transparent;
   border: none;
   box-shadow: none;
-  color: var(--masks-primary-text-color, #fff);
+  color: var(--masks-text-primary);
 }
 #masks-team .tag {
   height: 100%;
   margin: 0;
-  color: var(--masks-primary-text-color, #fff);
-  background: var(--masks-interactive-bg-color, #3da7db);
+  color: var(--masks-text-primary);
+  background: var(--masks-interactive-bg);
   padding: 2px 8px;
   border-radius: 4px;
   font-weight: 700;
@@ -647,6 +687,9 @@
   text-align: center;
 }
 
+/* =============================================================================
+   SCENE CONTROLS - Influence Tools
+   ============================================================================= */
 #scene-controls-tools [data-tool=influenceGainOverThem] {
   background-color: #4CAF50;
 }
@@ -663,7 +706,7 @@
 #scene-controls-tools [data-tool=ongoingAdd],
 #scene-controls-tools [data-tool=forwardRemove],
 #scene-controls-tools [data-tool=ongoingRemove] {
-  background-color: var(--masks-interactive-bg-color, #3da7db);
+  background-color: var(--masks-interactive-bg);
 }
 
 .sheet .influence-management img[data-influence-action=hasInfluenceOver] {
@@ -676,11 +719,11 @@
   color: #F44336;
 }
 
-/* PbtA acted-this-round overlay for combat tracker */
+/* =============================================================================
+   COMBAT TRACKER OVERLAY
+   ============================================================================= */
 #combat li.combatant {
   position: relative;
-  /* Reveal on row hover */
-  /* Keep visible while keyboard focusing the control */
 }
 #combat li.combatant > .pbta-gone-toggle {
   position: absolute;
@@ -691,7 +734,6 @@
   transition: var(--ui-fade-delay);
   width: 55px;
   height: 55px;
-  /* line-height: 22px; */
   font-size: 65px;
   background-color: transparent;
   color: var(--color-level-success-bg);
@@ -703,9 +745,10 @@
   opacity: 0.4;
 }
 
-/* CUSTOMIZATIONS */
+/* =============================================================================
+   CHAT CUSTOMIZATIONS
+   ============================================================================= */
 #chat h4 {
-  /* color: red !important; */
   font-size: var(--font-size-13);
   line-height: 1.25;
   margin-bottom: 4px;
@@ -729,6 +772,10 @@
 
 .vtt #chat .message .shift.up {
   color: forestgreen;
+}
+
+.vtt #chat .message .shift.down {
+  color: #b00020;
 }
 
 .cell.look {
@@ -772,56 +819,20 @@
   display: none;
 }
 
-/* Chat accents used by Turn Card "Use Influence" messages */
-.vtt #chat .message .shift.up {
-  color: forestgreen;
-}
-
-.vtt #chat .message .shift.down {
-  color: #b00020;
-}
-
-/* ------------------------------------------------------------------------- */
-/* Turn Cards HUD                                                            */
-/* Complete rewrite with right-to-left cooldown bars and smooth animations   */
-/* ------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------- */
-/* Turn Cards HUD                                                            */
-/* Right-to-left cooldown burn-down + smooth drain transitions               */
-/* ------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------- */
-/* Turn Cards HUD                                                            */
-/* ------------------------------------------------------------------------- */
+/* =============================================================================
+   TURN CARDS HUD - Blue Theme (matches character sheet)
+   ============================================================================= */
 #masks-turncards {
   /* Layout */
   --tc-max-cols: 8;
   --tc-gap: 8px;
-  /* Sizing (slightly smaller than before, still responsive) */
   --tc-card-width: clamp(104px, 7.8vw, 130px);
   --tc-card-aspect: 3 / 4;
-  /* Do NOT change button sizes */
   --tc-control-size: 28px;
   --tc-forward-size: 24px;
   --tc-nameplate-height: 32px;
   --tc-status-bar-height: 26px;
   --tc-portrait-pad: 3px;
-  /* Theme colors */
-  --tc-border-outer: var(--masks-turncards-pentagon-color, #37372b);
-  --tc-border-inner: var(--masks-turncards-card-base, #bda78a);
-  --tc-frame-bg: var(--masks-turncards-secondary-bg, #ead0b0);
-  --tc-nameplate-bg: var(--masks-turncards-card-base, #bda78a);
-  --tc-hover-inner: var(--masks-turncards-active-bg, #d1a06e);
-  --tc-action-bg: var(--masks-turncards-action-bg, #69c0ae);
-  --tc-cooldown-bar-bg: var(--masks-turncards-cooldown-bar, #2ab6cb);
-  --tc-cooldown-label-bg: rgba(0, 0, 0, 0.72);
-  --tc-downed-bg: rgba(104, 59, 71, 0.92);
-  /* --tc-downed-bg: rgba(104, 59, 71, 0.92); */
-  --tc-potential-fill: var(--masks-turncards-potential-fill-color, #e7a345);
-  --tc-forward-bg: #3f8aa0;
-  --tc-cooldown-opacity: var(--masks-turncards-cooldown-opacity, 0.75);
-  --tc-downed-opacity: 0.45;
-  /* Bottom-right notch shading on nameplates */
-  --tc-notch: rgba(0, 0, 0, 0.12);
   /* Motion */
   --tc-transition-fast: 150ms ease-out;
   --tc-transition-smooth: 400ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -830,24 +841,19 @@
   pointer-events: none;
   z-index: 101;
   padding: 0;
-  /* --- Status bar (always present) -------------------------------------- */
-  /* Cooldown drains RIGHT → LEFT (anchored left, width shrinks) */
-  /* --- Action overlay ---------------------------------------------------- */
-  /* --- Nameplate + notch ------------------------------------------------- */
-  /* --- Corner controls --------------------------------------------------- */
-  /* Labels Graph - Pentagon visualization button */
-  /* --- Team card internals ---------------------------------------------- */
+  /* --- Status Bar --- */
+  /* --- Action Overlay --- */
+  /* --- Nameplate --- */
+  /* --- Corner Controls --- */
+  /* --- Team Card Internals --- */
 }
 #masks-turncards .turncards-row {
   pointer-events: auto;
   display: flex;
-  /* Wrap upward so the “main” row stays aligned to the bottom */
   flex-wrap: wrap-reverse;
   gap: var(--tc-gap);
   justify-content: center;
-  /* Bottom-align cards within each line */
   align-items: flex-end;
-  /* Width-cap to 8 cards max per row */
   width: 100%;
   max-width: calc((var(--tc-card-width) + var(--tc-gap)) * 8 - var(--tc-gap));
   margin: 0 auto;
@@ -861,7 +867,6 @@
   position: relative;
   border-radius: 1px;
   background: var(--tc-frame-bg);
-  /* Outer dark border + inner tan border (matches reference framing) */
   border: 2px solid var(--tc-border-outer);
   box-shadow: 0 0 0 2px var(--tc-border-inner) inset, 0 2px 10px rgba(0, 0, 0, 0.35);
   overflow: hidden;
@@ -914,7 +919,6 @@
   height: 100%;
   object-fit: cover;
   object-position: top center;
-  /* Inner portrait frame line */
   border: 2px solid rgba(0, 0, 0, 0.75);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35) inset;
   transition: filter var(--tc-transition-smooth);
@@ -924,9 +928,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* padding: 6px; */
   padding: 2px;
-  background: linear-gradient(180deg, #6b5b95 0%, #4a3f6b 100%);
+  background: linear-gradient(180deg, var(--masks-blue-medium) 0%, var(--masks-blue-dark) 100%);
 }
 #masks-turncards .turncard__status-bar {
   position: absolute;
@@ -955,7 +958,7 @@
   bottom: 0;
   left: 0;
   width: calc(var(--cooldown-frac, 0) * 100%);
-  background: var(--tc-cooldown-bar-bg);
+  background: var(--tc-cooldown-bar);
   opacity: 0.7;
   transition: width var(--tc-transition-bar);
   z-index: 1;
@@ -1047,7 +1050,7 @@
   font-weight: 900;
   font-size: 1rem;
   letter-spacing: 0.03em;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--masks-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1103,28 +1106,19 @@
   border: 1px solid rgba(255, 255, 255, 0.85);
 }
 #masks-turncards .turncard__labels-graph {
-  /* Override circular shape - use pentagon clip-path */
   border-radius: 0;
   clip-path: polygon(50% 0%, 100% 38%, 81% 100%, 19% 100%, 0% 38%);
-  /* Position tightly in corner */
   left: 2px;
   bottom: 2px;
-  /* 40x40px size */
   width: 40px;
   height: 40px;
-  /* Higher z-index than Forward button */
   z-index: 6;
-  /* Remove default background/border since SVG handles it */
   background: transparent;
   border: none;
-  /* Center the SVG */
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* SVG fills the button */
-  /* Hover/active states */
-  /* Disabled state - keep full opacity but indicate non-interactive */
 }
 #masks-turncards .turncard__labels-graph .labels-graph-svg {
   width: 100%;
@@ -1173,7 +1167,7 @@
   bottom: 6px;
   width: var(--tc-control-size);
   height: var(--tc-control-size);
-  background: rgba(55, 55, 43, 0.75);
+  background: var(--tc-pentagon-color);
   border: 1px solid rgba(255, 255, 255, 0.92);
   overflow: hidden;
 }
@@ -1223,7 +1217,6 @@
 #masks-turncards .turncard__team-controls {
   display: flex;
   gap: 2px;
-  /* lets it remain responsive at smaller widths without changing btn sizes */
   flex-wrap: nowrap;
   justify-content: space-evenly;
 }
@@ -1280,48 +1273,9 @@
     height: calc(var(--tc-card-width) * 4 / 3);
   }
 }
-/* =========================================================================== */
-/* MASKS SHEET V2 - Redesigned Character Sheet                                 */
-/* =========================================================================== */
-:root {
-  /* Layout */
-  --masks-v2-sheet-min-width: 900px;
-  --masks-v2-left-panel-width: 280px;
-  --masks-v2-sidebar-width: 220px;
-  --masks-v2-corner-radius: 2px;
-  --masks-v2-transition-speed: 150ms;
-  --masks-v2-transition-smooth: 300ms;
-  /* Label Colors */
-  --masks-danger-color: #e05252;
-  --masks-danger-color-light: rgba(224, 82, 82, 0.15);
-  --masks-freak-color: #9b59b6;
-  --masks-freak-color-light: rgba(155, 89, 182, 0.15);
-  --masks-savior-color: #3498db;
-  --masks-savior-color-light: rgba(52, 152, 219, 0.15);
-  --masks-superior-color: #f39c12;
-  --masks-superior-color-light: rgba(243, 156, 18, 0.15);
-  --masks-mundane-color: #27ae60;
-  --masks-mundane-color-light: rgba(39, 174, 96, 0.15);
-  /* Condition Colors (matching affected labels) */
-  --masks-afraid-color: var(--masks-danger-color);
-  --masks-angry-color: var(--masks-mundane-color);
-  --masks-guilty-color: var(--masks-superior-color);
-  --masks-hopeless-color: var(--masks-freak-color);
-  --masks-insecure-color: var(--masks-savior-color);
-  /* V2 Theme */
-  --masks-v2-panel-bg: rgba(20, 30, 45, 0.95);
-  --masks-v2-sidebar-bg: rgba(30, 40, 55, 0.92);
-  --masks-v2-tab-bg: rgba(40, 50, 65, 0.9);
-  --masks-v2-tab-active-bg: rgba(60, 75, 95, 0.95);
-  --masks-v2-text-primary: #ffffff;
-  --masks-v2-text-secondary: rgba(255, 255, 255, 0.75);
-  --masks-v2-text-muted: rgba(255, 255, 255, 0.5);
-  --masks-v2-border-color: rgba(255, 255, 255, 0.15);
-  --masks-v2-border-accent: rgba(61, 167, 219, 0.5);
-  --masks-v2-input-bg: rgba(0, 0, 0, 0.3);
-  --masks-v2-accent-color: #3da7db;
-}
-
+/* =============================================================================
+   MASKS SHEET V2 - Modern Character Sheet Layout
+   ============================================================================= */
 /* Main Sheet Container */
 .pbta.sheet.actor .masks-sheet-v2 {
   background: transparent;
@@ -1329,35 +1283,32 @@
 
 .masks-sheet-v2 .masks-sheet {
   display: grid;
-  grid-template-columns: var(--masks-v2-left-panel-width) 1fr;
+  grid-template-columns: 280px 1fr;
   height: 100%;
   min-height: 600px;
   gap: 0;
-  background: var(--masks-v2-panel-bg);
-  border-radius: var(--masks-v2-corner-radius);
+  background: var(--masks-bg-panel);
+  border-radius: var(--masks-corner-radius);
   overflow: hidden;
 }
 
-/* =========================================================================== */
-/* LEFT PANEL - Portrait, Identity, Conditions                                  */
-/* =========================================================================== */
+/* --- Left Panel --- */
 .masks-sheet-v2 .masks-left-panel {
   display: flex;
   flex-direction: column;
   background: linear-gradient(180deg, rgba(20, 30, 45, 0.98) 0%, rgba(15, 25, 40, 0.98) 100%);
-  border-right: 1px solid var(--masks-v2-border-color);
+  border-right: 1px solid var(--masks-border-color);
   padding: 16px;
   gap: 16px;
 }
 
-/* Character Portrait */
 .masks-sheet-v2 .character-portrait {
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  border-radius: var(--masks-v2-corner-radius);
+  border-radius: var(--masks-corner-radius);
   overflow: hidden;
-  border: 2px solid var(--masks-v2-border-accent);
+  border: 2px solid var(--masks-border-accent);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 .masks-sheet-v2 .character-portrait .profile-img {
@@ -1366,13 +1317,12 @@
   object-fit: cover;
   object-position: top center;
   cursor: pointer;
-  transition: transform var(--masks-v2-transition-smooth) ease;
+  transition: transform var(--masks-transition-smooth);
 }
 .masks-sheet-v2 .character-portrait .profile-img:hover {
   transform: scale(1.02);
 }
 
-/* Character Identity */
 .masks-sheet-v2 .character-identity {
   display: flex;
   flex-direction: column;
@@ -1383,67 +1333,65 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-primary);
+  color: var(--masks-text-primary);
   background: transparent;
   border: none;
-  border-bottom: 2px solid var(--masks-v2-border-accent);
+  border-bottom: 2px solid var(--masks-border-accent);
   padding: 4px 0;
   width: 100%;
 }
 .masks-sheet-v2 .character-identity .character-name::placeholder {
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
 }
 .masks-sheet-v2 .character-identity .character-name:focus {
   outline: none;
-  border-bottom-color: var(--masks-v2-accent-color);
+  border-bottom-color: var(--masks-accent);
 }
 .masks-sheet-v2 .character-identity .character-real-name {
   font-size: 1rem;
   font-style: italic;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--masks-v2-border-color);
+  border-bottom: 1px solid var(--masks-border-color);
   padding: 4px 0;
   width: 100%;
 }
 .masks-sheet-v2 .character-identity .character-real-name::placeholder {
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   font-style: italic;
 }
 .masks-sheet-v2 .character-identity .character-real-name:focus {
   outline: none;
-  border-bottom-color: var(--masks-v2-accent-color);
+  border-bottom-color: var(--masks-accent);
 }
 .masks-sheet-v2 .character-identity .playbook-row {
   display: flex;
   gap: 8px;
   align-items: center;
   margin-top: 4px;
-  min-width: 0; /* Allow flex items to shrink */
-  /* Playbook select - use .charplaybook class (PbtA standard) */
+  min-width: 0;
 }
 .masks-sheet-v2 .character-identity .playbook-row .charplaybook {
   flex: 1;
-  min-width: 0; /* Fix overflow */
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  min-width: 0;
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 8px 10px;
   font-size: 0.9rem;
   cursor: pointer;
-  /* Ensure full playbook name is visible */
   height: auto;
   min-height: 36px;
 }
 .masks-sheet-v2 .character-identity .playbook-row .charplaybook:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .character-identity .playbook-row .charplaybook option {
-  background: var(--masks-v2-panel-bg);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-panel);
+  color: var(--masks-text-primary);
   padding: 8px;
 }
 .masks-sheet-v2 .character-identity .playbook-row .playbook-link {
@@ -1453,34 +1401,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-muted);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-muted);
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .character-identity .playbook-row .playbook-link:hover {
-  background: var(--masks-v2-accent-color);
-  color: var(--masks-v2-text-primary);
-  border-color: var(--masks-v2-accent-color);
+  background: var(--masks-accent);
+  color: var(--masks-text-primary);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .character-identity .playbook-row .playbook-link.active {
-  color: var(--masks-v2-accent-color);
+  color: var(--masks-accent);
 }
 
-/* =========================================================================== */
-/* CONDITIONS PANEL                                                             */
-/* =========================================================================== */
-.masks-sheet-v2 .conditions-panel {
-  /* No margin-top: auto - conditions appear directly under character identity */
-}
+/* --- Conditions Panel --- */
 .masks-sheet-v2 .conditions-panel .conditions-title {
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   margin-bottom: 8px;
 }
 .masks-sheet-v2 .conditions-panel .conditions-grid {
@@ -1493,23 +1436,18 @@
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-secondary);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-secondary);
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
-  /* Condition colors when active - match the LABEL they affect */
-  /* Afraid affects Danger (red) */
-  /* Angry affects Mundane (green) */
-  /* Guilty affects Superior (gold) */
-  /* Hopeless affects Freak (purple) */
-  /* Insecure affects Savior (blue) */
-  /* Inactive state with color hint - match the LABEL they affect */
+  transition: all var(--masks-transition-fast);
+  /* Active condition colors match affected labels */
+  /* Inactive state with color hint */
 }
 .masks-sheet-v2 .conditions-panel .condition-tag i {
   font-size: 0.75rem;
@@ -1559,18 +1497,15 @@
   border-left: 3px solid var(--masks-savior-color);
 }
 
-/* =========================================================================== */
-/* RIGHT SECTION - Tabs + Sidebar                                               */
-/* =========================================================================== */
+/* --- Right Section --- */
 .masks-sheet-v2 .masks-sheet__right {
   display: grid;
-  grid-template-columns: 1fr var(--masks-v2-sidebar-width);
+  grid-template-columns: 1fr 220px;
   height: 100%;
   overflow: hidden;
   position: relative;
 }
 
-/* Tabs Container */
 .masks-sheet-v2 .tabs-container {
   display: flex;
   flex-direction: column;
@@ -1578,12 +1513,11 @@
   overflow: hidden;
 }
 
-/* Tab Navigation */
 .masks-sheet-v2 .sheet-tabs.tabs {
   display: flex;
   gap: 2px;
   padding: 8px 12px 0;
-  background: var(--masks-v2-tab-bg);
+  background: var(--masks-bg-tab);
   border-bottom: none;
 }
 .masks-sheet-v2 .sheet-tabs.tabs .tab-btn {
@@ -1593,36 +1527,34 @@
   padding: 10px 16px;
   background: transparent;
   border: none;
-  border-radius: var(--masks-v2-corner-radius) var(--masks-v2-corner-radius) 0 0;
-  color: var(--masks-v2-text-muted);
+  border-radius: var(--masks-corner-radius) var(--masks-corner-radius) 0 0;
+  color: var(--masks-text-muted);
   font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .sheet-tabs.tabs .tab-btn i {
   font-size: 0.9rem;
 }
 .masks-sheet-v2 .sheet-tabs.tabs .tab-btn:hover {
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   background: rgba(255, 255, 255, 0.05);
 }
 .masks-sheet-v2 .sheet-tabs.tabs .tab-btn.active {
-  color: var(--masks-v2-text-primary);
-  background: var(--masks-v2-tab-active-bg);
+  color: var(--masks-text-primary);
+  background: var(--masks-bg-tab-active);
 }
 
-/* Tab Content */
 .masks-sheet-v2 .tab-content {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  background: var(--masks-v2-tab-active-bg);
+  background: var(--masks-bg-tab-active);
   padding: 16px;
   scroll-behavior: smooth;
-  /* Prevent scroll position reset on re-render */
   overscroll-behavior: contain;
 }
 .masks-sheet-v2 .tab-content .tab {
@@ -1637,7 +1569,7 @@
   gap: 16px;
 }
 
-/* Section Styling - Clean headers without underlines */
+/* --- Section Titles (V2) --- */
 .masks-sheet-v2 .section-title,
 .masks-sheet-v2 .sidebar-title,
 .masks-sheet-v2 .subsection-title {
@@ -1646,12 +1578,10 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   margin-bottom: 8px;
-  /* Clean style - no underlines */
 }
 
-/* Feature labels (like "Doom Track") - slightly more prominent */
 .masks-sheet-v2 .feature-label,
 .masks-sheet-v2 .cell__title {
   display: block;
@@ -1659,9 +1589,8 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   margin-bottom: 8px;
-  /* Override old decorative styles */
   font-style: normal;
   position: relative;
   padding-left: 0;
@@ -1675,30 +1604,27 @@
 
 .masks-sheet-v2 .section-description {
   font-size: 0.85rem;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   font-style: italic;
   margin-bottom: 8px;
 }
 
-/* Editor Styling */
 .masks-sheet-v2 .editor {
   min-height: 100px;
 }
 .masks-sheet-v2 .editor .editor-content {
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 8px;
   min-height: 80px;
 }
 
-/* =========================================================================== */
-/* STATS SIDEBAR                                                                */
-/* =========================================================================== */
+/* --- Stats Sidebar --- */
 .masks-sheet-v2 .stats-sidebar {
-  background: var(--masks-v2-sidebar-bg);
-  border-left: 1px solid var(--masks-v2-border-color);
+  background: var(--masks-bg-sidebar);
+  border-left: 1px solid var(--masks-border-color);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -1706,17 +1632,12 @@
   overflow-y: auto;
 }
 
-/* Labels Section */
-.masks-sheet-v2 .labels-section {
-  /* Two-row label layout: Row 1: Icon | Name | Lock, Row 2: - | Value | + */
-  /* Remove old nested structures - now single row */
-}
 .masks-sheet-v2 .labels-section .labels-graph-clickable {
   display: flex;
   justify-content: center;
   margin-bottom: 12px;
   cursor: pointer;
-  transition: transform var(--masks-v2-transition-speed) ease;
+  transition: transform var(--masks-transition-fast);
 }
 .masks-sheet-v2 .labels-section .labels-graph-clickable:hover {
   transform: scale(1.05);
@@ -1724,8 +1645,6 @@
 .masks-sheet-v2 .labels-section .labels-graph-clickable .labels-graph-svg {
   width: 100px;
   height: 100px;
-  /* Animate the data polygon path */
-  /* Pulse animation when graph updates */
 }
 .masks-sheet-v2 .labels-section .labels-graph-clickable .labels-graph-svg path:last-of-type {
   transition: fill 0.3s ease, stroke 0.3s ease, d 0.3s ease;
@@ -1753,13 +1672,12 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
   padding: 6px 8px;
-  transition: all var(--masks-v2-transition-speed) ease;
-  /* Label-specific colors */
-  /* Label shift animations */
+  transition: all var(--masks-transition-fast);
+  /* Label colors */
 }
 .masks-sheet-v2 .labels-section .label-row:hover {
   background: rgba(255, 255, 255, 0.05);
@@ -1823,7 +1741,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--masks-v2-text-primary);
+  color: var(--masks-text-primary);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1836,16 +1754,16 @@
   padding: 0;
   background: transparent;
   border: none;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   cursor: pointer;
   font-size: 0.65rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color var(--masks-v2-transition-speed) ease;
+  transition: color var(--masks-transition-fast);
 }
 .masks-sheet-v2 .labels-section .label-row .label-lock:hover {
-  color: var(--masks-v2-text-primary);
+  color: var(--masks-text-primary);
 }
 .masks-sheet-v2 .labels-section .label-row .label-btn {
   flex-shrink: 0;
@@ -1855,14 +1773,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-secondary);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-secondary);
   cursor: pointer;
   font-size: 0.65rem;
   line-height: 1;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .labels-section .label-row .label-btn i {
   display: flex;
@@ -1872,9 +1790,9 @@
   height: 100%;
 }
 .masks-sheet-v2 .labels-section .label-row .label-btn:hover:not(:disabled) {
-  background: var(--masks-v2-accent-color);
+  background: var(--masks-accent);
   color: white;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .labels-section .label-row .label-btn:disabled {
   opacity: 0.3;
@@ -1886,13 +1804,11 @@
   text-align: center;
   background: transparent;
   border: none;
-  color: var(--masks-v2-text-primary);
+  color: var(--masks-text-primary);
   font-size: 1rem;
   font-weight: 700;
   transition: transform 0.2s ease, color 0.2s ease;
-  /* Hide spinner buttons */
   -moz-appearance: textfield;
-  /* Animation when value changes */
 }
 .masks-sheet-v2 .labels-section .label-row .label-value:focus {
   outline: none;
@@ -1910,7 +1826,7 @@
 @keyframes label-shift-up {
   0% {
     transform: scale(1);
-    color: var(--masks-v2-text-primary);
+    color: var(--masks-text-primary);
   }
   50% {
     transform: scale(1.3);
@@ -1918,13 +1834,13 @@
   }
   100% {
     transform: scale(1);
-    color: var(--masks-v2-text-primary);
+    color: var(--masks-text-primary);
   }
 }
 @keyframes label-shift-down {
   0% {
     transform: scale(1);
-    color: var(--masks-v2-text-primary);
+    color: var(--masks-text-primary);
   }
   50% {
     transform: scale(1.3);
@@ -1932,15 +1848,14 @@
   }
   100% {
     transform: scale(1);
-    color: var(--masks-v2-text-primary);
+    color: var(--masks-text-primary);
   }
 }
-.masks-sheet-v2 .labels-section .label-header,
-.masks-sheet-v2 .labels-section .label-controls {
+.masks-sheet-v2 .labels-section .label-header, .masks-sheet-v2 .labels-section .label-controls {
   display: contents;
 }
 
-/* Potential Section */
+/* --- Potential Section --- */
 .masks-sheet-v2 .potential-section .potential-tracker {
   display: flex;
   flex-direction: column;
@@ -1955,51 +1870,44 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--masks-v2-input-bg);
-  border: 2px solid var(--masks-v2-border-color);
+  background: var(--masks-bg-input);
+  border: 2px solid var(--masks-border-color);
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .potential-section .potential-pips .potential-pip:hover {
-  border-color: var(--masks-turncards-potential-fill-color);
+  border-color: var(--masks-gold-dark);
   transform: scale(1.1);
 }
 .masks-sheet-v2 .potential-section .potential-pips .potential-pip.filled {
-  background: var(--masks-turncards-potential-fill-color);
-  border-color: var(--masks-turncards-potential-fill-color);
+  background: var(--masks-gold-dark);
+  border-color: var(--masks-gold-dark);
 }
 .masks-sheet-v2 .potential-section .potential-count {
   font-size: 0.75rem;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
 }
 
-/* Advantages Section (Forward/Ongoing grouped) - Compact like Labels */
+/* --- Advantages Section --- */
 .masks-sheet-v2 .advantages-section {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  overflow: hidden; /* Prevent overflow */
+  overflow: hidden;
 }
 .masks-sheet-v2 .advantages-section .sidebar-title {
   margin-bottom: 4px;
 }
 
-/* Modifier Sections (Forward/Ongoing) - Styled like label-row */
-.masks-sheet-v2 .modifier-section {
-  /* Top row: Icon | Name */
-  /* Bottom row: - | Value | + */
-  /* Forward - green accent */
-  /* Ongoing - blue accent */
-}
 .masks-sheet-v2 .modifier-section .modifier-row {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
   padding: 6px 8px;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .modifier-section .modifier-row:hover {
   background: rgba(255, 255, 255, 0.05);
@@ -2014,7 +1922,7 @@
   width: 16px;
   text-align: center;
   flex-shrink: 0;
-  color: var(--masks-v2-accent-color);
+  color: var(--masks-accent);
 }
 .masks-sheet-v2 .modifier-section .modifier-label {
   flex: 1;
@@ -2022,7 +1930,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--masks-v2-text-primary);
+  color: var(--masks-text-primary);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2042,14 +1950,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-secondary);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-secondary);
   cursor: pointer;
   font-size: 0.65rem;
   line-height: 1;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .modifier-section .modifier-controls .modifier-btn i {
   display: flex;
@@ -2059,9 +1967,9 @@
   height: 100%;
 }
 .masks-sheet-v2 .modifier-section .modifier-controls .modifier-btn:hover:not(:disabled) {
-  background: var(--masks-v2-accent-color);
+  background: var(--masks-accent);
   color: white;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .modifier-section .modifier-controls .modifier-value {
   flex-shrink: 0;
@@ -2069,7 +1977,7 @@
   text-align: center;
   background: transparent;
   border: none;
-  color: var(--masks-v2-text-primary);
+  color: var(--masks-text-primary);
   font-size: 1rem;
   font-weight: 700;
   -moz-appearance: textfield;
@@ -2094,7 +2002,7 @@
   color: #2196F3;
 }
 
-/* Playbook Attributes Section */
+/* --- Playbook Attributes Section --- */
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr {
   margin-bottom: 12px;
 }
@@ -2104,7 +2012,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   margin-bottom: 4px;
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-pips {
@@ -2116,10 +2024,10 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--masks-v2-input-bg);
-  border: 2px solid var(--masks-v2-border-color);
+  background: var(--masks-bg-input);
+  border: 2px solid var(--masks-border-color);
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-pips .clock-pip:hover {
   border-color: var(--masks-danger-color);
@@ -2140,44 +2048,44 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-secondary);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-secondary);
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .number-controls .attr-btn:hover {
-  background: var(--masks-v2-accent-color);
+  background: var(--masks-accent);
   color: white;
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .number-controls input {
   width: 50px;
   text-align: center;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   font-weight: 600;
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .number-controls input:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr textarea {
   width: 100%;
   min-height: 60px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 6px;
   font-size: 0.8rem;
   resize: vertical;
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr textarea:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-checklist {
   list-style: none;
@@ -2192,29 +2100,27 @@
   align-items: center;
   gap: 6px;
   font-size: 0.8rem;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   cursor: pointer;
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-checklist li label input[type=checkbox] {
-  accent-color: var(--masks-v2-accent-color);
+  accent-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-checklist li label input[type=text] {
   flex: 1;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 2px 6px;
   font-size: 0.8rem;
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-checklist li label input[type=text]:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 
-/* =========================================================================== */
-/* INFO TAB                                                                     */
-/* =========================================================================== */
+/* --- Info Tab --- */
 .masks-sheet-v2 .info-tab .info-section {
   margin-bottom: 16px;
 }
@@ -2239,12 +2145,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--masks-v2-accent-color);
+  background: var(--masks-accent);
   border: none;
-  border-radius: var(--masks-v2-corner-radius);
+  border-radius: var(--masks-corner-radius);
   color: white;
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .info-tab .section-header .influence-create:hover {
   transform: scale(1.1);
@@ -2263,15 +2169,14 @@
   align-items: center;
   gap: 8px;
   padding: 8px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  transition: opacity var(--masks-v2-transition-speed) ease;
-  /* Locked state */
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  transition: opacity var(--masks-transition-fast);
 }
 .masks-sheet-v2 .info-tab .influence-item.locked {
   opacity: 0.7;
-  border-left: 3px solid var(--masks-v2-accent-color);
+  border-left: 3px solid var(--masks-accent);
 }
 .masks-sheet-v2 .info-tab .influence-item.locked .influence-name-input {
   cursor: default;
@@ -2284,13 +2189,13 @@
   background: transparent;
   border: none;
   border-bottom: 1px solid transparent;
-  color: var(--masks-v2-text-primary);
+  color: var(--masks-text-primary);
   font-size: 0.9rem;
   padding: 2px 0;
 }
 .masks-sheet-v2 .info-tab .influence-item .influence-name-row .influence-name-input:focus {
   outline: none;
-  border-bottom-color: var(--masks-v2-accent-color);
+  border-bottom-color: var(--masks-accent);
 }
 .masks-sheet-v2 .info-tab .influence-item .influence-name-row .influence-name-input[readonly] {
   cursor: default;
@@ -2308,14 +2213,14 @@
   justify-content: center;
   flex-direction: column;
   gap: 2px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-muted);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-muted);
   cursor: pointer;
   font-size: 0.55rem;
   line-height: 1;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .info-tab .influence-item .influence-controls .influence-btn i {
   display: flex;
@@ -2327,14 +2232,14 @@
   display: none;
 }
 .masks-sheet-v2 .info-tab .influence-item .influence-controls .influence-btn:hover:not(:disabled) {
-  background: var(--masks-v2-accent-color);
+  background: var(--masks-accent);
   color: white;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .info-tab .influence-item .influence-controls .influence-btn.active {
-  background: var(--masks-v2-accent-color);
+  background: var(--masks-accent);
   color: white;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .info-tab .influence-item .influence-controls .influence-btn:disabled {
   opacity: 0.4;
@@ -2346,23 +2251,21 @@
 }
 .masks-sheet-v2 .info-tab .no-influences {
   font-size: 0.85rem;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   font-style: italic;
   text-align: center;
   padding: 16px;
 }
 
-/* =========================================================================== */
-/* POWERS TAB                                                                   */
-/* =========================================================================== */
+/* --- Powers Tab --- */
 .masks-sheet-v2 .powers-tab .powers-modifiers {
   display: flex;
   gap: 16px;
   margin-bottom: 16px;
   padding: 12px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
 }
 .masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field {
   display: flex;
@@ -2374,21 +2277,21 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   white-space: nowrap;
 }
 .masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field input[type=text] {
   width: 80px;
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 4px 8px;
   font-size: 0.85rem;
 }
 .masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field input[type=text]:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field .modifier-stepper {
   display: flex;
@@ -2402,30 +2305,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-secondary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-secondary);
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field .modifier-stepper button:hover {
-  background: var(--masks-v2-accent-color);
+  background: var(--masks-accent);
   color: white;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field .modifier-stepper input {
   width: 40px;
   text-align: center;
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   font-weight: 600;
 }
 .masks-sheet-v2 .powers-tab .powers-modifiers .modifier-field .modifier-stepper input:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .powers-tab .moves-container {
   display: flex;
@@ -2433,9 +2336,9 @@
   gap: 12px;
 }
 .masks-sheet-v2 .powers-tab .moves-group {
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
   overflow: hidden;
 }
 .masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-list-wrapper {
@@ -2446,7 +2349,7 @@
   transform: rotate(180deg);
 }
 .masks-sheet-v2 .powers-tab .moves-list-wrapper {
-  max-height: 2000px; /* Large enough to fit any list */
+  max-height: 2000px;
   opacity: 1;
   overflow: hidden;
   transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
@@ -2458,9 +2361,8 @@
   padding: 8px 12px;
   background: transparent;
   cursor: pointer;
-  transition: background var(--masks-v2-transition-speed) ease;
-  border-bottom: 1px solid var(--masks-v2-border-color);
-  /* Match feature-label style */
+  transition: background var(--masks-transition-fast);
+  border-bottom: 1px solid var(--masks-border-color);
 }
 .masks-sheet-v2 .powers-tab .moves-group-header:hover {
   background: rgba(255, 255, 255, 0.03);
@@ -2475,14 +2377,14 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
 }
 .masks-sheet-v2 .powers-tab .moves-group-header .moves-group-title i {
-  color: var(--masks-v2-accent-color);
+  color: var(--masks-accent);
   font-size: 0.85rem;
 }
 .masks-sheet-v2 .powers-tab .moves-group-header .moves-collapse-icon {
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
 }
 .masks-sheet-v2 .powers-tab .moves-group-header .moves-collapse-icon i {
   font-size: 0.7rem;
@@ -2496,23 +2398,22 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-muted);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-muted);
   cursor: pointer;
   font-size: 0.65rem;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .powers-tab .moves-group-header .moves-add-btn:hover {
-  background: var(--masks-v2-accent-color);
-  border-color: var(--masks-v2-accent-color);
+  background: var(--masks-accent);
+  border-color: var(--masks-accent);
   color: white;
 }
 .masks-sheet-v2 .powers-tab .moves-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  /* Use grid for smooth height animation */
   display: grid;
   grid-template-rows: 1fr;
   opacity: 1;
@@ -2522,16 +2423,14 @@
   overflow: hidden;
 }
 .masks-sheet-v2 .powers-tab .move-item {
-  border-top: 1px solid var(--masks-v2-border-color);
+  border-top: 1px solid var(--masks-border-color);
 }
 .masks-sheet-v2 .powers-tab .move-item:first-child {
   border-top: none;
 }
 .masks-sheet-v2 .powers-tab .move-content {
   padding: 10px 12px;
-  /* Color-code moves by rollType */
-  /* Hover state - brighten move row for rollable moves */
-  /* Highlight moves with rolls */
+  /* Move roll type colors */
 }
 .masks-sheet-v2 .powers-tab .move-content .move-header {
   display: flex;
@@ -2542,37 +2441,130 @@
   flex-shrink: 0;
   width: 28px;
   height: 28px;
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  background: var(--masks-v2-input-bg);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  background: var(--masks-bg-input);
   object-fit: cover;
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
-  /* Rollable moves - dice hover effect */
-  /* Non-rollable moves - share/chat hover effect */
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .powers-tab .move-content .move-header .move-icon:hover {
   transform: scale(1.1);
   box-shadow: 0 2px 8px rgba(61, 167, 219, 0.3);
 }
 .masks-sheet-v2 .powers-tab .move-content .move-header .move-icon.rollable:hover {
-  border-color: var(--masks-v2-accent-color);
-  background: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
+  background: var(--masks-accent);
 }
 .masks-sheet-v2 .powers-tab .move-content .move-header .move-icon:not(.rollable):hover {
-  border-color: var(--masks-mundane-color, #7fdbff);
-  background: var(--masks-mundane-color, #7fdbff);
+  border-color: var(--masks-mundane-color);
+  background: var(--masks-mundane-color);
 }
 .masks-sheet-v2 .powers-tab .move-content .move-header .move-name {
   flex: 1;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--masks-v2-text-primary);
+  color: var(--masks-text-primary);
   cursor: pointer;
-  transition: color var(--masks-v2-transition-speed) ease;
+  transition: color var(--masks-transition-fast);
 }
 .masks-sheet-v2 .powers-tab .move-content .move-header .move-name:hover {
   text-decoration: underline;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--masks-corner-radius);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--masks-text-secondary);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag i {
+  font-size: 0.7rem;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag.label-danger {
+  background: var(--masks-danger-bg);
+  color: var(--masks-danger-color);
+  border: 1px solid var(--masks-danger-color);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag.label-freak {
+  background: var(--masks-freak-bg);
+  color: var(--masks-freak-color);
+  border: 1px solid var(--masks-freak-color);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag.label-savior {
+  background: var(--masks-savior-bg);
+  color: var(--masks-savior-color);
+  border: 1px solid var(--masks-savior-color);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag.label-superior {
+  background: var(--masks-superior-bg);
+  color: var(--masks-superior-color);
+  border: 1px solid var(--masks-superior-color);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag.label-mundane {
+  background: var(--masks-mundane-bg);
+  color: var(--masks-mundane-color);
+  border: 1px solid var(--masks-mundane-color);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: 4px;
+  opacity: 0.5;
+  transition: opacity var(--masks-transition-fast);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-muted);
+  cursor: pointer;
+  font-size: 0.7rem;
+  line-height: 1;
+  transition: all var(--masks-transition-fast);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action:hover {
+  background: var(--masks-accent);
+  color: white;
+  border-color: var(--masks-accent);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action.move-roll {
+  background: var(--masks-accent);
+  border-color: var(--masks-accent);
+  color: white;
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action.move-roll:hover {
+  filter: brightness(1.15);
+}
+.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action.move-delete:hover {
+  background: var(--masks-danger-color);
+  border-color: var(--masks-danger-color);
+}
+.masks-sheet-v2 .powers-tab .move-content:hover .move-actions {
+  opacity: 1;
+}
+.masks-sheet-v2 .powers-tab .move-content.has-roll .move-icon {
+  background: var(--masks-accent);
+  border-color: var(--masks-accent);
+  color: white;
 }
 .masks-sheet-v2 .powers-tab .move-content.roll-danger .move-name {
   color: var(--masks-danger-color);
@@ -2592,112 +2584,12 @@
 .masks-sheet-v2 .powers-tab .move-content.has-roll:hover {
   background: rgba(255, 255, 255, 0.03);
 }
-.masks-sheet-v2 .powers-tab .move-content .move-header {
-  /* Move tag with label tint */
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-radius: var(--masks-v2-corner-radius);
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--masks-v2-text-secondary);
-  /* Label-specific tints */
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag i {
-  font-size: 0.7rem;
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag.label-danger {
-  background: var(--masks-danger-color-light);
-  color: var(--masks-danger-color);
-  border: 1px solid var(--masks-danger-color);
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag.label-freak {
-  background: var(--masks-freak-color-light);
-  color: var(--masks-freak-color);
-  border: 1px solid var(--masks-freak-color);
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag.label-savior {
-  background: var(--masks-savior-color-light);
-  color: var(--masks-savior-color);
-  border: 1px solid var(--masks-savior-color);
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag.label-superior {
-  background: var(--masks-superior-color-light);
-  color: var(--masks-superior-color);
-  border: 1px solid var(--masks-superior-color);
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-tag.label-mundane {
-  background: var(--masks-mundane-color-light);
-  color: var(--masks-mundane-color);
-  border: 1px solid var(--masks-mundane-color);
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions {
-  flex-shrink: 0;
-  display: flex;
-  gap: 4px;
-  opacity: 0.5;
-  transition: opacity var(--masks-v2-transition-speed) ease;
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action {
-  width: 26px;
-  height: 26px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-muted);
-  cursor: pointer;
-  font-size: 0.7rem;
-  line-height: 1;
-  transition: all var(--masks-v2-transition-speed) ease;
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action i {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action:hover {
-  background: var(--masks-v2-accent-color);
-  color: white;
-  border-color: var(--masks-v2-accent-color);
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action.move-roll {
-  background: var(--masks-v2-accent-color);
-  border-color: var(--masks-v2-accent-color);
-  color: white;
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action.move-roll:hover {
-  filter: brightness(1.15);
-}
-.masks-sheet-v2 .powers-tab .move-content .move-header .move-actions .move-action.move-delete:hover {
-  background: var(--masks-danger-color);
-  border-color: var(--masks-danger-color);
-}
-.masks-sheet-v2 .powers-tab .move-content:hover .move-actions {
-  opacity: 1;
-}
-.masks-sheet-v2 .powers-tab .move-content.has-roll .move-icon {
-  background: var(--masks-v2-accent-color);
-  border-color: var(--masks-v2-accent-color);
-  color: white;
-}
 .masks-sheet-v2 .powers-tab .move-content .move-description {
   margin-top: 8px;
-  margin-left: 32px; /* Align with move name */
+  margin-left: 32px;
   font-size: 0.85rem;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   line-height: 1.5;
-  /* Use grid for smooth height animation */
   display: grid;
   grid-template-rows: 1fr;
   transition: grid-template-rows 0.2s ease-out, opacity 0.2s ease-out;
@@ -2711,16 +2603,10 @@
   opacity: 0;
 }
 
-/* =========================================================================== */
-/* PLAYBOOK TAB                                                                 */
-/* =========================================================================== */
+/* --- Playbook Tab --- */
 .masks-sheet-v2 .playbook-tab {
-  /* Playbook Features Section (uses PbtA attribute renderer) */
-  /* Moment of Truth Section */
-  /* Combined Advancements Section */
-  /* PbtA Clock Pattern Styling (used by Doom Track, etc.) */
-  /* Clock count text */
-  /* PbtA ListMany Pattern Styling (used by Advancements, features) */
+  /* PbtA Clock Pattern */
+  /* PbtA ListMany Pattern */
 }
 .masks-sheet-v2 .playbook-tab .playbook-section {
   margin-bottom: 20px;
@@ -2728,39 +2614,32 @@
 .masks-sheet-v2 .playbook-tab .playbook-section:last-child {
   margin-bottom: 0;
 }
-.masks-sheet-v2 .playbook-tab .playbook-section--features {
-  /* New custom playbook features list (filtered, no conditions) */
-}
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  /* Style PbtA cell types within playbook features */
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell {
   margin-bottom: 0;
   padding: 12px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  /* LongText editors */
-  /* ListMany checkboxes */
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__title {
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   margin-bottom: 8px;
-  /* Remove the decorative before/after bars from original styling */
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__title::before, .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__title::after {
   display: none;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__description {
   font-size: 0.75rem;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   font-style: italic;
   margin-bottom: 8px;
 }
@@ -2768,10 +2647,10 @@
   min-height: 80px;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .editor .editor-content {
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 8px;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__checkboxes {
@@ -2785,26 +2664,26 @@
   gap: 8px;
   padding: 6px 8px;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: var(--masks-v2-corner-radius);
+  border-radius: var(--masks-corner-radius);
   margin-bottom: 4px;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   font-size: 0.85rem;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__checkboxes label.flexrow input[type=checkbox] {
-  accent-color: var(--masks-v2-accent-color);
+  accent-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__checkboxes label.flexrow input[type=text] {
   flex: 1;
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 4px 8px;
   font-size: 0.85rem;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features .cell .cell__checkboxes label.flexrow input[type=text]:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list {
   display: flex;
@@ -2813,14 +2692,9 @@
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature {
   padding: 12px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  /* LongText editors - fix height */
-  /* ListMany options */
-  /* Text and Number inputs */
-  /* Clock tracker (e.g., Doom Track) */
-  /* Number tracker (e.g., Burn, Fight the Fight) */
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-label {
   display: block;
@@ -2828,12 +2702,12 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   margin-bottom: 8px;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-description {
   font-size: 0.75rem;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   font-style: italic;
   margin: 0 0 8px 0;
 }
@@ -2842,10 +2716,10 @@
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .editor .editor-content {
   min-height: 100px;
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 8px;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options {
@@ -2862,17 +2736,16 @@
   gap: 8px;
   padding: 6px 8px;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-secondary);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-secondary);
   font-size: 0.85rem;
   cursor: pointer;
-  /* Multiple checkboxes per option (e.g., The Scion, The Reformed) */
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options li label:hover {
   background: rgba(255, 255, 255, 0.06);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options li label input[type=checkbox] {
-  accent-color: var(--masks-v2-accent-color);
+  accent-color: var(--masks-accent);
   flex-shrink: 0;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options li label .feature-checkboxes {
@@ -2885,31 +2758,31 @@
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options li label input[type=text] {
   flex: 1;
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 4px 8px;
   font-size: 0.85rem;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .feature-options li label input[type=text]:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature input[type=text],
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature input[type=number] {
   width: 100%;
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 8px;
   font-size: 0.9rem;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature input[type=text]:focus,
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature input[type=number]:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .clock-tracker {
   display: flex;
@@ -2924,10 +2797,10 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--masks-v2-sidebar-bg);
+  background: var(--masks-bg-sidebar);
   border: 2px solid var(--masks-danger-color);
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .clock-tracker .clock-pips .clock-pip:hover {
   transform: scale(1.1);
@@ -2938,7 +2811,7 @@
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .clock-tracker .clock-count {
   font-size: 0.85rem;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker {
   display: flex;
@@ -2948,20 +2821,20 @@
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker .tracker-btn {
   width: 28px;
   height: 28px;
-  border-radius: var(--masks-v2-corner-radius);
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  color: var(--masks-v2-text-secondary);
+  border-radius: var(--masks-corner-radius);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  color: var(--masks-text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker .tracker-btn:hover {
-  background: var(--masks-v2-accent-color);
-  color: var(--masks-v2-text-primary);
-  border-color: var(--masks-v2-accent-color);
+  background: var(--masks-accent);
+  color: var(--masks-text-primary);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker .tracker-btn i {
   font-size: 0.75rem;
@@ -2969,17 +2842,17 @@
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker .tracker-value {
   width: 50px;
   text-align: center;
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 6px;
   font-size: 1rem;
   font-weight: 600;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--features .playbook-features-list .playbook-feature .number-tracker .tracker-value:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
+  border-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-tab .section-header {
   display: flex;
@@ -2997,11 +2870,11 @@
   align-items: center;
   gap: 6px;
   font-size: 0.8rem;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   cursor: pointer;
 }
 .masks-sheet-v2 .playbook-tab .section-header .moment-unlock-toggle input {
-  accent-color: var(--masks-v2-accent-color);
+  accent-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-tab .advancements-list {
   list-style: none;
@@ -3016,11 +2889,11 @@
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
   cursor: pointer;
-  transition: all var(--masks-v2-transition-speed) ease;
+  transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .playbook-tab .advancement-item .advancement-label:hover {
   background: rgba(255, 255, 255, 0.05);
@@ -3030,64 +2903,64 @@
   gap: 4px;
 }
 .masks-sheet-v2 .playbook-tab .advancement-item .advancement-label .advancement-check {
-  accent-color: var(--masks-v2-accent-color);
+  accent-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-tab .advancement-item .advancement-label .advancement-text {
   flex: 1;
   font-size: 0.85rem;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
 }
 .masks-sheet-v2 .playbook-tab .advancement-item .advancement-label .advancement-custom-text {
   flex: 1;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--masks-v2-border-color);
-  color: var(--masks-v2-text-primary);
+  border-bottom: 1px solid var(--masks-border-color);
+  color: var(--masks-text-primary);
   font-size: 0.85rem;
   padding: 2px 0;
 }
 .masks-sheet-v2 .playbook-tab .advancement-item .advancement-label .advancement-custom-text:focus {
   outline: none;
-  border-bottom-color: var(--masks-v2-accent-color);
+  border-bottom-color: var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--moment {
   padding: 12px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--moment .editor {
   min-height: 100px;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--moment .editor .editor-content {
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 8px;
   min-height: 80px;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--combined-advances {
   padding: 12px;
-  background: var(--masks-v2-input-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  border-left: 3px solid var(--masks-v2-accent-color);
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  border-left: 3px solid var(--masks-accent);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--combined-advances .advances-subsection .subsection-title {
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--masks-v2-accent-color);
+  color: var(--masks-accent);
   margin-bottom: 8px;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--combined-advances .advances-subsection--later .subsection-title {
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--combined-advances .advances-divider {
   border: none;
-  border-top: 1px solid var(--masks-v2-border-color);
+  border-top: 1px solid var(--masks-border-color);
   margin: 16px 0;
 }
 .masks-sheet-v2 .playbook-tab .cell__clock {
@@ -3103,8 +2976,8 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--masks-v2-input-bg);
-  border: 2px solid var(--masks-v2-border-color);
+  background: var(--masks-bg-input);
+  border: 2px solid var(--masks-border-color);
   cursor: pointer;
   transition: all 0.15s ease;
   margin: 0;
@@ -3125,7 +2998,7 @@
 .masks-sheet-v2 .playbook-tab .clock-count {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   margin-left: 4px;
 }
 .masks-sheet-v2 .playbook-tab .cell__checkboxes {
@@ -3139,9 +3012,9 @@
   gap: 8px;
   padding: 6px 8px;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: var(--masks-v2-corner-radius);
+  border-radius: var(--masks-corner-radius);
   margin-bottom: 4px;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   font-size: 0.85rem;
   cursor: pointer;
 }
@@ -3149,27 +3022,20 @@
   background: rgba(255, 255, 255, 0.06);
 }
 .masks-sheet-v2 .playbook-tab .cell__checkboxes label.flexrow input[type=checkbox].attr-list {
-  accent-color: var(--masks-v2-accent-color);
+  accent-color: var(--masks-accent);
   flex-shrink: 0;
   margin: 0;
 }
 .masks-sheet-v2 .playbook-tab .cell__checkboxes label.flexrow input[type=text].input-title {
   flex: 1;
-  background: var(--masks-v2-sidebar-bg);
-  border: 1px solid var(--masks-v2-border-color);
-  border-radius: var(--masks-v2-corner-radius);
-  color: var(--masks-v2-text-primary);
+  background: var(--masks-bg-sidebar);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  color: var(--masks-text-primary);
   padding: 4px 8px;
   font-size: 0.85rem;
 }
 .masks-sheet-v2 .playbook-tab .cell__checkboxes label.flexrow input[type=text].input-title:focus {
   outline: none;
-  border-color: var(--masks-v2-accent-color);
-}
-
-/* =========================================================================== */
-/* NPC SHEET - Keep existing styling                                           */
-/* =========================================================================== */
-.masks-sheet-v2 .npc-sheet {
-  /* NPC sheets use original styling */
+  border-color: var(--masks-accent);
 }

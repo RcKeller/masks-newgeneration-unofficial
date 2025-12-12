@@ -1,58 +1,109 @@
+/* =============================================================================
+   MASKS: A NEW GENERATION - Unified Theme System
+   =============================================================================
+   This file contains all styling for the Masks FoundryVTT module.
+   Color scheme: Blue/dark superhero theme throughout (character sheet + turn cards)
+   ============================================================================= */
+
+/* =============================================================================
+   THEME VARIABLES - Single source of truth for all colors
+   ============================================================================= */
+
 :root {
-  --actor-gradient: linear-gradient(
-    to bottom,
-    #58a4fc 0%,
-    #b0c2b8 80%,
-    #fff1b6 100%
-  );
-  --masks-primary-text-color: #ffffff;
-  --masks-secondary-text-color: #000000;
-  --masks-title-text-color: #173f6e;
-  --masks-input-text-color: #000000;
+  /* --- Core Color Palette --- */
+  --masks-blue-dark: #0e2949;
+  --masks-blue-primary: #173f6e;
+  --masks-blue-medium: #1e528f;
+  --masks-blue-light: #3da7db;
+  --masks-blue-accent: #58a4fc;
+
+  --masks-gold: #ffeb98;
+  --masks-gold-dark: #e7a345;
+
+  /* --- Label Colors (Masks RPG stats) --- */
+  --masks-danger-color: #e05252;
+  --masks-freak-color: #9b59b6;
+  --masks-savior-color: #3498db;
+  --masks-superior-color: #f39c12;
+  --masks-mundane-color: #27ae60;
+
+  /* Semi-transparent versions for backgrounds */
+  --masks-danger-bg: rgba(224, 82, 82, 0.15);
+  --masks-freak-bg: rgba(155, 89, 182, 0.15);
+  --masks-savior-bg: rgba(52, 152, 219, 0.15);
+  --masks-superior-bg: rgba(243, 156, 18, 0.15);
+  --masks-mundane-bg: rgba(39, 174, 96, 0.15);
+
+  /* --- Semantic Colors --- */
+  --masks-text-primary: #ffffff;
+  --masks-text-secondary: rgba(255, 255, 255, 0.75);
+  --masks-text-muted: rgba(255, 255, 255, 0.5);
+  --masks-text-dark: #000000;
+
+  --masks-bg-panel: rgba(20, 30, 45, 0.95);
+  --masks-bg-sidebar: rgba(30, 40, 55, 0.92);
+  --masks-bg-tab: rgba(40, 50, 65, 0.9);
+  --masks-bg-tab-active: rgba(60, 75, 95, 0.95);
+  --masks-bg-input: rgba(0, 0, 0, 0.3);
+  --masks-bg-input-light: rgba(255, 255, 255, 0.75);
+
+  --masks-border-color: rgba(255, 255, 255, 0.15);
+  --masks-border-accent: rgba(61, 167, 219, 0.5);
+
+  /* --- Interactive Elements --- */
+  --masks-interactive-bg: #1e528f;
+  --masks-interactive-hover: #173f6e;
+  --masks-accent: #3da7db;
+
+  /* --- Sheet Background --- */
+  --masks-gradient: linear-gradient(to bottom, #58a4fc 0%, #b0c2b8 80%, #fff1b6 100%);
+  --masks-window-bg: url("/modules/masks-newgeneration-unofficial/images/skyline.webp"), var(--masks-gradient);
+
+  /* --- Layout Constants --- */
+  --masks-corner-radius: 2px;
+  --masks-transition-fast: 150ms ease;
+  --masks-transition-smooth: 300ms ease;
+
+  /* --- Turn Cards Theme (now uses blue scheme) --- */
+  --tc-border-outer: var(--masks-blue-dark);
+  --tc-border-inner: var(--masks-blue-primary);
+  --tc-frame-bg: var(--masks-bg-panel);
+  --tc-nameplate-bg: var(--masks-blue-primary);
+  --tc-hover-inner: var(--masks-blue-medium);
+  --tc-action-bg: var(--masks-mundane-color);
+  --tc-cooldown-bar: var(--masks-blue-light);
+  --tc-cooldown-label-bg: rgba(0, 0, 0, 0.72);
+  --tc-downed-bg: rgba(104, 59, 71, 0.92);
+  --tc-potential-fill: var(--masks-gold-dark);
+  --tc-forward-bg: var(--masks-blue-light);
+  --tc-pentagon-color: var(--masks-blue-dark);
+  --tc-cooldown-opacity: 0.75;
+  --tc-downed-opacity: 0.45;
+  --tc-notch: rgba(0, 0, 0, 0.12);
+
+  /* --- Legacy compatibility (maps to new system) --- */
+  --masks-input-bg-color: var(--masks-bg-input-light);
+  --masks-input-border-color: rgba(0, 0, 0, 0.75);
+  --masks-input-text-color: var(--masks-text-dark);
   --masks-input-placeholder-color: #979797;
-  --masks-input-disabled-color: #0e2949;
-
-  --masks-interactive-bg-color: #1e528f;
-  --masks-interactive-bg-hover-color: #173f6e;
-  --masks-option-bg-color: #683b47;
-
-  --masks-tabs-border-color: #ffeb98;
-  --masks-tab-bg-active-color: #ffeb98;
-
-  --masks-input-bg-color: rgb(255 255 255 / 75%);
-  --masks-input-border-color: rgb(0 0 0 / 75%);
-  --masks-tox-edit-area-bg-color: rgba(255, 255, 255, 0.5);
-
-  --masks-resource-border-color: #bcc8de;
-  --masks-resource-control-bg-color: #ffffff;
-  --masks-stats-border-color: rgb(229 222 210 / 37%);
-
-  --masks-cell-title-border-color: #173f6e;
-  --masks-bio-title-border-color: #3da7db;
-  --masks-header-bg-color: #173f6e;
-
-  --masks-window-bg-image: url("/modules/masks-newgeneration-unofficial/images/skyline.webp"),
-    var(--actor-gradient);
-  --masks-window-bg-position: bottom left;
+  --masks-input-disabled-color: var(--masks-blue-dark);
+  --masks-header-bg-color: var(--masks-blue-primary);
+  --masks-cell-title-border-color: var(--masks-blue-primary);
+  --masks-bio-title-border-color: var(--masks-blue-light);
+  --masks-title-text-color: var(--masks-blue-primary);
+  --masks-tabs-border-color: var(--masks-gold);
+  --masks-tab-bg-active-color: var(--masks-gold);
   --masks-influence-icon-color: invert(100%);
   --masks-influence-icon-disabled-color: invert(100%) opacity(50%);
-
-
-  --masks-turncards-card-base: #bda78a;
-  --masks-turncards-primary-bg: #f4e7d7;
-  --masks-turncards-secondary-bg: #ead0b0;
-  --masks-turncards-active-bg: #d1a06e;
-  --masks-turncards-action-bg: #87b07e;
-  --masks-turncards-cooldown-bar: #3f8aa0;
-  --masks-turncards-potential-fill-color: #e7a345;
-  --masks-turncards-pentagon-color: #37372b;
-  --masks-turncards-cooldown-opacity: 0.75;
 }
 
-.pbta.window-app {
+/* =============================================================================
+   BASE STYLES - PbtA Sheet Foundation
+   ============================================================================= */
 
+.pbta.window-app {
   .window-content {
-    color: var(--masks-secondary-text-color);
+    color: var(--masks-text-dark);
     padding: 0;
 
     a.content-link, a.inline-roll {
@@ -60,10 +111,7 @@
     }
   }
 
-  input, 
-  button, 
-  select, 
-  textarea {
+  input, button, select, textarea {
     background: var(--masks-input-bg-color);
     color: var(--masks-input-text-color);
     border: 0.5px solid var(--masks-input-border-color);
@@ -71,11 +119,8 @@
     font-weight: bold;
   }
 
-  input:disabled, 
-  button:disabled, 
-  select:disabled, 
-  textarea:disabled {
-    background: rgba(153,153,153,.2509803922);
+  input:disabled, button:disabled, select:disabled, textarea:disabled {
+    background: rgba(153, 153, 153, 0.25);
     color: var(--masks-input-disabled-color);
   }
 
@@ -84,29 +129,19 @@
   }
 }
 
-.pbta.sheet {
-  
-  .advancement {
-    display: none;
-  }
+/* =============================================================================
+   ACTOR SHEET - Main character sheet styling
+   ============================================================================= */
 
-  .sheet-header__fields .adv-tab {
-    display: none;
-  }
+.pbta.sheet {
+  .advancement { display: none; }
+  .sheet-header__fields .adv-tab { display: none; }
 
   .cell__title.warning {
     background-color: #d68888;
     color: #000000;
-
-    &::before {
-      height: 0px;
-      background-color: none;
-    }
-
-    &::after {
-      width: 0px;
-      background-color: none;
-    }
+    &::before { height: 0px; background-color: none; }
+    &::after { width: 0px; background-color: none; }
   }
 
   .cell--influences,
@@ -133,8 +168,8 @@
   .sheet-look .cell--influence { display: none; }
   .sheet-main .cell--equipment { display: none; }
 
-  input::placeholder, 
-  .sheet-header select.charplaybook:has(option[value=""]:checked), 
+  input::placeholder,
+  .sheet-header select.charplaybook:has(option[value=""]:checked),
   .sheet-header select.charplaybook option[value=""] {
     color: var(--masks-input-placeholder-color);
     font-style: italic;
@@ -147,15 +182,12 @@
       bottom: 1px;
       height: 15px;
     }
-    label {
-      color: var(--masks-secondary-text-color);
-    }
+    label { color: var(--masks-text-dark); }
   }
 
   .cell--image {
     border: 1px solid var(--masks-cell-title-border-color);
 
-    /* Labels Graph visualization below profile image */
     .labels-graph-container {
       display: flex;
       justify-content: center;
@@ -173,57 +205,44 @@
   }
 
   .window-header {
-    background-color: var(--masks-interactive-bg-color);
+    background-color: var(--masks-interactive-bg);
   }
 
   .sheet-resources {
     align-items: start;
+    .cell { text-align: left; }
+    .cell > .cell__title { justify-content: start; }
 
-    .cell {
-      text-align: left;
-    }
-
-    .cell>.cell__title {
-      justify-content: start;
-    }
-
-    .cell--ongoing .resource-control, 
-    .cell--forward .resource-control, 
+    .cell--ongoing .resource-control,
+    .cell--forward .resource-control,
     .cell--roll-formula .resource-control {
       border: 0.5px solid var(--masks-input-border-color);
-      background: var(--masks-resource-control-bg-color);
+      background: #ffffff;
     }
   }
-  
-  .cell__checkboxes, 
-  .cell__radio {
-    margin: 0;
 
-    & label.flexrow{
-      margin: 0 0 5px 0;
-    }
+  .cell__checkboxes, .cell__radio {
+    margin: 0;
+    & label.flexrow { margin: 0 0 5px 0; }
   }
 
   .window-content {
-    background-image: var(--masks-window-bg-image);
-    background-position: var(--masks-window-bg-position);
+    background-image: var(--masks-window-bg);
+    background-position: bottom left;
     background-repeat: repeat-x;
     background-size: auto;
   }
 
   .tox.tox-tinymce .tox-edit-area__iframe {
-    background: var(--masks-tox-edit-area-bg-color);
+    background: rgba(255, 255, 255, 0.5);
   }
 
-  .sheet-header__fields {
-    width: 100%;
-  }
+  .sheet-header__fields { width: 100%; }
 
+  /* --- Influences Section --- */
   .cell--influences {
-    .cell__title .item-group-label {
-      cursor: pointer;
-    }
-    
+    .cell__title .item-group-label { cursor: pointer; }
+
     .item-details-toggle {
       display: inline-block;
       width: 24px;
@@ -232,121 +251,10 @@
       border-radius: 5px;
       transition: all ease-in-out 0.25s;
     }
-  
-    .fas {
-      transition: all ease-in-out 0.25s;
-    }
-  
-    .open .fas {
-      transform: rotate(180deg);
-    }
-  }
 
-  .editor-content {
-    background: var(--masks-input-bg-color);
-    color: var(--masks-input-text-color);
-    border: 0.5px solid var(--masks-input-border-color);
-    min-height: 31px;
-    padding: 5px;
+    .fas { transition: all ease-in-out 0.25s; }
+    .open .fas { transform: rotate(180deg); }
 
-    a.content-link, a.inline-roll {
-      background: var(--masks-input-bg-color);
-      border: 0.5px solid var(--masks-input-border-color);
-    }
-  }
-
-  .sheet-wrapper {
-
-    .sheet-bottom {
-      padding: 0px 10px;
-    }
-
-    .sheet-top .sheet-attributes-top {
-      padding: 10px;
-    }
-
-    .sheet-top .sheet-attributes-top .cell--attributes-top>.cell+.cell::before {
-      left: 0;
-      width: 0;
-      background: none;
-    }
-    
-    .sheet-header {
-      background-color: var(--masks-header-bg-color);
-    }
-
-    .editor-content {
-      background: var(--masks-input-bg-color);
-      color: var(--masks-secondary-text-color);
-      border: 0.5px solid var(--masks-input-border-color);
-      color: var(--masks-input-text-color);
-      min-height: 31px;
-      padding: 0 10px;
-    }
-
-    .sheet-bottom {
-      .cell--LongText, 
-      .cell--ListMany, 
-      .cell--moves,
-      .cell--xp,
-      .cell--Text,
-      .cell--Checkbox,
-      .cell--Number {
-        padding-top: 5px;
-      }
-
-      .cell--conditions {
-        padding-top: 0px;
-      }
-      
-      .description {
-        .sheet-tab {
-          display: flex;
-          flex-flow: row wrap;
-          justify-content: space-between;
-          align-content: flex-start;
-          gap: 10px;
-        }
-
-        .cell.cell--bio {
-          min-height: 175px;
-          margin-bottom: 5px;
-          width: 48%;
-
-          &:nth-child(3), 
-          &:nth-child(4) {
-            width: 100%;
-          }
-    
-          .editor {
-            min-height: calc(100% - 40px);
-    
-            .editor-content {
-              height: 145px;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .cell__wrapper {
-    position: relative;
-    width: 100%;
-    
-    & > input[type="number"] {
-      font-size: 18px;
-      text-align: center;
-      background-color: var(--masks-input-bg-color);
-      color: var(--masks-input-text-color);
-      font-weight: bold;
-      margin: 0;
-      display: block;
-      width: 100%;
-    }
-  }
-
-  .cell--influences {
     .influence-name {
       flex: 2;
       display: flex;
@@ -372,7 +280,7 @@
         filter: var(--masks-influence-icon-disabled-color);
       }
     }
-    
+
     img.influence-icon {
       flex: 1;
       vertical-align: top;
@@ -393,45 +301,125 @@
     flex: 1;
   }
 
-  /* -- */
+  .editor-content {
+    background: var(--masks-input-bg-color);
+    color: var(--masks-input-text-color);
+    border: 0.5px solid var(--masks-input-border-color);
+    min-height: 31px;
+    padding: 5px;
 
+    a.content-link, a.inline-roll {
+      background: var(--masks-input-bg-color);
+      border: 0.5px solid var(--masks-input-border-color);
+    }
+  }
+
+  /* --- Sheet Layout --- */
+  .sheet-wrapper {
+    .sheet-bottom { padding: 0px 10px; }
+    .sheet-top .sheet-attributes-top { padding: 10px; }
+    .sheet-top .sheet-attributes-top .cell--attributes-top > .cell + .cell::before {
+      left: 0;
+      width: 0;
+      background: none;
+    }
+
+    .sheet-header {
+      background-color: var(--masks-header-bg-color);
+    }
+
+    .editor-content {
+      background: var(--masks-input-bg-color);
+      color: var(--masks-input-text-color);
+      border: 0.5px solid var(--masks-input-border-color);
+      min-height: 31px;
+      padding: 0 10px;
+    }
+
+    .sheet-bottom {
+      .cell--LongText,
+      .cell--ListMany,
+      .cell--moves,
+      .cell--xp,
+      .cell--Text,
+      .cell--Checkbox,
+      .cell--Number {
+        padding-top: 5px;
+      }
+
+      .cell--conditions { padding-top: 0px; }
+
+      .description {
+        .sheet-tab {
+          display: flex;
+          flex-flow: row wrap;
+          justify-content: space-between;
+          align-content: flex-start;
+          gap: 10px;
+        }
+
+        .cell.cell--bio {
+          min-height: 175px;
+          margin-bottom: 5px;
+          width: 48%;
+
+          &:nth-child(3), &:nth-child(4) { width: 100%; }
+
+          .editor {
+            min-height: calc(100% - 40px);
+            .editor-content { height: 145px; }
+          }
+        }
+      }
+    }
+  }
+
+  .cell__wrapper {
+    position: relative;
+    width: 100%;
+
+    & > input[type="number"] {
+      font-size: 18px;
+      text-align: center;
+      background-color: var(--masks-input-bg-color);
+      color: var(--masks-input-text-color);
+      font-weight: bold;
+      margin: 0;
+      display: block;
+      width: 100%;
+    }
+  }
+
+  /* --- Stats/Labels Section --- */
   .sheet-attributes {
     position: relative;
     padding-top: 8px;
     padding-left: 8px;
     padding-right: 8px;
-  
+
     .cell--stats .stat {
-      background: var(--masks-interactive-bg-color);
-      color: var(--masks-primary-text-color);
-    
-      .cell__title {
-        color: var(--masks-primary-text-color);
-      }
+      background: var(--masks-interactive-bg);
+      color: var(--masks-text-primary);
 
-      &:hover {
-        background: var(--masks-interactive-bg-hover-color);
-      }
-
-      .stat-value {
-        border: 1px solid var(--masks-stats-border-color);
-      }
+      .cell__title { color: var(--masks-text-primary); }
+      &:hover { background: var(--masks-interactive-hover); }
+      .stat-value { border: 1px solid rgba(229, 222, 210, 0.37); }
     }
   }
-  
+
+  /* --- Styled Section Titles --- */
   .bio_style {
     font-style: italic;
     position: relative;
     padding-left: 8px;
     border-bottom: none;
-    color: var(--masks-secondary-text-color);
+    color: var(--masks-text-dark);
     letter-spacing: 0.05rem;
     font-size: 22px;
     font-weight: normal;
     margin: 10px 10px 0px 0px;
 
     &::before {
-      /* z-index: -1; */
       content: "";
       position: absolute;
       left: 7px;
@@ -443,7 +431,6 @@
     }
 
     &::after {
-      /* z-index: -1; */
       content: "";
       position: absolute;
       left: 0;
@@ -489,6 +476,7 @@
     }
   }
 
+  /* --- Tabs --- */
   .tabs {
     border-bottom: 2px solid var(--masks-tabs-border-color);
   }
@@ -497,47 +485,42 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     font-style: italic;
-    background-color: var(--masks-interactive-bg-color);
-    color: var(--masks-primary-text-color);
+    background-color: var(--masks-interactive-bg);
+    color: var(--masks-text-primary);
 
-    &.active,
-    &.active:hover {
+    &.active, &.active:hover {
       background-color: var(--masks-tab-bg-active-color);
-      color: var(--masks-secondary-text-color);
+      color: var(--masks-text-dark);
     }
 
-    &:hover,
-    &:focus {
-      background-color: var(--masks-interactive-bg-hover-color);
-      color: var(--masks-primary-text-color);
+    &:hover, &:focus {
+      background-color: var(--masks-interactive-hover);
+      color: var(--masks-text-primary);
       font-weight: bold;
     }
   }
 
   .sheet-header__fields .view-playbook {
     background: var(--masks-tab-bg-active-color);
-    color: var(--masks-secondary-text-color);
+    color: var(--masks-text-dark);
     opacity: 1;
-    border: 0.5px solid var(--masks-interactive-bg-hover-color);
-  
+    border: 0.5px solid var(--masks-interactive-hover);
+
     &:hover {
       opacity: 1;
-      background: var(--masks-interactive-bg-hover-color);
+      background: var(--masks-interactive-hover);
     }
   }
 
-  /** Playbook customizations **/
+  /* --- Playbook-specific Customizations --- */
   .cell--theReformed {
     input[type="checkbox"] {
       margin: 3px 1px;
       flex: 0 0 14px;
     }
-
-    .cell__title {
-      font-size: 20px;
-    }
+    .cell__title { font-size: 20px; }
   }
-  
+
   .cell--theScionGreatestEnemy,
   .cell--theScionGreatestVictim,
   .cell--theScionPersonalIdol,
@@ -548,10 +531,7 @@
       margin: 3px 1px;
       flex: 0 0 14px;
     }
-
-    .cell__title {
-      font-size: 20px;
-    }
+    .cell__title { font-size: 20px; }
 
     input[type="checkbox"] {
       &:nth-child(5n) {
@@ -573,7 +553,10 @@
   }
 }
 
-/** NPCs **/
+/* =============================================================================
+   NPC SHEETS
+   ============================================================================= */
+
 .pbta.sheet.npc {
   .sheet-main [data-tab=equipment] { display: none; }
 
@@ -587,7 +570,7 @@
       max-height: none;
     }
   }
-  
+
   .sheet-attributes {
     grid-column: span 5;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -601,9 +584,7 @@
     }
   }
 
-  .sheet-header__fields {
-    padding: 0px;
-  }
+  .sheet-header__fields { padding: 0px; }
 
   .cell--aesthetics .cell--conditions ul.cell__checkboxes label {
     display: flex;
@@ -616,7 +597,9 @@
   }
 }
 
-/** Items **/
+/* =============================================================================
+   ITEM SHEETS
+   ============================================================================= */
 
 .pbta.sheet.item.playbook {
   min-height: 600px;
@@ -639,9 +622,8 @@
       color: var(--masks-input-text-color);
       letter-spacing: 0.05rem;
       font-size: 22px;
-  
+
       &::before {
-        /* z-index: -1; */
         content: "";
         position: absolute;
         left: 7px;
@@ -653,7 +635,6 @@
       }
 
       &::after {
-        /* z-index: -1; */
         content: "";
         position: absolute;
         left: 0;
@@ -665,21 +646,15 @@
       }
     }
 
-    h1, h2, h3 {
-      border-bottom: none;
-    }
-
-    h2, h3 {
-      margin-top: 30px;
-    }
+    h1, h2, h3 { border-bottom: none; }
+    h2, h3 { margin-top: 30px; }
 
     .special {
       color: #ae0000;
       font-weight: bold;
     }
-  
+
     .rules {
-      /* background-color: green; */
       display: flex;
       flex-flow: wrap;
       justify-content: space-between;
@@ -689,20 +664,17 @@
 
       div {
         width: 48%;
-
-        h2:nth-child(1) {
-          margin-top: 10px;
-        }
+        h2:nth-child(1) { margin-top: 10px; }
       }
     }
-  
-    .extras {
-      margin-top: 30px;
-    }
+
+    .extras { margin-top: 30px; }
   }
 }
 
-/* Minimal, Foundry-aligned styling for the GM Whisper control */
+/* =============================================================================
+   X-CARD SAFETY TOOL
+   ============================================================================= */
 
 #xcard-btn-wrapper {
   display: inline-flex;
@@ -718,18 +690,18 @@
   background-color: var(--color-level-error);
 }
 
-/* A lightweight, inline HUD that sits wherever you mount it. */
+/* =============================================================================
+   TEAM POOL HUD (Standalone, outside combat)
+   ============================================================================= */
+
 #masks-team {
-  /* Make centering in wide containers easy */
   width: 100%;
   display: flex;
   justify-content: center;
-  /* Don't block clicks outside the panel */
   pointer-events: none;
   z-index: 100;
   margin: 0.25rem 0;
 
-  /* Interactive inner content */
   .panel {
     pointer-events: auto;
     display: inline-flex;
@@ -739,15 +711,14 @@
     background: transparent;
     border: none;
     box-shadow: none;
-    color: var(--masks-primary-text-color, #fff);
+    color: var(--masks-text-primary);
   }
 
-  /* The only styled element: the "Team" tag */
   .tag {
     height: 100%;
     margin: 0;
-    color: var(--masks-primary-text-color, #fff);
-    background: var(--masks-interactive-bg-color, #3da7db);
+    color: var(--masks-text-primary);
+    background: var(--masks-interactive-bg);
     padding: 2px 8px;
     border-radius: 4px;
     font-weight: 700;
@@ -757,60 +728,45 @@
     font-size: 20px;
   }
 
-  /* Keep native buttons; just a nudge to input width */
   input[name="team"] {
     max-width: 3.6rem;
     text-align: center;
   }
 }
 
+/* =============================================================================
+   SCENE CONTROLS - Influence Tools
+   ============================================================================= */
+
 #scene-controls-tools {
-  [data-tool="influenceGainOverThem"] {
-    background-color: #4CAF50;
-  }
-
-  [data-tool="influenceMutual"] {
-    background-color: #2196F3;
-  }
-
-  [data-tool="influenceGiveThemOverYou"] {
-    background-color: #9C27B0;
-  }
-
-  [data-tool="influenceClear"] {
-    background-color: #F44336;
-  }
+  [data-tool="influenceGainOverThem"] { background-color: #4CAF50; }
+  [data-tool="influenceMutual"] { background-color: #2196F3; }
+  [data-tool="influenceGiveThemOverYou"] { background-color: #9C27B0; }
+  [data-tool="influenceClear"] { background-color: #F44336; }
 
   [data-tool="forwardAdd"],
   [data-tool="ongoingAdd"],
   [data-tool="forwardRemove"],
   [data-tool="ongoingRemove"] {
-    background-color: var(--masks-interactive-bg-color, #3da7db);
+    background-color: var(--masks-interactive-bg);
   }
 }
 
-.sheet {
-  .influence-management {
-    img[data-influence-action="hasInfluenceOver"] {
-      filter: #9C27B0 !important;
-    }
-
-    img[data-influence-action="haveInfluenceOver"] {
-      filter: #4CAF50 !important;
-    }
-
-    [data-influence-action="delete"] {
-      color: #F44336;
-    }
-  }
+.sheet .influence-management {
+  img[data-influence-action="hasInfluenceOver"] { filter: #9C27B0 !important; }
+  img[data-influence-action="haveInfluenceOver"] { filter: #4CAF50 !important; }
+  [data-influence-action="delete"] { color: #F44336; }
 }
 
-/* PbtA acted-this-round overlay for combat tracker */
+/* =============================================================================
+   COMBAT TRACKER OVERLAY
+   ============================================================================= */
+
 #combat {
   li.combatant {
     position: relative;
 
-    >.pbta-gone-toggle {
+    > .pbta-gone-toggle {
       position: absolute;
       left: 4px;
       top: 4px;
@@ -819,29 +775,21 @@
       transition: var(--ui-fade-delay);
       width: 55px;
       height: 55px;
-      /* line-height: 22px; */
       font-size: 65px;
       background-color: transparent;
-      color: var(--color-level-success-bg)
-        /* inherit Foundry button visuals via existing classes */
+      color: var(--color-level-success-bg);
     }
 
-    /* Reveal on row hover */
-    &:hover>.pbta-gone-toggle {
-      opacity: 0.4;
-    }
-
-    /* Keep visible while keyboard focusing the control */
-    >.pbta-gone-toggle:focus {
-      opacity: 0.4;
-    }
+    &:hover > .pbta-gone-toggle { opacity: 0.4; }
+    > .pbta-gone-toggle:focus { opacity: 0.4; }
   }
 }
 
-/* CUSTOMIZATIONS */
+/* =============================================================================
+   CHAT CUSTOMIZATIONS
+   ============================================================================= */
 
 #chat h4 {
-  /* color: red !important; */
   font-size: var(--font-size-13);
   line-height: 1.25;
   margin-bottom: 4px;
@@ -859,117 +807,40 @@
   text-transform: none !important;
 }
 
-.tox.tox-tinymce {
-  min-height: 300px;
-}
+.tox.tox-tinymce { min-height: 300px; }
 
-.vtt #chat .message .shift.up {
-  color: forestgreen;
-}
+.vtt #chat .message .shift.up { color: forestgreen; }
+.vtt #chat .message .shift.down { color: #b00020; }
 
-.cell.look {
-  display: none;
-}
+.cell.look { display: none; }
+.cell.abilities { width: 100%; }
 
-.cell.abilities {
-  width: 100%;
-}
-
-[data-edit="system.details.abilities.value"] {
-  min-height: 150px;
-}
-
+[data-edit="system.details.abilities.value"] { min-height: 150px; }
 [data-edit="system.details.backstory.value"],
-[data-edit="system.details.biography.value"] {
-  min-height: 400px;
-}
+[data-edit="system.details.biography.value"] { min-height: 400px; }
 
-.pbta.sheet.actor {
-  min-height: 80vh;
-}
+.pbta.sheet.actor { min-height: 80vh; }
+.sheet-bottom.flexrow { gap: 0; }
+#worldStylesheet .cm-editor { max-height: 300px; }
+.sheet-bottom > .sheet-look { min-width: 250px; }
+.token-initiative { display: none !important; }
+#hotbar { display: none; }
 
-.sheet-bottom.flexrow {
-  gap: 0;
-}
-
-#worldStylesheet .cm-editor {
-  max-height: 300px;
-}
-
-.sheet-bottom>.sheet-look {
-  min-width: 250px;
-}
-
-.token-initiative {
-  display: none !important;
-}
-
-#hotbar {
-  display: none;
-}
-
-
-/* Chat accents used by Turn Card "Use Influence" messages */
-.vtt #chat .message .shift.up {
-  color: forestgreen;
-}
-
-.vtt #chat .message .shift.down {
-  color: #b00020;
-}
-
-/* ------------------------------------------------------------------------- */
-/* Turn Cards HUD                                                            */
-/* Complete rewrite with right-to-left cooldown bars and smooth animations   */
-/* ------------------------------------------------------------------------- */
-
-/* ------------------------------------------------------------------------- */
-/* Turn Cards HUD                                                            */
-/* Right-to-left cooldown burn-down + smooth drain transitions               */
-/* ------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------- */
-/* Turn Cards HUD                                                            */
-/* ------------------------------------------------------------------------- */
+/* =============================================================================
+   TURN CARDS HUD - Blue Theme (matches character sheet)
+   ============================================================================= */
 
 #masks-turncards {
   /* Layout */
   --tc-max-cols: 8;
   --tc-gap: 8px;
-
-  /* Sizing (slightly smaller than before, still responsive) */
   --tc-card-width: clamp(104px, 7.8vw, 130px);
-  
   --tc-card-aspect: 3 / 4;
-
-  /* Do NOT change button sizes */
   --tc-control-size: 28px;
   --tc-forward-size: 24px;
-
   --tc-nameplate-height: 32px;
   --tc-status-bar-height: 26px;
   --tc-portrait-pad: 3px;
-
-  /* Theme colors */
-  --tc-border-outer: var(--masks-turncards-pentagon-color, #37372b);
-  --tc-border-inner: var(--masks-turncards-card-base, #bda78a);
-  --tc-frame-bg: var(--masks-turncards-secondary-bg, #ead0b0);
-  --tc-nameplate-bg: var(--masks-turncards-card-base, #bda78a);
-  --tc-hover-inner: var(--masks-turncards-active-bg, #d1a06e);
-
-  --tc-action-bg: var(--masks-turncards-action-bg, #69c0ae);
-  --tc-cooldown-bar-bg: var(--masks-turncards-cooldown-bar, #2ab6cb);
-  --tc-cooldown-label-bg: rgba(0, 0, 0, 0.72);
-  --tc-downed-bg: rgba(104, 59, 71, 0.92);
-  /* --tc-downed-bg: rgba(104, 59, 71, 0.92); */
-
-  --tc-potential-fill: var(--masks-turncards-potential-fill-color, #e7a345);
-  --tc-forward-bg: #3f8aa0;
-
-  --tc-cooldown-opacity: var(--masks-turncards-cooldown-opacity, 0.75);
-  --tc-downed-opacity: 0.45;
-
-  /* Bottom-right notch shading on nameplates */
-  --tc-notch: rgba(0, 0, 0, 0.12);
 
   /* Motion */
   --tc-transition-fast: 150ms ease-out;
@@ -984,21 +855,13 @@
   .turncards-row {
     pointer-events: auto;
     display: flex;
-
-    /* Wrap upward so the “main” row stays aligned to the bottom */
     flex-wrap: wrap-reverse;
-
     gap: var(--tc-gap);
     justify-content: center;
-
-    /* Bottom-align cards within each line */
     align-items: flex-end;
-
-    /* Width-cap to 8 cards max per row */
     width: 100%;
     max-width: calc((var(--tc-card-width) + var(--tc-gap)) * 8 - var(--tc-gap));
     margin: 0 auto;
-
     padding: 8px 12px;
   }
 
@@ -1007,22 +870,14 @@
     flex: 0 0 var(--tc-card-width);
     width: var(--tc-card-width);
     aspect-ratio: var(--tc-card-aspect);
-
     position: relative;
     border-radius: 1px;
     background: var(--tc-frame-bg);
-
-    /* Outer dark border + inner tan border (matches reference framing) */
     border: 2px solid var(--tc-border-outer);
     box-shadow: 0 0 0 2px var(--tc-border-inner) inset, 0 2px 10px rgba(0, 0, 0, 0.35);
-
     overflow: hidden;
     cursor: pointer;
-
-    transition:
-      transform var(--tc-transition-fast),
-      box-shadow var(--tc-transition-fast),
-      filter var(--tc-transition-fast);
+    transition: transform var(--tc-transition-fast), box-shadow var(--tc-transition-fast), filter var(--tc-transition-fast);
 
     &:hover {
       transform: translateY(-4px) scale(1.03);
@@ -1036,24 +891,15 @@
 
     &.turncard--team {
       cursor: default;
-
       &:hover {
         transform: none;
         box-shadow: 0 0 0 2px var(--tc-border-inner) inset, 0 2px 10px rgba(0, 0, 0, 0.35);
       }
     }
 
-    &.is-cooldown .turncard__content {
-      opacity: var(--tc-cooldown-opacity);
-    }
-
-    &.is-downed .turncard__content {
-      opacity: var(--tc-downed-opacity);
-    }
-
-    &.is-downed .turncard__portrait img {
-      filter: grayscale(1);
-    }
+    &.is-cooldown .turncard__content { opacity: var(--tc-cooldown-opacity); }
+    &.is-downed .turncard__content { opacity: var(--tc-downed-opacity); }
+    &.is-downed .turncard__portrait img { filter: grayscale(1); }
   }
 
   .turncard__content {
@@ -1079,11 +925,8 @@
       height: 100%;
       object-fit: cover;
       object-position: top center;
-
-      /* Inner portrait frame line */
       border: 2px solid rgba(0, 0, 0, 0.75);
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35) inset;
-
       transition: filter var(--tc-transition-smooth);
     }
   }
@@ -1093,13 +936,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* padding: 6px; */
     padding: 2px;
-    background: linear-gradient(180deg, #6b5b95 0%, #4a3f6b 100%);
+    background: linear-gradient(180deg, var(--masks-blue-medium) 0%, var(--masks-blue-dark) 100%);
   }
 
-  /* --- Status bar (always present) -------------------------------------- */
-
+  /* --- Status Bar --- */
   .turncard__status-bar {
     position: absolute;
     top: 0;
@@ -1113,34 +954,23 @@
     z-index: 3;
   }
 
-  .turncard__status-bar--cooldown {
-    background: var(--tc-cooldown-label-bg);
-  }
+  .turncard__status-bar--cooldown { background: var(--tc-cooldown-label-bg); }
+  .turncard__status-bar--downed { background: var(--tc-downed-bg); }
+  .turncard__status-bar--ready { background: transparent; }
 
-  .turncard__status-bar--downed {
-    background: var(--tc-downed-bg);
-  }
-
-  .turncard__status-bar--ready {
-    background: transparent;
-  }
-
-  /* Cooldown drains RIGHT → LEFT (anchored left, width shrinks) */
   .turncard__cooldown-bar {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     width: calc(var(--cooldown-frac, 0) * 100%);
-    background: var(--tc-cooldown-bar-bg);
+    background: var(--tc-cooldown-bar);
     opacity: 0.7;
     transition: width var(--tc-transition-bar);
     z-index: 1;
   }
 
-  .turncard__status-bar--downed .turncard__cooldown-bar {
-    opacity: 0.7;
-  }
+  .turncard__status-bar--downed .turncard__cooldown-bar { opacity: 0.7; }
 
   .turncard__status-label {
     position: relative;
@@ -1154,12 +984,9 @@
     white-space: nowrap;
   }
 
-  .turncard__status-bar--ready .turncard__status-label {
-    opacity: 0;
-  }
+  .turncard__status-bar--ready .turncard__status-label { opacity: 0; }
 
-  /* --- Action overlay ---------------------------------------------------- */
-
+  /* --- Action Overlay --- */
   .turncard__action {
     box-sizing: border-box;
     position: absolute;
@@ -1170,28 +997,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: var(--tc-action-bg);
     border: none;
     border-radius: 0;
     width: auto;
     padding: 0 8px;
-
     cursor: pointer;
     opacity: 0;
     pointer-events: none;
     transform: translateY(-4px);
     z-index: 4;
+    transition: opacity var(--tc-transition-fast), transform var(--tc-transition-fast), filter var(--tc-transition-fast);
 
-    transition:
-      opacity var(--tc-transition-fast),
-      transform var(--tc-transition-fast),
-      filter var(--tc-transition-fast);
-
-    &:hover:not(:disabled) {
-      filter: brightness(1.05);
-    }
-
+    &:hover:not(:disabled) { filter: brightness(1.05); }
     &:disabled {
       filter: grayscale(0.6) brightness(0.8);
       cursor: not-allowed;
@@ -1214,17 +1032,14 @@
     transform: translateY(0);
   }
 
-  /* --- Nameplate + notch ------------------------------------------------- */
-
+  /* --- Nameplate --- */
   .turncard__nameplate {
     box-sizing: border-box;
     position: relative;
     flex: 0 0 auto;
     height: var(--tc-nameplate-height);
     padding: 4px 6px;
-
     background: var(--tc-nameplate-bg);
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1247,16 +1062,14 @@
     font-weight: 900;
     font-size: 1rem;
     letter-spacing: 0.03em;
-    color: rgba(0, 0, 0, 0.85);
-
+    color: var(--masks-text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
   }
 
-  /* --- Corner controls --------------------------------------------------- */
-
+  /* --- Corner Controls --- */
   .turncard__shift,
   .turncard__forward,
   .turncard__potential {
@@ -1266,15 +1079,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     cursor: pointer;
     z-index: 5;
-
-    transition:
-      transform var(--tc-transition-fast),
-      filter var(--tc-transition-fast),
-      opacity var(--tc-transition-fast);
-
+    transition: transform var(--tc-transition-fast), filter var(--tc-transition-fast), opacity var(--tc-transition-fast);
     border-radius: 50%;
 
     &:hover:not(:disabled) {
@@ -1282,19 +1089,12 @@
       filter: brightness(1.12);
     }
 
-    &:active:not(:disabled) {
-      transform: scale(0.95);
-    }
+    &:active:not(:disabled) { transform: scale(0.95); }
 
-    &.is-disabled,
-    &:disabled {
+    &.is-disabled, &:disabled {
       opacity: 1;
       cursor: default;
-
-      &:hover {
-        transform: none;
-        filter: none;
-      }
+      &:hover { transform: none; filter: none; }
     }
   }
 
@@ -1307,60 +1107,38 @@
     border: 1px solid rgba(255, 255, 255, 0.85);
   }
 
-  /* Labels Graph - Pentagon visualization button */
   .turncard__labels-graph {
-    /* Override circular shape - use pentagon clip-path */
     border-radius: 0;
     clip-path: polygon(50% 0%, 100% 38%, 81% 100%, 19% 100%, 0% 38%);
-
-    /* Position tightly in corner */
     left: 2px;
     bottom: 2px;
-
-    /* 40x40px size */
     width: 40px;
     height: 40px;
-
-    /* Higher z-index than Forward button */
     z-index: 6;
-
-    /* Remove default background/border since SVG handles it */
     background: transparent;
     border: none;
-
-    /* Center the SVG */
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    /* SVG fills the button */
     .labels-graph-svg {
       width: 100%;
       height: 100%;
       display: block;
     }
 
-    /* Hover/active states */
     &:hover:not(:disabled) {
       transform: scale(1.2);
       filter: brightness(1.15);
     }
 
-    &:active:not(:disabled) {
-      transform: scale(1.05);
-    }
+    &:active:not(:disabled) { transform: scale(1.05); }
 
-    /* Disabled state - keep full opacity but indicate non-interactive */
-    &.is-disabled,
-    &:disabled {
+    &.is-disabled, &:disabled {
       opacity: 1;
       cursor: default;
-
-      &:hover {
-        transform: none;
-        filter: none;
-      }
+      &:hover { transform: none; filter: none; }
     }
   }
 
@@ -1370,10 +1148,8 @@
     width: var(--tc-forward-size);
     height: var(--tc-forward-size);
     font-size: 0.75rem;
-
     background: rgba(0, 0, 0, 0.35);
     border: 1px solid transparent;
-
     color: #fff;
 
     .turncard__forward-value {
@@ -1381,9 +1157,7 @@
       font-weight: 900;
     }
 
-    i {
-      font-size: 0.65rem;
-    }
+    i { font-size: 0.65rem; }
 
     &.has-bonus {
       background: var(--tc-forward-bg);
@@ -1397,8 +1171,7 @@
     bottom: 6px;
     width: var(--tc-control-size);
     height: var(--tc-control-size);
-
-    background: rgba(55, 55, 43, 0.75);
+    background: var(--tc-pentagon-color);
     border: 1px solid rgba(255, 255, 255, 0.92);
     overflow: hidden;
 
@@ -1419,13 +1192,10 @@
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     }
 
-    &.is-bump {
-      animation: tc-bump 200ms ease-out;
-    }
+    &.is-bump { animation: tc-bump 200ms ease-out; }
   }
 
-  /* --- Team card internals ---------------------------------------------- */
-
+  /* --- Team Card Internals --- */
   .turncard__team {
     width: 100%;
     height: 100%;
@@ -1457,8 +1227,6 @@
   .turncard__team-controls {
     display: flex;
     gap: 2px;
-
-    /* lets it remain responsive at smaller widths without changing btn sizes */
     flex-wrap: nowrap;
     justify-content: space-evenly;
   }
@@ -1467,23 +1235,16 @@
     box-sizing: border-box;
     width: calc(var(--tc-control-size) - 2px);
     height: calc(var(--tc-control-size) - 2px);
-
     padding: 0;
     border-radius: 3px;
-
     border: 2px solid rgba(255, 255, 255, 0.55);
     background: rgba(0, 0, 0, 0.25);
     color: #fff;
-
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    transition:
-      background-color var(--tc-transition-fast),
-      transform var(--tc-transition-fast),
-      border-color var(--tc-transition-fast);
+    transition: background-color var(--tc-transition-fast), transform var(--tc-transition-fast), border-color var(--tc-transition-fast);
 
     &:hover:not(:disabled) {
       background: rgba(255, 255, 255, 0.18);
@@ -1491,14 +1252,11 @@
       transform: scale(1.08);
     }
 
-    &:active:not(:disabled) {
-      transform: scale(0.95);
-    }
+    &:active:not(:disabled) { transform: scale(0.95); }
 
     &:disabled {
       opacity: 0.35;
       cursor: not-allowed;
-
       &:hover {
         background: rgba(0, 0, 0, 0.25);
         transform: none;
@@ -1506,23 +1264,13 @@
       }
     }
 
-    i {
-      font-size: 0.75rem;
-    }
+    i { font-size: 0.75rem; }
   }
 
   @keyframes tc-bump {
-    0% {
-      transform: scale(1);
-    }
-
-    50% {
-      transform: scale(1.25);
-    }
-
-    100% {
-      transform: scale(1);
-    }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.25); }
+    100% { transform: scale(1); }
   }
 }
 
@@ -1533,51 +1281,9 @@
   }
 }
 
-/* =========================================================================== */
-/* MASKS SHEET V2 - Redesigned Character Sheet                                 */
-/* =========================================================================== */
-
-:root {
-  /* Layout */
-  --masks-v2-sheet-min-width: 900px;
-  --masks-v2-left-panel-width: 280px;
-  --masks-v2-sidebar-width: 220px;
-  --masks-v2-corner-radius: 2px;
-  --masks-v2-transition-speed: 150ms;
-  --masks-v2-transition-smooth: 300ms;
-
-  /* Label Colors */
-  --masks-danger-color: #e05252;
-  --masks-danger-color-light: rgba(224, 82, 82, 0.15);
-  --masks-freak-color: #9b59b6;
-  --masks-freak-color-light: rgba(155, 89, 182, 0.15);
-  --masks-savior-color: #3498db;
-  --masks-savior-color-light: rgba(52, 152, 219, 0.15);
-  --masks-superior-color: #f39c12;
-  --masks-superior-color-light: rgba(243, 156, 18, 0.15);
-  --masks-mundane-color: #27ae60;
-  --masks-mundane-color-light: rgba(39, 174, 96, 0.15);
-
-  /* Condition Colors (matching affected labels) */
-  --masks-afraid-color: var(--masks-danger-color);
-  --masks-angry-color: var(--masks-mundane-color);
-  --masks-guilty-color: var(--masks-superior-color);
-  --masks-hopeless-color: var(--masks-freak-color);
-  --masks-insecure-color: var(--masks-savior-color);
-
-  /* V2 Theme */
-  --masks-v2-panel-bg: rgba(20, 30, 45, 0.95);
-  --masks-v2-sidebar-bg: rgba(30, 40, 55, 0.92);
-  --masks-v2-tab-bg: rgba(40, 50, 65, 0.9);
-  --masks-v2-tab-active-bg: rgba(60, 75, 95, 0.95);
-  --masks-v2-text-primary: #ffffff;
-  --masks-v2-text-secondary: rgba(255, 255, 255, 0.75);
-  --masks-v2-text-muted: rgba(255, 255, 255, 0.5);
-  --masks-v2-border-color: rgba(255, 255, 255, 0.15);
-  --masks-v2-border-accent: rgba(61, 167, 219, 0.5);
-  --masks-v2-input-bg: rgba(0, 0, 0, 0.3);
-  --masks-v2-accent-color: #3da7db;
-}
+/* =============================================================================
+   MASKS SHEET V2 - Modern Character Sheet Layout
+   ============================================================================= */
 
 /* Main Sheet Container */
 .pbta.sheet.actor .masks-sheet-v2 {
@@ -1586,36 +1292,32 @@
 
 .masks-sheet-v2 .masks-sheet {
   display: grid;
-  grid-template-columns: var(--masks-v2-left-panel-width) 1fr;
+  grid-template-columns: 280px 1fr;
   height: 100%;
   min-height: 600px;
   gap: 0;
-  background: var(--masks-v2-panel-bg);
-  border-radius: var(--masks-v2-corner-radius);
+  background: var(--masks-bg-panel);
+  border-radius: var(--masks-corner-radius);
   overflow: hidden;
 }
 
-/* =========================================================================== */
-/* LEFT PANEL - Portrait, Identity, Conditions                                  */
-/* =========================================================================== */
-
+/* --- Left Panel --- */
 .masks-sheet-v2 .masks-left-panel {
   display: flex;
   flex-direction: column;
   background: linear-gradient(180deg, rgba(20, 30, 45, 0.98) 0%, rgba(15, 25, 40, 0.98) 100%);
-  border-right: 1px solid var(--masks-v2-border-color);
+  border-right: 1px solid var(--masks-border-color);
   padding: 16px;
   gap: 16px;
 }
 
-/* Character Portrait */
 .masks-sheet-v2 .character-portrait {
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  border-radius: var(--masks-v2-corner-radius);
+  border-radius: var(--masks-corner-radius);
   overflow: hidden;
-  border: 2px solid var(--masks-v2-border-accent);
+  border: 2px solid var(--masks-border-accent);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 
   .profile-img {
@@ -1624,15 +1326,12 @@
     object-fit: cover;
     object-position: top center;
     cursor: pointer;
-    transition: transform var(--masks-v2-transition-smooth) ease;
+    transition: transform var(--masks-transition-smooth);
 
-    &:hover {
-      transform: scale(1.02);
-    }
+    &:hover { transform: scale(1.02); }
   }
 }
 
-/* Character Identity */
 .masks-sheet-v2 .character-identity {
   display: flex;
   flex-direction: column;
@@ -1643,41 +1342,38 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--masks-v2-text-primary);
+    color: var(--masks-text-primary);
     background: transparent;
     border: none;
-    border-bottom: 2px solid var(--masks-v2-border-accent);
+    border-bottom: 2px solid var(--masks-border-accent);
     padding: 4px 0;
     width: 100%;
 
-    &::placeholder {
-      color: var(--masks-v2-text-muted);
-    }
-
+    &::placeholder { color: var(--masks-text-muted); }
     &:focus {
       outline: none;
-      border-bottom-color: var(--masks-v2-accent-color);
+      border-bottom-color: var(--masks-accent);
     }
   }
 
   .character-real-name {
     font-size: 1rem;
     font-style: italic;
-    color: var(--masks-v2-text-secondary);
+    color: var(--masks-text-secondary);
     background: transparent;
     border: none;
-    border-bottom: 1px solid var(--masks-v2-border-color);
+    border-bottom: 1px solid var(--masks-border-color);
     padding: 4px 0;
     width: 100%;
 
     &::placeholder {
-      color: var(--masks-v2-text-muted);
+      color: var(--masks-text-muted);
       font-style: italic;
     }
 
     &:focus {
       outline: none;
-      border-bottom-color: var(--masks-v2-accent-color);
+      border-bottom-color: var(--masks-accent);
     }
   }
 
@@ -1686,31 +1382,29 @@
     gap: 8px;
     align-items: center;
     margin-top: 4px;
-    min-width: 0; /* Allow flex items to shrink */
+    min-width: 0;
 
-    /* Playbook select - use .charplaybook class (PbtA standard) */
     .charplaybook {
       flex: 1;
-      min-width: 0; /* Fix overflow */
-      background: var(--masks-v2-input-bg);
-      border: 1px solid var(--masks-v2-border-color);
-      border-radius: var(--masks-v2-corner-radius);
-      color: var(--masks-v2-text-primary);
+      min-width: 0;
+      background: var(--masks-bg-input);
+      border: 1px solid var(--masks-border-color);
+      border-radius: var(--masks-corner-radius);
+      color: var(--masks-text-primary);
       padding: 8px 10px;
       font-size: 0.9rem;
       cursor: pointer;
-      /* Ensure full playbook name is visible */
       height: auto;
       min-height: 36px;
 
       &:focus {
         outline: none;
-        border-color: var(--masks-v2-accent-color);
+        border-color: var(--masks-accent);
       }
 
       option {
-        background: var(--masks-v2-panel-bg);
-        color: var(--masks-v2-text-primary);
+        background: var(--masks-bg-panel);
+        color: var(--masks-text-primary);
         padding: 8px;
       }
     }
@@ -1722,39 +1416,32 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--masks-v2-input-bg);
-      border: 1px solid var(--masks-v2-border-color);
-      border-radius: var(--masks-v2-corner-radius);
-      color: var(--masks-v2-text-muted);
+      background: var(--masks-bg-input);
+      border: 1px solid var(--masks-border-color);
+      border-radius: var(--masks-corner-radius);
+      color: var(--masks-text-muted);
       cursor: pointer;
-      transition: all var(--masks-v2-transition-speed) ease;
+      transition: all var(--masks-transition-fast);
 
       &:hover {
-        background: var(--masks-v2-accent-color);
-        color: var(--masks-v2-text-primary);
-        border-color: var(--masks-v2-accent-color);
+        background: var(--masks-accent);
+        color: var(--masks-text-primary);
+        border-color: var(--masks-accent);
       }
 
-      &.active {
-        color: var(--masks-v2-accent-color);
-      }
+      &.active { color: var(--masks-accent); }
     }
   }
 }
 
-/* =========================================================================== */
-/* CONDITIONS PANEL                                                             */
-/* =========================================================================== */
-
+/* --- Conditions Panel --- */
 .masks-sheet-v2 .conditions-panel {
-  /* No margin-top: auto - conditions appear directly under character identity */
-
   .conditions-title {
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--masks-v2-text-muted);
+    color: var(--masks-text-muted);
     margin-bottom: 8px;
   }
 
@@ -1769,98 +1456,69 @@
     align-items: center;
     gap: 6px;
     padding: 6px 10px;
-    background: var(--masks-v2-input-bg);
-    border: 1px solid var(--masks-v2-border-color);
-    border-radius: var(--masks-v2-corner-radius);
-    color: var(--masks-v2-text-secondary);
+    background: var(--masks-bg-input);
+    border: 1px solid var(--masks-border-color);
+    border-radius: var(--masks-corner-radius);
+    color: var(--masks-text-secondary);
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     cursor: pointer;
-    transition: all var(--masks-v2-transition-speed) ease;
+    transition: all var(--masks-transition-fast);
 
-    i {
-      font-size: 0.75rem;
-    }
+    i { font-size: 0.75rem; }
 
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* Condition colors when active - match the LABEL they affect */
-    /* Afraid affects Danger (red) */
+    /* Active condition colors match affected labels */
     &.condition--afraid.active {
       background: rgba(224, 82, 82, 0.7);
       border-color: var(--masks-danger-color);
       color: white;
     }
-
-    /* Angry affects Mundane (green) */
     &.condition--angry.active {
       background: rgba(39, 174, 96, 0.7);
       border-color: var(--masks-mundane-color);
       color: white;
     }
-
-    /* Guilty affects Superior (gold) */
     &.condition--guilty.active {
       background: rgba(243, 156, 18, 0.7);
       border-color: var(--masks-superior-color);
       color: white;
     }
-
-    /* Hopeless affects Freak (purple) */
     &.condition--hopeless.active {
       background: rgba(155, 89, 182, 0.7);
       border-color: var(--masks-freak-color);
       color: white;
     }
-
-    /* Insecure affects Savior (blue) */
     &.condition--insecure.active {
       background: rgba(52, 152, 219, 0.7);
       border-color: var(--masks-savior-color);
       color: white;
     }
 
-    /* Inactive state with color hint - match the LABEL they affect */
-    &.condition--afraid:not(.active) {
-      border-left: 3px solid var(--masks-danger-color);
-    }
-
-    &.condition--angry:not(.active) {
-      border-left: 3px solid var(--masks-mundane-color);
-    }
-
-    &.condition--guilty:not(.active) {
-      border-left: 3px solid var(--masks-superior-color);
-    }
-
-    &.condition--hopeless:not(.active) {
-      border-left: 3px solid var(--masks-freak-color);
-    }
-
-    &.condition--insecure:not(.active) {
-      border-left: 3px solid var(--masks-savior-color);
-    }
+    /* Inactive state with color hint */
+    &.condition--afraid:not(.active) { border-left: 3px solid var(--masks-danger-color); }
+    &.condition--angry:not(.active) { border-left: 3px solid var(--masks-mundane-color); }
+    &.condition--guilty:not(.active) { border-left: 3px solid var(--masks-superior-color); }
+    &.condition--hopeless:not(.active) { border-left: 3px solid var(--masks-freak-color); }
+    &.condition--insecure:not(.active) { border-left: 3px solid var(--masks-savior-color); }
   }
 }
 
-/* =========================================================================== */
-/* RIGHT SECTION - Tabs + Sidebar                                               */
-/* =========================================================================== */
-
+/* --- Right Section --- */
 .masks-sheet-v2 .masks-sheet__right {
   display: grid;
-  grid-template-columns: 1fr var(--masks-v2-sidebar-width);
+  grid-template-columns: 1fr 220px;
   height: 100%;
   overflow: hidden;
   position: relative;
 }
 
-/* Tabs Container */
 .masks-sheet-v2 .tabs-container {
   display: flex;
   flex-direction: column;
@@ -1868,12 +1526,11 @@
   overflow: hidden;
 }
 
-/* Tab Navigation */
 .masks-sheet-v2 .sheet-tabs.tabs {
   display: flex;
   gap: 2px;
   padding: 8px 12px 0;
-  background: var(--masks-v2-tab-bg);
+  background: var(--masks-bg-tab);
   border-bottom: none;
 
   .tab-btn {
@@ -1883,48 +1540,41 @@
     padding: 10px 16px;
     background: transparent;
     border: none;
-    border-radius: var(--masks-v2-corner-radius) var(--masks-v2-corner-radius) 0 0;
-    color: var(--masks-v2-text-muted);
+    border-radius: var(--masks-corner-radius) var(--masks-corner-radius) 0 0;
+    color: var(--masks-text-muted);
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     cursor: pointer;
-    transition: all var(--masks-v2-transition-speed) ease;
+    transition: all var(--masks-transition-fast);
 
-    i {
-      font-size: 0.9rem;
-    }
+    i { font-size: 0.9rem; }
 
     &:hover {
-      color: var(--masks-v2-text-secondary);
+      color: var(--masks-text-secondary);
       background: rgba(255, 255, 255, 0.05);
     }
 
     &.active {
-      color: var(--masks-v2-text-primary);
-      background: var(--masks-v2-tab-active-bg);
+      color: var(--masks-text-primary);
+      background: var(--masks-bg-tab-active);
     }
   }
 }
 
-/* Tab Content */
 .masks-sheet-v2 .tab-content {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  background: var(--masks-v2-tab-active-bg);
+  background: var(--masks-bg-tab-active);
   padding: 16px;
   scroll-behavior: smooth;
-  /* Prevent scroll position reset on re-render */
   overscroll-behavior: contain;
 
   .tab {
     display: none;
-
-    &.active {
-      display: block;
-    }
+    &.active { display: block; }
   }
 
   .sheet-tab {
@@ -1934,7 +1584,7 @@
   }
 }
 
-/* Section Styling - Clean headers without underlines */
+/* --- Section Titles (V2) --- */
 .masks-sheet-v2 .section-title,
 .masks-sheet-v2 .sidebar-title,
 .masks-sheet-v2 .subsection-title {
@@ -1943,12 +1593,10 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   margin-bottom: 8px;
-  /* Clean style - no underlines */
 }
 
-/* Feature labels (like "Doom Track") - slightly more prominent */
 .masks-sheet-v2 .feature-label,
 .masks-sheet-v2 .cell__title {
   display: block;
@@ -1956,47 +1604,40 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-text-secondary);
   margin-bottom: 8px;
-  /* Override old decorative styles */
   font-style: normal;
   position: relative;
   padding-left: 0;
   border-bottom: none;
 
-  &::before, &::after {
-    display: none;
-  }
+  &::before, &::after { display: none; }
 }
 
 .masks-sheet-v2 .section-description {
   font-size: 0.85rem;
-  color: var(--masks-v2-text-muted);
+  color: var(--masks-text-muted);
   font-style: italic;
   margin-bottom: 8px;
 }
 
-/* Editor Styling */
 .masks-sheet-v2 .editor {
   min-height: 100px;
 
   .editor-content {
-    background: var(--masks-v2-input-bg);
-    border: 1px solid var(--masks-v2-border-color);
-    border-radius: var(--masks-v2-corner-radius);
-    color: var(--masks-v2-text-primary);
+    background: var(--masks-bg-input);
+    border: 1px solid var(--masks-border-color);
+    border-radius: var(--masks-corner-radius);
+    color: var(--masks-text-primary);
     padding: 8px;
     min-height: 80px;
   }
 }
 
-/* =========================================================================== */
-/* STATS SIDEBAR                                                                */
-/* =========================================================================== */
-
+/* --- Stats Sidebar --- */
 .masks-sheet-v2 .stats-sidebar {
-  background: var(--masks-v2-sidebar-bg);
-  border-left: 1px solid var(--masks-v2-border-color);
+  background: var(--masks-bg-sidebar);
+  border-left: 1px solid var(--masks-border-color);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -2004,32 +1645,25 @@
   overflow-y: auto;
 }
 
-/* Labels Section */
 .masks-sheet-v2 .labels-section {
   .labels-graph-clickable {
     display: flex;
     justify-content: center;
     margin-bottom: 12px;
     cursor: pointer;
-    transition: transform var(--masks-v2-transition-speed) ease;
+    transition: transform var(--masks-transition-fast);
 
-    &:hover {
-      transform: scale(1.05);
-    }
+    &:hover { transform: scale(1.05); }
 
     .labels-graph-svg {
       width: 100px;
       height: 100px;
 
-      /* Animate the data polygon path */
       path:last-of-type {
         transition: fill 0.3s ease, stroke 0.3s ease, d 0.3s ease;
       }
 
-      /* Pulse animation when graph updates */
-      &.updating {
-        animation: graph-pulse 0.3s ease;
-      }
+      &.updating { animation: graph-pulse 0.3s ease; }
     }
   }
 
@@ -2045,27 +1679,21 @@
     gap: 8px;
   }
 
-  /* Two-row label layout: Row 1: Icon | Name | Lock, Row 2: - | Value | + */
   .label-row {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    background: var(--masks-v2-input-bg);
-    border: 1px solid var(--masks-v2-border-color);
-    border-radius: var(--masks-v2-corner-radius);
+    background: var(--masks-bg-input);
+    border: 1px solid var(--masks-border-color);
+    border-radius: var(--masks-corner-radius);
     padding: 6px 8px;
-    transition: all var(--masks-v2-transition-speed) ease;
+    transition: all var(--masks-transition-fast);
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
+    &:hover { background: rgba(255, 255, 255, 0.05); }
 
     &.locked {
       opacity: 0.6;
-
-      .label-row-bottom {
-        pointer-events: none;
-      }
+      .label-row-bottom { pointer-events: none; }
     }
 
     .label-row-top {
@@ -2081,27 +1709,23 @@
       gap: 4px;
     }
 
-    /* Label-specific colors */
+    /* Label colors */
     &.label--danger {
       border-left: 3px solid var(--masks-danger-color);
       .label-icon { color: var(--masks-danger-color); }
     }
-
     &.label--freak {
       border-left: 3px solid var(--masks-freak-color);
       .label-icon { color: var(--masks-freak-color); }
     }
-
     &.label--savior {
       border-left: 3px solid var(--masks-savior-color);
       .label-icon { color: var(--masks-savior-color); }
     }
-
     &.label--superior {
       border-left: 3px solid var(--masks-superior-color);
       .label-icon { color: var(--masks-superior-color); }
     }
-
     &.label--mundane {
       border-left: 3px solid var(--masks-mundane-color);
       .label-icon { color: var(--masks-mundane-color); }
@@ -2120,7 +1744,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.03em;
-      color: var(--masks-v2-text-primary);
+      color: var(--masks-text-primary);
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -2134,17 +1758,15 @@
       padding: 0;
       background: transparent;
       border: none;
-      color: var(--masks-v2-text-muted);
+      color: var(--masks-text-muted);
       cursor: pointer;
       font-size: 0.65rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: color var(--masks-v2-transition-speed) ease;
+      transition: color var(--masks-transition-fast);
 
-      &:hover {
-        color: var(--masks-v2-text-primary);
-      }
+      &:hover { color: var(--masks-text-primary); }
     }
 
     .label-btn {
@@ -2155,14 +1777,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--masks-v2-input-bg);
-      border: 1px solid var(--masks-v2-border-color);
-      border-radius: var(--masks-v2-corner-radius);
-      color: var(--masks-v2-text-secondary);
+      background: var(--masks-bg-input);
+      border: 1px solid var(--masks-border-color);
+      border-radius: var(--masks-corner-radius);
+      color: var(--masks-text-secondary);
       cursor: pointer;
       font-size: 0.65rem;
       line-height: 1;
-      transition: all var(--masks-v2-transition-speed) ease;
+      transition: all var(--masks-transition-fast);
 
       i {
         display: flex;
@@ -2173,9 +1795,9 @@
       }
 
       &:hover:not(:disabled) {
-        background: var(--masks-v2-accent-color);
+        background: var(--masks-accent);
         color: white;
-        border-color: var(--masks-v2-accent-color);
+        border-color: var(--masks-accent);
       }
 
       &:disabled {
@@ -2190,16 +1812,13 @@
       text-align: center;
       background: transparent;
       border: none;
-      color: var(--masks-v2-text-primary);
+      color: var(--masks-text-primary);
       font-size: 1rem;
       font-weight: 700;
       transition: transform 0.2s ease, color 0.2s ease;
 
-      &:focus {
-        outline: none;
-      }
+      &:focus { outline: none; }
 
-      /* Hide spinner buttons */
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -2208,38 +1827,27 @@
 
       -moz-appearance: textfield;
 
-      /* Animation when value changes */
-      &.shifting-up {
-        animation: label-shift-up 0.3s ease;
-      }
-
-      &.shifting-down {
-        animation: label-shift-down 0.3s ease;
-      }
+      &.shifting-up { animation: label-shift-up 0.3s ease; }
+      &.shifting-down { animation: label-shift-down 0.3s ease; }
     }
 
-    /* Label shift animations */
     @keyframes label-shift-up {
-      0% { transform: scale(1); color: var(--masks-v2-text-primary); }
+      0% { transform: scale(1); color: var(--masks-text-primary); }
       50% { transform: scale(1.3); color: #4CAF50; }
-      100% { transform: scale(1); color: var(--masks-v2-text-primary); }
+      100% { transform: scale(1); color: var(--masks-text-primary); }
     }
 
     @keyframes label-shift-down {
-      0% { transform: scale(1); color: var(--masks-v2-text-primary); }
+      0% { transform: scale(1); color: var(--masks-text-primary); }
       50% { transform: scale(1.3); color: #F44336; }
-      100% { transform: scale(1); color: var(--masks-v2-text-primary); }
+      100% { transform: scale(1); color: var(--masks-text-primary); }
     }
   }
 
-  /* Remove old nested structures - now single row */
-  .label-header,
-  .label-controls {
-    display: contents;
-  }
+  .label-header, .label-controls { display: contents; }
 }
 
-/* Potential Section */
+/* --- Potential Section --- */
 .masks-sheet-v2 .potential-section {
   .potential-tracker {
     display: flex;
@@ -2256,59 +1864,53 @@
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: var(--masks-v2-input-bg);
-      border: 2px solid var(--masks-v2-border-color);
+      background: var(--masks-bg-input);
+      border: 2px solid var(--masks-border-color);
       cursor: pointer;
-      transition: all var(--masks-v2-transition-speed) ease;
+      transition: all var(--masks-transition-fast);
 
       &:hover {
-        border-color: var(--masks-turncards-potential-fill-color);
+        border-color: var(--masks-gold-dark);
         transform: scale(1.1);
       }
 
       &.filled {
-        background: var(--masks-turncards-potential-fill-color);
-        border-color: var(--masks-turncards-potential-fill-color);
+        background: var(--masks-gold-dark);
+        border-color: var(--masks-gold-dark);
       }
     }
   }
 
   .potential-count {
     font-size: 0.75rem;
-    color: var(--masks-v2-text-muted);
+    color: var(--masks-text-muted);
   }
 }
 
-/* Advantages Section (Forward/Ongoing grouped) - Compact like Labels */
+/* --- Advantages Section --- */
 .masks-sheet-v2 .advantages-section {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  overflow: hidden; /* Prevent overflow */
+  overflow: hidden;
 
-  .sidebar-title {
-    margin-bottom: 4px;
-  }
+  .sidebar-title { margin-bottom: 4px; }
 }
 
-/* Modifier Sections (Forward/Ongoing) - Styled like label-row */
 .masks-sheet-v2 .modifier-section {
   .modifier-row {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    background: var(--masks-v2-input-bg);
-    border: 1px solid var(--masks-v2-border-color);
-    border-radius: var(--masks-v2-corner-radius);
+    background: var(--masks-bg-input);
+    border: 1px solid var(--masks-border-color);
+    border-radius: var(--masks-corner-radius);
     padding: 6px 8px;
-    transition: all var(--masks-v2-transition-speed) ease;
+    transition: all var(--masks-transition-fast);
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
+    &:hover { background: rgba(255, 255, 255, 0.05); }
   }
 
-  /* Top row: Icon | Name */
   .modifier-row-top {
     display: flex;
     align-items: center;
@@ -2320,7 +1922,7 @@
     width: 16px;
     text-align: center;
     flex-shrink: 0;
-    color: var(--masks-v2-accent-color);
+    color: var(--masks-accent);
   }
 
   .modifier-label {
@@ -2329,14 +1931,13 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    color: var(--masks-v2-text-primary);
+    color: var(--masks-text-primary);
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  /* Bottom row: - | Value | + */
   .modifier-controls {
     display: flex;
     align-items: center;
@@ -2351,14 +1952,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--masks-v2-input-bg);
-      border: 1px solid var(--masks-v2-border-color);
-      border-radius: var(--masks-v2-corner-radius);
-      color: var(--masks-v2-text-secondary);
+      background: var(--masks-bg-input);
+      border: 1px solid var(--masks-border-color);
+      border-radius: var(--masks-corner-radius);
+      color: var(--masks-text-secondary);
       cursor: pointer;
       font-size: 0.65rem;
       line-height: 1;
-      transition: all var(--masks-v2-transition-speed) ease;
+      transition: all var(--masks-transition-fast);
 
       i {
         display: flex;
@@ -2369,9 +1970,9 @@
       }
 
       &:hover:not(:disabled) {
-        background: var(--masks-v2-accent-color);
+        background: var(--masks-accent);
         color: white;
-        border-color: var(--masks-v2-accent-color);
+        border-color: var(--masks-accent);
       }
     }
 
@@ -2381,13 +1982,11 @@
       text-align: center;
       background: transparent;
       border: none;
-      color: var(--masks-v2-text-primary);
+      color: var(--masks-text-primary);
       font-size: 1rem;
       font-weight: 700;
 
-      &:focus {
-        outline: none;
-      }
+      &:focus { outline: none; }
 
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
@@ -2399,24 +1998,18 @@
     }
   }
 
-  /* Forward - green accent */
   &.modifier--forward {
-    .modifier-row {
-      border-left: 3px solid #4CAF50;
-    }
+    .modifier-row { border-left: 3px solid #4CAF50; }
     .modifier-icon { color: #4CAF50; }
   }
 
-  /* Ongoing - blue accent */
   &.modifier--ongoing {
-    .modifier-row {
-      border-left: 3px solid #2196F3;
-    }
+    .modifier-row { border-left: 3px solid #2196F3; }
     .modifier-icon { color: #2196F3; }
   }
 }
 
-/* Playbook Attributes Section */
+/* --- Playbook Attributes Section --- */
 .masks-sheet-v2 .playbook-attrs-section {
   .playbook-attr {
     margin-bottom: 12px;
@@ -2427,7 +2020,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--masks-v2-text-muted);
+      color: var(--masks-text-muted);
       margin-bottom: 4px;
     }
 
@@ -2440,15 +2033,12 @@
         width: 20px;
         height: 20px;
         border-radius: 50%;
-        background: var(--masks-v2-input-bg);
-        border: 2px solid var(--masks-v2-border-color);
+        background: var(--masks-bg-input);
+        border: 2px solid var(--masks-border-color);
         cursor: pointer;
-        transition: all var(--masks-v2-transition-speed) ease;
+        transition: all var(--masks-transition-fast);
 
-        &:hover {
-          border-color: var(--masks-danger-color);
-        }
-
+        &:hover { border-color: var(--masks-danger-color); }
         &.filled {
           background: var(--masks-danger-color);
           border-color: var(--masks-danger-color);
@@ -2468,15 +2058,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: var(--masks-v2-input-bg);
-        border: 1px solid var(--masks-v2-border-color);
-        border-radius: var(--masks-v2-corner-radius);
-        color: var(--masks-v2-text-secondary);
+        background: var(--masks-bg-input);
+        border: 1px solid var(--masks-border-color);
+        border-radius: var(--masks-corner-radius);
+        color: var(--masks-text-secondary);
         cursor: pointer;
-        transition: all var(--masks-v2-transition-speed) ease;
+        transition: all var(--masks-transition-fast);
 
         &:hover {
-          background: var(--masks-v2-accent-color);
+          background: var(--masks-accent);
           color: white;
         }
       }
@@ -2484,15 +2074,15 @@
       input {
         width: 50px;
         text-align: center;
-        background: var(--masks-v2-input-bg);
-        border: 1px solid var(--masks-v2-border-color);
-        border-radius: var(--masks-v2-corner-radius);
-        color: var(--masks-v2-text-primary);
+        background: var(--masks-bg-input);
+        border: 1px solid var(--masks-border-color);
+        border-radius: var(--masks-corner-radius);
+        color: var(--masks-text-primary);
         font-weight: 600;
 
         &:focus {
           outline: none;
-          border-color: var(--masks-v2-accent-color);
+          border-color: var(--masks-accent);
         }
       }
     }
@@ -2500,17 +2090,17 @@
     textarea {
       width: 100%;
       min-height: 60px;
-      background: var(--masks-v2-input-bg);
-      border: 1px solid var(--masks-v2-border-color);
-      border-radius: var(--masks-v2-corner-radius);
-      color: var(--masks-v2-text-primary);
+      background: var(--masks-bg-input);
+      border: 1px solid var(--masks-border-color);
+      border-radius: var(--masks-corner-radius);
+      color: var(--masks-text-primary);
       padding: 6px;
       font-size: 0.8rem;
       resize: vertical;
 
       &:focus {
         outline: none;
-        border-color: var(--masks-v2-accent-color);
+        border-color: var(--masks-accent);
       }
     }
 
@@ -2527,25 +2117,23 @@
           align-items: center;
           gap: 6px;
           font-size: 0.8rem;
-          color: var(--masks-v2-text-secondary);
+          color: var(--masks-text-secondary);
           cursor: pointer;
 
-          input[type="checkbox"] {
-            accent-color: var(--masks-v2-accent-color);
-          }
+          input[type="checkbox"] { accent-color: var(--masks-accent); }
 
           input[type="text"] {
             flex: 1;
-            background: var(--masks-v2-input-bg);
-            border: 1px solid var(--masks-v2-border-color);
-            border-radius: var(--masks-v2-corner-radius);
-            color: var(--masks-v2-text-primary);
+            background: var(--masks-bg-input);
+            border: 1px solid var(--masks-border-color);
+            border-radius: var(--masks-corner-radius);
+            color: var(--masks-text-primary);
             padding: 2px 6px;
             font-size: 0.8rem;
 
             &:focus {
               outline: none;
-              border-color: var(--masks-v2-accent-color);
+              border-color: var(--masks-accent);
             }
           }
         }
@@ -2554,17 +2142,11 @@
   }
 }
 
-/* =========================================================================== */
-/* INFO TAB                                                                     */
-/* =========================================================================== */
-
+/* --- Info Tab --- */
 .masks-sheet-v2 .info-tab {
   .info-section {
     margin-bottom: 16px;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
+    &:last-child { margin-bottom: 0; }
   }
 
   .section-header {
@@ -2586,12 +2168,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--masks-v2-accent-color);
+      background: var(--masks-accent);
       border: none;
-      border-radius: var(--masks-v2-corner-radius);
+      border-radius: var(--masks-corner-radius);
       color: white;
       cursor: pointer;
-      transition: all var(--masks-v2-transition-speed) ease;
+      transition: all var(--masks-transition-fast);
 
       &:hover {
         transform: scale(1.1);
@@ -2614,19 +2196,15 @@
     align-items: center;
     gap: 8px;
     padding: 8px;
-    background: var(--masks-v2-input-bg);
-    border: 1px solid var(--masks-v2-border-color);
-    border-radius: var(--masks-v2-corner-radius);
-    transition: opacity var(--masks-v2-transition-speed) ease;
+    background: var(--masks-bg-input);
+    border: 1px solid var(--masks-border-color);
+    border-radius: var(--masks-corner-radius);
+    transition: opacity var(--masks-transition-fast);
 
-    /* Locked state */
     &.locked {
       opacity: 0.7;
-      border-left: 3px solid var(--masks-v2-accent-color);
-
-      .influence-name-input {
-        cursor: default;
-      }
+      border-left: 3px solid var(--masks-accent);
+      .influence-name-input { cursor: default; }
     }
 
     .influence-name-row {
@@ -2637,18 +2215,16 @@
         background: transparent;
         border: none;
         border-bottom: 1px solid transparent;
-        color: var(--masks-v2-text-primary);
+        color: var(--masks-text-primary);
         font-size: 0.9rem;
         padding: 2px 0;
 
         &:focus {
           outline: none;
-          border-bottom-color: var(--masks-v2-accent-color);
+          border-bottom-color: var(--masks-accent);
         }
 
-        &[readonly] {
-          cursor: default;
-        }
+        &[readonly] { cursor: default; }
       }
     }
 
@@ -2665,14 +2241,14 @@
         justify-content: center;
         flex-direction: column;
         gap: 2px;
-        background: var(--masks-v2-input-bg);
-        border: 1px solid var(--masks-v2-border-color);
-        border-radius: var(--masks-v2-corner-radius);
-        color: var(--masks-v2-text-muted);
+        background: var(--masks-bg-input);
+        border: 1px solid var(--masks-border-color);
+        border-radius: var(--masks-corner-radius);
+        color: var(--masks-text-muted);
         cursor: pointer;
         font-size: 0.55rem;
         line-height: 1;
-        transition: all var(--masks-v2-transition-speed) ease;
+        transition: all var(--masks-transition-fast);
 
         i {
           display: flex;
@@ -2681,20 +2257,18 @@
           font-size: 0.65rem;
         }
 
-        span {
-          display: none;
-        }
+        span { display: none; }
 
         &:hover:not(:disabled) {
-          background: var(--masks-v2-accent-color);
+          background: var(--masks-accent);
           color: white;
-          border-color: var(--masks-v2-accent-color);
+          border-color: var(--masks-accent);
         }
 
         &.active {
-          background: var(--masks-v2-accent-color);
+          background: var(--masks-accent);
           color: white;
-          border-color: var(--masks-v2-accent-color);
+          border-color: var(--masks-accent);
         }
 
         &:disabled {
@@ -2712,26 +2286,23 @@
 
   .no-influences {
     font-size: 0.85rem;
-    color: var(--masks-v2-text-muted);
+    color: var(--masks-text-muted);
     font-style: italic;
     text-align: center;
     padding: 16px;
   }
 }
 
-/* =========================================================================== */
-/* POWERS TAB                                                                   */
-/* =========================================================================== */
-
+/* --- Powers Tab --- */
 .masks-sheet-v2 .powers-tab {
   .powers-modifiers {
     display: flex;
     gap: 16px;
     margin-bottom: 16px;
     padding: 12px;
-    background: var(--masks-v2-input-bg);
-    border: 1px solid var(--masks-v2-border-color);
-    border-radius: var(--masks-v2-corner-radius);
+    background: var(--masks-bg-input);
+    border: 1px solid var(--masks-border-color);
+    border-radius: var(--masks-corner-radius);
 
     .modifier-field {
       display: flex;
@@ -2743,22 +2314,22 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        color: var(--masks-v2-text-muted);
+        color: var(--masks-text-muted);
         white-space: nowrap;
       }
 
       input[type="text"] {
         width: 80px;
-        background: var(--masks-v2-sidebar-bg);
-        border: 1px solid var(--masks-v2-border-color);
-        border-radius: var(--masks-v2-corner-radius);
-        color: var(--masks-v2-text-primary);
+        background: var(--masks-bg-sidebar);
+        border: 1px solid var(--masks-border-color);
+        border-radius: var(--masks-corner-radius);
+        color: var(--masks-text-primary);
         padding: 4px 8px;
         font-size: 0.85rem;
 
         &:focus {
           outline: none;
-          border-color: var(--masks-v2-accent-color);
+          border-color: var(--masks-accent);
         }
       }
 
@@ -2774,32 +2345,32 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--masks-v2-sidebar-bg);
-          border: 1px solid var(--masks-v2-border-color);
-          border-radius: var(--masks-v2-corner-radius);
-          color: var(--masks-v2-text-secondary);
+          background: var(--masks-bg-sidebar);
+          border: 1px solid var(--masks-border-color);
+          border-radius: var(--masks-corner-radius);
+          color: var(--masks-text-secondary);
           cursor: pointer;
-          transition: all var(--masks-v2-transition-speed) ease;
+          transition: all var(--masks-transition-fast);
 
           &:hover {
-            background: var(--masks-v2-accent-color);
+            background: var(--masks-accent);
             color: white;
-            border-color: var(--masks-v2-accent-color);
+            border-color: var(--masks-accent);
           }
         }
 
         input {
           width: 40px;
           text-align: center;
-          background: var(--masks-v2-sidebar-bg);
-          border: 1px solid var(--masks-v2-border-color);
-          border-radius: var(--masks-v2-corner-radius);
-          color: var(--masks-v2-text-primary);
+          background: var(--masks-bg-sidebar);
+          border: 1px solid var(--masks-border-color);
+          border-radius: var(--masks-corner-radius);
+          color: var(--masks-text-primary);
           font-weight: 600;
 
           &:focus {
             outline: none;
-            border-color: var(--masks-v2-accent-color);
+            border-color: var(--masks-accent);
           }
         }
       }
@@ -2813,9 +2384,9 @@
   }
 
   .moves-group {
-    background: var(--masks-v2-input-bg);
-    border: 1px solid var(--masks-v2-border-color);
-    border-radius: var(--masks-v2-corner-radius);
+    background: var(--masks-bg-input);
+    border: 1px solid var(--masks-border-color);
+    border-radius: var(--masks-corner-radius);
     overflow: hidden;
 
     &.collapsed .moves-list-wrapper {
@@ -2823,13 +2394,11 @@
       opacity: 0;
     }
 
-    &.collapsed .moves-collapse-icon i {
-      transform: rotate(180deg);
-    }
+    &.collapsed .moves-collapse-icon i { transform: rotate(180deg); }
   }
 
   .moves-list-wrapper {
-    max-height: 2000px; /* Large enough to fit any list */
+    max-height: 2000px;
     opacity: 1;
     overflow: hidden;
     transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
@@ -2842,14 +2411,11 @@
     padding: 8px 12px;
     background: transparent;
     cursor: pointer;
-    transition: background var(--masks-v2-transition-speed) ease;
-    border-bottom: 1px solid var(--masks-v2-border-color);
+    transition: background var(--masks-transition-fast);
+    border-bottom: 1px solid var(--masks-border-color);
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.03);
-    }
+    &:hover { background: rgba(255, 255, 255, 0.03); }
 
-    /* Match feature-label style */
     .moves-group-title {
       flex: 1;
       display: flex;
@@ -2860,17 +2426,16 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--masks-v2-text-secondary);
+      color: var(--masks-text-secondary);
 
       i {
-        color: var(--masks-v2-accent-color);
+        color: var(--masks-accent);
         font-size: 0.85rem;
       }
     }
 
     .moves-collapse-icon {
-      color: var(--masks-v2-text-muted);
-
+      color: var(--masks-text-muted);
       i {
         font-size: 0.7rem;
         transition: transform 0.3s ease;
@@ -2885,16 +2450,16 @@
       align-items: center;
       justify-content: center;
       background: transparent;
-      border: 1px solid var(--masks-v2-border-color);
-      border-radius: var(--masks-v2-corner-radius);
-      color: var(--masks-v2-text-muted);
+      border: 1px solid var(--masks-border-color);
+      border-radius: var(--masks-corner-radius);
+      color: var(--masks-text-muted);
       cursor: pointer;
       font-size: 0.65rem;
-      transition: all var(--masks-v2-transition-speed) ease;
+      transition: all var(--masks-transition-fast);
 
       &:hover {
-        background: var(--masks-v2-accent-color);
-        border-color: var(--masks-v2-accent-color);
+        background: var(--masks-accent);
+        border-color: var(--masks-accent);
         color: white;
       }
     }
@@ -2904,23 +2469,17 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    /* Use grid for smooth height animation */
     display: grid;
     grid-template-rows: 1fr;
     opacity: 1;
     transition: grid-template-rows 0.2s ease-out, opacity 0.2s ease-out;
 
-    > * {
-      overflow: hidden;
-    }
+    > * { overflow: hidden; }
   }
 
   .move-item {
-    border-top: 1px solid var(--masks-v2-border-color);
-
-    &:first-child {
-      border-top: none;
-    }
+    border-top: 1px solid var(--masks-border-color);
+    &:first-child { border-top: none; }
   }
 
   .move-content {
@@ -2935,28 +2494,26 @@
         flex-shrink: 0;
         width: 28px;
         height: 28px;
-        border: 1px solid var(--masks-v2-border-color);
-        border-radius: var(--masks-v2-corner-radius);
-        background: var(--masks-v2-input-bg);
+        border: 1px solid var(--masks-border-color);
+        border-radius: var(--masks-corner-radius);
+        background: var(--masks-bg-input);
         object-fit: cover;
         cursor: pointer;
-        transition: all var(--masks-v2-transition-speed) ease;
+        transition: all var(--masks-transition-fast);
 
         &:hover {
           transform: scale(1.1);
           box-shadow: 0 2px 8px rgba(61, 167, 219, 0.3);
         }
 
-        /* Rollable moves - dice hover effect */
         &.rollable:hover {
-          border-color: var(--masks-v2-accent-color);
-          background: var(--masks-v2-accent-color);
+          border-color: var(--masks-accent);
+          background: var(--masks-accent);
         }
 
-        /* Non-rollable moves - share/chat hover effect */
         &:not(.rollable):hover {
-          border-color: var(--masks-mundane-color, #7fdbff);
-          background: var(--masks-mundane-color, #7fdbff);
+          border-color: var(--masks-mundane-color);
+          background: var(--masks-mundane-color);
         }
       }
 
@@ -2964,44 +2521,13 @@
         flex: 1;
         font-size: 0.9rem;
         font-weight: 600;
-        color: var(--masks-v2-text-primary);
+        color: var(--masks-text-primary);
         cursor: pointer;
-        transition: color var(--masks-v2-transition-speed) ease;
+        transition: color var(--masks-transition-fast);
 
-        &:hover {
-          text-decoration: underline;
-        }
+        &:hover { text-decoration: underline; }
       }
-    }
 
-    /* Color-code moves by rollType */
-    &.roll-danger .move-name {
-      color: var(--masks-danger-color);
-    }
-
-    &.roll-freak .move-name {
-      color: var(--masks-freak-color);
-    }
-
-    &.roll-savior .move-name {
-      color: var(--masks-savior-color);
-    }
-
-    &.roll-superior .move-name {
-      color: var(--masks-superior-color);
-    }
-
-    &.roll-mundane .move-name {
-      color: var(--masks-mundane-color);
-    }
-
-    /* Hover state - brighten move row for rollable moves */
-    &.has-roll:hover {
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .move-header {
-      /* Move tag with label tint */
       .move-tag {
         flex-shrink: 0;
         display: inline-flex;
@@ -3012,41 +2538,34 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        border-radius: var(--masks-v2-corner-radius);
+        border-radius: var(--masks-corner-radius);
         background: rgba(255, 255, 255, 0.1);
-        color: var(--masks-v2-text-secondary);
+        color: var(--masks-text-secondary);
 
-        i {
-          font-size: 0.7rem;
-        }
+        i { font-size: 0.7rem; }
 
-        /* Label-specific tints */
         &.label-danger {
-          background: var(--masks-danger-color-light);
+          background: var(--masks-danger-bg);
           color: var(--masks-danger-color);
           border: 1px solid var(--masks-danger-color);
         }
-
         &.label-freak {
-          background: var(--masks-freak-color-light);
+          background: var(--masks-freak-bg);
           color: var(--masks-freak-color);
           border: 1px solid var(--masks-freak-color);
         }
-
         &.label-savior {
-          background: var(--masks-savior-color-light);
+          background: var(--masks-savior-bg);
           color: var(--masks-savior-color);
           border: 1px solid var(--masks-savior-color);
         }
-
         &.label-superior {
-          background: var(--masks-superior-color-light);
+          background: var(--masks-superior-bg);
           color: var(--masks-superior-color);
           border: 1px solid var(--masks-superior-color);
         }
-
         &.label-mundane {
-          background: var(--masks-mundane-color-light);
+          background: var(--masks-mundane-bg);
           color: var(--masks-mundane-color);
           border: 1px solid var(--masks-mundane-color);
         }
@@ -3057,7 +2576,7 @@
         display: flex;
         gap: 4px;
         opacity: 0.5;
-        transition: opacity var(--masks-v2-transition-speed) ease;
+        transition: opacity var(--masks-transition-fast);
 
         .move-action {
           width: 26px;
@@ -3066,14 +2585,14 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--masks-v2-input-bg);
-          border: 1px solid var(--masks-v2-border-color);
-          border-radius: var(--masks-v2-corner-radius);
-          color: var(--masks-v2-text-muted);
+          background: var(--masks-bg-input);
+          border: 1px solid var(--masks-border-color);
+          border-radius: var(--masks-corner-radius);
+          color: var(--masks-text-muted);
           cursor: pointer;
           font-size: 0.7rem;
           line-height: 1;
-          transition: all var(--masks-v2-transition-speed) ease;
+          transition: all var(--masks-transition-fast);
 
           i {
             display: flex;
@@ -3082,19 +2601,17 @@
           }
 
           &:hover {
-            background: var(--masks-v2-accent-color);
+            background: var(--masks-accent);
             color: white;
-            border-color: var(--masks-v2-accent-color);
+            border-color: var(--masks-accent);
           }
 
           &.move-roll {
-            background: var(--masks-v2-accent-color);
-            border-color: var(--masks-v2-accent-color);
+            background: var(--masks-accent);
+            border-color: var(--masks-accent);
             color: white;
 
-            &:hover {
-              filter: brightness(1.15);
-            }
+            &:hover { filter: brightness(1.15); }
           }
 
           &.move-delete:hover {
@@ -3105,33 +2622,35 @@
       }
     }
 
-    &:hover .move-actions {
-      opacity: 1;
-    }
+    &:hover .move-actions { opacity: 1; }
 
-    /* Highlight moves with rolls */
     &.has-roll .move-icon {
-      background: var(--masks-v2-accent-color);
-      border-color: var(--masks-v2-accent-color);
+      background: var(--masks-accent);
+      border-color: var(--masks-accent);
       color: white;
     }
 
+    /* Move roll type colors */
+    &.roll-danger .move-name { color: var(--masks-danger-color); }
+    &.roll-freak .move-name { color: var(--masks-freak-color); }
+    &.roll-savior .move-name { color: var(--masks-savior-color); }
+    &.roll-superior .move-name { color: var(--masks-superior-color); }
+    &.roll-mundane .move-name { color: var(--masks-mundane-color); }
+
+    &.has-roll:hover { background: rgba(255, 255, 255, 0.03); }
+
     .move-description {
       margin-top: 8px;
-      margin-left: 32px; /* Align with move name */
+      margin-left: 32px;
       font-size: 0.85rem;
-      color: var(--masks-v2-text-secondary);
+      color: var(--masks-text-secondary);
       line-height: 1.5;
-
-      /* Use grid for smooth height animation */
       display: grid;
       grid-template-rows: 1fr;
       transition: grid-template-rows 0.2s ease-out, opacity 0.2s ease-out;
       opacity: 1;
 
-      > * {
-        overflow: hidden;
-      }
+      > * { overflow: hidden; }
 
       &.collapsed {
         grid-template-rows: 0fr;
@@ -3141,69 +2660,56 @@
   }
 }
 
-/* =========================================================================== */
-/* PLAYBOOK TAB                                                                 */
-/* =========================================================================== */
-
+/* --- Playbook Tab --- */
 .masks-sheet-v2 .playbook-tab {
   .playbook-section {
     margin-bottom: 20px;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
+    &:last-child { margin-bottom: 0; }
   }
 
-  /* Playbook Features Section (uses PbtA attribute renderer) */
   .playbook-section--features {
     .playbook-features {
       display: flex;
       flex-direction: column;
       gap: 12px;
 
-      /* Style PbtA cell types within playbook features */
       .cell {
         margin-bottom: 0;
         padding: 12px;
-        background: var(--masks-v2-input-bg);
-        border: 1px solid var(--masks-v2-border-color);
-        border-radius: var(--masks-v2-corner-radius);
+        background: var(--masks-bg-input);
+        border: 1px solid var(--masks-border-color);
+        border-radius: var(--masks-corner-radius);
 
         .cell__title {
           font-size: 0.8rem;
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: var(--masks-v2-text-secondary);
+          color: var(--masks-text-secondary);
           margin-bottom: 8px;
 
-          /* Remove the decorative before/after bars from original styling */
-          &::before, &::after {
-            display: none;
-          }
+          &::before, &::after { display: none; }
         }
 
         .cell__description {
           font-size: 0.75rem;
-          color: var(--masks-v2-text-muted);
+          color: var(--masks-text-muted);
           font-style: italic;
           margin-bottom: 8px;
         }
 
-        /* LongText editors */
         .editor {
           min-height: 80px;
 
           .editor-content {
-            background: var(--masks-v2-sidebar-bg);
-            border: 1px solid var(--masks-v2-border-color);
-            border-radius: var(--masks-v2-corner-radius);
-            color: var(--masks-v2-text-primary);
+            background: var(--masks-bg-sidebar);
+            border: 1px solid var(--masks-border-color);
+            border-radius: var(--masks-corner-radius);
+            color: var(--masks-text-primary);
             padding: 8px;
           }
         }
 
-        /* ListMany checkboxes */
         .cell__checkboxes {
           list-style: none;
           padding: 0;
@@ -3215,27 +2721,25 @@
             gap: 8px;
             padding: 6px 8px;
             background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--masks-v2-corner-radius);
+            border-radius: var(--masks-corner-radius);
             margin-bottom: 4px;
-            color: var(--masks-v2-text-secondary);
+            color: var(--masks-text-secondary);
             font-size: 0.85rem;
 
-            input[type="checkbox"] {
-              accent-color: var(--masks-v2-accent-color);
-            }
+            input[type="checkbox"] { accent-color: var(--masks-accent); }
 
             input[type="text"] {
               flex: 1;
-              background: var(--masks-v2-sidebar-bg);
-              border: 1px solid var(--masks-v2-border-color);
-              border-radius: var(--masks-v2-corner-radius);
-              color: var(--masks-v2-text-primary);
+              background: var(--masks-bg-sidebar);
+              border: 1px solid var(--masks-border-color);
+              border-radius: var(--masks-corner-radius);
+              color: var(--masks-text-primary);
               padding: 4px 8px;
               font-size: 0.85rem;
 
               &:focus {
                 outline: none;
-                border-color: var(--masks-v2-accent-color);
+                border-color: var(--masks-accent);
               }
             }
           }
@@ -3243,7 +2747,6 @@
       }
     }
 
-    /* New custom playbook features list (filtered, no conditions) */
     .playbook-features-list {
       display: flex;
       flex-direction: column;
@@ -3251,9 +2754,9 @@
 
       .playbook-feature {
         padding: 12px;
-        background: var(--masks-v2-input-bg);
-        border: 1px solid var(--masks-v2-border-color);
-        border-radius: var(--masks-v2-corner-radius);
+        background: var(--masks-bg-input);
+        border: 1px solid var(--masks-border-color);
+        border-radius: var(--masks-corner-radius);
 
         .feature-label {
           display: block;
@@ -3261,32 +2764,30 @@
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: var(--masks-v2-text-secondary);
+          color: var(--masks-text-secondary);
           margin-bottom: 8px;
         }
 
         .feature-description {
           font-size: 0.75rem;
-          color: var(--masks-v2-text-muted);
+          color: var(--masks-text-muted);
           font-style: italic;
           margin: 0 0 8px 0;
         }
 
-        /* LongText editors - fix height */
         .editor {
           min-height: 120px;
 
           .editor-content {
             min-height: 100px;
-            background: var(--masks-v2-sidebar-bg);
-            border: 1px solid var(--masks-v2-border-color);
-            border-radius: var(--masks-v2-corner-radius);
-            color: var(--masks-v2-text-primary);
+            background: var(--masks-bg-sidebar);
+            border: 1px solid var(--masks-border-color);
+            border-radius: var(--masks-corner-radius);
+            color: var(--masks-text-primary);
             padding: 8px;
           }
         }
 
-        /* ListMany options */
         .feature-options {
           list-style: none;
           padding: 0;
@@ -3302,67 +2803,60 @@
               gap: 8px;
               padding: 6px 8px;
               background: rgba(255, 255, 255, 0.03);
-              border-radius: var(--masks-v2-corner-radius);
-              color: var(--masks-v2-text-secondary);
+              border-radius: var(--masks-corner-radius);
+              color: var(--masks-text-secondary);
               font-size: 0.85rem;
               cursor: pointer;
 
-              &:hover {
-                background: rgba(255, 255, 255, 0.06);
-              }
+              &:hover { background: rgba(255, 255, 255, 0.06); }
 
               input[type="checkbox"] {
-                accent-color: var(--masks-v2-accent-color);
+                accent-color: var(--masks-accent);
                 flex-shrink: 0;
               }
 
-              /* Multiple checkboxes per option (e.g., The Scion, The Reformed) */
               .feature-checkboxes {
                 display: flex;
                 gap: 4px;
                 flex-shrink: 0;
 
-                input[type="checkbox"] {
-                  margin: 0;
-                }
+                input[type="checkbox"] { margin: 0; }
               }
 
               input[type="text"] {
                 flex: 1;
-                background: var(--masks-v2-sidebar-bg);
-                border: 1px solid var(--masks-v2-border-color);
-                border-radius: var(--masks-v2-corner-radius);
-                color: var(--masks-v2-text-primary);
+                background: var(--masks-bg-sidebar);
+                border: 1px solid var(--masks-border-color);
+                border-radius: var(--masks-corner-radius);
+                color: var(--masks-text-primary);
                 padding: 4px 8px;
                 font-size: 0.85rem;
 
                 &:focus {
                   outline: none;
-                  border-color: var(--masks-v2-accent-color);
+                  border-color: var(--masks-accent);
                 }
               }
             }
           }
         }
 
-        /* Text and Number inputs */
         input[type="text"],
         input[type="number"] {
           width: 100%;
-          background: var(--masks-v2-sidebar-bg);
-          border: 1px solid var(--masks-v2-border-color);
-          border-radius: var(--masks-v2-corner-radius);
-          color: var(--masks-v2-text-primary);
+          background: var(--masks-bg-sidebar);
+          border: 1px solid var(--masks-border-color);
+          border-radius: var(--masks-corner-radius);
+          color: var(--masks-text-primary);
           padding: 8px;
           font-size: 0.9rem;
 
           &:focus {
             outline: none;
-            border-color: var(--masks-v2-accent-color);
+            border-color: var(--masks-accent);
           }
         }
 
-        /* Clock tracker (e.g., Doom Track) */
         .clock-tracker {
           display: flex;
           align-items: center;
@@ -3376,29 +2870,26 @@
               width: 24px;
               height: 24px;
               border-radius: 50%;
-              background: var(--masks-v2-sidebar-bg);
+              background: var(--masks-bg-sidebar);
               border: 2px solid var(--masks-danger-color);
               cursor: pointer;
-              transition: all var(--masks-v2-transition-speed) ease;
+              transition: all var(--masks-transition-fast);
 
               &:hover {
                 transform: scale(1.1);
                 box-shadow: 0 0 8px var(--masks-danger-color);
               }
 
-              &.filled {
-                background: var(--masks-danger-color);
-              }
+              &.filled { background: var(--masks-danger-color); }
             }
           }
 
           .clock-count {
             font-size: 0.85rem;
-            color: var(--masks-v2-text-secondary);
+            color: var(--masks-text-secondary);
           }
         }
 
-        /* Number tracker (e.g., Burn, Fight the Fight) */
         .number-tracker {
           display: flex;
           align-items: center;
@@ -3407,41 +2898,39 @@
           .tracker-btn {
             width: 28px;
             height: 28px;
-            border-radius: var(--masks-v2-corner-radius);
-            background: var(--masks-v2-sidebar-bg);
-            border: 1px solid var(--masks-v2-border-color);
-            color: var(--masks-v2-text-secondary);
+            border-radius: var(--masks-corner-radius);
+            background: var(--masks-bg-sidebar);
+            border: 1px solid var(--masks-border-color);
+            color: var(--masks-text-secondary);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all var(--masks-v2-transition-speed) ease;
+            transition: all var(--masks-transition-fast);
 
             &:hover {
-              background: var(--masks-v2-accent-color);
-              color: var(--masks-v2-text-primary);
-              border-color: var(--masks-v2-accent-color);
+              background: var(--masks-accent);
+              color: var(--masks-text-primary);
+              border-color: var(--masks-accent);
             }
 
-            i {
-              font-size: 0.75rem;
-            }
+            i { font-size: 0.75rem; }
           }
 
           .tracker-value {
             width: 50px;
             text-align: center;
-            background: var(--masks-v2-sidebar-bg);
-            border: 1px solid var(--masks-v2-border-color);
-            border-radius: var(--masks-v2-corner-radius);
-            color: var(--masks-v2-text-primary);
+            background: var(--masks-bg-sidebar);
+            border: 1px solid var(--masks-border-color);
+            border-radius: var(--masks-corner-radius);
+            color: var(--masks-text-primary);
             padding: 6px;
             font-size: 1rem;
             font-weight: 600;
 
             &:focus {
               outline: none;
-              border-color: var(--masks-v2-accent-color);
+              border-color: var(--masks-accent);
             }
           }
         }
@@ -3466,12 +2955,10 @@
       align-items: center;
       gap: 6px;
       font-size: 0.8rem;
-      color: var(--masks-v2-text-muted);
+      color: var(--masks-text-muted);
       cursor: pointer;
 
-      input {
-        accent-color: var(--masks-v2-accent-color);
-      }
+      input { accent-color: var(--masks-accent); }
     }
   }
 
@@ -3490,76 +2977,70 @@
       align-items: center;
       gap: 8px;
       padding: 8px 10px;
-      background: var(--masks-v2-input-bg);
-      border: 1px solid var(--masks-v2-border-color);
-      border-radius: var(--masks-v2-corner-radius);
+      background: var(--masks-bg-input);
+      border: 1px solid var(--masks-border-color);
+      border-radius: var(--masks-corner-radius);
       cursor: pointer;
-      transition: all var(--masks-v2-transition-speed) ease;
+      transition: all var(--masks-transition-fast);
 
-      &:hover {
-        background: rgba(255, 255, 255, 0.05);
-      }
+      &:hover { background: rgba(255, 255, 255, 0.05); }
 
       .advancement-checkboxes {
         display: flex;
         gap: 4px;
       }
 
-      .advancement-check {
-        accent-color: var(--masks-v2-accent-color);
-      }
+      .advancement-check { accent-color: var(--masks-accent); }
 
       .advancement-text {
         flex: 1;
         font-size: 0.85rem;
-        color: var(--masks-v2-text-secondary);
+        color: var(--masks-text-secondary);
       }
 
       .advancement-custom-text {
         flex: 1;
         background: transparent;
         border: none;
-        border-bottom: 1px solid var(--masks-v2-border-color);
-        color: var(--masks-v2-text-primary);
+        border-bottom: 1px solid var(--masks-border-color);
+        color: var(--masks-text-primary);
         font-size: 0.85rem;
         padding: 2px 0;
 
         &:focus {
           outline: none;
-          border-bottom-color: var(--masks-v2-accent-color);
+          border-bottom-color: var(--masks-accent);
         }
       }
     }
   }
 
-  /* Moment of Truth Section */
   .playbook-section--moment {
     padding: 12px;
-    background: var(--masks-v2-input-bg);
-    border: 1px solid var(--masks-v2-border-color);
-    border-radius: var(--masks-v2-corner-radius);
+    background: var(--masks-bg-input);
+    border: 1px solid var(--masks-border-color);
+    border-radius: var(--masks-corner-radius);
 
     .editor {
       min-height: 100px;
 
       .editor-content {
-        background: var(--masks-v2-sidebar-bg);
-        border: 1px solid var(--masks-v2-border-color);
-        border-radius: var(--masks-v2-corner-radius);
-        color: var(--masks-v2-text-primary);
+        background: var(--masks-bg-sidebar);
+        border: 1px solid var(--masks-border-color);
+        border-radius: var(--masks-corner-radius);
+        color: var(--masks-text-primary);
         padding: 8px;
         min-height: 80px;
       }
     }
   }
 
-  /* Combined Advancements Section */
   .playbook-section--combined-advances {
     padding: 12px;
-    background: var(--masks-v2-input-bg);
-    border: 1px solid var(--masks-v2-border-color);
-    border-radius: var(--masks-v2-corner-radius);
-    border-left: 3px solid var(--masks-v2-accent-color);
+    background: var(--masks-bg-input);
+    border: 1px solid var(--masks-border-color);
+    border-radius: var(--masks-corner-radius);
+    border-left: 3px solid var(--masks-accent);
 
     .advances-subsection {
       .subsection-title {
@@ -3567,25 +3048,21 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.1em;
-        color: var(--masks-v2-accent-color);
+        color: var(--masks-accent);
         margin-bottom: 8px;
       }
 
-      &--later {
-        .subsection-title {
-          color: var(--masks-v2-text-muted);
-        }
-      }
+      &--later .subsection-title { color: var(--masks-text-muted); }
     }
 
     .advances-divider {
       border: none;
-      border-top: 1px solid var(--masks-v2-border-color);
+      border-top: 1px solid var(--masks-border-color);
       margin: 16px 0;
     }
   }
 
-  /* PbtA Clock Pattern Styling (used by Doom Track, etc.) */
+  /* PbtA Clock Pattern */
   .cell__clock {
     display: flex;
     gap: 6px;
@@ -3599,8 +3076,8 @@
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: var(--masks-v2-input-bg);
-      border: 2px solid var(--masks-v2-border-color);
+      background: var(--masks-bg-input);
+      border: 2px solid var(--masks-border-color);
       cursor: pointer;
       transition: all 0.15s ease;
       margin: 0;
@@ -3623,15 +3100,14 @@
     }
   }
 
-  /* Clock count text */
   .clock-count {
     font-size: 0.8rem;
     font-weight: 600;
-    color: var(--masks-v2-text-muted);
+    color: var(--masks-text-muted);
     margin-left: 4px;
   }
 
-  /* PbtA ListMany Pattern Styling (used by Advancements, features) */
+  /* PbtA ListMany Pattern */
   .cell__checkboxes {
     list-style: none;
     padding: 0;
@@ -3643,44 +3119,34 @@
       gap: 8px;
       padding: 6px 8px;
       background: rgba(255, 255, 255, 0.03);
-      border-radius: var(--masks-v2-corner-radius);
+      border-radius: var(--masks-corner-radius);
       margin-bottom: 4px;
-      color: var(--masks-v2-text-secondary);
+      color: var(--masks-text-secondary);
       font-size: 0.85rem;
       cursor: pointer;
 
-      &:hover {
-        background: rgba(255, 255, 255, 0.06);
-      }
+      &:hover { background: rgba(255, 255, 255, 0.06); }
 
       input[type="checkbox"].attr-list {
-        accent-color: var(--masks-v2-accent-color);
+        accent-color: var(--masks-accent);
         flex-shrink: 0;
         margin: 0;
       }
 
       input[type="text"].input-title {
         flex: 1;
-        background: var(--masks-v2-sidebar-bg);
-        border: 1px solid var(--masks-v2-border-color);
-        border-radius: var(--masks-v2-corner-radius);
-        color: var(--masks-v2-text-primary);
+        background: var(--masks-bg-sidebar);
+        border: 1px solid var(--masks-border-color);
+        border-radius: var(--masks-corner-radius);
+        color: var(--masks-text-primary);
         padding: 4px 8px;
         font-size: 0.85rem;
 
         &:focus {
           outline: none;
-          border-color: var(--masks-v2-accent-color);
+          border-color: var(--masks-accent);
         }
       }
     }
   }
-}
-
-/* =========================================================================== */
-/* NPC SHEET - Keep existing styling                                           */
-/* =========================================================================== */
-
-.masks-sheet-v2 .npc-sheet {
-  /* NPC sheets use original styling */
 }

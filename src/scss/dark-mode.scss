@@ -1,40 +1,60 @@
-/* Variables */
+/* =============================================================================
+   MASKS: A NEW GENERATION - Dark Mode Theme Override
+   =============================================================================
+   Dark mode overrides the core theme variables with darker, warmer tones.
+   Uses the unified variable naming from masks-sheets.scss
+   ============================================================================= */
+
 :root {
-    --actor-gradient: linear-gradient(
+  /* --- Dark Mode Backgrounds --- */
+  --masks-gradient: linear-gradient(
     to bottom,
     #00012f 40%,
     #451f29 86%,
     #5e3e00 100%
   );
-  --masks-primary-text-color: #ffffff;
-  --masks-secondary-text-color: #fff4dc;
-  --masks-title-text-color: #C7A3AC;
-  --masks-input-text-color: #000000;
-  --masks-input-placeholder-color: #5a5a5a;
+  --masks-window-bg: url("/modules/masks-newgeneration-unofficial/images/skyline.webp"),
+    url("/modules/masks-newgeneration-unofficial/images/stars.webp"),
+    var(--masks-gradient);
 
-  --masks-interactive-bg-color: #683b47;
-  --masks-interactive-bg-hover-color: #4b2a33;
-  --masks-option-bg-color: #683b47;
-  
-  --interactive-color: #cd8e18;
+  /* --- Dark Mode Blues (warmer/redder tint) --- */
+  --masks-blue-dark: #4b2a33;
+  --masks-blue-primary: #683b47;
+  --masks-blue-medium: #7a4a56;
+  --masks-blue-light: #C7A3AC;
+
+  /* --- Dark Mode Gold (warmer amber) --- */
+  --masks-gold: #cd8e18;
+  --masks-gold-dark: #cd8e18;
+
+  /* --- Dark Mode Text --- */
+  --masks-text-secondary: #fff4dc;
+
+  /* --- Dark Mode Interactive --- */
+  --masks-interactive-bg: #683b47;
+  --masks-interactive-hover: #4b2a33;
+  --masks-accent: #C7A3AC;
+
+  /* --- Dark Mode Borders --- */
+  --masks-border-accent: rgba(199, 163, 172, 0.5);
+
+  /* --- Turn Cards (dark mode overrides) --- */
+  --tc-border-outer: var(--masks-blue-dark);
+  --tc-border-inner: var(--masks-blue-primary);
+  --tc-nameplate-bg: var(--masks-blue-primary);
+  --tc-hover-inner: var(--masks-blue-medium);
+  --tc-cooldown-bar: var(--masks-blue-light);
+  --tc-forward-bg: var(--masks-blue-light);
+  --tc-pentagon-color: var(--masks-blue-dark);
+
+  /* --- Legacy compatibility overrides --- */
+  --masks-title-text-color: #C7A3AC;
+  --masks-cell-title-border-color: #C7A3AC;
+  --masks-bio-title-border-color: #C7A3AC;
+  --masks-header-bg-color: #4b2a33;
   --masks-tabs-border-color: #cd8e18;
   --masks-tab-bg-active-color: #cd8e18;
-  
-  --masks-input-bg-color: rgb(229 222 210 / 95%);
   --masks-input-border-color: #cd8e18;
-  --masks-tox-edit-area-bg-color: rgba(255, 255, 255, 0.75);
-
-  --masks-resource-border-color: #bcc8de;
-  --masks-resource-control-bg-color: #ffffff;
-  --masks-stats-border-color: rgb(229 222 210 / 37%);
-
-  --masks-cell-title-border-color: #C7A3AC;
-  --masks-header-bg-color: #4b2a33;
-
-  --masks-window-bg-image: url("/modules/masks-newgeneration-unofficial/images/skyline.webp"), 
-  url("/modules/masks-newgeneration-unofficial/images/stars.webp"),
-  var(--actor-gradient);
-  --masks-window-bg-position: bottom left, top left;
   --masks-influence-icon-color: invert(0%);
   --masks-influence-icon-disabled-color: opacity(50%);
 }
