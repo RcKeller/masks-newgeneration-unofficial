@@ -258,6 +258,10 @@ async function setPotentialDirect(actor, val) {
 // Forward / Ongoing
 // ────────────────────────────────────────────────────────────────────────────
 
+// Bounds for Forward and Ongoing: min -1, max 8
+const FORWARD_MIN = -1;
+const FORWARD_MAX = 8;
+
 const getForward = (actor) => Number(getProp(actor, "system.resources.forward.value")) || 0;
 const getOngoing = (actor) => Number(getProp(actor, "system.resources.ongoing.value")) || 0;
 
@@ -265,7 +269,7 @@ async function adjustForward(actor, delta, { announce = true, includeAidLink = f
 	if (!actor) return;
 
 	const cur = getForward(actor);
-	const next = Math.max(0, cur + delta);
+	const next = clampInt(cur + delta, FORWARD_MIN, FORWARD_MAX);
 	if (next === cur) return;
 
 	await actor.update({ "system.resources.forward.value": next });
@@ -705,14 +709,17 @@ function registerQueryHandlers() {
 			return { success: false, error: "Could not spend Team" };
 		}
 
-		// Apply +1 Forward
+		// Apply +1 Forward (clamped to bounds)
 		const fwdBefore = getForward(target);
-		await target.update({ "system.resources.forward.value": fwdBefore + 1 });
+		const fwdAfter = clampInt(fwdBefore + 1, FORWARD_MIN, FORWARD_MAX);
+		if (fwdAfter !== fwdBefore) {
+			await target.update({ "system.resources.forward.value": fwdAfter });
+		}
 
 		// Announce with Aid link
 		const content = `<b>${escape(sourceUser.name)}</b> spends <b>1 Team</b> to aid <b>${escape(target.name)}</b>!<br/>
 Team Pool: ${teamOld} → <b>${teamOld - 1}</b><br/>
-<b>${escape(target.name)}</b> gains <b>+1 Forward</b> (now ${fwdBefore + 1}).<br/>
+<b>${escape(target.name)}</b> gains <b>+1 Forward</b> (now ${fwdAfter}).<br/>
 ${AID_MOVE_UUID}`;
 
 		await ChatMessage.create({ content, type: CONST.CHAT_MESSAGE_TYPES.OTHER });

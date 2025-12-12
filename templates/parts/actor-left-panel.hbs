@@ -27,6 +27,20 @@
 		</div>
 	</div>
 
+	{{!-- Potential (XP) - Using 1-based pips prepared in getData --}}
+	<div class="potential-section">
+		<h3 class="sidebar-title">{{system.attributes.xp.label}}</h3>
+		<div class="potential-tracker">
+			<div class="potential-pips">
+				{{#each potentialPips as |pip|}}
+				<span class="potential-pip {{#if pip.filled}}filled{{/if}}" data-pip="{{pip.value}}"
+					data-action="set-potential"></span>
+				{{/each}}
+			</div>
+			<span class="potential-count">{{system.attributes.xp.value}} / 5</span>
+		</div>
+	</div>
+
 	{{!-- Conditions Panel --}}
 	{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-conditions.hbs"}}
 </section>

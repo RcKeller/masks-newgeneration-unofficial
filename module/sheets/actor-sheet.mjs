@@ -36,6 +36,7 @@ const LABEL_CONFIG = Object.freeze({
 
 /**
  * Condition configuration with icons and affected labels
+ * Indexed by condition storage index in PbtA system
  */
 const CONDITION_CONFIG = Object.freeze({
 	0: { key: "afraid", icon: "fa-solid fa-ghost", cssClass: "afraid", affectsLabel: "danger", tooltip: "-2 Danger" },
@@ -43,6 +44,21 @@ const CONDITION_CONFIG = Object.freeze({
 	2: { key: "guilty", icon: "fa-solid fa-scale-unbalanced", cssClass: "guilty", affectsLabel: "superior", tooltip: "-2 Superior" },
 	3: { key: "hopeless", icon: "fa-solid fa-heart-crack", cssClass: "hopeless", affectsLabel: "freak", tooltip: "-2 Freak" },
 	4: { key: "insecure", icon: "fa-solid fa-face-frown-open", cssClass: "insecure", affectsLabel: "savior", tooltip: "-2 Savior" },
+});
+
+/**
+ * Display order for conditions to match label order
+ * Order: afraid (danger), hopeless (freak), insecure (savior), angry (mundane), guilty (superior)
+ */
+const CONDITION_DISPLAY_ORDER = [0, 3, 4, 1, 2];
+
+/**
+ * Min/max bounds for various numeric values
+ */
+const BOUNDS = Object.freeze({
+	label: { min: -2, max: 3 },
+	forward: { min: -1, max: 8 },
+	ongoing: { min: -1, max: 8 },
 });
 
 export function MasksActorSheetMixin(Base) {
@@ -138,10 +154,30 @@ export function MasksActorSheetMixin(Base) {
 					icon: config.icon,
 					color: config.color,
 					isLocked: !!lockedLabels[key],
-					// Normal shift range: -2 to +3
-					atMin: value <= -2,
-					atMax: value >= 3,
+					atMin: value <= BOUNDS.label.min,
+					atMax: value >= BOUNDS.label.max,
 				};
+			}
+
+			// Add Soldier stat as 6th label for The Soldier playbook
+			const playbook = this.actor.system.playbook?.name ?? "";
+			if (playbook === "The Soldier") {
+				const soldierAttr = this.actor.system.attributes?.theSoldier;
+				if (soldierAttr) {
+					const value = Number(soldierAttr.value) || 0;
+					rows.soldier = {
+						key: "soldier",
+						value,
+						displayName: soldierAttr.label ?? "Soldier",
+						icon: "fa-solid fa-crosshairs",
+						color: "soldier",
+						isLocked: !!lockedLabels.soldier,
+						atMin: value <= BOUNDS.label.min,
+						atMax: value >= BOUNDS.label.max,
+						isPlaybookLabel: true, // Mark as playbook-specific label
+						attrPath: "system.attributes.theSoldier.value", // Different path than stats
+					};
+				}
 			}
 
 			return rows;
@@ -149,21 +185,25 @@ export function MasksActorSheetMixin(Base) {
 
 		/**
 		 * Prepare condition tags for template rendering
-		 * @returns {Object} Condition tags keyed by condition index
+		 * Returns an array in display order (matching label order)
+		 * @returns {Array} Condition tags in display order
 		 */
 		_prepareConditionTags() {
 			const conditions = this.actor.system.attributes?.conditions?.options ?? {};
-			const tags = {};
+			const tags = [];
 
-			for (const [idx, opt] of Object.entries(conditions)) {
+			// Use display order to match label order: afraid, hopeless, insecure, angry, guilty
+			for (const idx of CONDITION_DISPLAY_ORDER) {
+				const opt = conditions[idx];
 				const config = CONDITION_CONFIG[idx];
-				if (!config) continue;
+				if (!config || !opt) continue;
 
 				// Extract just the condition name from labels like "Afraid (-2 Danger)"
 				const rawLabel = opt.label ?? "";
 				const cleanLabel = rawLabel.split("(")[0].trim();
 
-				tags[idx] = {
+				tags.push({
+					idx,
 					key: config.key,
 					label: cleanLabel,
 					icon: config.icon,
@@ -171,7 +211,7 @@ export function MasksActorSheetMixin(Base) {
 					value: !!opt.value,
 					tooltip: config.tooltip,
 					affectsLabel: config.affectsLabel,
-				};
+				});
 			}
 
 			return tags;
@@ -207,6 +247,8 @@ export function MasksActorSheetMixin(Base) {
 				if (mergedPlaybook !== playbook) continue;
 				// Skip conditions (they're handled separately in the header)
 				if (mergedCondition) continue;
+				// Skip theSoldier - it's rendered as a 6th label in the labels section
+				if (key === "theSoldier") continue;
 
 				const max = attr.max ?? configAttr.max ?? 5;
 
@@ -392,8 +434,6 @@ export function MasksActorSheetMixin(Base) {
 		/**
 		 * Handle label increment
 		 * Normal label range: -2 to +3 (via shifts)
-		 * Roll modifier caps: -3 to +4
-		 * Advances can push a label to +4, but not via normal shifts
 		 */
 		async _onLabelIncrement(event) {
 			event.preventDefault();
@@ -406,10 +446,13 @@ export function MasksActorSheetMixin(Base) {
 			const lockedLabels = this.actor.getFlag(NS, "lockedLabels") ?? {};
 			if (lockedLabels[label]) return;
 
-			const path = `system.stats.${label}.value`;
+			// Handle soldier label differently (uses attributes path)
+			const path = label === "soldier"
+				? "system.attributes.theSoldier.value"
+				: `system.stats.${label}.value`;
 			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
-			// Normal shift cap is +3 (advances can push to +4)
-			if (current >= 3) return;
+
+			if (current >= BOUNDS.label.max) return;
 
 			// Trigger shift-up animation
 			this._animateLabelShift(label, "up");
@@ -420,7 +463,6 @@ export function MasksActorSheetMixin(Base) {
 		/**
 		 * Handle label decrement
 		 * Normal label range: -2 to +3 (via shifts)
-		 * Roll modifier caps: -3 to +4
 		 */
 		async _onLabelDecrement(event) {
 			event.preventDefault();
@@ -433,10 +475,13 @@ export function MasksActorSheetMixin(Base) {
 			const lockedLabels = this.actor.getFlag(NS, "lockedLabels") ?? {};
 			if (lockedLabels[label]) return;
 
-			const path = `system.stats.${label}.value`;
+			// Handle soldier label differently (uses attributes path)
+			const path = label === "soldier"
+				? "system.attributes.theSoldier.value"
+				: `system.stats.${label}.value`;
 			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
-			// Normal shift minimum is -2 (roll cap is -3)
-			if (current <= -2) return;
+
+			if (current <= BOUNDS.label.min) return;
 
 			// Trigger shift-down animation
 			this._animateLabelShift(label, "down");
@@ -539,6 +584,7 @@ export function MasksActorSheetMixin(Base) {
 
 		/**
 		 * Handle modifier button click (Forward/Ongoing)
+		 * Forward and Ongoing are bounded: -1 to 8
 		 */
 		async _onModifierClick(event) {
 			event.preventDefault();
@@ -550,8 +596,21 @@ export function MasksActorSheetMixin(Base) {
 			const path = `system.${attr}`;
 			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
 			const delta = action === "increase" ? 1 : -1;
+			const newValue = current + delta;
 
-			await this.actor.update({ [path]: current + delta });
+			// Determine bounds based on attribute type
+			let bounds = { min: -Infinity, max: Infinity };
+			if (attr.includes("forward")) {
+				bounds = BOUNDS.forward;
+			} else if (attr.includes("ongoing")) {
+				bounds = BOUNDS.ongoing;
+			}
+
+			// Clamp to bounds
+			const clamped = Math.max(bounds.min, Math.min(bounds.max, newValue));
+			if (clamped === current) return; // No change needed
+
+			await this.actor.update({ [path]: clamped });
 		}
 
 

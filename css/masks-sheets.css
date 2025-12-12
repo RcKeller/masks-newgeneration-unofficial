@@ -22,12 +22,14 @@
   --masks-savior-color: #3498db;
   --masks-superior-color: #f39c12;
   --masks-mundane-color: #27ae60;
+  --masks-soldier-color: #8b4513;
   /* Semi-transparent versions for backgrounds */
   --masks-danger-bg: rgba(224, 82, 82, 0.15);
   --masks-freak-bg: rgba(155, 89, 182, 0.15);
   --masks-savior-bg: rgba(52, 152, 219, 0.15);
   --masks-superior-bg: rgba(243, 156, 18, 0.15);
   --masks-mundane-bg: rgba(39, 174, 96, 0.15);
+  --masks-soldier-bg: rgba(139, 69, 19, 0.15);
   /* --- Semantic Colors --- */
   --masks-text-primary: #ffffff;
   --masks-text-secondary: rgba(255, 255, 255, 0.75);
@@ -1729,6 +1731,12 @@
 .masks-sheet-v2 .labels-section .label-row.label--mundane .label-icon {
   color: var(--masks-mundane-color);
 }
+.masks-sheet-v2 .labels-section .label-row.label--soldier {
+  border-left: 3px solid var(--masks-soldier-color);
+}
+.masks-sheet-v2 .labels-section .label-row.label--soldier .label-icon {
+  color: var(--masks-soldier-color);
+}
 .masks-sheet-v2 .labels-section .label-row .label-icon {
   font-size: 0.85rem;
   width: 16px;
@@ -2005,36 +2013,51 @@
 /* --- Playbook Attributes Section --- */
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr {
   margin-bottom: 12px;
+  padding: 8px;
+  background: var(--masks-bg-input);
+  border: 1px solid var(--masks-border-color);
+  border-radius: var(--masks-corner-radius);
+  border-left: 3px solid var(--masks-freak-color);
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .attr-label {
   display: block;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-text-muted);
-  margin-bottom: 4px;
+  color: var(--masks-text-primary);
+  margin-bottom: 6px;
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-pips {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 4px;
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-pips .clock-pip {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: var(--masks-bg-input);
-  border: 2px solid var(--masks-border-color);
+  background: var(--masks-bg-sidebar);
+  border: 2px solid var(--masks-freak-color);
   cursor: pointer;
   transition: all var(--masks-transition-fast);
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-pips .clock-pip:hover {
-  border-color: var(--masks-danger-color);
+  transform: scale(1.1);
+  box-shadow: 0 0 8px var(--masks-freak-color);
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-pips .clock-pip.filled {
-  background: var(--masks-danger-color);
-  border-color: var(--masks-danger-color);
+  background: var(--masks-freak-color);
+  border-color: var(--masks-freak-color);
+}
+.masks-sheet-v2 .playbook-attrs-section .playbook-attr .clock-count {
+  display: block;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--masks-text-secondary);
 }
 .masks-sheet-v2 .playbook-attrs-section .playbook-attr .number-controls {
   display: flex;

@@ -28,28 +28,14 @@
 					<button type="button" class="label-btn label-decrement" data-action="decrement" data-label="{{key}}" {{#if label.atMin}}disabled{{/if}}>
 						<i class="fas fa-minus"></i>
 					</button>
-					<input type="number" class="label-value" name="system.stats.{{key}}.value"
-						value="{{label.value}}" min="-3" max="4" />
+					<input type="number" class="label-value" name="{{#if label.attrPath}}{{label.attrPath}}{{else}}system.stats.{{key}}.value{{/if}}"
+						value="{{label.value}}" min="-2" max="3" />
 					<button type="button" class="label-btn label-increment" data-action="increment" data-label="{{key}}" {{#if label.atMax}}disabled{{/if}}>
 						<i class="fas fa-plus"></i>
 					</button>
 				</div>
 			</div>
 			{{/each}}
-		</div>
-	</div>
-
-	{{!-- Potential (XP) - Using 1-based pips prepared in getData --}}
-	<div class="potential-section">
-		<h3 class="sidebar-title">{{system.attributes.xp.label}}</h3>
-		<div class="potential-tracker">
-			<div class="potential-pips">
-				{{#each potentialPips as |pip|}}
-				<span class="potential-pip {{#if pip.filled}}filled{{/if}}"
-					data-pip="{{pip.value}}" data-action="set-potential"></span>
-				{{/each}}
-			</div>
-			<span class="potential-count">{{system.attributes.xp.value}} / 5</span>
 		</div>
 	</div>
 

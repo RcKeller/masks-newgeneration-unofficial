@@ -1,11 +1,11 @@
-{{!-- Conditions Panel: Toggleable condition tags --}}
+{{!-- Conditions Panel: Toggleable condition tags (ordered to match labels) --}}
 <div class="conditions-panel">
 	<h3 class="conditions-title">{{localize "MASKS-SHEETS.CharacterSheets.conditions.label"}}</h3>
 	<div class="conditions-grid">
-		{{#each conditionTags as |condition key|}}
+		{{#each conditionTags as |condition|}}
 		<button type="button"
 			class="condition-tag condition--{{condition.cssClass}} {{#if condition.value}}active{{/if}}"
-			data-condition-key="{{key}}"
+			data-condition-key="{{condition.idx}}"
 			data-tooltip="{{condition.tooltip}}"
 			data-tooltip-direction="UP">
 			<i class="{{condition.icon}}"></i>
