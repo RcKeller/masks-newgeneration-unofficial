@@ -1553,7 +1553,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--masks-bg-tab-active);
-  padding: 16px;
+  padding: 12px;
   scroll-behavior: smooth;
   overscroll-behavior: contain;
 }
@@ -1566,7 +1566,7 @@
 .masks-sheet-v2 .tab-content .sheet-tab {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 /* --- Section Titles (V2) --- */
@@ -2342,17 +2342,16 @@
   overflow: hidden;
 }
 .masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-list-wrapper {
-  max-height: 0;
-  opacity: 0;
+  display: none;
+}
+.masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-group-header {
+  border-bottom: none;
 }
 .masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-collapse-icon i {
   transform: rotate(180deg);
 }
 .masks-sheet-v2 .powers-tab .moves-list-wrapper {
-  max-height: 2000px;
-  opacity: 1;
   overflow: hidden;
-  transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
 }
 .masks-sheet-v2 .powers-tab .moves-group-header {
   display: flex;
@@ -2609,7 +2608,7 @@
   /* PbtA ListMany Pattern */
 }
 .masks-sheet-v2 .playbook-tab .playbook-section {
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section:last-child {
   margin-bottom: 0;

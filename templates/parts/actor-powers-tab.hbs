@@ -33,7 +33,7 @@
 
 		{{!-- Moves List - Playbook moves first, then Basic --}}
 		<div class="moves-container">
-			{{!-- Playbook Moves (unique to character) --}}
+			{{!-- Playbook Moves (unique to character) - expanded by default --}}
 			{{#if moves.playbook}}
 			<div class="moves-group moves-group--playbook" data-move-type="playbook">
 				<div class="moves-group-header" data-action="toggle-collapse">
@@ -58,9 +58,9 @@
 			</div>
 			{{/if}}
 
-			{{!-- Basic Moves --}}
+			{{!-- Basic Moves - collapsed by default --}}
 			{{#if moves.basic}}
-			<div class="moves-group moves-group--basic" data-move-type="basic">
+			<div class="moves-group moves-group--basic collapsed" data-move-type="basic">
 				<div class="moves-group-header" data-action="toggle-collapse">
 					<h3 class="moves-group-title">
 						<i class="fas fa-hand-fist"></i>
@@ -83,9 +83,9 @@
 			</div>
 			{{/if}}
 
-			{{!-- Adult Moves --}}
+			{{!-- Adult Moves - collapsed by default --}}
 			{{#if moves.adult}}
-			<div class="moves-group moves-group--adult" data-move-type="adult">
+			<div class="moves-group moves-group--adult collapsed" data-move-type="adult">
 				<div class="moves-group-header" data-action="toggle-collapse">
 					<h3 class="moves-group-title">
 						<i class="fas fa-readme"></i>
@@ -108,9 +108,9 @@
 			</div>
 			{{/if}}
 
-			{{!-- Rules/Other Moves --}}
+			{{!-- Rules/Other Moves - collapsed by default --}}
 			{{#if moves.rules}}
-			<div class="moves-group moves-group--rules" data-move-type="rules">
+			<div class="moves-group moves-group--rules collapsed" data-move-type="rules">
 				<div class="moves-group-header" data-action="toggle-collapse">
 					<h3 class="moves-group-title">
 						<i class="fas fa-book"></i>
@@ -133,9 +133,9 @@
 			</div>
 			{{/if}}
 
-			{{!-- Other moves that don't fit categories --}}
+			{{!-- Other moves that don't fit categories - collapsed by default --}}
 			{{#if moves.PBTA_OTHER}}
-			<div class="moves-group moves-group--other" data-move-type="PBTA_OTHER">
+			<div class="moves-group moves-group--other collapsed" data-move-type="PBTA_OTHER">
 				<div class="moves-group-header" data-action="toggle-collapse">
 					<h3 class="moves-group-title">
 						<i class="fas fa-ellipsis-h"></i>

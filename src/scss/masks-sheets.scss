@@ -1568,7 +1568,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--masks-bg-tab-active);
-  padding: 16px;
+  padding: 12px;
   scroll-behavior: smooth;
   overscroll-behavior: contain;
 
@@ -1580,7 +1580,7 @@
   .sheet-tab {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 8px;
   }
 }
 
@@ -2390,18 +2390,18 @@
     overflow: hidden;
 
     &.collapsed .moves-list-wrapper {
-      max-height: 0;
-      opacity: 0;
+      display: none;
+    }
+
+    &.collapsed .moves-group-header {
+      border-bottom: none;
     }
 
     &.collapsed .moves-collapse-icon i { transform: rotate(180deg); }
   }
 
   .moves-list-wrapper {
-    max-height: 2000px;
-    opacity: 1;
     overflow: hidden;
-    transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
   }
 
   .moves-group-header {
@@ -2663,7 +2663,7 @@
 /* --- Playbook Tab --- */
 .masks-sheet-v2 .playbook-tab {
   .playbook-section {
-    margin-bottom: 20px;
+    margin-bottom: 8px;
     &:last-child { margin-bottom: 0; }
   }
 

@@ -97,9 +97,12 @@ export function MasksActorSheetMixin(Base) {
 				// Prepare condition tags
 				context.conditionTags = this._prepareConditionTags();
 
-				// Prepare ALL playbook-specific attributes for the Playbook tab
-				// This includes both position: Top (like Doom track, Burn) and position: Left (like Sanctuary)
-				context.playbookAttributes = this._prepareAllPlaybookAttributes();
+				// Prepare playbook-specific attributes split between sidebar and playbook tab
+				// Sidebar: Clock and Number types (e.g., Doom Track, Soldier's Fight)
+				// Playbook tab: LongText and ListMany types (e.g., Sanctuary description)
+				const { sidebarAttrs, tabAttrs } = this._prepareSplitPlaybookAttributes();
+				context.playbookSidebarAttrs = sidebarAttrs;
+				context.playbookAttributes = tabAttrs;
 
 				// Prepare potential pips (1-based for correct display and click handling)
 				const xpValue = Number(this.actor.system.attributes?.xp?.value) || 0;
@@ -175,17 +178,19 @@ export function MasksActorSheetMixin(Base) {
 		}
 
 		/**
-		 * Prepare ALL playbook-specific attributes for the Playbook tab
-		 * Includes both position: Top (like Doom track) and position: Left (like Sanctuary)
-		 * Uses the same patterns as PbtA's built-in attribute preparation
-		 * @returns {Object|null} Playbook attributes or null if none
+		 * Prepare playbook-specific attributes split between sidebar and playbook tab
+		 * Sidebar: Clock and Number types (e.g., Doom Track, Soldier's Fight)
+		 * Playbook tab: LongText and ListMany types (e.g., Sanctuary description, Doomed's Doom choices)
+		 * @returns {Object} Object with sidebarAttrs and tabAttrs (each can be null if empty)
 		 */
-		_prepareAllPlaybookAttributes() {
+		_prepareSplitPlaybookAttributes() {
 			const attrs = this.actor.system.attributes ?? {};
 			const playbook = this.actor.system.playbook?.name ?? "";
 			const configAttrs = game.pbta.sheetConfig?.actorTypes?.character?.attributes ?? {};
-			const result = {};
-			let hasAny = false;
+			const sidebarAttrs = {};
+			const tabAttrs = {};
+			let hasSidebar = false;
+			let hasTab = false;
 
 			for (const [key, attr] of Object.entries(attrs)) {
 				// Get config defaults for this attribute (actor may not have all properties)
@@ -206,10 +211,8 @@ export function MasksActorSheetMixin(Base) {
 				const max = attr.max ?? configAttr.max ?? 5;
 
 				// For ListMany, ensure we have options from the actor (current state) or config (defaults)
-				// The actor's options contain the current checkbox states
 				let options = null;
 				if (mergedType === "ListMany") {
-					// Use actor's options (with current values) or fall back to config defaults
 					options = attr.options ?? configAttr.options ?? {};
 				}
 
@@ -223,22 +226,43 @@ export function MasksActorSheetMixin(Base) {
 					value = attr.value;
 				}
 
-				result[key] = {
+				const attrData = {
 					key,
 					type: mergedType,
 					label: attr.label ?? configAttr.label ?? key,
 					description: attr.description ?? configAttr.description,
 					value: value,
-					// Use enriched content if available (prepared by PbtA's base getData)
 					enriched: attr.enriched ?? value,
 					attrName: `system.attributes.${key}.value`,
 					max: max,
 					options: options,
 				};
-				hasAny = true;
+
+				// For Clock types, prepare pips like potential (1-based for click handling)
+				if (mergedType === "Clock") {
+					attrData.pips = [];
+					for (let i = 1; i <= max; i++) {
+						attrData.pips.push({
+							value: i,
+							filled: i <= value,
+						});
+					}
+				}
+
+				// Split by type: Clock/Number go to sidebar, LongText/ListMany/Text go to tab
+				if (mergedType === "Clock" || mergedType === "Number") {
+					sidebarAttrs[key] = attrData;
+					hasSidebar = true;
+				} else {
+					tabAttrs[key] = attrData;
+					hasTab = true;
+				}
 			}
 
-			return hasAny ? result : null;
+			return {
+				sidebarAttrs: hasSidebar ? sidebarAttrs : null,
+				tabAttrs: hasTab ? tabAttrs : null,
+			};
 		}
 
 		/** @override */
@@ -309,11 +333,11 @@ export function MasksActorSheetMixin(Base) {
 			// Potential pips
 			html.on("click", ".potential-pip", this._onPotentialClick.bind(this));
 
+			// Clock pips (sidebar playbook attributes like Doom Track)
+			html.on("click", ".clock-pip", this._onClockPipClick.bind(this));
+
 			// Modifier buttons (Forward/Ongoing)
 			html.on("click", ".modifier-btn", this._onModifierClick.bind(this));
-
-			// NOTE: Clock pips now use PbtA's built-in _onClockClick handler via class="attr-clock"
-			// Do NOT add custom clock pip handlers that would conflict with PbtA's handler
 
 			// Playbook attribute steppers (both old .attr-btn and new .tracker-btn)
 			html.on("click", ".tracker-btn, .attr-btn", this._onAttrStepperClick.bind(this));
@@ -491,6 +515,26 @@ export function MasksActorSheetMixin(Base) {
 			const clamped = Math.max(0, Math.min(5, newValue));
 
 			await this.actor.update({ "system.attributes.xp.value": clamped });
+		}
+
+		/**
+		 * Handle clock pip click (for playbook attributes like Doom Track)
+		 * Works like potential pips - click to fill up to that pip, click current to decrease
+		 */
+		async _onClockPipClick(event) {
+			event.preventDefault();
+			const pip = event.currentTarget;
+			const pipValue = Number(pip.dataset.pip);
+			const attrKey = pip.dataset.attr;
+			if (isNaN(pipValue) || !attrKey) return;
+
+			const path = `system.attributes.${attrKey}.value`;
+			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
+			// If clicking on the current value, decrease; otherwise set to clicked value
+			const newValue = pipValue === current ? current - 1 : pipValue;
+			const clamped = Math.max(0, newValue);
+
+			await this.actor.update({ [path]: clamped });
 		}
 
 		/**
