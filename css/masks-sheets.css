@@ -116,8 +116,8 @@
   display: none;
 }
 .pbta.sheet input::placeholder,
-.pbta.sheet .sheet-header .playbook-select:has(option[value=""]:checked),
-.pbta.sheet .sheet-header .playbook-select option[value=""] {
+.pbta.sheet .sheet-header select.charplaybook:has(option[value=""]:checked),
+.pbta.sheet .sheet-header select.charplaybook option[value=""] {
   color: var(--masks-input-placeholder-color);
   font-style: italic;
 }
@@ -1420,33 +1420,35 @@
   align-items: center;
   margin-top: 4px;
   min-width: 0; /* Allow flex items to shrink */
+  /* Playbook select - use .charplaybook class (PbtA standard) */
 }
-.masks-sheet-v2 .character-identity .playbook-row .playbook-select {
+.masks-sheet-v2 .character-identity .playbook-row .charplaybook {
   flex: 1;
   min-width: 0; /* Fix overflow */
   background: var(--masks-v2-input-bg);
   border: 1px solid var(--masks-v2-border-color);
   border-radius: var(--masks-v2-corner-radius);
   color: var(--masks-v2-text-primary);
-  padding: 6px 8px;
+  padding: 8px 10px;
   font-size: 0.9rem;
   cursor: pointer;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+  /* Ensure full playbook name is visible */
+  height: auto;
+  min-height: 36px;
 }
-.masks-sheet-v2 .character-identity .playbook-row .playbook-select:focus {
+.masks-sheet-v2 .character-identity .playbook-row .charplaybook:focus {
   outline: none;
   border-color: var(--masks-v2-accent-color);
 }
-.masks-sheet-v2 .character-identity .playbook-row .playbook-select option {
+.masks-sheet-v2 .character-identity .playbook-row .charplaybook option {
   background: var(--masks-v2-panel-bg);
   color: var(--masks-v2-text-primary);
+  padding: 8px;
 }
 .masks-sheet-v2 .character-identity .playbook-row .playbook-link {
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1564,6 +1566,7 @@
   grid-template-columns: 1fr var(--masks-v2-sidebar-width);
   height: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 /* Tabs Container */
@@ -1614,8 +1617,12 @@
 .masks-sheet-v2 .tab-content {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   background: var(--masks-v2-tab-active-bg);
   padding: 16px;
+  scroll-behavior: smooth;
+  /* Prevent scroll position reset on re-render */
+  overscroll-behavior: contain;
 }
 .masks-sheet-v2 .tab-content .tab {
   display: none;
@@ -1693,6 +1700,25 @@
 .masks-sheet-v2 .labels-section .labels-graph-clickable .labels-graph-svg {
   width: 100px;
   height: 100px;
+  /* Animate the data polygon path */
+  /* Pulse animation when graph updates */
+}
+.masks-sheet-v2 .labels-section .labels-graph-clickable .labels-graph-svg path:last-of-type {
+  transition: fill 0.3s ease, stroke 0.3s ease, d 0.3s ease;
+}
+.masks-sheet-v2 .labels-section .labels-graph-clickable .labels-graph-svg.updating {
+  animation: graph-pulse 0.3s ease;
+}
+@keyframes graph-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 .masks-sheet-v2 .labels-section .labels-list {
   display: flex;
@@ -2290,12 +2316,18 @@
   border-radius: var(--masks-v2-corner-radius);
   overflow: hidden;
 }
-.masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-list {
-  grid-template-rows: 0fr;
+.masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-list-wrapper {
+  max-height: 0;
   opacity: 0;
 }
 .masks-sheet-v2 .powers-tab .moves-group.collapsed .moves-collapse-icon i {
   transform: rotate(180deg);
+}
+.masks-sheet-v2 .powers-tab .moves-list-wrapper {
+  max-height: 2000px; /* Large enough to fit any list */
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
 }
 .masks-sheet-v2 .powers-tab .moves-group-header {
   display: flex;
@@ -2558,8 +2590,8 @@
 /* =========================================================================== */
 .masks-sheet-v2 .playbook-tab {
   /* Playbook Features Section (uses PbtA attribute renderer) */
-  /* Moment of Truth Section - Fix styling */
-  /* Later Advances Section */
+  /* Moment of Truth Section */
+  /* Combined Advancements Section */
   /* PbtA Clock Pattern Styling (used by Doom Track, etc.) */
   /* PbtA ListMany Pattern Styling (used by Advancements, features) */
 }
@@ -2838,7 +2870,7 @@
   align-items: center;
   gap: 6px;
   font-size: 0.8rem;
-  color: var(--masks-v2-text-secondary);
+  color: var(--masks-v2-text-muted);
   cursor: pointer;
 }
 .masks-sheet-v2 .playbook-tab .section-header .moment-unlock-toggle input {
@@ -2896,9 +2928,6 @@
   background: var(--masks-v2-input-bg);
   border: 1px solid var(--masks-v2-border-color);
   border-radius: var(--masks-v2-corner-radius);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 .masks-sheet-v2 .playbook-tab .playbook-section--moment .editor {
   min-height: 100px;
@@ -2911,12 +2940,28 @@
   padding: 8px;
   min-height: 80px;
 }
-.masks-sheet-v2 .playbook-tab .playbook-section--later-advances {
+.masks-sheet-v2 .playbook-tab .playbook-section--combined-advances {
   padding: 12px;
   background: var(--masks-v2-input-bg);
   border: 1px solid var(--masks-v2-border-color);
   border-radius: var(--masks-v2-corner-radius);
   border-left: 3px solid var(--masks-v2-accent-color);
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--combined-advances .advances-subsection .subsection-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--masks-v2-accent-color);
+  margin-bottom: 8px;
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--combined-advances .advances-subsection--later .subsection-title {
+  color: var(--masks-v2-text-muted);
+}
+.masks-sheet-v2 .playbook-tab .playbook-section--combined-advances .advances-divider {
+  border: none;
+  border-top: 1px solid var(--masks-v2-border-color);
+  margin: 16px 0;
 }
 .masks-sheet-v2 .playbook-tab .cell__clock {
   display: flex;

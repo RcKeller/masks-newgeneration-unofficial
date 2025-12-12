@@ -1687,19 +1687,20 @@
     margin-top: 4px;
     min-width: 0; /* Allow flex items to shrink */
 
-    .playbook-select {
+    /* Playbook select - use .charplaybook class (PbtA standard) */
+    .charplaybook {
       flex: 1;
       min-width: 0; /* Fix overflow */
       background: var(--masks-v2-input-bg);
       border: 1px solid var(--masks-v2-border-color);
       border-radius: var(--masks-v2-corner-radius);
       color: var(--masks-v2-text-primary);
-      padding: 6px 8px;
+      padding: 8px 10px;
       font-size: 0.9rem;
       cursor: pointer;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
+      /* Ensure full playbook name is visible */
+      height: auto;
+      min-height: 36px;
 
       &:focus {
         outline: none;
@@ -1709,13 +1710,14 @@
       option {
         background: var(--masks-v2-panel-bg);
         color: var(--masks-v2-text-primary);
+        padding: 8px;
       }
     }
 
     .playbook-link {
       flex-shrink: 0;
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1854,6 +1856,7 @@
   grid-template-columns: 1fr var(--masks-v2-sidebar-width);
   height: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 /* Tabs Container */
@@ -1908,8 +1911,12 @@
 .masks-sheet-v2 .tab-content {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   background: var(--masks-v2-tab-active-bg);
   padding: 16px;
+  scroll-behavior: smooth;
+  /* Prevent scroll position reset on re-render */
+  overscroll-behavior: contain;
 
   .tab {
     display: none;
@@ -1990,7 +1997,23 @@
     .labels-graph-svg {
       width: 100px;
       height: 100px;
+
+      /* Animate the data polygon path */
+      path:last-of-type {
+        transition: fill 0.3s ease, stroke 0.3s ease, d 0.3s ease;
+      }
+
+      /* Pulse animation when graph updates */
+      &.updating {
+        animation: graph-pulse 0.3s ease;
+      }
     }
+  }
+
+  @keyframes graph-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
   }
 
   .labels-list {
@@ -2683,14 +2706,21 @@
     border-radius: var(--masks-v2-corner-radius);
     overflow: hidden;
 
-    &.collapsed .moves-list {
-      grid-template-rows: 0fr;
+    &.collapsed .moves-list-wrapper {
+      max-height: 0;
       opacity: 0;
     }
 
     &.collapsed .moves-collapse-icon i {
       transform: rotate(180deg);
     }
+  }
+
+  .moves-list-wrapper {
+    max-height: 2000px; /* Large enough to fit any list */
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
   }
 
   .moves-group-header {
@@ -3386,7 +3416,7 @@
     }
   }
 
-  /* Moment of Truth Section - Fix styling */
+  /* Moment of Truth Section */
   .playbook-section--moment {
     padding: 12px;
     background: var(--masks-v2-input-bg);
@@ -3407,13 +3437,36 @@
     }
   }
 
-  /* Later Advances Section */
-  .playbook-section--later-advances {
+  /* Combined Advancements Section */
+  .playbook-section--combined-advances {
     padding: 12px;
     background: var(--masks-v2-input-bg);
     border: 1px solid var(--masks-v2-border-color);
     border-radius: var(--masks-v2-corner-radius);
     border-left: 3px solid var(--masks-v2-accent-color);
+
+    .advances-subsection {
+      .subsection-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--masks-v2-accent-color);
+        margin-bottom: 8px;
+      }
+
+      &--later {
+        .subsection-title {
+          color: var(--masks-v2-text-muted);
+        }
+      }
+    }
+
+    .advances-divider {
+      border: none;
+      border-top: 1px solid var(--masks-v2-border-color);
+      margin: 16px 0;
+    }
   }
 
   /* PbtA Clock Pattern Styling (used by Doom Track, etc.) */

@@ -30,11 +30,11 @@ const LABEL_DISPLAY_NAMES = Object.freeze({
  * These correspond to Font Awesome 6 Solid icons
  */
 const LABEL_ICONS = Object.freeze({
-	danger: { unicode: "\uf06d", class: "fa-fire", color: "#e05252" },       // fire - red
-	freak: { unicode: "\uf756", class: "fa-burst", color: "#9b59b6" },      // burst - purple
-	savior: { unicode: "\uf132", class: "fa-shield", color: "#3498db" },    // shield - blue
-	mundane: { unicode: "\uf007", class: "fa-user", color: "#27ae60" },     // user - green
-	superior: { unicode: "\uf521", class: "fa-crown", color: "#f39c12" },   // crown - gold
+	danger: { unicode: "\uf06d", class: "fa-fire", color: "#e05252" },           // fire - red
+	freak: { unicode: "\uf756", class: "fa-burst", color: "#9b59b6" },           // burst - purple
+	savior: { unicode: "\uf132", class: "fa-shield-heart", color: "#3498db" },   // shield-heart - blue
+	mundane: { unicode: "\uf007", class: "fa-user", color: "#27ae60" },          // user - green
+	superior: { unicode: "\uf521", class: "fa-crown", color: "#f39c12" },        // crown - gold
 });
 
 /**

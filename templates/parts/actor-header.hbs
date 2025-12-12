@@ -20,11 +20,9 @@
 				<i class="fas fa-eye-slash"></i>
 				{{/if}}
 			</div>
-			<div class="playbook-select-wrapper">
-				<select class="playbook-select" name="system.playbook.uuid">
+			<select class="input--title charplaybook">
 				{{selectOptions playbooks selected=system.playbook.uuid valueAttr="uuid" labelAttr="name" blank=(localize "PBTA.Playbook") sort=true}}
-				</select>
-			</div>
+			</select>
 			<input class="input--title advancement"
 				type="number"
 				name="system.advancements"

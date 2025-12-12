@@ -11,7 +11,7 @@
 		<input class="character-real-name" name="system.attributes.realName.value" type="text" value="{{system.attributes.realName.value}}" placeholder="{{system.attributes.realName.label}}" />
 
 		<div class="playbook-row">
-			<select class="playbook-select" name="system.playbook.uuid">
+			<select class="charplaybook">
 				{{selectOptions playbooks selected=system.playbook.uuid valueAttr="uuid" labelAttr="name" blank=(localize "PBTA.Playbook") sort=true}}
 			</select>
 			<button type="button" class="playbook-link {{#if system.playbook.uuid}}active{{/if}}"

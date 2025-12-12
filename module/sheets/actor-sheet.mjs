@@ -9,12 +9,12 @@ const NS = "masks-newgeneration-unofficial";
 const LABEL_CONFIG = Object.freeze({
 	danger: {
 		key: "danger",
-		icon: "fa-solid fa-hand-fist",
+		icon: "fa-solid fa-fire",
 		color: "danger",
 	},
 	freak: {
 		key: "freak",
-		icon: "fa-solid fa-hat-wizard",
+		icon: "fa-solid fa-burst",
 		color: "freak",
 	},
 	savior: {
@@ -24,12 +24,12 @@ const LABEL_CONFIG = Object.freeze({
 	},
 	superior: {
 		key: "superior",
-		icon: "fa-solid fa-graduation-cap",
+		icon: "fa-solid fa-crown",
 		color: "superior",
 	},
 	mundane: {
 		key: "mundane",
-		icon: "fa-solid fa-hat-cowboy",
+		icon: "fa-solid fa-user",
 		color: "mundane",
 	},
 });
@@ -167,6 +167,7 @@ export function MasksActorSheetMixin(Base) {
 		/**
 		 * Prepare ALL playbook-specific attributes for the Playbook tab
 		 * Includes both position: Top (like Doom track) and position: Left (like Sanctuary)
+		 * Uses the same patterns as PbtA's built-in attribute preparation
 		 * @returns {Object|null} Playbook attributes or null if none
 		 */
 		_prepareAllPlaybookAttributes() {
@@ -194,16 +195,35 @@ export function MasksActorSheetMixin(Base) {
 
 				const max = attr.max ?? configAttr.max ?? 5;
 
+				// For ListMany, ensure we have options from the actor (current state) or config (defaults)
+				// The actor's options contain the current checkbox states
+				let options = null;
+				if (mergedType === "ListMany") {
+					// Use actor's options (with current values) or fall back to config defaults
+					options = attr.options ?? configAttr.options ?? {};
+				}
+
+				// Get value - for Clock/Number types, ensure it's a number
+				let value;
+				if (mergedType === "LongText") {
+					value = attr.value ?? "";
+				} else if (mergedType === "Clock" || mergedType === "Number") {
+					value = Number(attr.value) || 0;
+				} else {
+					value = attr.value;
+				}
+
 				result[key] = {
 					key,
 					type: mergedType,
-					label: attr.label ?? configAttr.label,
+					label: attr.label ?? configAttr.label ?? key,
 					description: attr.description ?? configAttr.description,
-					value: mergedType === "LongText" ? attr.value : (Number(attr.value) || 0),
-					enriched: attr.enriched,
+					value: value,
+					// Use enriched content if available (prepared by PbtA's base getData)
+					enriched: attr.enriched ?? value,
 					attrName: `system.attributes.${key}.value`,
 					max: max,
-					options: attr.options ?? configAttr.options,
+					options: options,
 				};
 				hasAny = true;
 			}
@@ -314,8 +334,8 @@ export function MasksActorSheetMixin(Base) {
 			// Playbook link
 			html.on("click", ".playbook-link", this._onPlaybookLink.bind(this));
 
-			// Playbook select change - trigger advancement prompt
-			html.on("change", ".playbook-select", this._onPlaybookChange.bind(this));
+			// NOTE: Playbook select uses class="charplaybook" and is handled by PbtA's base sheet
+			// Do NOT add a custom handler - PbtA handles playbook changes including choices/grants
 
 			// Tab handling
 			html.on("click", ".tab-btn", this._onTabClick.bind(this));
@@ -719,137 +739,8 @@ export function MasksActorSheetMixin(Base) {
 			}
 		}
 
-		/**
-		 * Handle playbook change via select dropdown
-		 * Uses PbtA's built-in handleChoices() and grantChoices() for proper election handling
-		 */
-		async _onPlaybookChange(event) {
-			event.preventDefault();
-			const select = event.currentTarget;
-			const newPlaybookUuid = select.value;
-			const oldPlaybookUuid = this.actor.system.playbook?.uuid;
-			const oldPlaybookName = this.actor.system.playbook?.name;
-
-			// If no change, do nothing
-			if (newPlaybookUuid === oldPlaybookUuid) return;
-
-			// If clearing the playbook, just update
-			if (!newPlaybookUuid) {
-				await this.actor.update({ "system.playbook": null });
-				return;
-			}
-
-			// Get the new playbook document from compendium
-			const newPlaybook = await fromUuid(newPlaybookUuid);
-			if (!newPlaybook) return;
-
-			// Check if this is a playbook change (not initial selection)
-			const isChange = !!oldPlaybookUuid && oldPlaybookUuid !== newPlaybookUuid;
-
-			// If changing playbooks, ask about deleting old moves first
-			if (isChange) {
-				const deleteOldMoves = await this._promptDeleteOldPlaybookMoves(oldPlaybookName);
-				if (deleteOldMoves === null) {
-					// User cancelled, revert select
-					select.value = oldPlaybookUuid;
-					return;
-				}
-
-				if (deleteOldMoves) {
-					await this._deletePlaybookMoves();
-				}
-			}
-
-			// Set the playbook on the actor - this should add it as an embedded item
-			if (typeof this.actor.setPlaybook === "function") {
-				await this.actor.setPlaybook(newPlaybook, { promptForAdvancement: false });
-			} else {
-				await this.actor.update({
-					"system.playbook": {
-						uuid: newPlaybookUuid,
-						name: newPlaybook.name,
-						slug: newPlaybook.system?.slug ?? newPlaybook.name.slugify(),
-					},
-				});
-			}
-
-			const actorPlaybook = this.actor.items.find((i) => i.type === "playbook");
-			if (actorPlaybook && typeof actorPlaybook.handleChoices === "function") {
-				const choiceUpdate = await actorPlaybook.handleChoices(actorPlaybook);
-				if (choiceUpdate && Object.keys(choiceUpdate).length > 0) {
-					await actorPlaybook.update(choiceUpdate);
-					if (typeof actorPlaybook.grantChoices === "function") {
-						const grantedItems = await actorPlaybook.grantChoices(choiceUpdate);
-						await actorPlaybook.update({ "flags.pbta": { grantedItems } });
-					}
-				}
-			}
-		}
-
-		/**
-		 * Prompt user to delete old playbook moves
-		 * @param {string} oldPlaybookName - Name of the old playbook
-		 * @returns {boolean|null} true to delete, false to keep, null if cancelled
-		 */
-		async _promptDeleteOldPlaybookMoves(oldPlaybookName) {
-			// Find playbook moves that belong to the old playbook
-			const playbookMoves = this.actor.items.filter(
-				(i) => i.type === "move" && i.system.moveType === "playbook"
-			);
-
-			if (playbookMoves.length === 0) return false;
-
-			const moveList = playbookMoves.map((m) => `<li>${m.name}</li>`).join("");
-			const content = `
-				<p>You are changing from <strong>${oldPlaybookName}</strong>.</p>
-				<p>Do you want to delete your old playbook moves?</p>
-				<ul style="max-height: 150px; overflow-y: auto; margin: 10px 0;">${moveList}</ul>
-			`;
-
-			return new Promise((resolve) => {
-				new Dialog({
-					title: "Delete Old Playbook Moves?",
-					content: content,
-					buttons: {
-						delete: {
-							icon: '<i class="fas fa-trash"></i>',
-							label: "Delete Moves",
-							callback: () => resolve(true),
-						},
-						keep: {
-							icon: '<i class="fas fa-save"></i>',
-							label: "Keep Moves",
-							callback: () => resolve(false),
-						},
-						cancel: {
-							icon: '<i class="fas fa-times"></i>',
-							label: "Cancel",
-							callback: () => resolve(null),
-						},
-					},
-					default: "keep",
-					close: () => resolve(null),
-				}).render(true);
-			});
-		}
-
-		/**
-		 * Delete all playbook moves from the character
-		 */
-		async _deletePlaybookMoves() {
-			const playbookMoves = this.actor.items.filter(
-				(i) => i.type === "move" && i.system.moveType === "playbook"
-			);
-
-			if (playbookMoves.length === 0) return;
-
-			const moveIds = playbookMoves.map((m) => m.id);
-			await this.actor.deleteEmbeddedDocuments("Item", moveIds);
-			ui.notifications.info(`Deleted ${moveIds.length} playbook move(s) from ${this.actor.name}`);
-		}
-
-		// NOTE: Playbook change advancement is now handled by PbtA's built-in
-		// handleChoices() and grantChoices() methods in _onPlaybookChange()
+		// NOTE: Playbook change is handled entirely by PbtA's base sheet via class="charplaybook"
+		// PbtA handles: setPlaybook(), handleChoices(), grantChoices(), and all dialogs
 
 		/**
 		 * Handle tab click

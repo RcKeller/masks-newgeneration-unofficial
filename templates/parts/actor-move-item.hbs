@@ -21,14 +21,10 @@
 		</span>
 		{{/if}}
 		<div class="move-actions">
-			{{!-- Share in chat (only show if move icon doesn't roll - i.e., non-rollable moves) --}}
-			{{#unless item.system.rollType}}
-			{{#unless item.system.rollFormula}}
+			{{!-- Share in chat (always show) --}}
 			<button type="button" class="move-action move-share" data-action="share-move" data-tooltip="{{localize 'PBTA.ShareMove'}}" data-tooltip-direction="UP">
 				<i class="fas fa-comment"></i>
 			</button>
-			{{/unless}}
-			{{/unless}}
 			{{!-- Edit move --}}
 			<button type="button" class="move-action move-edit" data-action="edit-item" data-tooltip="{{localize 'PBTA.Edit'}}" data-tooltip-direction="UP">
 				<i class="fas fa-edit"></i>

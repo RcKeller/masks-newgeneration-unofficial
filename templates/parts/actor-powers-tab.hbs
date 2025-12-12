@@ -46,13 +46,15 @@
 						<i class="fas fa-plus"></i>
 					</button>
 				</div>
-				<ol class="moves-list">
-					{{#each moves.playbook as |item id|}}
-					<li class="move-item" data-item-id="{{item._id}}" draggable="true">
-						{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-					</li>
-					{{/each}}
-				</ol>
+				<div class="moves-list-wrapper">
+					<ol class="moves-list">
+						{{#each moves.playbook as |item id|}}
+						<li class="move-item" data-item-id="{{item._id}}" draggable="true">
+							{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+						</li>
+						{{/each}}
+					</ol>
+				</div>
 			</div>
 			{{/if}}
 
@@ -69,13 +71,15 @@
 						<i class="fas fa-plus"></i>
 					</button>
 				</div>
-				<ol class="moves-list">
-					{{#each moves.basic as |item id|}}
-					<li class="move-item" data-item-id="{{item._id}}" draggable="true">
-						{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-					</li>
-					{{/each}}
-				</ol>
+				<div class="moves-list-wrapper">
+					<ol class="moves-list">
+						{{#each moves.basic as |item id|}}
+						<li class="move-item" data-item-id="{{item._id}}" draggable="true">
+							{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+						</li>
+						{{/each}}
+					</ol>
+				</div>
 			</div>
 			{{/if}}
 
@@ -92,13 +96,15 @@
 						<i class="fas fa-plus"></i>
 					</button>
 				</div>
-				<ol class="moves-list">
-					{{#each moves.adult as |item id|}}
-					<li class="move-item" data-item-id="{{item._id}}" draggable="true">
-						{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-					</li>
-					{{/each}}
-				</ol>
+				<div class="moves-list-wrapper">
+					<ol class="moves-list">
+						{{#each moves.adult as |item id|}}
+						<li class="move-item" data-item-id="{{item._id}}" draggable="true">
+							{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+						</li>
+						{{/each}}
+					</ol>
+				</div>
 			</div>
 			{{/if}}
 
@@ -115,13 +121,15 @@
 						<i class="fas fa-plus"></i>
 					</button>
 				</div>
-				<ol class="moves-list">
-					{{#each moves.rules as |item id|}}
-					<li class="move-item" data-item-id="{{item._id}}" draggable="true">
-						{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-					</li>
-					{{/each}}
-				</ol>
+				<div class="moves-list-wrapper">
+					<ol class="moves-list">
+						{{#each moves.rules as |item id|}}
+						<li class="move-item" data-item-id="{{item._id}}" draggable="true">
+							{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+						</li>
+						{{/each}}
+					</ol>
+				</div>
 			</div>
 			{{/if}}
 
@@ -138,13 +146,15 @@
 						<i class="fas fa-plus"></i>
 					</button>
 				</div>
-				<ol class="moves-list">
-					{{#each moves.PBTA_OTHER as |item id|}}
-					<li class="move-item" data-item-id="{{item._id}}" draggable="true">
-						{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
-					</li>
-					{{/each}}
-				</ol>
+				<div class="moves-list-wrapper">
+					<ol class="moves-list">
+						{{#each moves.PBTA_OTHER as |item id|}}
+						<li class="move-item" data-item-id="{{item._id}}" draggable="true">
+							{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs" item=item statSettings=../../statSettings sheetSettings=../../sheetSettings}}
+						</li>
+						{{/each}}
+					</ol>
+				</div>
 			</div>
 			{{/if}}
 		</div>

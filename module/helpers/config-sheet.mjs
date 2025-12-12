@@ -179,6 +179,32 @@ export const configSheet = async () => {
             description: game.i18n.localize("MASKS-SHEETS.CharacterSheets.Playbooks.theDoomed.bringsDoomCloser.description"),
             playbook: "The Doomed",
             position: "Left",
+            options: {
+              0: {
+                label: "overexerting yourself",
+                value: false,
+              },
+              1: {
+                label: "injuring innocents",
+                value: false,
+              },
+              2: {
+                label: "facing danger alone",
+                value: false,
+              },
+              3: {
+                label: "frightening loved ones",
+                value: false,
+              },
+              4: {
+                label: "showing mercy",
+                value: false,
+              },
+              5: {
+                label: "talking about it openly",
+                value: false,
+              },
+            },
           },
           doomedSanctuaryFeatures: {
             type: "LongText",
