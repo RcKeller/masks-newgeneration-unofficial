@@ -1933,16 +1933,39 @@
   }
 }
 
-/* Section Styling */
+/* Section Styling - Clean headers without underlines */
 .masks-sheet-v2 .section-title,
-.masks-sheet-v2 .sidebar-title {
-  font-size: 0.75rem;
-  font-weight: 700;
+.masks-sheet-v2 .sidebar-title,
+.masks-sheet-v2 .subsection-title {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--masks-v2-accent-color);
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-secondary);
   margin-bottom: 8px;
-  /* Removed underline for cleaner look */
+  /* Clean style - no underlines */
+}
+
+/* Feature labels (like "Doom Track") - slightly more prominent */
+.masks-sheet-v2 .feature-label,
+.masks-sheet-v2 .cell__title {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-secondary);
+  margin-bottom: 8px;
+  /* Override old decorative styles */
+  font-style: normal;
+  position: relative;
+  padding-left: 0;
+  border-bottom: none;
+
+  &::before, &::after {
+    display: none;
+  }
 }
 
 .masks-sheet-v2 .section-description {
@@ -2255,32 +2278,45 @@
   }
 }
 
-/* Advantages Section (Forward/Ongoing grouped) */
+/* Advantages Section (Forward/Ongoing grouped) - Compact like Labels */
 .masks-sheet-v2 .advantages-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  overflow: hidden; /* Prevent overflow */
 
   .sidebar-title {
     margin-bottom: 4px;
   }
 }
 
-/* Modifier Sections (Forward/Ongoing) */
+/* Modifier Sections (Forward/Ongoing) - Styled like label-row */
 .masks-sheet-v2 .modifier-section {
   .modifier-row {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px;
+    flex-direction: column;
+    gap: 4px;
     background: var(--masks-v2-input-bg);
     border: 1px solid var(--masks-v2-border-color);
     border-radius: var(--masks-v2-corner-radius);
+    padding: 6px 8px;
+    transition: all var(--masks-v2-transition-speed) ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  /* Top row: Icon | Name */
+  .modifier-row-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .modifier-icon {
     font-size: 0.85rem;
-    width: 18px;
+    width: 16px;
     text-align: center;
     flex-shrink: 0;
     color: var(--masks-v2-accent-color);
@@ -2288,19 +2324,26 @@
 
   .modifier-label {
     flex: 1;
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--masks-v2-text-secondary);
+    letter-spacing: 0.03em;
+    color: var(--masks-v2-text-primary);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
+  /* Bottom row: - | Value | + */
   .modifier-controls {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 4px;
 
     .modifier-btn {
+      flex-shrink: 0;
       width: 22px;
       height: 22px;
       padding: 0;
@@ -2313,9 +2356,18 @@
       color: var(--masks-v2-text-secondary);
       cursor: pointer;
       font-size: 0.65rem;
+      line-height: 1;
       transition: all var(--masks-v2-transition-speed) ease;
 
-      &:hover {
+      i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      &:hover:not(:disabled) {
         background: var(--masks-v2-accent-color);
         color: white;
         border-color: var(--masks-v2-accent-color);
@@ -2323,7 +2375,8 @@
     }
 
     .modifier-value {
-      width: 40px;
+      flex-shrink: 0;
+      width: 32px;
       text-align: center;
       background: transparent;
       border: none;
@@ -2343,6 +2396,22 @@
 
       -moz-appearance: textfield;
     }
+  }
+
+  /* Forward - green accent */
+  &.modifier--forward {
+    .modifier-row {
+      border-left: 3px solid #4CAF50;
+    }
+    .modifier-icon { color: #4CAF50; }
+  }
+
+  /* Ongoing - blue accent */
+  &.modifier--ongoing {
+    .modifier-row {
+      border-left: 3px solid #2196F3;
+    }
+    .modifier-icon { color: #2196F3; }
   }
 }
 
@@ -2769,29 +2838,32 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 12px;
+    background: transparent;
     cursor: pointer;
     transition: background var(--masks-v2-transition-speed) ease;
+    border-bottom: 1px solid var(--masks-v2-border-color);
 
     &:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
     }
 
+    /* Match feature-label style */
     .moves-group-title {
       flex: 1;
       display: flex;
       align-items: center;
       gap: 8px;
       margin: 0;
-      font-size: 0.85rem;
-      font-weight: 700;
+      font-size: 0.8rem;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--masks-v2-text-primary);
+      color: var(--masks-v2-text-secondary);
 
       i {
         color: var(--masks-v2-accent-color);
+        font-size: 0.85rem;
       }
     }
 
@@ -2799,29 +2871,30 @@
       color: var(--masks-v2-text-muted);
 
       i {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         transition: transform 0.3s ease;
       }
     }
 
     .moves-add-btn {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--masks-v2-accent-color);
-      border: none;
+      background: transparent;
+      border: 1px solid var(--masks-v2-border-color);
       border-radius: var(--masks-v2-corner-radius);
-      color: white;
+      color: var(--masks-v2-text-muted);
       cursor: pointer;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       transition: all var(--masks-v2-transition-speed) ease;
 
       &:hover {
-        transform: scale(1.1);
-        filter: brightness(1.1);
+        background: var(--masks-v2-accent-color);
+        border-color: var(--masks-v2-accent-color);
+        color: white;
       }
     }
   }
@@ -3514,7 +3587,7 @@
   /* PbtA Clock Pattern Styling (used by Doom Track, etc.) */
   .cell__clock {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
     flex-wrap: wrap;
     margin: 8px 0;
@@ -3522,38 +3595,28 @@
     .attr-clock {
       appearance: none;
       -webkit-appearance: none;
-      width: 32px;
-      height: 32px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      background: var(--masks-v2-sidebar-bg);
-      border: 3px solid var(--masks-danger-color);
+      background: var(--masks-v2-input-bg);
+      border: 2px solid var(--masks-v2-border-color);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
       margin: 0;
       position: relative;
 
-      /* Inner glow effect for unchecked */
-      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-
       &:hover {
-        transform: scale(1.15);
-        box-shadow: 0 0 12px var(--masks-danger-color), inset 0 0 6px rgba(0, 0, 0, 0.3);
+        border-color: var(--masks-danger-color);
+        background: rgba(224, 82, 82, 0.1);
       }
 
       &:checked {
         background: var(--masks-danger-color);
-        box-shadow: 0 0 8px var(--masks-danger-color), inset 0 0 4px rgba(255, 255, 255, 0.3);
+        border-color: var(--masks-danger-color);
 
-        /* Subtle inner highlight */
-        &::after {
-          content: "";
-          position: absolute;
-          top: 4px;
-          left: 4px;
-          right: 4px;
-          bottom: 4px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+        &:hover {
+          background: #c94545;
+          border-color: #c94545;
         }
       }
     }
@@ -3561,10 +3624,10 @@
 
   /* Clock count text */
   .clock-count {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--masks-v2-text-muted);
-    margin-left: 8px;
+    margin-left: 4px;
   }
 
   /* PbtA ListMany Pattern Styling (used by Advancements, features) */

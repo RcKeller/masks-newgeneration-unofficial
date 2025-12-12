@@ -114,6 +114,8 @@ export function MasksActorSheetMixin(Base) {
 
 		/**
 		 * Prepare label data for template rendering
+		 * Normal label range: -2 to +3 (via shifts)
+		 * Roll modifier caps: -3 to +4
 		 * @returns {Object} Label rows keyed by label name
 		 */
 		_prepareLabelRows() {
@@ -133,8 +135,9 @@ export function MasksActorSheetMixin(Base) {
 					icon: config.icon,
 					color: config.color,
 					isLocked: !!lockedLabels[key],
-					atMin: value <= -3,
-					atMax: value >= 4,
+					// Normal shift range: -2 to +3
+					atMin: value <= -2,
+					atMax: value >= 3,
 				};
 			}
 
@@ -364,6 +367,9 @@ export function MasksActorSheetMixin(Base) {
 
 		/**
 		 * Handle label increment
+		 * Normal label range: -2 to +3 (via shifts)
+		 * Roll modifier caps: -3 to +4
+		 * Advances can push a label to +4, but not via normal shifts
 		 */
 		async _onLabelIncrement(event) {
 			event.preventDefault();
@@ -378,7 +384,8 @@ export function MasksActorSheetMixin(Base) {
 
 			const path = `system.stats.${label}.value`;
 			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
-			if (current >= 4) return;
+			// Normal shift cap is +3 (advances can push to +4)
+			if (current >= 3) return;
 
 			// Trigger shift-up animation
 			this._animateLabelShift(label, "up");
@@ -388,6 +395,8 @@ export function MasksActorSheetMixin(Base) {
 
 		/**
 		 * Handle label decrement
+		 * Normal label range: -2 to +3 (via shifts)
+		 * Roll modifier caps: -3 to +4
 		 */
 		async _onLabelDecrement(event) {
 			event.preventDefault();
@@ -402,7 +411,8 @@ export function MasksActorSheetMixin(Base) {
 
 			const path = `system.stats.${label}.value`;
 			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
-			if (current <= -3) return;
+			// Normal shift minimum is -2 (roll cap is -3)
+			if (current <= -2) return;
 
 			// Trigger shift-down animation
 			this._animateLabelShift(label, "down");

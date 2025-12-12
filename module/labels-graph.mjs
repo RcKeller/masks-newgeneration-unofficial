@@ -120,12 +120,17 @@ function polygonPath(points) {
  *
  * Effective value formula per label:
  *   effective = base - conditionPenalty + globalBonus
- *   (clamped to range -4 to +4)
+ *   (clamped to roll modifier range: -3 to +4)
  *
  * Where:
  *   - base: the label's base value from character sheet
  *   - conditionPenalty: -2 if that label's condition is active, else 0
  *   - globalBonus: Forward + Ongoing (applies to all labels)
+ *
+ * Masks Label Ranges:
+ *   - Normal sheet range: -2 to +3 (via shifts)
+ *   - Roll modifier caps: -3 to +4
+ *   - Advances can push to +4
  */
 export function extractLabelsData(actor) {
 	if (!actor) return null;
@@ -145,13 +150,14 @@ export function extractLabelsData(actor) {
 		}
 	}
 
-	// Calculate effective values: base - conditionPenalty + globalBonus (clamped -4 to +4)
+	// Calculate effective values: base - conditionPenalty + globalBonus
+	// Clamped to roll modifier range: -3 to +4
 	const totalPenalty = affectedLabels.size * 2;
 	const labels = {};
 	for (const key of LABEL_ORDER) {
 		const base = Number(stats[key]?.value) || 0;
 		const penalty = affectedLabels.has(key) ? 2 : 0;
-		labels[key] = Math.max(-4, Math.min(4, base - penalty + globalBonus));
+		labels[key] = Math.max(-3, Math.min(4, base - penalty + globalBonus));
 	}
 
 	return {
@@ -197,9 +203,12 @@ export function generateLabelsGraphSVG(options) {
 	const cy = totalSize / 2;
 	// Pentagon stays at full size (not reduced)
 	const outerRadius = (size / 2) - 2;
-	const minValue = -4, maxValue = 4, range = 8;
+	// Roll modifier range: -3 to +4 (7 steps)
+	// At -3 (minimum), the spoke should be at dead center
+	const minValue = -3, maxValue = 4, range = 7;
 
 	// Normalize value to 0-1 range for radius calculation
+	// At minValue (-3), returns 0 (center); at maxValue (+4), returns 1 (outer edge)
 	const normalize = (v) => (Math.max(minValue, Math.min(maxValue, v)) - minValue) / range;
 
 	// Pentagon vertices

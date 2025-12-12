@@ -53,15 +53,17 @@
 		</div>
 	</div>
 
-	{{!-- Advantages Section (Forward + Ongoing) --}}
+	{{!-- Advantages Section (Forward + Ongoing) - Two-row layout like Labels --}}
 	<div class="advantages-section">
 		<h3 class="sidebar-title">{{localize "MASKS-SHEETS.Advantages"}}</h3>
 
 		{{!-- Forward --}}
 		<div class="modifier-section modifier--forward">
 			<div class="modifier-row">
-				<i class="modifier-icon fas fa-arrow-right"></i>
-				<span class="modifier-label">{{localize "PBTA.Forward"}}</span>
+				<div class="modifier-row-top">
+					<i class="modifier-icon fas fa-arrow-right"></i>
+					<span class="modifier-label">{{localize "PBTA.Forward"}}</span>
+				</div>
 				<div class="modifier-controls">
 					<button type="button" class="modifier-btn" data-action="decrease" data-attr="resources.forward.value">
 						<i class="fas fa-minus"></i>
@@ -78,8 +80,10 @@
 		{{!-- Ongoing --}}
 		<div class="modifier-section modifier--ongoing">
 			<div class="modifier-row">
-				<i class="modifier-icon fas fa-sync-alt"></i>
-				<span class="modifier-label">{{localize "PBTA.Ongoing"}}</span>
+				<div class="modifier-row-top">
+					<i class="modifier-icon fas fa-sync-alt"></i>
+					<span class="modifier-label">{{localize "PBTA.Ongoing"}}</span>
+				</div>
 				<div class="modifier-controls">
 					<button type="button" class="modifier-btn" data-action="decrease" data-attr="resources.ongoing.value">
 						<i class="fas fa-minus"></i>

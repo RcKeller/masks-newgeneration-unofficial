@@ -1636,16 +1636,40 @@
   gap: 16px;
 }
 
-/* Section Styling */
+/* Section Styling - Clean headers without underlines */
 .masks-sheet-v2 .section-title,
-.masks-sheet-v2 .sidebar-title {
-  font-size: 0.75rem;
-  font-weight: 700;
+.masks-sheet-v2 .sidebar-title,
+.masks-sheet-v2 .subsection-title {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--masks-v2-accent-color);
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-secondary);
   margin-bottom: 8px;
-  /* Removed underline for cleaner look */
+  /* Clean style - no underlines */
+}
+
+/* Feature labels (like "Doom Track") - slightly more prominent */
+.masks-sheet-v2 .feature-label,
+.masks-sheet-v2 .cell__title {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--masks-v2-text-secondary);
+  margin-bottom: 8px;
+  /* Override old decorative styles */
+  font-style: normal;
+  position: relative;
+  padding-left: 0;
+  border-bottom: none;
+}
+.masks-sheet-v2 .feature-label::before, .masks-sheet-v2 .feature-label::after,
+.masks-sheet-v2 .cell__title::before,
+.masks-sheet-v2 .cell__title::after {
+  display: none;
 }
 
 .masks-sheet-v2 .section-description {
@@ -1948,47 +1972,69 @@
   color: var(--masks-v2-text-muted);
 }
 
-/* Advantages Section (Forward/Ongoing grouped) */
+/* Advantages Section (Forward/Ongoing grouped) - Compact like Labels */
 .masks-sheet-v2 .advantages-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  overflow: hidden; /* Prevent overflow */
 }
 .masks-sheet-v2 .advantages-section .sidebar-title {
   margin-bottom: 4px;
 }
 
-/* Modifier Sections (Forward/Ongoing) */
+/* Modifier Sections (Forward/Ongoing) - Styled like label-row */
+.masks-sheet-v2 .modifier-section {
+  /* Top row: Icon | Name */
+  /* Bottom row: - | Value | + */
+  /* Forward - green accent */
+  /* Ongoing - blue accent */
+}
 .masks-sheet-v2 .modifier-section .modifier-row {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
+  flex-direction: column;
+  gap: 4px;
   background: var(--masks-v2-input-bg);
   border: 1px solid var(--masks-v2-border-color);
   border-radius: var(--masks-v2-corner-radius);
+  padding: 6px 8px;
+  transition: all var(--masks-v2-transition-speed) ease;
+}
+.masks-sheet-v2 .modifier-section .modifier-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.masks-sheet-v2 .modifier-section .modifier-row-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .masks-sheet-v2 .modifier-section .modifier-icon {
   font-size: 0.85rem;
-  width: 18px;
+  width: 16px;
   text-align: center;
   flex-shrink: 0;
   color: var(--masks-v2-accent-color);
 }
 .masks-sheet-v2 .modifier-section .modifier-label {
   flex: 1;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--masks-v2-text-secondary);
+  letter-spacing: 0.03em;
+  color: var(--masks-v2-text-primary);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .masks-sheet-v2 .modifier-section .modifier-controls {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
 }
 .masks-sheet-v2 .modifier-section .modifier-controls .modifier-btn {
+  flex-shrink: 0;
   width: 22px;
   height: 22px;
   padding: 0;
@@ -2001,15 +2047,24 @@
   color: var(--masks-v2-text-secondary);
   cursor: pointer;
   font-size: 0.65rem;
+  line-height: 1;
   transition: all var(--masks-v2-transition-speed) ease;
 }
-.masks-sheet-v2 .modifier-section .modifier-controls .modifier-btn:hover {
+.masks-sheet-v2 .modifier-section .modifier-controls .modifier-btn i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.masks-sheet-v2 .modifier-section .modifier-controls .modifier-btn:hover:not(:disabled) {
   background: var(--masks-v2-accent-color);
   color: white;
   border-color: var(--masks-v2-accent-color);
 }
 .masks-sheet-v2 .modifier-section .modifier-controls .modifier-value {
-  width: 40px;
+  flex-shrink: 0;
+  width: 32px;
   text-align: center;
   background: transparent;
   border: none;
@@ -2024,6 +2079,18 @@
 .masks-sheet-v2 .modifier-section .modifier-controls .modifier-value::-webkit-outer-spin-button, .masks-sheet-v2 .modifier-section .modifier-controls .modifier-value::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+.masks-sheet-v2 .modifier-section.modifier--forward .modifier-row {
+  border-left: 3px solid #4CAF50;
+}
+.masks-sheet-v2 .modifier-section.modifier--forward .modifier-icon {
+  color: #4CAF50;
+}
+.masks-sheet-v2 .modifier-section.modifier--ongoing .modifier-row {
+  border-left: 3px solid #2196F3;
+}
+.masks-sheet-v2 .modifier-section.modifier--ongoing .modifier-icon {
+  color: #2196F3;
 }
 
 /* Playbook Attributes Section */
@@ -2387,13 +2454,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 12px;
+  background: transparent;
   cursor: pointer;
   transition: background var(--masks-v2-transition-speed) ease;
+  border-bottom: 1px solid var(--masks-v2-border-color);
+  /* Match feature-label style */
 }
 .masks-sheet-v2 .powers-tab .moves-group-header:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
 }
 .masks-sheet-v2 .powers-tab .moves-group-header .moves-group-title {
   flex: 1;
@@ -2401,40 +2470,42 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--masks-v2-text-primary);
+  color: var(--masks-v2-text-secondary);
 }
 .masks-sheet-v2 .powers-tab .moves-group-header .moves-group-title i {
   color: var(--masks-v2-accent-color);
+  font-size: 0.85rem;
 }
 .masks-sheet-v2 .powers-tab .moves-group-header .moves-collapse-icon {
   color: var(--masks-v2-text-muted);
 }
 .masks-sheet-v2 .powers-tab .moves-group-header .moves-collapse-icon i {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   transition: transform 0.3s ease;
 }
 .masks-sheet-v2 .powers-tab .moves-group-header .moves-add-btn {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--masks-v2-accent-color);
-  border: none;
+  background: transparent;
+  border: 1px solid var(--masks-v2-border-color);
   border-radius: var(--masks-v2-corner-radius);
-  color: white;
+  color: var(--masks-v2-text-muted);
   cursor: pointer;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   transition: all var(--masks-v2-transition-speed) ease;
 }
 .masks-sheet-v2 .powers-tab .moves-group-header .moves-add-btn:hover {
-  transform: scale(1.1);
-  filter: brightness(1.1);
+  background: var(--masks-v2-accent-color);
+  border-color: var(--masks-v2-accent-color);
+  color: white;
 }
 .masks-sheet-v2 .powers-tab .moves-list {
   list-style: none;
@@ -3020,7 +3091,7 @@
 }
 .masks-sheet-v2 .playbook-tab .cell__clock {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
   flex-wrap: wrap;
   margin: 8px 0;
@@ -3028,42 +3099,33 @@
 .masks-sheet-v2 .playbook-tab .cell__clock .attr-clock {
   appearance: none;
   -webkit-appearance: none;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: var(--masks-v2-sidebar-bg);
-  border: 3px solid var(--masks-danger-color);
+  background: var(--masks-v2-input-bg);
+  border: 2px solid var(--masks-v2-border-color);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   margin: 0;
   position: relative;
-  /* Inner glow effect for unchecked */
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 .masks-sheet-v2 .playbook-tab .cell__clock .attr-clock:hover {
-  transform: scale(1.15);
-  box-shadow: 0 0 12px var(--masks-danger-color), inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-color: var(--masks-danger-color);
+  background: rgba(224, 82, 82, 0.1);
 }
 .masks-sheet-v2 .playbook-tab .cell__clock .attr-clock:checked {
   background: var(--masks-danger-color);
-  box-shadow: 0 0 8px var(--masks-danger-color), inset 0 0 4px rgba(255, 255, 255, 0.3);
-  /* Subtle inner highlight */
+  border-color: var(--masks-danger-color);
 }
-.masks-sheet-v2 .playbook-tab .cell__clock .attr-clock:checked::after {
-  content: "";
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
-  bottom: 4px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+.masks-sheet-v2 .playbook-tab .cell__clock .attr-clock:checked:hover {
+  background: #c94545;
+  border-color: #c94545;
 }
 .masks-sheet-v2 .playbook-tab .clock-count {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--masks-v2-text-muted);
-  margin-left: 8px;
+  margin-left: 4px;
 }
 .masks-sheet-v2 .playbook-tab .cell__checkboxes {
   list-style: none;
