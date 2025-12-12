@@ -10,7 +10,7 @@
 		<img class="power-card__icon item-image {{#if item.system.rollType}}rollable{{else if item.system.rollFormula}}rollable{{/if}}"
 			src="{{item.img}}" alt="{{item.name}}"
 			data-action="{{#if item.system.rollType}}roll-move{{else if item.system.rollFormula}}roll-move{{else}}share-move{{/if}}"
-			data-tooltip="{{#if item.system.rollType}}{{localize 'PBTA.Roll'}}{{else if item.system.rollFormula}}{{localize 'PBTA.Roll'}}{{else}}{{localize 'PBTA.ShareMove'}}{{/if}}"
+			data-tooltip="{{#if item.system.rollType}}{{localize 'MASKS-SHEETS.Actions.Roll'}}{{else if item.system.rollFormula}}{{localize 'MASKS-SHEETS.Actions.Roll'}}{{else}}{{localize 'MASKS-SHEETS.Actions.ShareMove'}}{{/if}}"
 			data-tooltip-direction="UP" />
 		<span class="power-card__name">{{item.name}}</span>
 		{{#if item.system.rollType}}
@@ -37,13 +37,13 @@
 			</div>
 			{{/if}}
 			<div class="power-card__actions">
-				<button type="button" class="power-card__action" data-action="share-move" data-tooltip="{{localize 'PBTA.ShareMove'}}" data-tooltip-direction="UP">
+				<button type="button" class="power-card__action" data-action="share-move" data-tooltip="{{localize 'MASKS-SHEETS.Actions.ShareMove'}}" data-tooltip-direction="UP">
 					<i class="fas fa-comment"></i>
 				</button>
-				<button type="button" class="power-card__action" data-action="edit-item" data-tooltip="{{localize 'PBTA.Edit'}}" data-tooltip-direction="UP">
+				<button type="button" class="power-card__action" data-action="edit-item" data-tooltip="{{localize 'MASKS-SHEETS.Actions.Edit'}}" data-tooltip-direction="UP">
 					<i class="fas fa-edit"></i>
 				</button>
-				<button type="button" class="power-card__action power-card__action--delete" data-action="delete-item" data-tooltip="{{localize 'PBTA.Delete'}}" data-tooltip-direction="UP">
+				<button type="button" class="power-card__action power-card__action--delete" data-action="delete-item" data-tooltip="{{localize 'MASKS-SHEETS.Actions.Delete'}}" data-tooltip-direction="UP">
 					<i class="fas fa-trash"></i>
 				</button>
 			</div>

@@ -51,6 +51,12 @@
         },
         "Advantages": "Advantages",
         "PlaybookFeatures": "Playbook Features",
+        "Actions": {
+            "Edit": "Edit",
+            "Delete": "Delete",
+            "ShareMove": "Share in Chat",
+            "Roll": "Roll"
+        },
         "Shift-Labels": {
             "label": "Shift Labels",
             "stat": "Label",
