@@ -90,6 +90,12 @@ export function MasksActorSheetMixin(Base) {
 		 */
 		_scrollTop = 0;
 
+		/**
+		 * Track the expanded power card ID for restoration after re-render
+		 * @type {string|null}
+		 */
+		_expandedPowerCardId = null;
+
 		/** @override */
 		async getData() {
 			const context = await super.getData();
@@ -321,6 +327,14 @@ export function MasksActorSheetMixin(Base) {
 				this._activeTab = activeTabBtn.dataset.tab;
 			}
 
+			// Save expanded power card state
+			const expandedRadio = this.element?.[0]?.querySelector(".power-card__radio:checked");
+			if (expandedRadio) {
+				// Extract item ID from the radio's id attribute (format: "power-{itemId}")
+				const radioId = expandedRadio.id;
+				this._expandedPowerCardId = radioId?.replace("power-", "") ?? null;
+			}
+
 			await super._render(force, options);
 
 			// Restore scroll position after render
@@ -331,6 +345,9 @@ export function MasksActorSheetMixin(Base) {
 
 			// Restore active tab
 			this._restoreActiveTab();
+
+			// Restore expanded power card
+			this._restoreExpandedPowerCard();
 		}
 
 		/**
@@ -352,6 +369,21 @@ export function MasksActorSheetMixin(Base) {
 			form.querySelectorAll(".tab-content > .tab").forEach((t) => {
 				t.classList.toggle("active", t.dataset.tab === this._activeTab);
 			});
+		}
+
+		/**
+		 * Restore the expanded power card after re-render
+		 */
+		_restoreExpandedPowerCard() {
+			if (!this._expandedPowerCardId) return;
+
+			const html = this.element;
+			if (!html?.length) return;
+
+			const radio = html[0].querySelector(`#power-${this._expandedPowerCardId}`);
+			if (radio) {
+				radio.checked = true;
+			}
 		}
 
 		/** @override */
