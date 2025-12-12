@@ -3,7 +3,7 @@
 <div class="power-card item {{#if item.system.rollType}}power-card--{{item.system.rollType}}{{/if}}"
 	data-item-id="{{item._id}}" draggable="true">
 	{{!-- Hidden radio for accordion behavior --}}
-	<input type="radio" name="{{accordionName}}" id="power-{{item._id}}" class="power-card__radio" />
+	<input type="radio" name="{{accordionName}}" id="power-{{item._id}}" class="power-card__radio" {{#if (eq item._id expandedPowerCardId)}}checked{{/if}} />
 
 	{{!-- Clickable header/label --}}
 	<label for="power-{{item._id}}" class="power-card__header">

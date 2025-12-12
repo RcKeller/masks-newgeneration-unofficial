@@ -44,7 +44,7 @@
 				</header>
 				<div class="powers-section__cards">
 					{{#each moves.playbook as |item id|}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings expandedPowerCardId=../expandedPowerCardId}}
 					{{/each}}
 				</div>
 			</section>
@@ -61,7 +61,7 @@
 				</header>
 				<div class="powers-section__cards">
 					{{#each moves.basic as |item id|}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings expandedPowerCardId=../expandedPowerCardId}}
 					{{/each}}
 				</div>
 			</section>
@@ -78,7 +78,7 @@
 				</header>
 				<div class="powers-section__cards">
 					{{#each moves.adult as |item id|}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings expandedPowerCardId=../expandedPowerCardId}}
 					{{/each}}
 				</div>
 			</section>
@@ -95,7 +95,7 @@
 				</header>
 				<div class="powers-section__cards">
 					{{#each moves.rules as |item id|}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings expandedPowerCardId=../expandedPowerCardId}}
 					{{/each}}
 				</div>
 			</section>
@@ -112,7 +112,7 @@
 				</header>
 				<div class="powers-section__cards">
 					{{#each moves.PBTA_OTHER as |item id|}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings expandedPowerCardId=../expandedPowerCardId}}
 					{{/each}}
 				</div>
 			</section>

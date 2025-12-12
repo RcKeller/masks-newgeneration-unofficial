@@ -138,6 +138,9 @@ export function MasksActorSheetMixin(Base) {
 					value: v,
 					filled: v <= xpValue,
 				}));
+
+				// Pass expanded power card ID to template for pre-checked rendering (prevents flash on re-render)
+				context.expandedPowerCardId = this._expandedPowerCardId;
 			}
 
 			return context;
@@ -339,6 +342,9 @@ export function MasksActorSheetMixin(Base) {
 				// Extract item ID from the radio's id attribute (format: "power-{itemId}")
 				const radioId = expandedRadio.id;
 				this._expandedPowerCardId = radioId?.replace("power-", "") ?? null;
+			} else {
+				// No card expanded - reset to null to prevent re-expansion on re-render
+				this._expandedPowerCardId = null;
 			}
 
 			// Save current labels graph state for animation
