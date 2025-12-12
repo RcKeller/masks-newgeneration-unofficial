@@ -24,6 +24,7 @@
   --masks-resource-control-bg-color: #ffffff;
   --masks-stats-border-color: rgb(229 222 210 / 37%);
   --masks-cell-title-border-color: #173f6e;
+  --masks-bio-title-border-color: #3da7db;
   --masks-header-bg-color: #173f6e;
   --masks-window-bg-image: url("/modules/masks-newgeneration-unofficial/images/skyline.webp"),
     var(--actor-gradient);

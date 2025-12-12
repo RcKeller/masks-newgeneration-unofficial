@@ -283,12 +283,18 @@ async function adjustForward(actor, delta, { announce = true, includeAidLink = f
 // Label Shifting
 // ────────────────────────────────────────────────────────────────────────────
 
+/**
+ * Get the bounds for normal label shifts (not roll modifier caps)
+ * Normal label range: -2 to +3 (via shifts)
+ * Roll modifier caps: -3 to +4 (those are minMod/maxMod in config)
+ * Advances can push a label to +4, but not via normal shifts
+ */
 function shiftBounds() {
-	const min = Number(game.pbta?.sheetConfig?.minMod);
-	const max = Number(game.pbta?.sheetConfig?.maxMod);
+	// These are the NORMAL SHIFT bounds, not roll modifier caps
+	// minMod/maxMod from config are for roll modifiers, not shifts
 	return {
-		lo: Number.isFinite(min) ? min : -2,
-		hi: Number.isFinite(max) ? max : 3,
+		lo: -2, // Normal minimum via shifts
+		hi: 3,  // Normal maximum via shifts (advances can push to +4)
 	};
 }
 
