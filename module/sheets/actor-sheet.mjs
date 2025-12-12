@@ -9,12 +9,12 @@ const NS = "masks-newgeneration-unofficial";
 const LABEL_CONFIG = Object.freeze({
 	danger: {
 		key: "danger",
-		icon: "fa-solid fa-fire",
+		icon: "fa-solid fa-hand-fist",
 		color: "danger",
 	},
 	freak: {
 		key: "freak",
-		icon: "fa-solid fa-burst",
+		icon: "fa-solid fa-hat-wizard",
 		color: "freak",
 	},
 	savior: {
@@ -24,12 +24,12 @@ const LABEL_CONFIG = Object.freeze({
 	},
 	superior: {
 		key: "superior",
-		icon: "fa-solid fa-crown",
+		icon: "fa-solid fa-graduation-cap",
 		color: "superior",
 	},
 	mundane: {
 		key: "mundane",
-		icon: "fa-solid fa-user",
+		icon: "fa-solid fa-hat-cowboy",
 		color: "mundane",
 	},
 });
@@ -100,6 +100,13 @@ export function MasksActorSheetMixin(Base) {
 				// Prepare ALL playbook-specific attributes for the Playbook tab
 				// This includes both position: Top (like Doom track, Burn) and position: Left (like Sanctuary)
 				context.playbookAttributes = this._prepareAllPlaybookAttributes();
+
+				// Prepare potential pips (1-based for correct display and click handling)
+				const xpValue = Number(this.actor.system.attributes?.xp?.value) || 0;
+				context.potentialPips = [1, 2, 3, 4, 5].map((v) => ({
+					value: v,
+					filled: v <= xpValue,
+				}));
 			}
 
 			return context;
@@ -373,6 +380,9 @@ export function MasksActorSheetMixin(Base) {
 			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
 			if (current >= 4) return;
 
+			// Trigger shift-up animation
+			this._animateLabelShift(label, "up");
+
 			await this.actor.update({ [path]: current + 1 });
 		}
 
@@ -394,7 +404,37 @@ export function MasksActorSheetMixin(Base) {
 			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
 			if (current <= -3) return;
 
+			// Trigger shift-down animation
+			this._animateLabelShift(label, "down");
+
 			await this.actor.update({ [path]: current - 1 });
+		}
+
+		/**
+		 * Animate label value shift
+		 * @param {string} label - The label key
+		 * @param {string} direction - "up" or "down"
+		 */
+		_animateLabelShift(label, direction) {
+			const labelRow = this.element?.[0]?.querySelector(`.label-row.label--${label}`);
+			if (!labelRow) return;
+
+			const valueInput = labelRow.querySelector(".label-value");
+			if (!valueInput) return;
+
+			// Remove any existing animation class
+			valueInput.classList.remove("shifting-up", "shifting-down");
+
+			// Force reflow to restart animation
+			void valueInput.offsetWidth;
+
+			// Add the animation class
+			valueInput.classList.add(`shifting-${direction}`);
+
+			// Remove class after animation completes
+			setTimeout(() => {
+				valueInput.classList.remove(`shifting-${direction}`);
+			}, 300);
 		}
 
 		/**

@@ -1942,8 +1942,7 @@
   letter-spacing: 0.1em;
   color: var(--masks-v2-accent-color);
   margin-bottom: 8px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--masks-v2-border-color);
+  /* Removed underline for cleaner look */
 }
 
 .masks-sheet-v2 .section-description {
@@ -2170,6 +2169,7 @@
       color: var(--masks-v2-text-primary);
       font-size: 1rem;
       font-weight: 700;
+      transition: transform 0.2s ease, color 0.2s ease;
 
       &:focus {
         outline: none;
@@ -2183,6 +2183,28 @@
       }
 
       -moz-appearance: textfield;
+
+      /* Animation when value changes */
+      &.shifting-up {
+        animation: label-shift-up 0.3s ease;
+      }
+
+      &.shifting-down {
+        animation: label-shift-down 0.3s ease;
+      }
+    }
+
+    /* Label shift animations */
+    @keyframes label-shift-up {
+      0% { transform: scale(1); color: var(--masks-v2-text-primary); }
+      50% { transform: scale(1.3); color: #4CAF50; }
+      100% { transform: scale(1); color: var(--masks-v2-text-primary); }
+    }
+
+    @keyframes label-shift-down {
+      0% { transform: scale(1); color: var(--masks-v2-text-primary); }
+      50% { transform: scale(1.3); color: #F44336; }
+      100% { transform: scale(1); color: var(--masks-v2-text-primary); }
     }
   }
 
@@ -2233,19 +2255,39 @@
   }
 }
 
+/* Advantages Section (Forward/Ongoing grouped) */
+.masks-sheet-v2 .advantages-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .sidebar-title {
+    margin-bottom: 4px;
+  }
+}
+
 /* Modifier Sections (Forward/Ongoing) */
 .masks-sheet-v2 .modifier-section {
   .modifier-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
     padding: 8px;
     background: var(--masks-v2-input-bg);
     border: 1px solid var(--masks-v2-border-color);
     border-radius: var(--masks-v2-corner-radius);
   }
 
+  .modifier-icon {
+    font-size: 0.85rem;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+    color: var(--masks-v2-accent-color);
+  }
+
   .modifier-label {
+    flex: 1;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -3472,35 +3514,56 @@
   /* PbtA Clock Pattern Styling (used by Doom Track, etc.) */
   .cell__clock {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     align-items: center;
+    flex-wrap: wrap;
+    margin: 8px 0;
 
     .attr-clock {
       appearance: none;
       -webkit-appearance: none;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: var(--masks-v2-sidebar-bg);
-      border: 2px solid var(--masks-danger-color);
+      border: 3px solid var(--masks-danger-color);
       cursor: pointer;
-      transition: all var(--masks-v2-transition-speed) ease;
+      transition: all 0.2s ease;
       margin: 0;
+      position: relative;
+
+      /* Inner glow effect for unchecked */
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 
       &:hover {
-        transform: scale(1.1);
-        box-shadow: 0 0 8px var(--masks-danger-color);
+        transform: scale(1.15);
+        box-shadow: 0 0 12px var(--masks-danger-color), inset 0 0 6px rgba(0, 0, 0, 0.3);
       }
 
       &:checked {
         background: var(--masks-danger-color);
+        box-shadow: 0 0 8px var(--masks-danger-color), inset 0 0 4px rgba(255, 255, 255, 0.3);
+
+        /* Subtle inner highlight */
+        &::after {
+          content: "";
+          position: absolute;
+          top: 4px;
+          left: 4px;
+          right: 4px;
+          bottom: 4px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+        }
       }
     }
   }
 
+  /* Clock count text */
   .clock-count {
     font-size: 0.85rem;
-    color: var(--masks-v2-text-secondary);
+    font-weight: 600;
+    color: var(--masks-v2-text-muted);
     margin-left: 8px;
   }
 

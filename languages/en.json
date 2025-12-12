@@ -49,6 +49,7 @@
             "Lock": "Lock this label (prevents shifting)",
             "Unlock": "Unlock this label"
         },
+        "Advantages": "Advantages",
         "PlaybookFeatures": "Playbook Features",
         "Shift-Labels": {
             "label": "Shift Labels",

@@ -39,50 +39,57 @@
 		</div>
 	</div>
 
-	{{!-- Potential (XP) --}}
+	{{!-- Potential (XP) - Using 1-based pips prepared in getData --}}
 	<div class="potential-section">
 		<h3 class="sidebar-title">{{system.attributes.xp.label}}</h3>
 		<div class="potential-tracker">
 			<div class="potential-pips">
-				{{#times 5}}
-				<span class="potential-pip {{#if (lte this ../system.attributes.xp.value)}}filled{{/if}}"
-					data-pip="{{this}}" data-action="set-potential"></span>
-				{{/times}}
+				{{#each potentialPips as |pip|}}
+				<span class="potential-pip {{#if pip.filled}}filled{{/if}}"
+					data-pip="{{pip.value}}" data-action="set-potential"></span>
+				{{/each}}
 			</div>
 			<span class="potential-count">{{system.attributes.xp.value}} / 5</span>
 		</div>
 	</div>
 
-	{{!-- Forward --}}
-	<div class="modifier-section modifier--forward">
-		<div class="modifier-row">
-			<span class="modifier-label">{{localize "PBTA.Forward"}}</span>
-			<div class="modifier-controls">
-				<button type="button" class="modifier-btn" data-action="decrease" data-attr="resources.forward.value">
-					<i class="fas fa-minus"></i>
-				</button>
-				<input type="number" class="modifier-value" name="system.resources.forward.value"
-					value="{{system.resources.forward.value}}" data-dtype="Number" />
-				<button type="button" class="modifier-btn" data-action="increase" data-attr="resources.forward.value">
-					<i class="fas fa-plus"></i>
-				</button>
+	{{!-- Advantages Section (Forward + Ongoing) --}}
+	<div class="advantages-section">
+		<h3 class="sidebar-title">{{localize "MASKS-SHEETS.Advantages"}}</h3>
+
+		{{!-- Forward --}}
+		<div class="modifier-section modifier--forward">
+			<div class="modifier-row">
+				<i class="modifier-icon fas fa-arrow-right"></i>
+				<span class="modifier-label">{{localize "PBTA.Forward"}}</span>
+				<div class="modifier-controls">
+					<button type="button" class="modifier-btn" data-action="decrease" data-attr="resources.forward.value">
+						<i class="fas fa-minus"></i>
+					</button>
+					<input type="number" class="modifier-value" name="system.resources.forward.value"
+						value="{{system.resources.forward.value}}" data-dtype="Number" />
+					<button type="button" class="modifier-btn" data-action="increase" data-attr="resources.forward.value">
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	{{!-- Ongoing --}}
-	<div class="modifier-section modifier--ongoing">
-		<div class="modifier-row">
-			<span class="modifier-label">{{localize "PBTA.Ongoing"}}</span>
-			<div class="modifier-controls">
-				<button type="button" class="modifier-btn" data-action="decrease" data-attr="resources.ongoing.value">
-					<i class="fas fa-minus"></i>
-				</button>
-				<input type="number" class="modifier-value" name="system.resources.ongoing.value"
-					value="{{system.resources.ongoing.value}}" data-dtype="Number" />
-				<button type="button" class="modifier-btn" data-action="increase" data-attr="resources.ongoing.value">
-					<i class="fas fa-plus"></i>
-				</button>
+		{{!-- Ongoing --}}
+		<div class="modifier-section modifier--ongoing">
+			<div class="modifier-row">
+				<i class="modifier-icon fas fa-sync-alt"></i>
+				<span class="modifier-label">{{localize "PBTA.Ongoing"}}</span>
+				<div class="modifier-controls">
+					<button type="button" class="modifier-btn" data-action="decrease" data-attr="resources.ongoing.value">
+						<i class="fas fa-minus"></i>
+					</button>
+					<input type="number" class="modifier-value" name="system.resources.ongoing.value"
+						value="{{system.resources.ongoing.value}}" data-dtype="Number" />
+					<button type="button" class="modifier-btn" data-action="increase" data-attr="resources.ongoing.value">
+						<i class="fas fa-plus"></i>
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
