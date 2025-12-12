@@ -766,21 +766,22 @@ export function MasksActorSheetMixin(Base) {
 		/**
 		 * Handle power card header click - allows collapsing already-open cards
 		 * Radio buttons don't toggle off naturally, so we handle it manually
+		 * Also prevents page scroll jump from label's default behavior
 		 */
 		_onPowerCardHeaderClick(event) {
 			// Don't interfere with icon clicks (they have their own handler)
 			if (event.target.closest(".power-card__icon")) return;
+
+			// Prevent default label behavior (causes scroll jump to hidden radio)
+			event.preventDefault();
 
 			const header = event.currentTarget;
 			const card = header.closest(".power-card");
 			const radio = card?.querySelector(".power-card__radio");
 			if (!radio) return;
 
-			// If already checked, uncheck it to collapse
-			if (radio.checked) {
-				event.preventDefault();
-				radio.checked = false;
-			}
+			// Toggle the radio state
+			radio.checked = !radio.checked;
 		}
 
 		/**
