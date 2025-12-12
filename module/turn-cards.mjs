@@ -219,7 +219,7 @@ const TeamService = {
 			if (reason === "aid" && actorName) {
 				content = `<b>${escape(from)}</b> spends 1 Team to aid <b>${escape(actorName)}</b>!<br/>Team Pool: ${old} → <b>${n}</b>`;
 			} else {
-				content = `<b>Team Pool</b>: ${old} → <b>${n}</b> (${sign}${d}) <span class="color-muted">— ${escape(from)}</span>`;
+				content = `<b>Team Pool</b>: ${old} → <b>${n}</b> (${sign}${d})`;
 			}
 			await ChatMessage.create({ content, type: CONST.CHAT_MESSAGE_TYPES.OTHER });
 		}

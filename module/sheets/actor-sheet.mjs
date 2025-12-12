@@ -683,12 +683,16 @@ export function MasksActorSheetMixin(Base) {
 		 */
 		async _shareMoveToChat(item) {
 			const content = `
-				<div class="move-card">
-					<header class="card-header">
-						<img src="${item.img}" alt="${item.name}" width="36" height="36" />
-						<h3 class="move-name">${item.name}</h3>
+				<div class="cell cell--chat">
+					<header class="chat-title row flexrow">
+						<img class="item-icon" src="${item.img}" alt="${item.name}" width="36" height="36" />
+						<h2 class="cell__title">${item.name}</h3>
 					</header>
-					${item.system.description ? `<div class="card-content">${item.system.description}</div>` : ""}
+					${
+						item.system.description
+							? `<div class="card-content">${item.system.description}</div>`
+							: ""
+					}
 				</div>
 			`;
 
