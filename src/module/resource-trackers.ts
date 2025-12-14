@@ -62,7 +62,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				moveNamePrefix: "Bull's Heart",
 				// getValue returns ongoing value for fill display
 				getValue: (actor) => {
-					return Number(foundry.utils.getProperty(actor, "system.attributes.ongoing.value")) || 0;
+					return Number(foundry.utils.getProperty(actor, "system.resources.ongoing.value")) || 0;
 				},
 				max: 3, // For fill percentage calculation
 				tooltip: (val) => `Bull's Heart (Ongoing: ${val}) | Left: +1 ongoing | Right: -1`,
@@ -166,21 +166,11 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				id: "obligations",
 				type: TrackerType.CHECKLIST,
 				icon: "fa-sharp fa-solid fa-hockey-mask",
-				color: "#64748b", // slate-500
+				color: "#dc2626", // red-600 - to match villain theme
 				label: "Obligations",
 				attrPath: "system.attributes.theReformed.options",
-				getValue: (actor) => {
-					const opts = foundry.utils.getProperty(actor, "system.attributes.theReformed.options") ?? {};
-					let total = 0;
-					for (const opt of Object.values(opts)) {
-						if (opt?.values) {
-							total += Object.values(opt.values).filter((v) => v?.value === true).length;
-						}
-					}
-					return total;
-				},
-				max: 12,
-				tooltip: (val) => `Obligations: ${val} marked (click to share)`,
+				// No getValue - we don't show a number on this tracker
+				tooltip: () => `Friends in Low Places (click to share)`,
 				checklistTitle: "Friends in Low Places",
 				isReformedObligations: true, // Special structure for Reformed
 			},
@@ -221,15 +211,8 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				attrPathAdvantages: "system.attributes.theStarAdvantages.options",
 				attrPathDemands: "system.attributes.theStarDemands.options",
 				compendiumUUID: "Compendium.masks-newgeneration-unofficial.hchc-playbook-star.BxIcS3GOuOSuH9E0",
-				getValue: (actor) => {
-					const advOpts = foundry.utils.getProperty(actor, "system.attributes.theStarAdvantages.options") ?? {};
-					const demOpts = foundry.utils.getProperty(actor, "system.attributes.theStarDemands.options") ?? {};
-					const advCount = Object.values(advOpts).filter((o) => o?.value === true).length;
-					const demCount = Object.values(demOpts).filter((o) => o?.value === true).length;
-					return advCount + demCount;
-				},
-				max: 4, // 2 advantages + 2 demands
-				tooltip: (val) => `Audience: ${val}/4 (click to share)`,
+				// No getValue - we don't show a number, just icon click to share
+				tooltip: () => `Audience (click to share)`,
 				checklistTitle: "Audience",
 				isStarAudience: true, // Special handling for Star's dual lists
 			},
@@ -269,10 +252,13 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				color: "#1e40af", // blue-800
 				label: "Soldier",
 				moveName: "A Higher Calling",
+				fillable: true,
 				getValue: (actor) => Number(foundry.utils.getProperty(actor, "system.attributes.theSoldier.value")) ?? 2,
-				tooltip: (val) => `Soldier: ${val} (Share: A Higher Calling)`,
+				min: -2,
+				max: 3,
+				tooltip: (val) => `Soldier: ${val} (click to share A Higher Calling)`,
 				action: "share",
-				position: "beside",
+				position: "top", // Between Forward and Shift Labels
 			},
 		],
 	},
@@ -595,8 +581,8 @@ export async function executeBullHeartAction(actor, delta) {
 	const tracker = left.find((t) => t.id === "heart");
 	if (!tracker) return false;
 
-	// Get current ongoing value
-	const currentOngoing = Number(foundry.utils.getProperty(actor, "system.attributes.ongoing.value")) || 0;
+	// Get current ongoing value (resources, not attributes!)
+	const currentOngoing = Number(foundry.utils.getProperty(actor, "system.resources.ongoing.value")) || 0;
 
 	if (delta > 0) {
 		// Left click: Share the move and add 1 ongoing
@@ -621,13 +607,13 @@ export async function executeBullHeartAction(actor, delta) {
 		}
 
 		// Add 1 ongoing
-		await actor.update({ "system.attributes.ongoing.value": currentOngoing + 1 });
+		await actor.update({ "system.resources.ongoing.value": currentOngoing + 1 });
 		ui.notifications?.info?.(`${actor.name}: +1 ongoing (now ${currentOngoing + 1})`);
 	} else {
 		// Right click: Remove 1 ongoing silently (min 0)
 		const newOngoing = Math.max(0, currentOngoing - 1);
 		if (newOngoing !== currentOngoing) {
-			await actor.update({ "system.attributes.ongoing.value": newOngoing });
+			await actor.update({ "system.resources.ongoing.value": newOngoing });
 		}
 	}
 
@@ -638,18 +624,33 @@ export async function executeBullHeartAction(actor, delta) {
  * Helper to filter out placeholder [Text] labels and extract valid items
  */
 function extractChecklistItems(opts, checkedOnly = false) {
-	return Object.entries(opts)
-		.filter(([key, opt]) => {
-			// Must have a label that's not the placeholder
-			if (!opt?.label || opt.label === "[Text]" || opt.label.trim() === "") return false;
-			// If checkedOnly, only include checked items
-			if (checkedOnly && opt.value !== true) return false;
-			return true;
-		})
-		.map(([key, opt]) => ({
-			label: opt.label,
-			checked: opt.value === true,
-		}));
+	// Debug: log what we receive
+	console.log(`[${NS}] extractChecklistItems called with:`, JSON.stringify(opts, null, 2));
+
+	const entries = Object.entries(opts);
+	console.log(`[${NS}] Found ${entries.length} entries`);
+
+	const filtered = entries.filter(([key, opt]) => {
+		// Must have a label that's not the placeholder
+		if (!opt?.label || opt.label === "[Text]" || opt.label.trim() === "") {
+			console.log(`[${NS}] Filtering out key=${key}: label="${opt?.label}"`);
+			return false;
+		}
+		// If checkedOnly, only include checked items
+		if (checkedOnly && opt.value !== true) {
+			console.log(`[${NS}] Filtering out key=${key}: not checked (checkedOnly mode)`);
+			return false;
+		}
+		console.log(`[${NS}] Keeping key=${key}: label="${opt?.label}", value=${opt?.value}`);
+		return true;
+	});
+
+	console.log(`[${NS}] After filtering: ${filtered.length} items`);
+
+	return filtered.map(([key, opt]) => ({
+		label: opt.label,
+		checked: opt.value === true,
+	}));
 }
 
 /**
@@ -676,12 +677,24 @@ function buildChecklistHtml(items, showCheckboxes = true) {
 export async function executeChecklistAction(actor, trackerId) {
 	if (!actor) return false;
 
+	const playbook = getPlaybookName(actor);
 	const { left, right } = getPlaybookTrackers(actor);
 	const allTrackers = [...left, ...right];
 	const tracker = allTrackers.find((t) => t.id === trackerId);
 
+	// Debug logging
+	console.log(`[${NS}] executeChecklistAction:`, {
+		actorName: actor.name,
+		playbook,
+		trackerId,
+		allTrackerIds: allTrackers.map((t) => t.id),
+		foundTracker: tracker ? { id: tracker.id, type: tracker.type } : null,
+		trackerTypeMatch: tracker?.type === TrackerType.CHECKLIST,
+	});
+
 	if (!tracker || tracker.type !== TrackerType.CHECKLIST) {
-		console.warn(`[${NS}] Tracker not found or not checklist type:`, trackerId);
+		console.warn(`[${NS}] Tracker not found or not checklist type:`, trackerId, "playbook:", playbook);
+		ui.notifications?.warn?.(`Checklist tracker "${trackerId}" not found for ${playbook}`);
 		return false;
 	}
 
