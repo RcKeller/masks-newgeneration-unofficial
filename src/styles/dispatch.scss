@@ -1313,8 +1313,10 @@
   }
 
   /* --- Playbook Resource Trackers --- */
+  /* Large colored icons without rounded corners or white borders */
   .turncard__tracker {
     box-sizing: border-box;
+    position: relative;
     width: var(--tc-control-size);
     height: var(--tc-control-size);
     padding: 0;
@@ -1322,56 +1324,63 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border-radius: 50%;
-    background: var(--tracker-color, rgba(0, 0, 0, 0.55));
-    border: 1px solid rgba(255, 255, 255, 0.85);
-    color: #fff;
-    font-size: 0.7rem;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    color: var(--tracker-color, #888);
+    font-size: 1.25rem;
     font-weight: 700;
-    overflow: hidden;
+    overflow: visible;
     transition: transform var(--tc-transition-fast), filter var(--tc-transition-fast), opacity var(--tc-transition-fast);
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
 
-    /* Fill effect for numeric trackers */
-    &::before {
-      content: "";
-      position: absolute;
-      inset: auto 0 0 0;
-      height: var(--tracker-fill, 0%);
-      background: rgba(255, 255, 255, 0.25);
-      transition: height var(--tc-transition-smooth);
-    }
-
-    .turncard__tracker-value {
-      position: relative;
-      z-index: 1;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    }
-
+    /* The icon - large and colored */
     i {
-      position: relative;
-      z-index: 1;
-      font-size: 0.7rem;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      font-size: 1.4rem;
+      color: var(--tracker-color, #888);
+      transition: transform var(--tc-transition-fast), filter var(--tc-transition-fast);
+    }
+
+    /* Value badge for numeric/display trackers with counts */
+    .turncard__tracker-badge {
+      position: absolute;
+      bottom: -2px;
+      right: -4px;
+      min-width: 14px;
+      height: 14px;
+      padding: 0 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.85);
+      border-radius: 7px;
+      color: #fff;
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-shadow: none;
+      z-index: 2;
     }
 
     &:hover:not(:disabled) {
-      transform: scale(1.15);
-      filter: brightness(1.12);
+      transform: scale(1.2);
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5)) brightness(1.2);
+
+      i { filter: brightness(1.2); }
     }
 
-    &:active:not(:disabled) { transform: scale(0.95); }
+    &:active:not(:disabled) { transform: scale(0.92); }
 
     &.is-display {
       cursor: default;
-      opacity: 0.85;
-      &:hover { transform: none; filter: none; }
+      opacity: 0.8;
+      &:hover { transform: none; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6)); }
     }
 
     &.is-action {
       cursor: pointer;
       &:hover:not(:disabled) {
-        transform: scale(1.15);
-        filter: brightness(1.15);
+        transform: scale(1.2);
+        i { filter: brightness(1.25); }
       }
     }
 
@@ -1383,33 +1392,107 @@
 
     &:disabled {
       cursor: default;
-      &:hover { transform: none; filter: none; }
+      opacity: 0.5;
+      &:hover { transform: none; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6)); }
+    }
+  }
+
+  /* Numeric trackers with fillable icons */
+  .turncard__tracker--numeric {
+    /* Filled portion overlays the icon */
+    .turncard__tracker-fill {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      clip-path: inset(calc(100% - var(--tracker-fill, 0%)) 0 0 0);
+      transition: clip-path var(--tc-transition-smooth);
+
+      i {
+        font-size: 1.4rem;
+        color: #fff;
+        filter: drop-shadow(0 0 4px var(--tracker-color, #888));
+      }
     }
   }
 
   /* Soldier tracker in middle position - slightly smaller */
   .turncard__tracker--middle {
-    width: calc(var(--tc-control-size) - 4px);
-    height: calc(var(--tc-control-size) - 4px);
-    font-size: 0.65rem;
+    width: calc(var(--tc-control-size) - 2px);
+    height: calc(var(--tc-control-size) - 2px);
+
+    i { font-size: 1.2rem; }
+    .turncard__tracker-badge { font-size: 0.55rem; }
   }
 
-  /* Playbook-specific tracker themes */
+  /* Playbook-specific tracker color themes */
   .turncard__tracker--doom {
     --tracker-color: #9333ea;
+    i { filter: drop-shadow(0 0 6px rgba(147, 51, 234, 0.6)); }
   }
 
   .turncard__tracker--burn {
     --tracker-color: #f97316;
-    box-shadow: 0 0 8px rgba(249, 115, 22, 0.5);
+    i { filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.7)); }
+    &:hover i { filter: drop-shadow(0 0 12px rgba(249, 115, 22, 0.9)) brightness(1.2); }
   }
 
   .turncard__tracker--gadgets {
     --tracker-color: #059669;
+    i { filter: drop-shadow(0 0 5px rgba(5, 150, 105, 0.5)); }
   }
 
   .turncard__tracker--soldier {
     --tracker-color: #1e40af;
+    i { filter: drop-shadow(0 0 5px rgba(30, 64, 175, 0.6)); }
+  }
+
+  .turncard__tracker--heart {
+    --tracker-color: #dc2626;
+    i { filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.6)); }
+  }
+
+  .turncard__tracker--obligations,
+  .turncard__tracker--legacy {
+    --tracker-color: #0891b2;
+    i { filter: drop-shadow(0 0 5px rgba(8, 145, 178, 0.6)); }
+  }
+
+  .turncard__tracker--steps {
+    --tracker-color: #ec4899;
+    i { filter: drop-shadow(0 0 5px rgba(236, 72, 153, 0.6)); }
+  }
+
+  .turncard__tracker--drives {
+    --tracker-color: #22c55e;
+    i { filter: drop-shadow(0 0 5px rgba(34, 197, 94, 0.6)); }
+  }
+
+  .turncard__tracker--lessons {
+    --tracker-color: #8b5cf6;
+    i { filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.6)); }
+  }
+
+  .turncard__tracker--audience {
+    --tracker-color: #eab308;
+    i { filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.7)); }
+  }
+
+  .turncard__tracker--roots {
+    --tracker-color: #0d9488;
+    i { filter: drop-shadow(0 0 5px rgba(13, 148, 136, 0.6)); }
+  }
+
+  .turncard__tracker--dots {
+    --tracker-color: #7c3aed;
+    i { filter: drop-shadow(0 0 5px rgba(124, 58, 237, 0.6)); }
+  }
+
+  .turncard__tracker--respect {
+    --tracker-color: #be123c;
+    i { filter: drop-shadow(0 0 5px rgba(190, 18, 60, 0.6)); }
   }
 
   @keyframes tc-bump {

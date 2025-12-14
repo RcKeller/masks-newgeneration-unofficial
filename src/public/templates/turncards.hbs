@@ -82,14 +82,14 @@
                     {{!-- Playbook-specific left trackers (top position) --}}
                     {{#each card.trackers.leftTop}}
                     <button type="button"
-                        class="turncard__tracker turncard__tracker--{{id}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}}"
+                        class="turncard__tracker turncard__tracker--{{id}} {{#if (eq type "numeric")}}turncard__tracker--numeric{{/if}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}}"
                         data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
                         data-tracker-type="{{type}}" style="--tracker-color: {{color}}; --tracker-fill: {{pct}};"
                         aria-label="{{tooltip}}" data-tooltip="{{tooltip}}" {{#if disabled}}disabled{{/if}}>
-                        {{#if (eq type "numeric")}}
-                        <span class="turncard__tracker-value">{{value}}</span>
-                        {{else}}
                         <i class="{{icon}}"></i>
+                        {{#if (eq type "numeric")}}
+                        <span class="turncard__tracker-badge">{{value}}</span>
+                        <div class="turncard__tracker-fill"><i class="{{icon}}"></i></div>
                         {{/if}}
                     </button>
                     {{/each}}
@@ -113,7 +113,8 @@
                         data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
                         data-tracker-type="{{type}}" style="--tracker-color: {{color}};"
                         aria-label="{{tooltip}}" data-tooltip="{{tooltip}}">
-                        <span class="turncard__tracker-value">{{value}}</span>
+                        <i class="{{icon}}"></i>
+                        <span class="turncard__tracker-badge">{{value}}</span>
                     </button>
                     {{/each}}
 
@@ -131,16 +132,16 @@
                     {{!-- Playbook-specific right trackers --}}
                     {{#each card.trackers.rightTop}}
                     <button type="button"
-                        class="turncard__tracker turncard__tracker--{{id}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}} {{#if canAct}}is-action{{/if}}"
+                        class="turncard__tracker turncard__tracker--{{id}} {{#if (eq type "numeric")}}turncard__tracker--numeric{{/if}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}} {{#if canAct}}is-action{{/if}}"
                         data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
                         data-tracker-type="{{type}}" style="--tracker-color: {{color}}; --tracker-fill: {{pct}};"
                         aria-label="{{tooltip}}" data-tooltip="{{tooltip}}" {{#if disabled}}disabled{{/if}}>
-                        {{#if (eq type "numeric")}}
-                        <span class="turncard__tracker-value">{{value}}</span>
-                        {{else if value}}
-                        <span class="turncard__tracker-value">{{value}}</span>
-                        {{else}}
                         <i class="{{icon}}"></i>
+                        {{#if (eq type "numeric")}}
+                        <span class="turncard__tracker-badge">{{value}}</span>
+                        <div class="turncard__tracker-fill"><i class="{{icon}}"></i></div>
+                        {{else if value}}
+                        <span class="turncard__tracker-badge">{{value}}</span>
                         {{/if}}
                     </button>
                     {{/each}}
