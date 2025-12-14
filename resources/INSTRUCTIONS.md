@@ -38,17 +38,25 @@ Star (Left): Share "Audience" move item
   fa-solid fa-star
 Nomad (Right): Influence given to others (clicking shares the move item Putting Down Roots)
   fa-solid fa-street-view
+Soldier (Left): Soldier stat (click to share A Higher Calling)
+  NOTE: Put this in-between the Advantage and Shift Labels buttons!
+  fa-solid fa-person-rifle
 
 Harbinger (Right): Just a button, clicking shares the move "Connecting the Dots" to chat
-Scion (Right): Respect icon (click to share "Respect" chat)
-Brain (Left): This playbook is MISSING a gadget tracker, add this stat as a trackable resource on the playbook (integer >0, no limit). This is based on the "Always Prepared" brain move.
+  fa-solid fa-timeline
 
-Outsider: Nonee
+Scion (Right): Respect icon (click to share "Respect" chat)
+  fa-solid fa-face-saluting
+
+Brain (Left): This playbook is MISSING a gadget tracker, add this stat as a trackable resource on the  playbook (integer >0, no limit). This is based on the "Always Prepared" brain move.
+  fa-solid fa-microchip
+
+Outsider: None
 Delinquent: None
 Transformed: None
 
 
-PLEASE CHANGE THE STAR icon for potential to fa-solid fa-seedling
+PLEASE CHANGE THE STAR icon we implemented for potential to "fa-solid fa-seedling"
 
 ---------
 
