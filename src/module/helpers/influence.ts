@@ -345,6 +345,56 @@ class InfluenceIndexImpl {
 /** Singleton InfluenceIndex */
 export const InfluenceIndex = new InfluenceIndexImpl();
 
+/* ---------------------- Nomad Influence Sync ---------------------- */
+
+/**
+ * Sync The Nomad's theNomad attribute with the count of influence given.
+ * The Nomad can only give 6 Influence total, so we clamp to 0-6.
+ * This value is derived from how many entries have haveInfluenceOver === true.
+ */
+async function syncNomadInfluenceCount(actor) {
+  if (!actor || actor.type !== "character") return;
+
+  // Only sync for The Nomad playbook
+  const playbook = actor.system?.playbook?.name ?? "";
+  if (playbook !== "The Nomad") return;
+
+  const influences = readInfluences(actor);
+  if (!Array.isArray(influences)) return;
+
+  // Count how many others have influence over this character (influence given TO others)
+  // haveInfluenceOver means THEY have influence over ME (I gave them influence)
+  const influenceGiven = influences.filter(inf => inf?.haveInfluenceOver === true).length;
+
+  // Clamp to 0-6 per Nomad rules
+  const clampedValue = Math.max(0, Math.min(6, influenceGiven));
+
+  // Get current value to avoid unnecessary updates
+  const currentValue = Number(foundry.utils.getProperty(actor, "system.attributes.theNomad.value")) || 0;
+
+  if (currentValue !== clampedValue) {
+    try {
+      await actor.update({ "system.attributes.theNomad.value": clampedValue });
+      console.log(`[${NS}] Synced Nomad influence count: ${currentValue} -> ${clampedValue}`);
+    } catch (err) {
+      console.error(`[${NS}] Failed to sync Nomad influence count`, err);
+    }
+  }
+}
+
+/**
+ * Check all Nomad actors and sync their influence counts.
+ * Called on init and when influence data changes.
+ */
+export function syncAllNomadInfluenceCounts() {
+  const nomads = (game.actors?.contents ?? []).filter(
+    a => a?.type === "character" && a.system?.playbook?.name === "The Nomad"
+  );
+  for (const nomad of nomads) {
+    syncNomadInfluenceCount(nomad);
+  }
+}
+
 /* ------------------------ Optional: public registration --------------------- */
 
 /**
@@ -355,3 +405,20 @@ export function registerInfluenceHelpers() {
   // No-op placeholder to make intent explicit in callers.
   return true;
 }
+
+// Register hook to sync Nomad counts when influences change
+Hooks.on("updateActor", (actor, changes) => {
+  const inflChanged = foundry.utils.getProperty(changes, FLAG_PATH) !== undefined;
+  if (inflChanged) {
+    // Sync this actor if it's a Nomad
+    syncNomadInfluenceCount(actor);
+    // Also sync any Nomads that might be affected by this actor's changes
+    syncAllNomadInfluenceCounts();
+  }
+});
+
+// Sync all Nomads on game ready
+Hooks.once("ready", () => {
+  // Small delay to ensure all data is loaded
+  setTimeout(() => syncAllNomadInfluenceCounts(), 1000);
+});

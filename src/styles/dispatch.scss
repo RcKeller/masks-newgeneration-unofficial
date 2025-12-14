@@ -27,6 +27,7 @@
   --masks-superior-color: #f39c12;
   --masks-mundane-color: #27ae60;
   --masks-soldier-color: #8b4513;
+  --masks-nomad-color: #0d9488; /* teal-600 - matches Nomad tracker */
 
   /* Semi-transparent versions for backgrounds */
   --masks-danger-bg: rgba(224, 82, 82, 0.15);
@@ -35,6 +36,7 @@
   --masks-superior-bg: rgba(243, 156, 18, 0.15);
   --masks-mundane-bg: rgba(39, 174, 96, 0.15);
   --masks-soldier-bg: rgba(139, 69, 19, 0.15);
+  --masks-nomad-bg: rgba(13, 148, 136, 0.15);
 
   /* --- Semantic Colors --- */
   --masks-text-primary: #ffffff;
@@ -2051,6 +2053,14 @@ textarea:disabled {
     &.label--soldier {
       border-left: 3px solid var(--masks-soldier-color);
       .label-icon { color: var(--masks-soldier-color); }
+    }
+    &.label--nomad {
+      border-left: 3px solid var(--masks-nomad-color);
+      .label-icon { color: var(--masks-nomad-color); }
+      /* Nomad value is read-only/derived - add visual indicator */
+      opacity: 0.85;
+      cursor: default;
+      .label-btn { pointer-events: none; }
     }
 
     .label-icon {

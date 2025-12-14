@@ -195,6 +195,28 @@ export function MasksActorSheetMixin(Base) {
 				}
 			}
 
+			// Add Nomad's "Putting Down Roots" as a 6th label - ALWAYS LOCKED
+			// The value is dynamically calculated from influence count and cannot be edited
+			if (playbook === "The Nomad") {
+				const nomadAttr = this.actor.system.attributes?.theNomad;
+				if (nomadAttr) {
+					const value = Number(nomadAttr.value) || 0;
+					rows.nomad = {
+						key: "nomad",
+						value,
+						displayName: nomadAttr.label ?? "Roots",
+						icon: "fa-solid fa-street-view",
+						color: "nomad",
+						isLocked: true, // ALWAYS locked - value is derived from influence count
+						atMin: value <= 0,
+						atMax: value >= 6,
+						isPlaybookLabel: true,
+						isReadOnly: true, // Special flag to indicate this is derived/read-only
+						attrPath: "system.attributes.theNomad.value",
+					};
+				}
+			}
+
 			return rows;
 		}
 
@@ -264,6 +286,8 @@ export function MasksActorSheetMixin(Base) {
 				if (mergedCondition) continue;
 				// Skip theSoldier - it's rendered as a 6th label in the labels section
 				if (key === "theSoldier") continue;
+				// Skip theNomad - it's rendered as a 6th label (derived from influence count)
+				if (key === "theNomad") continue;
 
 				const max = attr.max ?? configAttr.max ?? 5;
 
