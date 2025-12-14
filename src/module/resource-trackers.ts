@@ -232,8 +232,8 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				// Count how many others have influence over this character (influence given TO others)
 				getValue: (actor) => {
 					const influences = actor.getFlag(NS, "influences") ?? [];
-					// haveInfluenceOver means THEY have influence over ME (I gave them influence)
-					return influences.filter((inf) => inf?.haveInfluenceOver === true).length;
+					// hasInfluenceOver means THEY have influence over ME (I gave them influence)
+					return influences.filter((inf) => inf?.hasInfluenceOver === true).length;
 				},
 				max: 6,
 				tooltip: (val) => `Influence given: ${val}/6 (click to share)`,
@@ -823,9 +823,9 @@ export async function executeInfluenceChecklistAction(actor) {
 	if (!tracker) return false;
 
 	const influences = actor.getFlag(NS, "influences") ?? [];
-	// haveInfluenceOver means THEY have influence over ME (I gave them influence)
+	// hasInfluenceOver means THEY have influence over ME (I gave them influence)
 	const givenTo = influences
-		.filter((inf) => inf?.haveInfluenceOver === true && inf?.name)
+		.filter((inf) => inf?.hasInfluenceOver === true && inf?.name)
 		.map((inf) => inf.name);
 
 	if (givenTo.length === 0) {

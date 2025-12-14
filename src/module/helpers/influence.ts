@@ -350,7 +350,7 @@ export const InfluenceIndex = new InfluenceIndexImpl();
 /**
  * Sync The Nomad's theNomad attribute with the count of influence given.
  * The Nomad can only give 6 Influence total, so we clamp to 0-6.
- * This value is derived from how many entries have haveInfluenceOver === true.
+ * This value is derived from how many entries have hasInfluenceOver === true.
  */
 async function syncNomadInfluenceCount(actor) {
   if (!actor || actor.type !== "character") return;
@@ -362,9 +362,9 @@ async function syncNomadInfluenceCount(actor) {
   const influences = readInfluences(actor);
   if (!Array.isArray(influences)) return;
 
-  // Count how many others have influence over this character (influence given TO others)
-  // haveInfluenceOver means THEY have influence over ME (I gave them influence)
-  const influenceGiven = influences.filter(inf => inf?.haveInfluenceOver === true).length;
+  // Count how many others have influence over this character
+  // hasInfluenceOver means THEY have influence over ME (I gave them influence)
+  const influenceGiven = influences.filter(inf => inf?.hasInfluenceOver === true).length;
 
   // Clamp to 0-6 per Nomad rules
   const clampedValue = Math.max(0, Math.min(6, influenceGiven));
