@@ -1102,8 +1102,8 @@
   }
 
   .turncard__shift {
-    left: 4px;
-    bottom: 4px;
+    // left: 4px;
+    // bottom: 4px;
     width: var(--tc-control-size);
     height: var(--tc-control-size);
     background: rgba(0, 0, 0, 0.55);
@@ -1279,11 +1279,13 @@
   /* --- Control Columns (Flexbox) --- */
   .turncard__controls {
     position: absolute;
-    bottom: 4px;
+    // bottom: 4px;
+    bottom: 0px;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     align-items: center;
-    gap: 4px;
+    // gap: 4px;
+    gap: -2px;
     z-index: 5;
     pointer-events: none;
 
@@ -1291,11 +1293,13 @@
   }
 
   .turncard__controls--left {
-    left: 4px;
+    left: 0;
+    bottom: 0;
   }
 
   .turncard__controls--right {
     right: 4px;
+    bottom: 4px;
   }
 
   /* Update existing controls to work in flexbox */
@@ -3294,8 +3298,4 @@ textarea:disabled {
       }
     }
   }
-}
-
-* {
-  color: red !important;
 }
