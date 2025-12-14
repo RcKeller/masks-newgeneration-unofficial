@@ -64,8 +64,9 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				getValue: (actor) => {
 					return Number(foundry.utils.getProperty(actor, "system.resources.ongoing.value")) || 0;
 				},
-				max: 3, // For fill percentage calculation
-				tooltip: (val) => `Bull's Heart (Ongoing: ${val}) | Left: +1 ongoing | Right: -1`,
+				min: 0,
+				max: 1, // Toggle mode: 0 or 1 ongoing
+				tooltip: (val) => `Bull's Heart${val > 0 ? " (active)" : ""} | Left: activate | Right: deactivate`,
 			},
 		],
 	},
@@ -570,9 +571,9 @@ export async function executeTrackerAction(actor, trackerId) {
 }
 
 /**
- * Execute Bull's Heart action
- * Left click (delta=1): Share the Bull's Heart move and add 1 ongoing
- * Right click (delta=-1): Remove 1 ongoing silently
+ * Execute Bull's Heart action (toggle mode)
+ * Left click (delta=1): Set ongoing to 1 and share the Bull's Heart move
+ * Right click (delta=-1): Set ongoing to 0 silently
  */
 export async function executeBullHeartAction(actor, delta) {
 	if (!actor) return false;
@@ -585,7 +586,29 @@ export async function executeBullHeartAction(actor, delta) {
 	const currentOngoing = Number(foundry.utils.getProperty(actor, "system.resources.ongoing.value")) || 0;
 
 	if (delta > 0) {
-		// Left click: Share the move and add 1 ongoing
+		// Left click: Set ongoing to 1 (toggle on) and share the move
+		if (currentOngoing >= 1) {
+			// Already active, just share the move without changing value
+			const movePrefix = tracker.moveNamePrefix ?? "Bull's Heart";
+			const move = actor.items.find(
+				(i) => i.type === "move" && i.name.toLowerCase().startsWith(movePrefix.toLowerCase())
+			);
+
+			if (move) {
+				if (typeof move.toChat === "function") {
+					await move.toChat();
+				} else {
+					await ChatMessage.create({
+						content: `<h3>${move.name}</h3><p>${move.system.description ?? ""}</p>`,
+						speaker: ChatMessage.getSpeaker({ actor }),
+						style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+					});
+				}
+			}
+			return true;
+		}
+
+		// Activate: set to 1 and share move
 		const movePrefix = tracker.moveNamePrefix ?? "Bull's Heart";
 		const move = actor.items.find(
 			(i) => i.type === "move" && i.name.toLowerCase().startsWith(movePrefix.toLowerCase())
@@ -606,14 +629,14 @@ export async function executeBullHeartAction(actor, delta) {
 			ui.notifications?.warn?.(`Move starting with "${movePrefix}" not found on ${actor.name}`);
 		}
 
-		// Add 1 ongoing
-		await actor.update({ "system.resources.ongoing.value": currentOngoing + 1 });
-		ui.notifications?.info?.(`${actor.name}: +1 ongoing (now ${currentOngoing + 1})`);
+		// Set ongoing to 1
+		await actor.update({ "system.resources.ongoing.value": 1 });
+		ui.notifications?.info?.(`${actor.name}: +1 ongoing (Bull's Heart active)`);
 	} else {
-		// Right click: Remove 1 ongoing silently (min 0)
-		const newOngoing = Math.max(0, currentOngoing - 1);
-		if (newOngoing !== currentOngoing) {
-			await actor.update({ "system.resources.ongoing.value": newOngoing });
+		// Right click: Set ongoing to 0 (toggle off)
+		if (currentOngoing > 0) {
+			await actor.update({ "system.resources.ongoing.value": 0 });
+			ui.notifications?.info?.(`${actor.name}: Bull's Heart deactivated`);
 		}
 	}
 
