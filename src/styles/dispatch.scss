@@ -1102,21 +1102,30 @@
   }
 
   .turncard__shift {
-    // left: 4px;
-    // bottom: 4px;
     width: var(--tc-control-size);
     height: var(--tc-control-size);
+    min-width: var(--tc-control-size);
+    min-height: var(--tc-control-size);
+    aspect-ratio: 1 / 1;
+    flex: 0 0 auto;
     background: rgba(0, 0, 0, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.85);
   }
 
   .turncard__labels-graph {
+    --labels-size: 40px;
     border-radius: 0;
     clip-path: polygon(50% 0%, 100% 38%, 81% 100%, 19% 100%, 0% 38%);
     left: 2px;
     bottom: 2px;
-    width: 40px;
-    height: 40px;
+    width: var(--labels-size);
+    height: var(--labels-size);
+    min-width: var(--labels-size);
+    min-height: var(--labels-size);
+    max-width: var(--labels-size);
+    max-height: var(--labels-size);
+    aspect-ratio: 1 / 1;
+    flex: 0 0 auto;
     z-index: 6;
     background: transparent;
     border: none;
@@ -1146,10 +1155,12 @@
   }
 
   .turncard__forward {
-    left: 10px;
-    bottom: 38px;
     width: var(--tc-forward-size);
     height: var(--tc-forward-size);
+    min-width: var(--tc-forward-size);
+    min-height: var(--tc-forward-size);
+    aspect-ratio: 1 / 1;
+    flex: 0 0 auto;
     font-size: 0.75rem;
     background: rgba(0, 0, 0, 0.35);
     border: 1px solid transparent;
@@ -1158,9 +1169,10 @@
     .turncard__forward-value {
       font-size: 0.7rem;
       font-weight: 900;
+      line-height: 1;
     }
 
-    i { font-size: 0.65rem; }
+    i { font-size: 0.65rem; line-height: 1; }
 
     &.has-bonus {
       background: var(--tc-forward-bg);
@@ -1176,10 +1188,12 @@
   }
 
   .turncard__potential {
-    right: 6px;
-    bottom: 6px;
     width: var(--tc-control-size);
     height: var(--tc-control-size);
+    min-width: var(--tc-control-size);
+    min-height: var(--tc-control-size);
+    aspect-ratio: 1 / 1;
+    flex: 0 0 auto;
     background: var(--tc-pentagon-color);
     border: 1px solid rgba(255, 255, 255, 0.92);
     overflow: hidden;
@@ -1279,17 +1293,19 @@
   /* --- Control Columns (Flexbox) --- */
   .turncard__controls {
     position: absolute;
-    // bottom: 4px;
     bottom: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    // gap: 4px;
-    gap: -2px;
+    justify-content: flex-end;
+    gap: 2px;
     z-index: 5;
     pointer-events: none;
 
-    > * { pointer-events: auto; }
+    > * {
+      pointer-events: auto;
+      flex: 0 0 auto; /* Prevent buttons from stretching */
+    }
   }
 
   .turncard__controls--left {
@@ -1305,82 +1321,100 @@
   /* Update existing controls to work in flexbox */
   .turncard__controls .turncard__shift,
   .turncard__controls .turncard__forward,
-  .turncard__controls .turncard__potential {
+  .turncard__controls .turncard__potential,
+  .turncard__controls .turncard__tracker {
     position: relative;
     left: auto;
     right: auto;
     bottom: auto;
+    flex: 0 0 auto; /* Ensure buttons don't stretch */
+  }
+
+  /* Shift Labels row - horizontal layout for pentagon + beside trackers */
+  .turncard__shift-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+    flex: 0 0 auto;
   }
 
   /* --- Playbook Resource Trackers --- */
-  /* Large colored icons without rounded corners or white borders */
+  /* Large colored icons with semi-opaque background */
   .turncard__tracker {
     box-sizing: border-box;
     position: relative;
     width: var(--tc-control-size);
     height: var(--tc-control-size);
+    min-width: var(--tc-control-size);
+    min-height: var(--tc-control-size);
+    max-width: var(--tc-control-size);
+    max-height: var(--tc-control-size);
+    aspect-ratio: 1 / 1;
     padding: 0;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border-radius: 0;
-    background: transparent;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
     border: none;
     color: var(--tracker-color, #888);
     font-size: 1.25rem;
     font-weight: 700;
     overflow: visible;
-    transition: transform var(--tc-transition-fast), filter var(--tc-transition-fast), opacity var(--tc-transition-fast);
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
+    flex: 0 0 auto;
+    transition: transform var(--tc-transition-fast), filter var(--tc-transition-fast), opacity var(--tc-transition-fast), background var(--tc-transition-fast);
 
     /* The icon - large and colored */
     i {
-      font-size: 1.4rem;
+      font-size: 1.1rem;
       color: var(--tracker-color, #888);
       transition: transform var(--tc-transition-fast), filter var(--tc-transition-fast);
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+      line-height: 1;
     }
 
     /* Value badge for numeric/display trackers with counts */
     .turncard__tracker-badge {
       position: absolute;
-      bottom: -2px;
-      right: -4px;
+      bottom: -3px;
+      right: -3px;
       min-width: 14px;
       height: 14px;
       padding: 0 3px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.9);
       border-radius: 7px;
       color: #fff;
       font-size: 0.6rem;
       font-weight: 700;
       text-shadow: none;
-      z-index: 2;
+      z-index: 10;
+      line-height: 1;
     }
 
     &:hover:not(:disabled) {
-      transform: scale(1.2);
-      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5)) brightness(1.2);
-
-      i { filter: brightness(1.2); }
+      transform: scale(1.15);
+      background: rgba(0, 0, 0, 0.6);
+      i { filter: brightness(1.25) drop-shadow(0 0 4px var(--tracker-color, #888)); }
     }
 
     &:active:not(:disabled) { transform: scale(0.92); }
 
     &.is-display {
       cursor: default;
-      opacity: 0.8;
-      &:hover { transform: none; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6)); }
+      opacity: 0.85;
+      &:hover { transform: none; background: rgba(0, 0, 0, 0.45); i { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)); } }
     }
 
     &.is-action {
       cursor: pointer;
       &:hover:not(:disabled) {
-        transform: scale(1.2);
-        i { filter: brightness(1.25); }
+        transform: scale(1.15);
+        i { filter: brightness(1.3) drop-shadow(0 0 6px var(--tracker-color, #888)); }
       }
     }
 
@@ -1393,12 +1427,14 @@
     &:disabled {
       cursor: default;
       opacity: 0.5;
-      &:hover { transform: none; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6)); }
+      &:hover { transform: none; background: rgba(0, 0, 0, 0.45); }
     }
   }
 
-  /* Numeric trackers with fillable icons */
-  .turncard__tracker--numeric {
+  /* Fillable trackers with fill effect (numeric and display with fillable flag) */
+  .turncard__tracker--fillable {
+    overflow: hidden;
+
     /* Filled portion overlays the icon */
     .turncard__tracker-fill {
       position: absolute;
@@ -1409,22 +1445,40 @@
       overflow: hidden;
       clip-path: inset(calc(100% - var(--tracker-fill, 0%)) 0 0 0);
       transition: clip-path var(--tc-transition-smooth);
+      background: var(--tracker-color, #888);
+      border-radius: 50%;
 
       i {
-        font-size: 1.4rem;
+        font-size: 1.1rem;
         color: #fff;
-        filter: drop-shadow(0 0 4px var(--tracker-color, #888));
+        filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
       }
     }
   }
 
-  /* Soldier tracker in middle position - slightly smaller */
-  .turncard__tracker--middle {
-    width: calc(var(--tc-control-size) - 2px);
-    height: calc(var(--tc-control-size) - 2px);
+  /* Beside tracker (Soldier - to the right of Shift Labels) */
+  .turncard__tracker--beside {
+    --beside-size: calc(var(--tc-control-size) - 4px);
+    width: var(--beside-size);
+    height: var(--beside-size);
+    min-width: var(--beside-size);
+    min-height: var(--beside-size);
+    max-width: var(--beside-size);
+    max-height: var(--beside-size);
+    aspect-ratio: 1 / 1;
+    flex: 0 0 auto;
 
-    i { font-size: 1.2rem; }
-    .turncard__tracker-badge { font-size: 0.55rem; }
+    i {
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+    .turncard__tracker-badge {
+      font-size: 0.5rem;
+      min-width: 12px;
+      height: 12px;
+      bottom: -2px;
+      right: -2px;
+    }
   }
 
   /* Playbook-specific tracker color themes */

@@ -46,11 +46,13 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		left: [
 			{
 				id: "heart",
-				type: TrackerType.DISPLAY,
+				type: TrackerType.ACTION,
 				icon: "fa-solid fa-skull-cow",
 				color: "#dc2626", // red-600
 				label: "Bull's Heart",
-				tooltip: () => "+1 ongoing (love/rival)",
+				moveName: "The Bull's Heart",
+				tooltip: () => "Share: The Bull's Heart (+1 ongoing love/rival)",
+				action: "share",
 			},
 		],
 	},
@@ -105,17 +107,18 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		right: [
 			{
 				id: "steps",
-				type: TrackerType.DISPLAY,
+				type: TrackerType.ACTION,
 				icon: "fa-solid fa-stairs",
 				color: "#ec4899", // pink-500
 				label: "Steps",
-				attrPath: "system.attributes.theInnocent.options",
+				moveName: "Your Future Self",
 				getValue: (actor) => {
 					const opts = foundry.utils.getProperty(actor, "system.attributes.theInnocent.options") ?? {};
 					return Object.values(opts).filter((o) => o?.value === true).length;
 				},
 				max: 5,
-				tooltip: (val) => `Steps: ${val}/5 (edit on sheet)`,
+				tooltip: (val) => `Steps: ${val}/5 (Share: Your Future Self)`,
+				action: "share",
 			},
 		],
 	},
@@ -125,10 +128,10 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 			{
 				id: "drives",
 				type: TrackerType.DISPLAY,
-				icon: "fa-sharp-duotone fa-solid fa-bullseye-arrow",
+				icon: "fa-solid fa-bullseye-arrow",
 				color: "#22c55e", // green-500
 				label: "Drives",
-				attrPath: "system.attributes.theBeacon.options",
+				fillable: true, // Display but with fill effect
 				getValue: (actor) => {
 					const opts = foundry.utils.getProperty(actor, "system.attributes.theBeacon.options") ?? {};
 					return Object.values(opts).filter((o) => o?.value === true).length;
@@ -167,22 +170,24 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		right: [
 			{
 				id: "lessons",
-				type: TrackerType.DISPLAY,
+				type: TrackerType.ACTION,
 				icon: "fa-solid fa-chalkboard-user",
 				color: "#8b5cf6", // violet-500
 				label: "Lessons",
+				moveName: "A Blank Slate",
 				getValue: (actor) => {
 					const opts = foundry.utils.getProperty(actor, "system.attributes.theNewborn.options") ?? {};
 					return Object.values(opts).filter((o) => o?.value === true).length;
 				},
 				max: 4,
-				tooltip: (val) => `Lessons: ${val}/4 (edit on sheet)`,
+				tooltip: (val) => `Lessons: ${val}/4 (Share: A Blank Slate)`,
+				action: "share",
 			},
 		],
 	},
 
 	"The Star": {
-		left: [
+		right: [
 			{
 				id: "audience",
 				type: TrackerType.ACTION,
@@ -202,12 +207,15 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				id: "roots",
 				type: TrackerType.ACTION,
 				icon: "fa-solid fa-street-view",
-				attrPath: "system.attributes.theNomad.value",
-				maxPath: "system.attributes.theNomad.max",
 				color: "#0d9488", // teal-600
 				label: "Roots",
 				moveName: "Putting Down Roots",
-				getValue: (actor) => Number(foundry.utils.getProperty(actor, "system.attributes.theNomad.value")) || 0,
+				// Count how many others have influence over this character (influence given TO others)
+				getValue: (actor) => {
+					const influences = actor.getFlag("dispatch", "influences") ?? [];
+					// haveInfluenceOver means THEY have influence over ME (I gave them influence)
+					return influences.filter((inf) => inf?.haveInfluenceOver === true).length;
+				},
 				max: 6,
 				tooltip: (val) => `Influence given: ${val}/6 (Share: Putting Down Roots)`,
 				action: "share",
@@ -228,7 +236,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				getValue: (actor) => Number(foundry.utils.getProperty(actor, "system.attributes.theSoldier.value")) ?? 2,
 				tooltip: (val) => `Soldier: ${val} (Share: A Higher Calling)`,
 				action: "share",
-				position: "middle", // Special: between Advantage and Shift Labels
+				position: "beside", // Special: to the right of Shift Labels
 			},
 		],
 	},
@@ -264,7 +272,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 	},
 
 	"The Brain": {
-		left: [
+		right: [
 			{
 				id: "gadgets",
 				type: TrackerType.NUMERIC,
@@ -354,6 +362,8 @@ export function buildTrackerData(actor, tracker, { isGM, isSelf }) {
 	const canEdit = tracker.type === TrackerType.NUMERIC && (isGM || isSelf);
 	const canAct = tracker.type === TrackerType.ACTION;
 	const isDisplay = tracker.type === TrackerType.DISPLAY;
+	// Fillable trackers show the fill effect (like numeric trackers) even if they're display/action type
+	const fillable = tracker.fillable === true || tracker.type === TrackerType.NUMERIC;
 
 	return {
 		id: tracker.id,
@@ -368,7 +378,8 @@ export function buildTrackerData(actor, tracker, { isGM, isSelf }) {
 		canEdit,
 		canAct,
 		isDisplay,
-		disabled: isDisplay && !isGM && !isSelf,
+		fillable,
+		disabled: isDisplay && !isGM && !isSelf && !tracker.fillable,
 		attrPath: tracker.attrPath,
 		moveName: tracker.moveName,
 		action: tracker.action,
@@ -382,13 +393,13 @@ export function buildTrackerData(actor, tracker, { isGM, isSelf }) {
 export function getTrackerDataForActor(actor, { isGM, isSelf }) {
 	const { left, right } = getPlaybookTrackers(actor);
 
-	// Process left trackers - separate middle position (Soldier) from top
+	// Process left trackers - separate beside position (Soldier next to Shift Labels) from top
 	const leftTop = [];
-	const leftMiddle = [];
+	const leftBeside = []; // Beside shift labels (to the right of it)
 	for (const tracker of left) {
 		const data = buildTrackerData(actor, tracker, { isGM, isSelf });
-		if (data.position === "middle") {
-			leftMiddle.push(data);
+		if (data.position === "beside") {
+			leftBeside.push(data);
 		} else {
 			leftTop.push(data);
 		}
@@ -399,7 +410,7 @@ export function getTrackerDataForActor(actor, { isGM, isSelf }) {
 
 	return {
 		leftTop,
-		leftMiddle,
+		leftBeside,
 		rightTop,
 	};
 }

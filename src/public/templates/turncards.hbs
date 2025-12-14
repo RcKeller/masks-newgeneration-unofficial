@@ -82,12 +82,12 @@
                     {{!-- Playbook-specific left trackers (top position) --}}
                     {{#each card.trackers.leftTop}}
                     <button type="button"
-                        class="turncard__tracker turncard__tracker--{{id}} {{#if (eq type "numeric")}}turncard__tracker--numeric{{/if}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}}"
+                        class="turncard__tracker turncard__tracker--{{id}} {{#if fillable}}turncard__tracker--fillable{{/if}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}} {{#if canAct}}is-action{{/if}}"
                         data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
                         data-tracker-type="{{type}}" style="--tracker-color: {{color}}; --tracker-fill: {{pct}};"
                         aria-label="{{tooltip}}" data-tooltip="{{tooltip}}" {{#if disabled}}disabled{{/if}}>
                         <i class="{{icon}}"></i>
-                        {{#if (eq type "numeric")}}
+                        {{#if fillable}}
                         <span class="turncard__tracker-badge">{{value}}</span>
                         <div class="turncard__tracker-fill"><i class="{{icon}}"></i></div>
                         {{/if}}
@@ -106,25 +106,28 @@
                         {{/if}}
                     </button>
 
-                    {{!-- Soldier tracker (middle position - between Advantage and Shift) --}}
-                    {{#each card.trackers.leftMiddle}}
-                    <button type="button"
-                        class="turncard__tracker turncard__tracker--{{id}} turncard__tracker--middle"
-                        data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
-                        data-tracker-type="{{type}}" style="--tracker-color: {{color}};"
-                        aria-label="{{tooltip}}" data-tooltip="{{tooltip}}">
-                        <i class="{{icon}}"></i>
-                        <span class="turncard__tracker-badge">{{value}}</span>
-                    </button>
-                    {{/each}}
+                    {{!-- Shift Labels row: Pentagon + optional beside trackers (Soldier) --}}
+                    <div class="turncard__shift-row">
+                        {{!-- Labels Graph (Pentagon visualization) --}}
+                        <button type="button" class="turncard__shift turncard__labels-graph {{#unless card.canShiftLabels}}is-disabled{{/unless}} {{#if card.labelsGraph.hasCondition}}has-condition{{/if}} {{#if card.labelsGraph.hasBonus}}has-bonus{{/if}}"
+                            data-action="shift-labels" data-actor-id="{{card.actorId}}"
+                            aria-label="Shift Labels for {{card.name}}" data-tooltip="{{card.labelsGraph.tooltip}}" {{#unless
+                            card.canShiftLabels}}disabled{{/unless}}>
+                            {{{card.labelsGraph.svg}}}
+                        </button>
 
-                    {{!-- Labels Graph (Pentagon visualization) --}}
-                    <button type="button" class="turncard__shift turncard__labels-graph {{#unless card.canShiftLabels}}is-disabled{{/unless}} {{#if card.labelsGraph.hasCondition}}has-condition{{/if}} {{#if card.labelsGraph.hasBonus}}has-bonus{{/if}}"
-                        data-action="shift-labels" data-actor-id="{{card.actorId}}"
-                        aria-label="Shift Labels for {{card.name}}" data-tooltip="{{card.labelsGraph.tooltip}}" {{#unless
-                        card.canShiftLabels}}disabled{{/unless}}>
-                        {{{card.labelsGraph.svg}}}
-                    </button>
+                        {{!-- Beside trackers (Soldier - to the right of Shift Labels) --}}
+                        {{#each card.trackers.leftBeside}}
+                        <button type="button"
+                            class="turncard__tracker turncard__tracker--{{id}} turncard__tracker--beside {{#if canAct}}is-action{{/if}}"
+                            data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
+                            data-tracker-type="{{type}}" style="--tracker-color: {{color}};"
+                            aria-label="{{tooltip}}" data-tooltip="{{tooltip}}">
+                            <i class="{{icon}}"></i>
+                            <span class="turncard__tracker-badge">{{value}}</span>
+                        </button>
+                        {{/each}}
+                    </div>
                 </div>
 
                 {{!-- RIGHT COLUMN: Playbook trackers + Potential --}}
@@ -132,12 +135,12 @@
                     {{!-- Playbook-specific right trackers --}}
                     {{#each card.trackers.rightTop}}
                     <button type="button"
-                        class="turncard__tracker turncard__tracker--{{id}} {{#if (eq type "numeric")}}turncard__tracker--numeric{{/if}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}} {{#if canAct}}is-action{{/if}}"
+                        class="turncard__tracker turncard__tracker--{{id}} {{#if fillable}}turncard__tracker--fillable{{/if}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}} {{#if canAct}}is-action{{/if}}"
                         data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
                         data-tracker-type="{{type}}" style="--tracker-color: {{color}}; --tracker-fill: {{pct}};"
                         aria-label="{{tooltip}}" data-tooltip="{{tooltip}}" {{#if disabled}}disabled{{/if}}>
                         <i class="{{icon}}"></i>
-                        {{#if (eq type "numeric")}}
+                        {{#if fillable}}
                         <span class="turncard__tracker-badge">{{value}}</span>
                         <div class="turncard__tracker-fill"><i class="{{icon}}"></i></div>
                         {{else if value}}
