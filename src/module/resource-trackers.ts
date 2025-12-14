@@ -401,7 +401,10 @@ export function buildTrackerData(actor, tracker, { isGM, isSelf }) {
 	const max = getTrackerMax(tracker, actor);
 	const pct = max > 0 ? Math.round((value / max) * 100) : 0;
 
-	const canEdit = (tracker.type === TrackerType.NUMERIC || tracker.type === TrackerType.DOOM_TRACK) && (isGM || isSelf);
+	// Can the user interact with this tracker? (GM or owner only)
+	const canInteract = isGM || isSelf;
+
+	const canEdit = (tracker.type === TrackerType.NUMERIC || tracker.type === TrackerType.DOOM_TRACK) && canInteract;
 	const canAct = [
 		TrackerType.ACTION,
 		TrackerType.BULL_HEART,
@@ -428,10 +431,11 @@ export function buildTrackerData(actor, tracker, { isGM, isSelf }) {
 		tooltip: tracker.tooltip ? tracker.tooltip(value, max) : tracker.label,
 		canEdit,
 		canAct,
+		canInteract,
 		isDisplay,
 		fillable,
 		hasOngoing,
-		disabled: isDisplay && !isGM && !isSelf && !tracker.fillable,
+		disabled: !canInteract,
 		attrPath: tracker.attrPath,
 		moveName: tracker.moveName,
 		moveNamePrefix: tracker.moveNamePrefix,

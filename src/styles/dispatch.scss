@@ -1429,9 +1429,9 @@
 
     &.is-bump { animation: tc-bump 200ms ease-out; }
 
-    &:disabled {
+    &.is-disabled, &:disabled {
       cursor: default;
-      opacity: 0.5;
+      pointer-events: none;
       &:hover { transform: none; background: rgba(0, 0, 0, 0.45); }
     }
   }
