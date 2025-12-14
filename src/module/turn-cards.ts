@@ -19,6 +19,8 @@ import {
 	executeTrackerAction,
 	executeBullHeartAction,
 	executeChecklistAction,
+	executeDoomTrackAction,
+	executeInfluenceChecklistAction,
 	TrackerType,
 } from "./resource-trackers";
 
@@ -34,13 +36,35 @@ const FLAG_POTENTIAL_FALLBACK = "turnCardsPotential";
 const POTENTIAL_MAX = 5;
 const AID_MOVE_UUID =
 	"@UUID[Compendium.masks-newgeneration-unofficial.moves.H7mJLUYVlQ3ZPGHK]{Aid a Teammate}";
-const LABEL_KEYS = Object.freeze([
+// Base labels for all playbooks
+const BASE_LABEL_KEYS = Object.freeze([
 	"danger",
 	"freak",
 	"savior",
 	"superior",
 	"mundane",
 ]);
+
+// Get label keys for an actor - The Soldier has an additional "soldier" label
+function getLabelKeysForActor(actor) {
+	const playbook = actor?.system?.playbook?.name ?? "";
+	if (playbook === "The Soldier") {
+		return [...BASE_LABEL_KEYS, "soldier"];
+	}
+	return [...BASE_LABEL_KEYS];
+}
+
+// Get the attribute path for a label key
+function getLabelPath(key) {
+	// Soldier label uses a different path
+	if (key === "soldier") {
+		return "system.attributes.theSoldier.value";
+	}
+	return `system.stats.${key}.value`;
+}
+
+// Backward compatible - used in some places
+const LABEL_KEYS = BASE_LABEL_KEYS;
 
 // Prevent spam double-clicking
 const pendingOps = new Set();
@@ -311,6 +335,10 @@ function shiftBounds() {
 }
 
 function statLabel(actor, key) {
+	// Soldier label has a special path and localization
+	if (key === "soldier") {
+		return game.i18n?.localize?.("DISPATCH.CharacterSheets.Playbooks.theSoldierLabel") || "Soldier";
+	}
 	return (
 		getProp(actor, `system.stats.${key}.label`) ||
 		game.pbta?.sheetConfig?.actorTypes?.character?.stats?.[key]?.label ||
@@ -318,31 +346,32 @@ function statLabel(actor, key) {
 	);
 }
 
-const getLabelValue = (actor, key) => Number(getProp(actor, `system.stats.${key}.value`)) || 0;
+const getLabelValue = (actor, key) => Number(getProp(actor, getLabelPath(key))) || 0;
 
 function getShiftableLabels(actor) {
 	const { lo, hi } = shiftBounds();
 	const lockedLabels = actor?.getFlag?.(NS, "lockedLabels") ?? {};
+	const labelKeys = getLabelKeysForActor(actor);
 	const up = [];
 	const down = [];
-	for (const k of LABEL_KEYS) {
+	for (const k of labelKeys) {
 		// Skip locked labels
 		if (lockedLabels[k]) continue;
 		const v = getLabelValue(actor, k);
 		if (v < hi) up.push(k);
 		if (v > lo) down.push(k);
 	}
-	return { canShiftUp: up, canShiftDown: down };
+	return { canShiftUp: up, canShiftDown: down, labelKeys };
 }
 
 async function promptShiftLabels(actor, title) {
-	const { canShiftUp, canShiftDown } = getShiftableLabels(actor);
+	const { canShiftUp, canShiftDown, labelKeys } = getShiftableLabels(actor);
 	if (!canShiftUp.length || !canShiftDown.length) {
 		ui.notifications?.warn?.("No valid label shifts.");
 		return null;
 	}
 
-	const labels = LABEL_KEYS.map((k) => ({
+	const labels = labelKeys.map((k) => ({
 		key: k,
 		label: statLabel(actor, k),
 		value: getLabelValue(actor, k),
@@ -397,9 +426,9 @@ async function promptShiftLabels(actor, title) {
 			render: (html) => {
 				const upSel = html[0]?.querySelector("select[name='up']");
 				const downSel = html[0]?.querySelector("select[name='down']");
-				if (upSel) upSel.value = canShiftUp[0] || LABEL_KEYS[0];
+				if (upSel) upSel.value = canShiftUp[0] || labelKeys[0];
 				if (downSel) {
-					downSel.value = canShiftDown.find((k) => k !== canShiftUp[0]) || canShiftDown[0] || LABEL_KEYS[1];
+					downSel.value = canShiftDown.find((k) => k !== canShiftUp[0]) || canShiftDown[0] || labelKeys[1];
 				}
 			},
 		}).render(true);
@@ -408,7 +437,6 @@ async function promptShiftLabels(actor, title) {
 
 async function applyShiftLabels(actor, upKey, downKey, { announce = true, reason = "shift", sourceActor = null } = {}) {
 	const { lo, hi } = shiftBounds();
-	const p = (k) => `system.stats.${k}.value`;
 	const curUp = getLabelValue(actor, upKey);
 	const curDown = getLabelValue(actor, downKey);
 
@@ -419,7 +447,7 @@ async function applyShiftLabels(actor, upKey, downKey, { announce = true, reason
 
 	const newUp = curUp + 1;
 	const newDown = curDown - 1;
-	await actor.update({ [p(upKey)]: newUp, [p(downKey)]: newDown });
+	await actor.update({ [getLabelPath(upKey)]: newUp, [getLabelPath(downKey)]: newDown });
 
 	if (announce) {
 		const upLabel = statLabel(actor, upKey);
@@ -1262,13 +1290,34 @@ const TurnCardsHUD = {
 			void el.offsetHeight;
 			el.classList.add("is-bump");
 		} else if (trackerType === TrackerType.CHECKLIST) {
-			// Checklist trackers: share a checklist to chat (Beacon drives, Newborn lessons)
+			// Checklist trackers: share a checklist to chat
 			if (!isSelf && !isGM()) {
 				ui.notifications?.warn?.("Can only use your own abilities.");
 				return;
 			}
 
 			await executeChecklistAction(actor, trackerId);
+		} else if (trackerType === TrackerType.DOOM_TRACK) {
+			// Doom Track: increment/decrement and share triggers on increment
+			if (!isSelf && !isGM()) {
+				ui.notifications?.warn?.("Can only change your own resources.");
+				return;
+			}
+
+			await executeDoomTrackAction(actor, delta);
+
+			// Animate the button
+			el.classList.remove("is-bump");
+			void el.offsetHeight;
+			el.classList.add("is-bump");
+		} else if (trackerType === TrackerType.INFLUENCE_CHECKLIST) {
+			// Nomad's influence checklist: share list of people given influence to
+			if (!isSelf && !isGM()) {
+				ui.notifications?.warn?.("Can only use your own abilities.");
+				return;
+			}
+
+			await executeInfluenceChecklistAction(actor);
 		}
 		// Display trackers are non-interactive (clicks do nothing)
 	},

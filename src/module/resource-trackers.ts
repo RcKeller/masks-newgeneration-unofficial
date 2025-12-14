@@ -20,8 +20,12 @@ export const TrackerType = Object.freeze({
 	DISPLAY: "display",
 	/** Special type for Bull - left click shares move + adds ongoing, right click removes ongoing */
 	BULL_HEART: "bull_heart",
-	/** Special type for sharing a checklist to chat (Beacon drives, Newborn lessons) */
+	/** Special type for sharing a checklist to chat (Beacon drives, Newborn lessons, etc.) */
 	CHECKLIST: "checklist",
+	/** Special type for Doomed - numeric but shares doom triggers on increment */
+	DOOM_TRACK: "doom_track",
+	/** Special type for Nomad - shows influence checklist */
+	INFLUENCE_CHECKLIST: "influence_checklist",
 });
 
 /**
@@ -33,15 +37,16 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		right: [
 			{
 				id: "doom",
-				type: TrackerType.NUMERIC,
+				type: TrackerType.DOOM_TRACK,
 				icon: "fa-solid fa-skull",
 				attrPath: "system.attributes.theDoomed.value",
 				maxPath: "system.attributes.theDoomed.max",
+				doomTriggersPath: "system.attributes.theDoomedTriggers.options",
 				min: 0,
 				max: 5,
 				color: "#9333ea", // purple-600
 				label: "Doom Track",
-				tooltip: (val, max) => `Doom: ${val}/${max}`,
+				tooltip: (val, max) => `Doom: ${val}/${max} (click to increment)`,
 			},
 		],
 	},
@@ -54,8 +59,13 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				icon: "fa-solid fa-skull-cow",
 				color: "#dc2626", // red-600
 				label: "Bull's Heart",
-				moveNamePrefix: "Bull's Heart", // Find move starting with this
-				tooltip: () => "Left: Share Bull's Heart (+1 ongoing) | Right: -1 ongoing",
+				moveNamePrefix: "Bull's Heart",
+				// getValue returns ongoing value for fill display
+				getValue: (actor) => {
+					return Number(foundry.utils.getProperty(actor, "system.attributes.ongoing.value")) || 0;
+				},
+				max: 3, // For fill percentage calculation
+				tooltip: (val) => `Bull's Heart (Ongoing: ${val}) | Left: +1 ongoing | Right: -1`,
 			},
 		],
 	},
@@ -110,18 +120,20 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		right: [
 			{
 				id: "steps",
-				type: TrackerType.ACTION,
+				type: TrackerType.CHECKLIST,
 				icon: "fa-solid fa-stairs",
 				color: "#ec4899", // pink-500
 				label: "Steps",
-				moveName: "Your Future Self",
+				fillable: true,
+				attrPath: "system.attributes.theInnocent.options",
 				getValue: (actor) => {
 					const opts = foundry.utils.getProperty(actor, "system.attributes.theInnocent.options") ?? {};
 					return Object.values(opts).filter((o) => o?.value === true).length;
 				},
 				max: 5,
-				tooltip: (val) => `Steps: ${val}/5 (Share: Your Future Self)`,
-				action: "share",
+				tooltip: (val) => `Steps: ${val}/5 (click to share checked)`,
+				checklistTitle: "Your Future Self",
+				checkedOnly: true, // Only share checked items
 			},
 		],
 	},
@@ -136,6 +148,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				label: "Drives",
 				fillable: true,
 				attrPath: "system.attributes.theBeacon.options",
+				compendiumUUID: "Compendium.masks-newgeneration-unofficial.basic-playbook-beacon.V9TJpzXAyulP7Bd5",
 				getValue: (actor) => {
 					const opts = foundry.utils.getProperty(actor, "system.attributes.theBeacon.options") ?? {};
 					return Object.values(opts).filter((o) => o?.value === true).length;
@@ -151,10 +164,11 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		right: [
 			{
 				id: "obligations",
-				type: TrackerType.DISPLAY,
+				type: TrackerType.CHECKLIST,
 				icon: "fa-sharp fa-solid fa-hockey-mask",
 				color: "#64748b", // slate-500
 				label: "Obligations",
+				attrPath: "system.attributes.theReformed.options",
 				getValue: (actor) => {
 					const opts = foundry.utils.getProperty(actor, "system.attributes.theReformed.options") ?? {};
 					let total = 0;
@@ -165,8 +179,10 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 					}
 					return total;
 				},
-				max: 12, // 3 villains * 4 boxes
-				tooltip: (val) => `Obligations: ${val} marked (edit on sheet)`,
+				max: 12,
+				tooltip: (val) => `Obligations: ${val} marked (click to share)`,
+				checklistTitle: "Friends in Low Places",
+				isReformedObligations: true, // Special structure for Reformed
 			},
 		],
 	},
@@ -181,13 +197,14 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				label: "Lessons",
 				fillable: true,
 				attrPath: "system.attributes.theNewborn.options",
+				compendiumUUID: "Compendium.masks-newgeneration-unofficial.hchc-playbook-newborn.BE7s7N6COZdUfRxx",
 				getValue: (actor) => {
 					const opts = foundry.utils.getProperty(actor, "system.attributes.theNewborn.options") ?? {};
 					return Object.values(opts).filter((o) => o?.value === true).length;
 				},
 				max: 4,
 				tooltip: (val) => `Lessons: ${val}/4 (click to share)`,
-				checklistTitle: "Lessons (A Blank Slate)",
+				checklistTitle: "A Blank Slate",
 			},
 		],
 	},
@@ -196,13 +213,25 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		right: [
 			{
 				id: "audience",
-				type: TrackerType.ACTION,
+				type: TrackerType.CHECKLIST,
 				icon: "fa-solid fa-star",
 				color: "#eab308", // yellow-500
 				label: "Audience",
-				moveName: "Audience",
-				tooltip: () => "Share: Audience",
-				action: "share",
+				// Star has two separate attribute paths for advantages and demands
+				attrPathAdvantages: "system.attributes.theStarAdvantages.options",
+				attrPathDemands: "system.attributes.theStarDemands.options",
+				compendiumUUID: "Compendium.masks-newgeneration-unofficial.hchc-playbook-star.BxIcS3GOuOSuH9E0",
+				getValue: (actor) => {
+					const advOpts = foundry.utils.getProperty(actor, "system.attributes.theStarAdvantages.options") ?? {};
+					const demOpts = foundry.utils.getProperty(actor, "system.attributes.theStarDemands.options") ?? {};
+					const advCount = Object.values(advOpts).filter((o) => o?.value === true).length;
+					const demCount = Object.values(demOpts).filter((o) => o?.value === true).length;
+					return advCount + demCount;
+				},
+				max: 4, // 2 advantages + 2 demands
+				tooltip: (val) => `Audience: ${val}/4 (click to share)`,
+				checklistTitle: "Audience",
+				isStarAudience: true, // Special handling for Star's dual lists
 			},
 		],
 	},
@@ -211,11 +240,12 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		right: [
 			{
 				id: "roots",
-				type: TrackerType.ACTION,
+				type: TrackerType.INFLUENCE_CHECKLIST,
 				icon: "fa-solid fa-street-view",
 				color: "#0d9488", // teal-600
 				label: "Roots",
-				moveName: "Putting Down Roots",
+				fillable: true,
+				compendiumUUID: "Compendium.masks-newgeneration-unofficial.unbound-playbook-nomad.dd9JX7X4CcymgjAK",
 				// Count how many others have influence over this character (influence given TO others)
 				getValue: (actor) => {
 					const influences = actor.getFlag(NS, "influences") ?? [];
@@ -223,8 +253,8 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 					return influences.filter((inf) => inf?.haveInfluenceOver === true).length;
 				},
 				max: 6,
-				tooltip: (val) => `Influence given: ${val}/6 (Share: Putting Down Roots)`,
-				action: "share",
+				tooltip: (val) => `Influence given: ${val}/6 (click to share)`,
+				checklistTitle: "Putting Down Roots",
 			},
 		],
 	},
@@ -242,7 +272,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				getValue: (actor) => Number(foundry.utils.getProperty(actor, "system.attributes.theSoldier.value")) ?? 2,
 				tooltip: (val) => `Soldier: ${val} (Share: A Higher Calling)`,
 				action: "share",
-				position: "beside", // Special: to the right of Shift Labels
+				position: "beside",
 			},
 		],
 	},
@@ -285,7 +315,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				icon: "fa-solid fa-microchip",
 				attrPath: "system.attributes.theBrainGadgets.value",
 				min: 0,
-				max: 99, // No practical limit
+				max: 99,
 				color: "#059669", // emerald-600
 				label: "Gadgets",
 				tooltip: (val) => `Gadgets: ${val}`,
@@ -298,7 +328,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 	"The Outsider": null,
 	"The Transformed": null,
 	"The Protégé": null,
-	"The Joined": null, // Complex bonds system, not easily represented as single tracker
+	"The Joined": null,
 });
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -365,11 +395,20 @@ export function buildTrackerData(actor, tracker, { isGM, isSelf }) {
 	const max = getTrackerMax(tracker, actor);
 	const pct = max > 0 ? Math.round((value / max) * 100) : 0;
 
-	const canEdit = tracker.type === TrackerType.NUMERIC && (isGM || isSelf);
-	const canAct = tracker.type === TrackerType.ACTION || tracker.type === TrackerType.BULL_HEART || tracker.type === TrackerType.CHECKLIST;
+	const canEdit = (tracker.type === TrackerType.NUMERIC || tracker.type === TrackerType.DOOM_TRACK) && (isGM || isSelf);
+	const canAct = [
+		TrackerType.ACTION,
+		TrackerType.BULL_HEART,
+		TrackerType.CHECKLIST,
+		TrackerType.DOOM_TRACK,
+		TrackerType.INFLUENCE_CHECKLIST,
+	].includes(tracker.type);
 	const isDisplay = tracker.type === TrackerType.DISPLAY;
-	// Fillable trackers show the fill effect (like numeric trackers) even if they're display/action type
-	const fillable = tracker.fillable === true || tracker.type === TrackerType.NUMERIC;
+	// Fillable trackers show the fill effect
+	const fillable = tracker.fillable === true || tracker.type === TrackerType.NUMERIC || tracker.type === TrackerType.DOOM_TRACK;
+
+	// For Bull's Heart, hasOngoing indicates the filled state
+	const hasOngoing = tracker.type === TrackerType.BULL_HEART && value > 0;
 
 	return {
 		id: tracker.id,
@@ -385,11 +424,13 @@ export function buildTrackerData(actor, tracker, { isGM, isSelf }) {
 		canAct,
 		isDisplay,
 		fillable,
+		hasOngoing,
 		disabled: isDisplay && !isGM && !isSelf && !tracker.fillable,
 		attrPath: tracker.attrPath,
 		moveName: tracker.moveName,
 		moveNamePrefix: tracker.moveNamePrefix,
 		checklistTitle: tracker.checklistTitle,
+		compendiumUUID: tracker.compendiumUUID,
 		action: tracker.action,
 		position: tracker.position ?? "top",
 	};
@@ -594,8 +635,43 @@ export async function executeBullHeartAction(actor, delta) {
 }
 
 /**
+ * Helper to filter out placeholder [Text] labels and extract valid items
+ */
+function extractChecklistItems(opts, checkedOnly = false) {
+	return Object.entries(opts)
+		.filter(([key, opt]) => {
+			// Must have a label that's not the placeholder
+			if (!opt?.label || opt.label === "[Text]" || opt.label.trim() === "") return false;
+			// If checkedOnly, only include checked items
+			if (checkedOnly && opt.value !== true) return false;
+			return true;
+		})
+		.map(([key, opt]) => ({
+			label: opt.label,
+			checked: opt.value === true,
+		}));
+}
+
+/**
+ * Build HTML for a checklist
+ */
+function buildChecklistHtml(items, showCheckboxes = true) {
+	return items
+		.map((item) => {
+			if (showCheckboxes) {
+				const checkbox = item.checked ? "☑" : "☐";
+				const strikethrough = item.checked ? "text-decoration: line-through; opacity: 0.7;" : "";
+				return `<li style="${strikethrough}">${checkbox} ${item.label}</li>`;
+			} else {
+				return `<li>• ${item.label}</li>`;
+			}
+		})
+		.join("");
+}
+
+/**
  * Execute Checklist action - share a checklist to chat
- * Used for Beacon drives and Newborn lessons
+ * Handles Beacon drives, Newborn lessons, Innocent steps, Reformed obligations, Star audience
  */
 export async function executeChecklistAction(actor, trackerId) {
 	if (!actor) return false;
@@ -609,36 +685,163 @@ export async function executeChecklistAction(actor, trackerId) {
 		return false;
 	}
 
-	if (!tracker.attrPath) {
-		console.warn(`[${NS}] Checklist tracker has no attrPath:`, trackerId);
-		return false;
-	}
-
-	// Get the options from the actor
-	const opts = foundry.utils.getProperty(actor, tracker.attrPath) ?? {};
-	const items = Object.entries(opts)
-		.filter(([key, opt]) => opt?.label) // Only items with labels
-		.map(([key, opt]) => ({
-			label: opt.label,
-			checked: opt.value === true,
-		}));
-
-	if (items.length === 0) {
-		ui.notifications?.warn?.(`No ${tracker.label.toLowerCase()} found on ${actor.name}`);
-		return false;
-	}
-
-	// Build the checklist HTML
-	const listItems = items
-		.map((item) => {
-			const checkbox = item.checked ? "☑" : "☐";
-			const strikethrough = item.checked ? "text-decoration: line-through; opacity: 0.7;" : "";
-			return `<li style="${strikethrough}">${checkbox} ${item.label}</li>`;
-		})
-		.join("");
-
+	let listHtml = "";
 	const title = tracker.checklistTitle ?? tracker.label;
-	const content = `<h3>${actor.name}'s ${title}</h3><ul style="list-style: none; padding-left: 0.5em;">${listItems}</ul>`;
+
+	// Handle Star's dual lists (advantages + demands)
+	if (tracker.isStarAudience) {
+		const advOpts = foundry.utils.getProperty(actor, tracker.attrPathAdvantages) ?? {};
+		const demOpts = foundry.utils.getProperty(actor, tracker.attrPathDemands) ?? {};
+
+		const advantages = extractChecklistItems(advOpts);
+		const demands = extractChecklistItems(demOpts);
+
+		if (advantages.length > 0) {
+			listHtml += `<p><strong>Advantages:</strong></p><ul style="list-style: none; padding-left: 0.5em;">${buildChecklistHtml(advantages)}</ul>`;
+		}
+		if (demands.length > 0) {
+			listHtml += `<p><strong>Demands:</strong></p><ul style="list-style: none; padding-left: 0.5em;">${buildChecklistHtml(demands)}</ul>`;
+		}
+
+		if (advantages.length === 0 && demands.length === 0) {
+			ui.notifications?.warn?.(`No audience details found on ${actor.name}`);
+			return false;
+		}
+	}
+	// Handle Reformed's nested obligations structure
+	else if (tracker.isReformedObligations) {
+		const opts = foundry.utils.getProperty(actor, tracker.attrPath) ?? {};
+		const villains = [];
+
+		for (const [key, opt] of Object.entries(opts)) {
+			if (opt?.label && opt.label !== "[Text]" && opt.label.trim() !== "") {
+				const obligations = opt.values ? Object.values(opt.values).filter((v) => v?.value === true).length : 0;
+				villains.push({ name: opt.label, obligations });
+			}
+		}
+
+		if (villains.length === 0) {
+			ui.notifications?.warn?.(`No villain contacts found on ${actor.name}`);
+			return false;
+		}
+
+		const villainItems = villains.map((v) => `<li>• ${v.name}: ${v.obligations}/4 obligations</li>`).join("");
+		listHtml = `<ul style="list-style: none; padding-left: 0.5em;">${villainItems}</ul>`;
+	}
+	// Standard checklist
+	else {
+		if (!tracker.attrPath) {
+			console.warn(`[${NS}] Checklist tracker has no attrPath:`, trackerId);
+			return false;
+		}
+
+		const opts = foundry.utils.getProperty(actor, tracker.attrPath) ?? {};
+		const items = extractChecklistItems(opts, tracker.checkedOnly);
+
+		if (items.length === 0) {
+			const msg = tracker.checkedOnly
+				? `No checked ${tracker.label.toLowerCase()} found on ${actor.name}`
+				: `No ${tracker.label.toLowerCase()} found on ${actor.name}`;
+			ui.notifications?.warn?.(msg);
+			return false;
+		}
+
+		// For checkedOnly, don't show checkboxes
+		listHtml = `<ul style="list-style: none; padding-left: 0.5em;">${buildChecklistHtml(items, !tracker.checkedOnly)}</ul>`;
+	}
+
+	// Add compendium link if available
+	const compendiumLink = tracker.compendiumUUID ? `<p>@UUID[${tracker.compendiumUUID}]{${title}}</p>` : "";
+
+	const content = `<h3>${actor.name}'s ${title}</h3>${listHtml}${compendiumLink}`;
+
+	await ChatMessage.create({
+		content,
+		speaker: ChatMessage.getSpeaker({ actor }),
+		type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+	});
+
+	return true;
+}
+
+/**
+ * Execute Doom Track action - increment doom and share triggers
+ */
+export async function executeDoomTrackAction(actor, delta) {
+	if (!actor) return false;
+
+	const { right } = getPlaybookTrackers(actor);
+	const tracker = right.find((t) => t.id === "doom");
+	if (!tracker) return false;
+
+	const current = Number(foundry.utils.getProperty(actor, tracker.attrPath)) || 0;
+	const max = tracker.max ?? 5;
+	const min = tracker.min ?? 0;
+	const next = Math.max(min, Math.min(max, current + delta));
+
+	if (next === current) return false;
+
+	// Update the doom value
+	await actor.update({ [tracker.attrPath]: next });
+
+	// If incrementing, share the doom triggers to chat
+	if (delta > 0 && tracker.doomTriggersPath) {
+		const triggersOpts = foundry.utils.getProperty(actor, tracker.doomTriggersPath) ?? {};
+		const checkedTriggers = extractChecklistItems(triggersOpts, true);
+
+		if (checkedTriggers.length > 0) {
+			const triggersList = checkedTriggers.map((t) => `<li>• ${t.label}</li>`).join("");
+			const content = `<h3>${actor.name}'s Doom advances to ${next}/${max}</h3>
+				<p><em>What brings your doom closer:</em></p>
+				<ul style="list-style: none; padding-left: 0.5em;">${triggersList}</ul>`;
+
+			await ChatMessage.create({
+				content,
+				speaker: ChatMessage.getSpeaker({ actor }),
+				type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+			});
+		} else {
+			// Just announce the doom change
+			await ChatMessage.create({
+				content: `<h3>${actor.name}'s Doom advances to ${next}/${max}</h3>`,
+				speaker: ChatMessage.getSpeaker({ actor }),
+				type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+			});
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Execute Influence Checklist action - share list of people given influence to
+ * Used for The Nomad
+ */
+export async function executeInfluenceChecklistAction(actor) {
+	if (!actor) return false;
+
+	const { right } = getPlaybookTrackers(actor);
+	const tracker = right.find((t) => t.id === "roots");
+	if (!tracker) return false;
+
+	const influences = actor.getFlag(NS, "influences") ?? [];
+	// haveInfluenceOver means THEY have influence over ME (I gave them influence)
+	const givenTo = influences
+		.filter((inf) => inf?.haveInfluenceOver === true && inf?.name)
+		.map((inf) => inf.name);
+
+	if (givenTo.length === 0) {
+		ui.notifications?.warn?.(`${actor.name} hasn't given influence to anyone yet.`);
+		return false;
+	}
+
+	const listItems = givenTo.map((name) => `<li>• ${name}</li>`).join("");
+	const compendiumLink = tracker.compendiumUUID ? `<p>@UUID[${tracker.compendiumUUID}]{${tracker.checklistTitle}}</p>` : "";
+
+	const content = `<h3>${actor.name}'s ${tracker.checklistTitle}</h3>
+		<p><em>Influence given to (${givenTo.length}/6):</em></p>
+		<ul style="list-style: none; padding-left: 0.5em;">${listItems}</ul>
+		${compendiumLink}`;
 
 	await ChatMessage.create({
 		content,

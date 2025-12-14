@@ -82,7 +82,7 @@
                     {{!-- Playbook-specific left trackers (top position) --}}
                     {{#each card.trackers.leftTop}}
                     <button type="button"
-                        class="turncard__tracker turncard__tracker--{{id}} {{#if fillable}}turncard__tracker--fillable{{/if}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}} {{#if canAct}}is-action{{/if}}"
+                        class="turncard__tracker turncard__tracker--{{id}} {{#if fillable}}turncard__tracker--fillable{{/if}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}} {{#if canAct}}is-action{{/if}} {{#if hasOngoing}}has-ongoing{{/if}}"
                         data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
                         data-tracker-type="{{type}}" style="--tracker-color: {{color}}; --tracker-fill: {{pct}};"
                         aria-label="{{tooltip}}" data-tooltip="{{tooltip}}" {{#if disabled}}disabled{{/if}}>
@@ -90,6 +90,8 @@
                         {{#if fillable}}
                         <span class="turncard__tracker-badge">{{value}}</span>
                         <div class="turncard__tracker-fill"><i class="{{icon}}"></i></div>
+                        {{else if hasOngoing}}
+                        <span class="turncard__tracker-badge">{{value}}</span>
                         {{/if}}
                     </button>
                     {{/each}}

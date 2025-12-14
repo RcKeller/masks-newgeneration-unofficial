@@ -1513,6 +1513,24 @@
   .turncard__tracker--heart {
     --tracker-color: #dc2626;
     i { filter: drop-shadow(0 0 5px rgba(220, 38, 38, 0.6)); }
+
+    /* Filled state when ongoing > 0 (similar to forward button with bonus) */
+    &.has-ongoing {
+      background: #dc2626;
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.45);
+
+      i {
+        color: #fff;
+        filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+      }
+
+      .turncard__tracker-badge {
+        background: #fff;
+        color: #dc2626;
+        font-weight: 600;
+      }
+    }
   }
 
   .turncard__tracker--obligations,
