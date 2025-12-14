@@ -76,8 +76,8 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 			{
 				id: "obligations",
 				type: TrackerType.ACTION,
-				icon: "fa-solid fa-house-chimney-crack",
-				color: "#ea580c", // orange-600
+				icon: "fa-solid fa-mask",
+				color: "#1E88E5", // orange-600
 				label: "Time Passes",
 				moveName: "When Time Passes",
 				tooltip: () => "Roll: When Time Passes",
@@ -122,8 +122,8 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 			{
 				id: "steps",
 				type: TrackerType.CHECKLIST,
-				icon: "fa-solid fa-stairs",
-				color: "#ec4899", // pink-500
+				icon: "fa-solid fa-face-angry-horns",
+				color: "#B71C1C", // pink-500
 				label: "Steps",
 				fillable: true,
 				attrPath: "system.attributes.theInnocent.options",
@@ -166,8 +166,8 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 			{
 				id: "obligations",
 				type: TrackerType.CHECKLIST,
-				icon: "fa-sharp fa-solid fa-hockey-mask",
-				color: "#dc2626", // red-600 - to match villain theme
+				icon: "fa-solid fa-hockey-mask",
+				color: "#B71C1C", // red-600 - to match villain theme
 				label: "Obligations",
 				attrPath: "system.attributes.theReformed.options",
 				// No getValue - we don't show a number on this tracker
@@ -184,7 +184,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				id: "lessons",
 				type: TrackerType.CHECKLIST,
 				icon: "fa-solid fa-chalkboard-user",
-				color: "#8b5cf6", // violet-500
+				color: "#2196F3",
 				label: "Lessons",
 				fillable: true,
 				attrPath: "system.attributes.theNewborn.options",
@@ -206,7 +206,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				id: "audience",
 				type: TrackerType.CHECKLIST,
 				icon: "fa-solid fa-star",
-				color: "#eab308", // yellow-500
+				color: "#FFEB3B", // yellow-500
 				label: "Audience",
 				// Star has two separate attribute paths for advantages and demands
 				attrPathAdvantages: "system.attributes.theStarAdvantages.options",
@@ -226,7 +226,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				id: "roots",
 				type: TrackerType.INFLUENCE_CHECKLIST,
 				icon: "fa-solid fa-street-view",
-				color: "#0d9488", // teal-600
+				color: "#EC407A",
 				label: "Roots",
 				fillable: true,
 				compendiumUUID: "Compendium.masks-newgeneration-unofficial.unbound-playbook-nomad.dd9JX7X4CcymgjAK",
@@ -248,9 +248,9 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 			{
 				id: "soldier",
 				type: TrackerType.ACTION,
-				icon: "fa-solid fa-person-rifle",
+				icon: "fa-duotone fa-regular fa-gun",
 				attrPath: "system.attributes.theSoldier.value",
-				color: "#1e40af", // blue-800
+				color: "#4CAF50", // teal-600
 				label: "Soldier",
 				moveName: "A Higher Calling",
 				fillable: true,
