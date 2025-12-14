@@ -17,6 +17,8 @@ import {
 	getTrackerDataForActor,
 	changeTrackerValue,
 	executeTrackerAction,
+	executeBullHeartAction,
+	executeChecklistAction,
 	TrackerType,
 } from "./resource-trackers";
 
@@ -1246,6 +1248,27 @@ const TurnCardsHUD = {
 			}
 
 			await executeTrackerAction(actor, trackerId);
+		} else if (trackerType === TrackerType.BULL_HEART) {
+			// Bull's Heart: left click shares move + adds ongoing, right click removes ongoing
+			if (!isSelf && !isGM()) {
+				ui.notifications?.warn?.("Can only use your own abilities.");
+				return;
+			}
+
+			await executeBullHeartAction(actor, delta);
+
+			// Animate the button
+			el.classList.remove("is-bump");
+			void el.offsetHeight;
+			el.classList.add("is-bump");
+		} else if (trackerType === TrackerType.CHECKLIST) {
+			// Checklist trackers: share a checklist to chat (Beacon drives, Newborn lessons)
+			if (!isSelf && !isGM()) {
+				ui.notifications?.warn?.("Can only use your own abilities.");
+				return;
+			}
+
+			await executeChecklistAction(actor, trackerId);
 		}
 		// Display trackers are non-interactive (clicks do nothing)
 	},

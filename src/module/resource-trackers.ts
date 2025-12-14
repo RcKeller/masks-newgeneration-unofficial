@@ -18,6 +18,10 @@ export const TrackerType = Object.freeze({
 	ACTION: "action",
 	/** Non-interactive display only */
 	DISPLAY: "display",
+	/** Special type for Bull - left click shares move + adds ongoing, right click removes ongoing */
+	BULL_HEART: "bull_heart",
+	/** Special type for sharing a checklist to chat (Beacon drives, Newborn lessons) */
+	CHECKLIST: "checklist",
 });
 
 /**
@@ -46,13 +50,12 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		left: [
 			{
 				id: "heart",
-				type: TrackerType.ACTION,
+				type: TrackerType.BULL_HEART,
 				icon: "fa-solid fa-skull-cow",
 				color: "#dc2626", // red-600
 				label: "Bull's Heart",
-				moveName: "The Bull's Heart",
-				tooltip: () => "Share: The Bull's Heart (+1 ongoing love/rival)",
-				action: "share",
+				moveNamePrefix: "Bull's Heart", // Find move starting with this
+				tooltip: () => "Left: Share Bull's Heart (+1 ongoing) | Right: -1 ongoing",
 			},
 		],
 	},
@@ -127,17 +130,19 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		right: [
 			{
 				id: "drives",
-				type: TrackerType.DISPLAY,
+				type: TrackerType.CHECKLIST,
 				icon: "fa-solid fa-bullseye-arrow",
 				color: "#22c55e", // green-500
 				label: "Drives",
-				fillable: true, // Display but with fill effect
+				fillable: true,
+				attrPath: "system.attributes.theBeacon.options",
 				getValue: (actor) => {
 					const opts = foundry.utils.getProperty(actor, "system.attributes.theBeacon.options") ?? {};
 					return Object.values(opts).filter((o) => o?.value === true).length;
 				},
 				max: 4,
-				tooltip: (val) => `Drives: ${val}/4 (edit on sheet)`,
+				tooltip: (val) => `Drives: ${val}/4 (click to share)`,
+				checklistTitle: "Drives",
 			},
 		],
 	},
@@ -170,18 +175,19 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 		right: [
 			{
 				id: "lessons",
-				type: TrackerType.ACTION,
+				type: TrackerType.CHECKLIST,
 				icon: "fa-solid fa-chalkboard-user",
 				color: "#8b5cf6", // violet-500
 				label: "Lessons",
-				moveName: "A Blank Slate",
+				fillable: true,
+				attrPath: "system.attributes.theNewborn.options",
 				getValue: (actor) => {
 					const opts = foundry.utils.getProperty(actor, "system.attributes.theNewborn.options") ?? {};
 					return Object.values(opts).filter((o) => o?.value === true).length;
 				},
 				max: 4,
-				tooltip: (val) => `Lessons: ${val}/4 (Share: A Blank Slate)`,
-				action: "share",
+				tooltip: (val) => `Lessons: ${val}/4 (click to share)`,
+				checklistTitle: "Lessons (A Blank Slate)",
 			},
 		],
 	},
@@ -212,7 +218,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				moveName: "Putting Down Roots",
 				// Count how many others have influence over this character (influence given TO others)
 				getValue: (actor) => {
-					const influences = actor.getFlag("dispatch", "influences") ?? [];
+					const influences = actor.getFlag(NS, "influences") ?? [];
 					// haveInfluenceOver means THEY have influence over ME (I gave them influence)
 					return influences.filter((inf) => inf?.haveInfluenceOver === true).length;
 				},
@@ -360,7 +366,7 @@ export function buildTrackerData(actor, tracker, { isGM, isSelf }) {
 	const pct = max > 0 ? Math.round((value / max) * 100) : 0;
 
 	const canEdit = tracker.type === TrackerType.NUMERIC && (isGM || isSelf);
-	const canAct = tracker.type === TrackerType.ACTION;
+	const canAct = tracker.type === TrackerType.ACTION || tracker.type === TrackerType.BULL_HEART || tracker.type === TrackerType.CHECKLIST;
 	const isDisplay = tracker.type === TrackerType.DISPLAY;
 	// Fillable trackers show the fill effect (like numeric trackers) even if they're display/action type
 	const fillable = tracker.fillable === true || tracker.type === TrackerType.NUMERIC;
@@ -382,6 +388,8 @@ export function buildTrackerData(actor, tracker, { isGM, isSelf }) {
 		disabled: isDisplay && !isGM && !isSelf && !tracker.fillable,
 		attrPath: tracker.attrPath,
 		moveName: tracker.moveName,
+		moveNamePrefix: tracker.moveNamePrefix,
+		checklistTitle: tracker.checklistTitle,
 		action: tracker.action,
 		position: tracker.position ?? "top",
 	};
@@ -532,4 +540,111 @@ export async function executeTrackerAction(actor, trackerId) {
 	}
 
 	return false;
+}
+
+/**
+ * Execute Bull's Heart action
+ * Left click (delta=1): Share the Bull's Heart move and add 1 ongoing
+ * Right click (delta=-1): Remove 1 ongoing silently
+ */
+export async function executeBullHeartAction(actor, delta) {
+	if (!actor) return false;
+
+	const { left } = getPlaybookTrackers(actor);
+	const tracker = left.find((t) => t.id === "heart");
+	if (!tracker) return false;
+
+	// Get current ongoing value
+	const currentOngoing = Number(foundry.utils.getProperty(actor, "system.attributes.ongoing.value")) || 0;
+
+	if (delta > 0) {
+		// Left click: Share the move and add 1 ongoing
+		const movePrefix = tracker.moveNamePrefix ?? "Bull's Heart";
+		const move = actor.items.find(
+			(i) => i.type === "move" && i.name.toLowerCase().startsWith(movePrefix.toLowerCase())
+		);
+
+		if (move) {
+			// Share the move to chat
+			if (typeof move.toChat === "function") {
+				await move.toChat();
+			} else {
+				await ChatMessage.create({
+					content: `<h3>${move.name}</h3><p>${move.system.description ?? ""}</p>`,
+					speaker: ChatMessage.getSpeaker({ actor }),
+					type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+				});
+			}
+		} else {
+			ui.notifications?.warn?.(`Move starting with "${movePrefix}" not found on ${actor.name}`);
+		}
+
+		// Add 1 ongoing
+		await actor.update({ "system.attributes.ongoing.value": currentOngoing + 1 });
+		ui.notifications?.info?.(`${actor.name}: +1 ongoing (now ${currentOngoing + 1})`);
+	} else {
+		// Right click: Remove 1 ongoing silently (min 0)
+		const newOngoing = Math.max(0, currentOngoing - 1);
+		if (newOngoing !== currentOngoing) {
+			await actor.update({ "system.attributes.ongoing.value": newOngoing });
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Execute Checklist action - share a checklist to chat
+ * Used for Beacon drives and Newborn lessons
+ */
+export async function executeChecklistAction(actor, trackerId) {
+	if (!actor) return false;
+
+	const { left, right } = getPlaybookTrackers(actor);
+	const allTrackers = [...left, ...right];
+	const tracker = allTrackers.find((t) => t.id === trackerId);
+
+	if (!tracker || tracker.type !== TrackerType.CHECKLIST) {
+		console.warn(`[${NS}] Tracker not found or not checklist type:`, trackerId);
+		return false;
+	}
+
+	if (!tracker.attrPath) {
+		console.warn(`[${NS}] Checklist tracker has no attrPath:`, trackerId);
+		return false;
+	}
+
+	// Get the options from the actor
+	const opts = foundry.utils.getProperty(actor, tracker.attrPath) ?? {};
+	const items = Object.entries(opts)
+		.filter(([key, opt]) => opt?.label) // Only items with labels
+		.map(([key, opt]) => ({
+			label: opt.label,
+			checked: opt.value === true,
+		}));
+
+	if (items.length === 0) {
+		ui.notifications?.warn?.(`No ${tracker.label.toLowerCase()} found on ${actor.name}`);
+		return false;
+	}
+
+	// Build the checklist HTML
+	const listItems = items
+		.map((item) => {
+			const checkbox = item.checked ? "☑" : "☐";
+			const strikethrough = item.checked ? "text-decoration: line-through; opacity: 0.7;" : "";
+			return `<li style="${strikethrough}">${checkbox} ${item.label}</li>`;
+		})
+		.join("");
+
+	const title = tracker.checklistTitle ?? tracker.label;
+	const content = `<h3>${actor.name}'s ${title}</h3><ul style="list-style: none; padding-left: 0.5em;">${listItems}</ul>`;
+
+	await ChatMessage.create({
+		content,
+		speaker: ChatMessage.getSpeaker({ actor }),
+		type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+	});
+
+	return true;
 }

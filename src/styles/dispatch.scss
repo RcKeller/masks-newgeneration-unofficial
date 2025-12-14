@@ -1433,9 +1433,10 @@
 
   /* Fillable trackers with fill effect (numeric and display with fillable flag) */
   .turncard__tracker--fillable {
-    overflow: hidden;
+    /* NOTE: overflow must be visible so the badge doesn't get clipped */
+    overflow: visible;
 
-    /* Filled portion overlays the icon */
+    /* Filled portion overlays the icon - uses clip-path for fill effect */
     .turncard__tracker-fill {
       position: absolute;
       inset: 0;
@@ -1447,12 +1448,18 @@
       transition: clip-path var(--tc-transition-smooth);
       background: var(--tracker-color, #888);
       border-radius: 50%;
+      pointer-events: none; /* Don't block clicks on the button */
 
       i {
         font-size: 1.1rem;
         color: #fff;
         filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
       }
+    }
+
+    /* Ensure badge stays above the fill */
+    .turncard__tracker-badge {
+      z-index: 15;
     }
   }
 
