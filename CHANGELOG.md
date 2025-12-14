@@ -1,128 +1,43 @@
-#1.8.0
-- Foundry v13 support added
-- This version ONLY works with Foundry v13+ and PbtA v1.1.16+
-- If you use Foundry v12: 
-    - use PbtA v1.1.15 with Masks v1.7.6
-- If you use Foundry v11: 
-    - use PbtA v0.9 with Masks v1.6.3
+# 1.0.0 (2025-06-25)
 
-#1.7.6
-- @ryzimmer fixed an issue that breaks when trying to add influences on new character/when undefined
 
-#1.7.5
-- fixed a bug with the new login screen code
-- updated project files
-- fixed text for for setting up CUB (from Proffcake on Discord)
+### Bug Fixes
 
-#1.7.2
-- Added item granting from playbooks when a playbook is added to a character
+* **Basic test system:** Fixed compendium flag for imports from tests system and removed unnecessary manipulation of flags using item source ([fa3b135](https://github.com/misterpotts/dispatch/commit/fa3b135412752f2640eddc914cd13ba3477cf2c2))
+* **Basic test system:** Removed unnecessary item directory - will just use actors inventories and item flags ([3b4d9ae](https://github.com/misterpotts/dispatch/commit/3b4d9ae1ccc48452c2220c11c24380787f66d47b))
+* Default model version setting value ([#288](https://github.com/misterpotts/dispatch/issues/288)) ([faee73f](https://github.com/misterpotts/dispatch/commit/faee73f516480c2fd25deda8cb6fa5a05eec9bcf))
 
-#1.7.1
-- Fixed buts in the Team question, Relationship questions, Moment of truth, and advances (they were not saving)
 
-#1.7.0
-- Foundry v12 Only release
-- [ Breaking ] Attributes were changed for Relationship Questions, Momentum, and the Team Question, and Hero Name (became Real name)
-- Updated Playbooks to add auto add attributes to the character
-- Added Social and Advancement tabs for a cleaner layout
-- Moved Real Name to the top bar
-- Moved Forward and Ongoing to the top attribute bar
-Notes: 
-- Only works with Foundry v12+ and PbtA v1+
-- If you need Foundry v11 or PbtA v0.9 support then use Masks v1.6.3
+### Features
 
-#1.6.3
-- PbtA version update
+* **#20:** Support for ASv1.6 crafting checks ([8185ca7](https://github.com/misterpotts/dispatch/commit/8185ca742b783400a26d888a596e14c94d5cea5b)), closes [#20](https://github.com/misterpotts/dispatch/issues/20)
+* **#20:** Support for ASv1.6 crafting checks ([328a06d](https://github.com/misterpotts/dispatch/commit/328a06df4665315b613fa4ab44ae11a480166660)), closes [#20](https://github.com/misterpotts/dispatch/issues/20)
+* **#20:** Support for ASv1.6 crafting checks ([5dfdd16](https://github.com/misterpotts/dispatch/commit/5dfdd1688d1d454efc47dec88dc91a55b5553141)), closes [#20](https://github.com/misterpotts/dispatch/issues/20)
+* **#20:** Support for ASv1.6 crafting checks ([cfc838e](https://github.com/misterpotts/dispatch/commit/cfc838e0be2561fe62e1863f1bd45d0219553036)), closes [#20](https://github.com/misterpotts/dispatch/issues/20)
+* **Basic test system:** Added some missing dist files from the last commit ([10e1411](https://github.com/misterpotts/dispatch/commit/10e1411bae0d072730361d2755dd53afff34f3c6))
+* **Basic test system:** Added some missing dist files from the last commit ([5f16c45](https://github.com/misterpotts/dispatch/commit/5f16c458b59959648fd4493e54f474ca306e87cb))
+* **Basic test system:** Test compendium and system link up to some extent now. Need to improve testing of the crafting process and interactions with stubs/mocks ([ac6e057](https://github.com/misterpotts/dispatch/commit/ac6e0574ae1d0de9a277c4ef9a731d1ea5c55782))
+* Crafting API Examples ([#142](https://github.com/misterpotts/dispatch/issues/142)) ([ff19e09](https://github.com/misterpotts/dispatch/commit/ff19e095a7210f2cfdf455df8b3ee3607439ba2b))
+* **Crafting System Registry:** Crafting systems are now loaded completely from compendium content. some values can be removed from flags if they can be derived in a future change ([b4eaaea](https://github.com/misterpotts/dispatch/commit/b4eaaea7873be2afda4ad246c35d0857b1843194))
+* **Default Fabricator:** All tests now pass in DefaultFabricator.spec.ts ([de8c1be](https://github.com/misterpotts/dispatch/commit/de8c1becdf9f89010c7da60350a0b748cfc56218))
+* **Default Fabricator:** More passing tests ([cb4f925](https://github.com/misterpotts/dispatch/commit/cb4f9253cf1abec7d41ebc5b97440a2a4da3f058))
+* Dispatch API V2 2 ([#127](https://github.com/misterpotts/dispatch/issues/127)) ([b84e572](https://github.com/misterpotts/dispatch/commit/b84e572b4d90bbcd115f8e0a219bf6e00291e37a))
+* Introduce tailwindcss for use in Dispatch's Actor crafting app… ([#199](https://github.com/misterpotts/dispatch/issues/199)) ([ddbbead](https://github.com/misterpotts/dispatch/commit/ddbbeadad57ba7288e5b0dd2e20f20b27e18d43d))
+* **lesscss:** Add support for transpilation of LESS CSS files and versionfiles in /dist (is this best practice? No idea!) ([74e7c7e](https://github.com/misterpotts/dispatch/commit/74e7c7efadf3a2884dcb0d6da472d170ea960b05))
+* Make crafting system manager resizable ([#125](https://github.com/misterpotts/dispatch/issues/125)) ([e48f74e](https://github.com/misterpotts/dispatch/commit/e48f74efcff8a52fd933c9780eac9554b7d005f4))
+* **Recipe Item UI:** Recipe tab template spec ([41fc7a1](https://github.com/misterpotts/dispatch/commit/41fc7a110caa5d18c41dfe3c63ba2cfa1d720d07))
+* **Recipe Item UI:** Resolving crafting system and actor from click event partially completed ([98dabcf](https://github.com/misterpotts/dispatch/commit/98dabcff32960eb2ec2496615c6101623bfe5e1a))
+* **Recipe Tab:** Recipe type items for 5e now render an [empty] tab ([f11af54](https://github.com/misterpotts/dispatch/commit/f11af54a06f450c6f509da038a09732f02a67328))
+* Use default item quantity path in unknown systems ([#155](https://github.com/misterpotts/dispatch/issues/155)) ([905e59f](https://github.com/misterpotts/dispatch/commit/905e59f09e4d1c580aa272297004c885553c4337))
+* **V0.0.2:** Test compendium in place for dev. This is how I intend to distribute ingredients and recipes for supported crafting systems (as of now) ([686d3c5](https://github.com/misterpotts/dispatch/commit/686d3c533f47bfdc58af27d2391bbbf985d0efa4))
+* **V0.0.2:** Test compendium in place for dev. This is how I intend to distribute ingredients and recipes for supported crafting systems (as of now) ([419f70b](https://github.com/misterpotts/dispatch/commit/419f70bb074c057b301f62f946ad81eb5d79e680))
+* **webpack:** Add missing `.` to webpack config ([9b66a67](https://github.com/misterpotts/dispatch/commit/9b66a672e7f5c517d957c8bc564b7c8828db1ca2))
+* **webpack:** Add webpack config ([256695e](https://github.com/misterpotts/dispatch/commit/256695e95cd904be21d319b967f317e55ce61cc3))
+* **webpack:** Webpack complete! ([a5c30b8](https://github.com/misterpotts/dispatch/commit/a5c30b891f0de04b8352bb275858bd95d54f7460))
 
-#1.6.2
-- fixed a bug with a setting not existing in older versions of pbta
+# Changelog
 
-#1.6.1
-- Foundry v12 fixes
-- fix a possible issue with pbta version
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-#1.5.8
-- Fixed a bug with making new influences
-
-#1.5.7
-- Migrated from custom label shifting to using the on built into the PbtA system
-
-#1.5.4
-- New release process to get packs out of git. From now on people will need to use `npm run pullJSONtoLDB` to get packs locally.
-
-#1.5.3
-- Update the moves to not use the "choices" UI in the PbtA system as it doesnt work well for Masks
-
-#1.5.2
-- updated all the playbooks with new layouts and info
-- NPC sheet clean up
-
-#1.5.1
-- character sheet Layout updates
-
-#1.5.0
-- This is the 1st release after @philote took over the repo.
-- Light and Dark Themes for the sheets
-- Compendium of Moves & Playbooks
-- Influence tracking tab
-- Playbook specific UI when a Playbook is chosen (except for the Joined, since they take on any special rules for whomever they join with)
-- Label shifting UI on the Character Sheets (there is a setting to hide it)
-- Description tab has multiple sections
-
-#1.4.2
-- Easy Label switching (can be turned on and off in the settings)
-- Better Descriptions fields
-- Most playbooks have unique attributes to track when chosen on the character sheet
-- Hid the EQ tab
-- Sheet Config clean up (added all the strings to en.json)
-- Basic moves are auto added to new character sheets
-
-#1.4.1
-- Cleaned up the Basic Moves & Basic Playbook Moves (all others to come)
-- Added code to automatically add Basic Moves to a character sheet when it is created
-
-#1.4.0
-- Added Light and Dark themes. CSS used from https://gitlab.com/foundryvtt-mods/masks-newgeneration-sheets
-- updated the readme with screenshots
-
-#1.3.2
-- Tested with the PbtA module version 0.9.0.
-- Fixed a bug where Basic Playbooks would show twice in the playbook dropdown.
-
-#1.3.1
-- added roll modifier min/max values
-
-#1.3.0
-- Updated the compendiums to be Foundry V11 compatible. This also removes the requirement for the Compendium Folders module and means this version of this module is not compatible with Foundry V10 or lower.
-
-#1.2.0
-- added function to define system character sheet TOML from within module
-
-#1.0.0
-- added playbooks from Unbound in compendium Unbound Playbooks - thanks to Prof. Hidgens#9914 on Discord!
-- changed the icon for The Protege's Captain move to not be redundant with The Soldier's More than Just a Shield move
-
-#0.1.9
-- added playbooks from Secrets of AEGIS in compendium AEGIS Playbooks
-
-#0.1.8
-- bug fixes for HCHC Playbooks
-
-#0.1.7
-- shift labels macro bug fix
-
-#0.1.6
-- bug fix
-
-#0.1.5
-- bug fix
-
-#0.1.4
-- added playbooks from Halcyon City Herald Collection in compendium HCHC Playbooks
-
-#0.1.3
-- validated v9 compatibility
-
-#0.1.2
-- first version of revised module
-- version numbering aligned with versions on original module
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).

@@ -1,58 +1,170 @@
-![Cover](images/cover.webp)
+![](https://img.shields.io/endpoint?url=https%3A%2F%2Ffoundryshields.com%2Fversion%3Fstyle%3Dfor-the-badge%26url%3Dhttps%3A%2F%2Fgithub.com%2Fmisterpotts%2Fdispatch%2Freleases%2Flatest%2Fdownload%2Fmodule.json)
+<!--- Downloads @ Latest Badge -->
+![Latest Release Download Count](https://img.shields.io/github/downloads/misterpotts/dispatch/latest/total?sort=semver&style=for-the-badge)
+![Total Release Download Count](https://img.shields.io/github/downloads/misterpotts/dispatch/total?label=total%20downloads&style=for-the-badge)
+<!--- Social badges -->
+[![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dmisterpotts%26type%3Dpatrons&style=for-the-badge)](https://patreon.com/misterpotts)
+[![Discord](https://dcbadge.vercel.app/api/server/QNGn6cznJs)](https://discord.gg/QNGn6cznJs)
 
-<p align="center">
-    <img alt="Foundry Version 13 support" src="https://img.shields.io/badge/Foundry-v13-informational">
-    <img alt="Latest Release Download Count" src="https://img.shields.io/github/downloads/RcKeller/masks-newgeneration-unofficial/latest/total"> 
-    <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/RcKeller/masks-newgeneration-unofficial"> 
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/RcKeller/masks-newgeneration-unofficial">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/RcKeller/masks-newgeneration-unofficial">
-</p>
-<p align="center">
-    <img alt="GitHub" src="https://img.shields.io/github/license/RcKeller/masks-newgeneration-unofficial"> 
-    <a href="https://github.com/RcKeller/masks-newgeneration-unofficial/issues">
-        <img alt="GitHub issues" src="https://img.shields.io/github/issues/RcKeller/masks-newgeneration-unofficial">
-    </a> 
-    <a href="https://github.com/RcKeller/masks-newgeneration-unofficial/network">
-        <img alt="GitHub forks" src="https://img.shields.io/github/forks/RcKeller/masks-newgeneration-unofficial">
-    </a> 
-    <a href="https://github.com/RcKeller/masks-newgeneration-unofficial/stargazers">
-        <img alt="GitHub stars" src="https://img.shields.io/github/stars/RcKeller/masks-newgeneration-unofficial">
-    </a>
-</p>
+<!--- Forge Bazaar Install % Badge -->
+<!--- replace <your-module-name> with the `name` in your manifest -->
+<!--- ![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdispatch&colorB=4aa94a) -->
 
-The content from this module is from **Masks: A New Generation** from **Magpie Games**. You can get the PDF at: https://magpiegames.com/masks/
+![](/screens/dispatch-repo-preview.png)
 
-Based off the `masks-newgeneration-unoffical` version by philote:
-- https://github.com/philote/masks-newgeneration-unofficial/tree/main
-## Screenshots
+# About Dispatch
 
-## Dependencies
-The following Foundry VTT game system must be installed to use this module: [Powered by the Apocalypse](https://github.com/asacolips-projects/pbta).
+Dispatch is a system-agnostic, flexible crafting module for FoundryVTT. 
+You can read more about Dispatch, as well as learn how to use it, in the [documentation](https://misterpotts.github.io/dispatch/).
 
-> [!WARNING]
-> ### Masks V1.8+
-> **ONLY** works with Foundry v13+ and PbtA v1.1.16+
+# Installation
 
-## Features
-- Team Pool Tracker
-- Common tracking of who has influence over who
-- X-Card built into PBTA Chat UI
+Follow the official guide on [Installing New modules](https://foundryvtt.com/article/modules/).
+The first method is to use the manifest URL from the top level `module.json` file in the [latest release](https://github.com/misterpotts/dispatch/releases/latest) when ["_Installing via Manifest URL_"](https://foundryvtt.com/article/modules/).
 
-# TODO
-- Add influence to roll dialogs
-- Common tracking of who has influence over who
+Alternatively, a second approach is to download the `module.zip` archive from the [latest release](https://github.com/misterpotts/dispatch/releases/latest) when ["_Installing Modules Manually_"](https://foundryvtt.com/article/modules/).
+If you do download the bundle `module.zip` manually, be mindful that the included manifest file **DOES NOT** contain valid download and manifest URLs.
+If you want to install by manifest URL, use the first method.
+
+Pre-releases can be installed using these same methods. 
+However, the bundle and manifest URL are shared on [Patreon](https://www.patreon.com/posts/pre-release-76128822).
+
+# Changelog
+
+Changes to Dispatch are documented on the [releases](https://github.com/misterpotts/dispatch/releases) themselves.
+
+# Contributing
+
+If you'd like to be involved I'd love to have some help! 
+Take a look at the [contributing guide](CONTRIBUTING.md) and feel free to get in touch va [Discord](discordapp.com/users/MisterPotts#0255) or [email](mailto:matt@mrpotts.uk).
+I'm always happy to talk about how people can contribute.
+
+## Building Dispatch
+
+Checkout the code on the `main` branch (SSL: `git@github.com:misterpotts/dispatch.git`) and install dependencies with:
+
+```shell
+npm install
+```
+
+Dispatch is built with [Vite](https://vitejs.dev/).
+Vite builds the Dispatch JS bundle at a fraction of the size that Webpack did, and in a fraction of the time.
+
+Build output files are written to the `/dist` directory in the project root. 
+You can build the module by executing the following script:
+
+```shell
+npm run build
+```
+
+## Testing Dispatch
+
+Dispatch uses Jest for testing. 
+You can execute the test suite with the following command.
+
+```shell
+npm test
+```
+
+## Local Installation
+
+Local installation is straightforward.
+Just run the following command.
+
+```shell
+npm run releaseLocal
+```
+
+Dispatch will `test`, then `build` and finally copy the build output from the `/dist` directory to your local Foundry VTT Data directory.
+There's no need to symlink directories.
+This lets you use the development version of the Dispatch module straight away!
+Just startup Foundry and enable Dispatch in module settings.
+
+Dispatch installs the local build directly to your Foundry VTT Data Directory, under `/modules/dispatch`.
+The default Foundry VTT Data Directory is `"../../dev-data/Data"`.
+Dispatch assumes that you're doing local development with the following folder structure:
+
+```
+foundry-dev-root
+- dev-data
+  - Data (your Foundry VTT Data Directory)
+    - modules
+      - dispatch
+      ... other locally installed modules
+- dev-modules
+  - dispatch
+  ... other modules being developed
+```
+
+If you don't want to organise your projects how I do, you can set the `FVTT_DEV_DATA` environment variable to override the relative Foundry VTT Data Directory location.
+
+```shell
+export FVTT_DEV_DATA="relative-path/from-the-build-directory/to-your-FVTT/Data"
+```
+
+## Built with Svelte
+
+Dispatch eschews the typical Foundry VTT module development approach of using Handlebars templates rendered in Foundry's UI.
+Instead, Dispatch uses [Svelte](https://svelte.dev/) to build its user interface components.
+Svelte is a component-based UI framework that compiles to vanilla JavaScript.
+It is more lightweight, faster and easier to use (in my humble opinion) than Handlebars and many other front end frameworks.
+Perhaps more importantly, using Vite and Svelte together means that Dispatch's UI is rebuilt and reloaded in the browser whenever you make changes to the source code during local development.
+
+## Vite Development Server
+
+You can run a local Vite development server once you've performed a [local installation of Dispatch](#local-installation)
+Vite will watch the build directory and rebuild the `/dist` directory when some source files change.
+The Vite dev server will also intercept requests to `<LOCAL_FOUNDRY_HOST>/modules/dispatch/**` to serve these updated resources.
+This enables live reload for CSS and Svelte components, which I find hugely boosts my productivity when working on Dispatch's UI.
+
+To start the Vite dev server, run:
+
+```shell
+npm run serve
+```
+
+This will also open up a browser window at `http://localhost:30001/game`.
+Use this new browser window for local development.
+**DO NOT** use your local Foundry client, or direct access (typically at port `30000`) to see the changes from live reloads (HMR) during local development.
 
 # License
-The entire text of Masks is released under a Creative Commons Attribution 4.0 International license. https://creativecommons.org/licenses/by/4.0/ \
-This work uses material from The Innocent, published by Magpie Games in the Halcyon City Herald Collection and written by Brendan Conway, and is licensed under the Creative Commons Attribution 4.0 International license. http://creativecommons.org/licenses/by/4.0/ \
-This work uses material from The Joined, published by Magpie Games in the Halcyon City Herald Collection and written by Jenn Martin, and is licensed under the Creative Commons Attribution 4.0 International license. http://creativecommons.org/licenses/by/4.0/ \
-This work uses material from The Newborn, published by Magpie Games in the Halcyon City Herald Collection and written by Tim Franzke and Alberto Muti, and is licensed under the Creative Commons Attribution 4.0 International license. http://creativecommons.org/licenses/by/4.0/ \
-This work uses material from The Reformed, published by Magpie Games in the Halcyon City Herald Collection and written by June Shores, and is licensed under the Creative Commons Attribution 4.0 International license. http://creativecommons.org/licenses/by/4.0/ \
-This work uses material from The Star, published by Magpie Games in the Halcyon City Herald Collection and written by Brendan Conway, and is licensed under the Creative Commons Attribution 4.0 International license. http://creativecommons.org/licenses/by/4.0/ \
-This work uses material from The Brain, published by Magpie Games in Secrets of AEGIS and written by Cam Banks, and is licensed under the Creative Commons Attribution 4.0 International license. http://creativecommons.org/licenses/by/4.0/ \
-This work uses material from The Soldier, published by Magpie Games in Secrets of AEGIS and written by Mark Diaz Truman, and is licensed under the Creative Commons Attribution 4.0 International license. http://creativecommons.org/licenses/by/4.0/ \
-This work uses material from The Harbinger, published by Magpie Games in Masks: Unbound and written by Fred Hicks, and is licensed under the Creative Commons Attribution 4.0 International license. http://creativecommons.org/licenses/by/4.0/ \
-This work uses material from The Nomad, published by Magpie Games in Masks: Unbound and written by Brendan Conway, and is licensed under the Creative Commons Attribution 4.0 International license. http://creativecommons.org/licenses/by/4.0/ \
-This work uses material from The Scion, published by Magpie Games in Masks: Unbound and written by Brendan Conway, and is licensed under the Creative Commons Attribution 4.0 International license. http://creativecommons.org/licenses/by/4.0/ \
-Icons from game-icons.net are released under a Creative Commons Attribution 3.0 Unported license. https://creativecommons.org/licenses/by/3.0/ \
-CSS for the light and dark themes came from https://gitlab.com/foundryvtt-mods/masks-newgeneration-sheets
+
+Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+
+This work is licensed under a
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
+
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+
+[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
+[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
+
+# Attribution
+
+Though it has changed significantly, this project was based on a FVTT Typescript Module [Template](https://github.com/League-of-Foundry-Developers/foundry-typescript-template).
+The template was provided by the League of Extraordinary Foundry Developers and is attributed to Spacemandev.
+
+## Crafting systems
+
+- "Alchemist's Supplies" belongs to /u/calculusChild and is bundled with Dispatch with their consent 
+
+## Other Acknowledgements
+
+Thanks are due to The League of Extraordinary Foundry Developers, in particular to their members `valravn#7351`, `ghost#2000`, `BadIdeasBureau#7024`, `Calego#0914` and `Mana#4176`. 
+Join their Discord below.
+
+![League Discord](https://discordapp.com/api/guilds/732325252788387980/widget.png?style=banner1)
+
+[theripper93](https://theripper93.com/) has my thanks for his help and sharing tidbits from his knowledge of FoundryVTT module development. 
+Check out his collection of [premium FoundryVTT modules](https://www.patreon.com/theripper93) if you haven't already.
+
+Magus deserves a mention for their help in designing the new user experience for Dispatch and the many wireframes they produced!
+
+### Patron Hall of Fame
+
+I'd also like to thank the following Patrons for their ongoing support, both on the platform and on Discord:
+
+- Relic
+- Ichabod
+

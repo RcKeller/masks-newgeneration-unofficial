@@ -1,0 +1,16 @@
+{{!-- Conditions Panel: Toggleable condition tags (ordered to match labels) --}}
+<div class="conditions-panel">
+	<h3 class="conditions-title">{{localize "DISPATCH.CharacterSheets.conditions.label"}}</h3>
+	<div class="conditions-grid">
+		{{#each conditionTags as |condition|}}
+		<button type="button"
+			class="condition-tag condition--{{condition.cssClass}} {{#if condition.value}}active{{/if}}"
+			data-condition-key="{{condition.idx}}"
+			data-tooltip="{{condition.tooltip}}"
+			data-tooltip-direction="UP">
+			<i class="{{condition.icon}}"></i>
+			<span class="condition-label">{{condition.label}}</span>
+		</button>
+		{{/each}}
+	</div>
+</div>

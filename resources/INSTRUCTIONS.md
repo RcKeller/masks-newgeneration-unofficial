@@ -62,14 +62,11 @@ PLEASE CHANGE THE STAR icon we implemented for potential to "fa-solid fa-seedlin
 
 Scrutinize how all the classes work. Some playbooks, like Doomed, have a unique resource tracker. For example, gadgets for the brain, or burn/flares for Nova. Add custom buttons directly above the star for marking potential, as a tool for players to track these resources. Similar to potential, players can add/remove their own resource here or the GM can do it, otherwise it is disabled (but not greyed out) for other players. These buttons should be themed based on the class, for example the doomed should have a purple skull meter that can be incremented/decrimented similar to how we handle Potential. Be sure to peruse the resources dir closely to make sure we've accounted for them all, as many of these playbook specific features are missing.
 
-Examples of resources to track:
-
-
-
-
 =============
-TRACKABLES
+PLAYBOOK MECHANICS
+NOT ALL OF THESE HAVE TO BE IMPLEMENTED AS QUICK ACTIONS
 Not all of these are implemented as straight integers, some of them are more nuanced.
+
 =============
 
 ## Basic Playbooks
@@ -151,3 +148,91 @@ Not all of these are implemented as straight integers, some of them are more nua
 - **The Scion** — **Respect Tracking**
   - Min/Max: 6 important NPCs, each with 4-box respect track
   - Triggers: Seek out (roll +Savior) or earn standard Influence (converts to respect mark); at 4 Respect gain +1 to a Label of their choice
+
+==========
+
+These are looking really good, need a few key changes though to make the buttons more feature complete and make their designs consistent
+- Share to chat playbook buttons shouldn't be so tall (when you click them you see a rectangular outline, but the element should be perfectly square and the same size as other buttons on the card)
+- Instead of using shadows to provide background contrast, have a semi-opaque transparent background just like the advantage/forward button does
+- Change position for the Soldier button - instead of where it currently is, I want that buttons directly to the right of the Shift Labels
+- Drives for the beacon looks terrible. It needs to be fillable like the doomed, and it's hard to see right now
+- The gadgets tracker for the brain looks GREAT. Put it to the right
+- The Bull button is not functioning
+- Move Gadgets for the brain from the left col to the right
+- Move Star from the left to the right col
+- Clicking Steps for The Innocent should share Your Future Self
+- Share "A Blank Slate" when clicking the lessons button for The Newborn
+- The "Influence Given" tracker should instead be derived from the influence effectively given on that character sheet. We should not be tracking that as a separate interger/clock. Also when refactoring this, be mindful of the difference between giving somebody else influence over you (what we want to track) vs you having influence over others (not relevant to this stat)
+Show less
+
+-------------
+
+Certain playbooks like the doomed or Brain have resources we want to track. You've implemented this feature, but a lot of the buttons do not look that great - and they need to be refactored. None of these playbook buttons should be rounded, or have a white border. We want to highlight how unique they are and as thus they should be colored or fillable font awesome icons. Those icons should be a lot bigger. Below I've got some of the original requirements and they all have the font awesome icons I want you to use.
+
+For a potentially infinite resource like Gadgets for the brain, show a colored icon and then there should be a number on top of it.
+
+---
+
+
+Potential and Advantage (Forward/Ongoing) are 2 examples of trackable resources, but there are several playbook exclusive resources I want you to render too. Specifically:
+
+- Bottom left: Every player should have the shift labels button, and the Advantage tracker on top of it
+- Bottom right: Every player needs the Potential Tracker
+
+During your refactor, implement the following quick trackers. Note, not all of these track a literal integer stat, nor will they all be interactive. These new resource trackers should be on top of either the button stack on the left, or the buttons on the right.
+
+NEW BUTTONS TO IMPLEMENT:
+Please note if called upon to roll or share an ability to chat, use the corresponding item of the same name from that actor, NOT the version from the compendium!!
+
+Doomed (Right): Doom Track
+  fa-solid fa-skull
+Bull (Left): Ongoing bonus for love/rival
+  fa-solid fa-skull-cow
+Janus (Right): Roll "When Time Passes", a move item for this actor
+  fa-solid fa-house-chimney-crack
+Legacy (Right):  Roll "Whenever time passes", a move item for this actor
+  fa-sharp-duotone fa-solid fa-user-group
+Nova (Left): Burn tracker
+  fa-solid fa-fire
+Protege (Left): None
+Innocent (Right): 5 steps (non-interactive, must modify from sheet)
+  fa-solid fa-stairs
+Beacon (Right): Drives completed thus far (non-interactive, must modify from sheet)
+  fa-sharp-duotone fa-solid fa-bullseye-arrow
+Joined (Right): No idea, use your best judgment, or none at all
+Reformed (Right): Obligations (non-interactive, must modify from sheet)
+  fa-sharp fa-solid fa-hockey-mask
+Newborn (Right): Lessons completed (non-interactive, must modify from sheet)
+  fa-solid fa-chalkboard-user
+Star (Left): Share "Audience" move item
+  fa-solid fa-star
+Nomad (Right): Influence given to others (clicking shares the move item Putting Down Roots)
+  fa-solid fa-street-view
+Soldier (Left): Soldier stat (click to share A Higher Calling)
+  NOTE: Put this in-between the Advantage and Shift Labels buttons!
+  fa-solid fa-person-rifle
+
+Harbinger (Right): Just a button, clicking shares the move "Connecting the Dots" to chat
+  fa-solid fa-timeline
+
+Scion (Right): Respect icon (click to share "Respect" chat)
+  fa-solid fa-face-saluting
+
+Brain (Left): This playbook is MISSING a gadget tracker, add this stat as a trackable resource on the  playbook (integer >0, no limit). This is based on the "Always Prepared" brain move.
+  fa-solid fa-microchip
+
+Outsider: None
+Delinquent: None
+Transformed: None
+
+
+PLEASE CHANGE THE STAR icon we implemented for potential to "fa-solid fa-seedling"
+
+---------
+
+Scrutinize how all the classes work. Some playbooks, like Doomed, have a unique resource tracker. For example, gadgets for the brain, or burn/flares for Nova. Add custom buttons directly above the star for marking potential, as a tool for players to track these resources. Similar to potential, players can add/remove their own resource here or the GM can do it, otherwise it is disabled (but not greyed out) for other players. These buttons should be themed based on the class, for example the doomed should have a purple skull meter that can be incremented/decrimented similar to how we handle Potential. Be sure to peruse the resources dir closely to make sure we've accounted for them all, as many of these playbook specific features are missing.
+
+=============
+PLAYBOOK MECHANICS
+NOT ALL OF THESE HAVE TO BE IMPLEMENTED AS QUICK ACTIONS
+Not all of these are implemented as straight integers, some of them are more nuanced.

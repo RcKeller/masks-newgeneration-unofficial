@@ -1,0 +1,43 @@
+{{!-- Individual Move Item --}}
+<div class="move-content {{#if item.system.rollType}}has-roll roll-{{item.system.rollType}}{{/if}} {{#if item.system.rollFormula}}has-roll{{/if}}">
+	<div class="move-header">
+		{{!-- Move icon - clickable: rolls if has roll type/formula, otherwise shares --}}
+		<img class="move-icon {{#if item.system.rollType}}rollable{{else if item.system.rollFormula}}rollable{{/if}}"
+			src="{{item.img}}" alt="{{item.name}}"
+			data-action="{{#if item.system.rollType}}roll-move{{else if item.system.rollFormula}}roll-move{{else}}share-move{{/if}}"
+			data-tooltip="{{#if item.system.rollType}}{{localize 'DISPATCH.Actions.Roll'}}{{else if item.system.rollFormula}}{{localize 'DISPATCH.Actions.Roll'}}{{else}}{{localize 'DISPATCH.Actions.ShareMove'}}{{/if}}"
+			data-tooltip-direction="UP" />
+		<span class="move-name">{{item.name}}</span>
+		{{!-- Tags section with label icon --}}
+		{{#if item.system.rollType}}
+		<span class="move-tag move-tag--roll label-{{item.system.rollType}}">
+			{{#if (eq item.system.rollType "danger")}}<i class="fa-solid fa-hand-fist"></i>
+			{{else if (eq item.system.rollType "freak")}}<i class="fa-solid fa-hat-wizard"></i>
+			{{else if (eq item.system.rollType "savior")}}<i class="fa-solid fa-shield-heart"></i>
+			{{else if (eq item.system.rollType "superior")}}<i class="fa-solid fa-graduation-cap"></i>
+			{{else if (eq item.system.rollType "mundane")}}<i class="fa-solid fa-hat-cowboy"></i>
+			{{/if}}
+			{{#with (lookup ../statSettings item.system.rollType)}}{{this.label}}{{else}}{{item.system.rollType}}{{/with}}
+		</span>
+		{{/if}}
+		<div class="move-actions">
+			{{!-- Share in chat (always show) --}}
+			<button type="button" class="move-action move-share" data-action="share-move" data-tooltip="{{localize 'DISPATCH.Actions.ShareMove'}}" data-tooltip-direction="UP">
+				<i class="fas fa-comment"></i>
+			</button>
+			{{!-- Edit move --}}
+			<button type="button" class="move-action move-edit" data-action="edit-item" data-tooltip="{{localize 'DISPATCH.Actions.Edit'}}" data-tooltip-direction="UP">
+				<i class="fas fa-edit"></i>
+			</button>
+			{{!-- Delete move --}}
+			<button type="button" class="move-action move-delete" data-action="delete-item" data-tooltip="{{localize 'DISPATCH.Actions.Delete'}}" data-tooltip-direction="UP">
+				<i class="fas fa-trash"></i>
+			</button>
+		</div>
+	</div>
+	{{#if item.system.description}}
+	<div class="move-description">
+		{{{item.system.description}}}
+	</div>
+	{{/if}}
+</div>

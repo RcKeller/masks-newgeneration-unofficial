@@ -1,0 +1,46 @@
+{{!-- Left Panel: Character portrait, identity, and conditions --}}
+<section class="masks-left-panel">
+	{{!-- Character Portrait --}}
+	<div class="character-portrait">
+		<img class="profile-img" src="{{actor.img}}" data-edit="img" />
+	</div>
+
+	{{!-- Character Identity --}}
+	<div class="character-identity">
+		<input class="character-name" name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'PBTA.Name'}}" />
+		<input class="character-real-name" name="system.attributes.realName.value" type="text" value="{{system.attributes.realName.value}}" placeholder="{{system.attributes.realName.label}}" />
+
+		<div class="playbook-row">
+			<select class="charplaybook">
+				{{selectOptions playbooks selected=system.playbook.uuid valueAttr="uuid" labelAttr="name" blank=(localize "PBTA.Playbook") sort=true}}
+			</select>
+			<button type="button" class="playbook-link {{#if system.playbook.uuid}}active{{/if}}"
+				data-playbook="{{system.playbook.uuid}}"
+				data-tooltip="{{localize 'PBTA.ViewPlaybook'}}"
+				data-tooltip-direction="UP">
+				{{#if system.playbook.uuid}}
+				<i class="fas fa-eye"></i>
+				{{else}}
+				<i class="fas fa-eye-slash"></i>
+				{{/if}}
+			</button>
+		</div>
+	</div>
+
+	{{!-- Potential (XP) - Using 1-based pips prepared in getData --}}
+	<div class="potential-section">
+		<h3 class="sidebar-title">{{system.attributes.xp.label}}</h3>
+		<div class="potential-tracker">
+			<div class="potential-pips">
+				{{#each potentialPips as |pip|}}
+				<span class="potential-pip {{#if pip.filled}}filled{{/if}}" data-pip="{{pip.value}}"
+					data-action="set-potential"></span>
+				{{/each}}
+			</div>
+			<span class="potential-count">{{system.attributes.xp.value}} / 5</span>
+		</div>
+	</div>
+
+	{{!-- Conditions Panel --}}
+	{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-conditions.hbs"}}
+</section>

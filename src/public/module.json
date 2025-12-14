@@ -358,24 +358,24 @@
 			"folders": []
 		}
 	],
-	"esmodules": ["dist/dispatch.js"],
-	"styles": ["dist/styles/dispatch.css"],
+	"esmodules": ["dispatch.js"],
+	"styles": ["styles/dispatch.css"],
 	"languages": [
 		{
 			"lang": "en",
 			"name": "English",
-			"path": "dist/lang/en.json"
+			"path": "lang/en.json"
 		},
 		{
 			"lang": "es",
 			"name": "Spanish",
-			"path": "dist/lang/es.json"
+			"path": "lang/es.json"
 		}
 	],
 	"flags": {
 		"hotReload": {
 			"extensions": ["css", "hbs", "json"],
-			"paths": ["dist/styles", "dist/templates", "dist/lang"]
+			"paths": ["styles", "templates", "lang"]
 		}
 	},
 	"relationships": {
@@ -396,11 +396,11 @@
 	"readme": "README.md",
 	"includes": [
 		"module.json",
-		"dist/dispatch.js",
-		"dist/dispatch.js.map",
-		"dist/styles/",
-		"dist/templates/",
-		"dist/lang/",
+		"dispatch.js",
+		"dispatch.js.map",
+		"styles/",
+		"templates/",
+		"lang/",
 		"packs/",
 		"images/",
 		"LICENSE",
