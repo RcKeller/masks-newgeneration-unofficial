@@ -41,7 +41,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				icon: "fa-solid fa-skull",
 				attrPath: "system.attributes.theDoomed.value",
 				maxPath: "system.attributes.theDoomed.max",
-				doomTriggersPath: "system.attributes.theDoomedTriggers.options",
+				doomTriggersPath: "system.attributes.bringsDoomCloser.options",
 				min: 0,
 				max: 5,
 				color: "#9333ea", // purple-600
@@ -102,7 +102,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 	},
 
 	"The Nova": {
-		left: [
+		right: [
 			{
 				id: "burn",
 				type: TrackerType.NUMERIC,
@@ -289,7 +289,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				icon: "fa-solid fa-timeline",
 				color: "#7c3aed", // violet-600
 				label: "Memories",
-				attrPath: "system.attributes.theHarbinger.options",
+				attrPath: "system.attributes.theHarbinger.value", // LongText field
 				compendiumUUID: "Compendium.masks-newgeneration-unofficial.unbound-playbook-harbinger.HCswUIs9sYKviY0J",
 				tooltip: () => "Share: Memories & Connecting the Dots",
 				action: "shareMemories", // Special action to share memories field
@@ -596,42 +596,24 @@ export async function executeTrackerAction(actor, trackerId) {
 }
 
 /**
- * Share Harbinger's Memories to chat
+ * Share Harbinger's Memories to chat (LongText field)
  */
 async function shareHarbingerMemories(actor, tracker) {
 	if (!actor || !tracker.attrPath) return false;
 
-	const opts = foundry.utils.getProperty(actor, tracker.attrPath) ?? {};
-	const memories: { label: string; checked: boolean }[] = [];
+	const memoriesText = String(foundry.utils.getProperty(actor, tracker.attrPath) ?? "");
 
-	for (const [, opt] of Object.entries(opts)) {
-		const label = opt?.userLabel ?? opt?.label ?? "";
-		if (label && label !== "[Text]" && label.trim() !== "") {
-			memories.push({
-				label,
-				checked: opt.value === true,
-			});
-		}
-	}
-
-	if (memories.length === 0) {
+	if (!memoriesText || memoriesText.trim() === "") {
 		ui.notifications?.warn?.(`No memories found on ${actor.name}`);
 		return false;
 	}
-
-	const memoryItems = memories
-		.map((m) => {
-			const checkbox = m.checked ? "☑" : "☐";
-			return `<li>${checkbox} ${m.label}</li>`;
-		})
-		.join("");
 
 	const compendiumLink = tracker.compendiumUUID
 		? `<p>@UUID[${tracker.compendiumUUID}]{${tracker.checklistTitle}}</p>`
 		: "";
 
 	const content = `<h3>${actor.name}'s Memories</h3>
-		<ul style="list-style: none; padding-left: 0.5em;">${memoryItems}</ul>
+		<p>${memoriesText}</p>
 		${compendiumLink}`;
 
 	await ChatMessage.create({
