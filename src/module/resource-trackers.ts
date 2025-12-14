@@ -127,6 +127,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				label: "Steps",
 				fillable: true,
 				attrPath: "system.attributes.theInnocent.options",
+				compendiumUUID: "Compendium.masks-newgeneration-unofficial.hchc-playbook-innocent.G7BR8AutpZGsV7hL",
 				getValue: (actor) => {
 					const opts = foundry.utils.getProperty(actor, "system.attributes.theInnocent.options") ?? {};
 					return Object.values(opts).filter((o) => o?.value === true).length;
@@ -134,6 +135,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				max: 5,
 				tooltip: (val) => `Steps: ${val}/5 (click to share checked)`,
 				checklistTitle: "Your Future Self",
+				headerTitle: "Future Self", // Header will be "[Actor]'s Future Self"
 				checkedOnly: true, // Only share checked items
 			},
 		],
@@ -170,6 +172,7 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				color: "#B71C1C", // red-600 - to match villain theme
 				label: "Obligations",
 				attrPath: "system.attributes.theReformed.options",
+				compendiumUUID: "Compendium.masks-newgeneration-unofficial.hchc-playbook-reformed.zgT2HTOZKOiKXC6T",
 				// No getValue - we don't show a number on this tracker
 				tooltip: () => `Friends in Low Places (click to share)`,
 				checklistTitle: "Friends in Low Places",
@@ -216,6 +219,8 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				tooltip: () => `Audience (click to share)`,
 				checklistTitle: "Audience",
 				isStarAudience: true, // Special handling for Star's dual lists
+				noActorNameInHeader: true, // Don't prepend actor name
+				noStrikethrough: true, // Don't show crossed out items
 			},
 		],
 	},
@@ -262,19 +267,33 @@ export const PLAYBOOK_TRACKERS = Object.freeze({
 				position: "top", // Between Forward and Shift Labels
 			},
 		],
+		right: [
+			{
+				id: "recon",
+				type: TrackerType.ACTION,
+				icon: "fa-solid fa-binoculars",
+				color: "#4CAF50", // same green as soldier stat
+				label: "Recon",
+				moveName: "Before We Get Started",
+				tooltip: () => "Roll: Before We Get Started",
+				action: "roll",
+			},
+		],
 	},
 
 	"The Harbinger": {
 		right: [
 			{
-				id: "dots",
+				id: "memories",
 				type: TrackerType.ACTION,
 				icon: "fa-solid fa-timeline",
 				color: "#7c3aed", // violet-600
-				label: "Connecting",
-				moveName: "Connecting the Dots",
-				tooltip: () => "Share: Connecting the Dots",
-				action: "share",
+				label: "Memories",
+				attrPath: "system.attributes.theHarbinger.options",
+				compendiumUUID: "Compendium.masks-newgeneration-unofficial.unbound-playbook-harbinger.HCswUIs9sYKviY0J",
+				tooltip: () => "Share: Memories & Connecting the Dots",
+				action: "shareMemories", // Special action to share memories field
+				checklistTitle: "Connecting the Dots",
 			},
 		],
 	},
@@ -556,18 +575,72 @@ export async function executeTrackerAction(actor, trackerId) {
 		return false;
 	}
 
-	if (!tracker.moveName) {
-		console.warn(`[${NS}] Tracker has no moveName:`, trackerId);
-		return false;
-	}
-
 	if (tracker.action === "roll") {
+		if (!tracker.moveName) {
+			console.warn(`[${NS}] Tracker has no moveName:`, trackerId);
+			return false;
+		}
 		return rollMoveByName(actor, tracker.moveName);
 	} else if (tracker.action === "share") {
+		if (!tracker.moveName) {
+			console.warn(`[${NS}] Tracker has no moveName:`, trackerId);
+			return false;
+		}
 		return shareMoveByName(actor, tracker.moveName);
+	} else if (tracker.action === "shareMemories") {
+		// Harbinger special: share memories field + compendium link
+		return shareHarbingerMemories(actor, tracker);
 	}
 
 	return false;
+}
+
+/**
+ * Share Harbinger's Memories to chat
+ */
+async function shareHarbingerMemories(actor, tracker) {
+	if (!actor || !tracker.attrPath) return false;
+
+	const opts = foundry.utils.getProperty(actor, tracker.attrPath) ?? {};
+	const memories: { label: string; checked: boolean }[] = [];
+
+	for (const [, opt] of Object.entries(opts)) {
+		const label = opt?.userLabel ?? opt?.label ?? "";
+		if (label && label !== "[Text]" && label.trim() !== "") {
+			memories.push({
+				label,
+				checked: opt.value === true,
+			});
+		}
+	}
+
+	if (memories.length === 0) {
+		ui.notifications?.warn?.(`No memories found on ${actor.name}`);
+		return false;
+	}
+
+	const memoryItems = memories
+		.map((m) => {
+			const checkbox = m.checked ? "☑" : "☐";
+			return `<li>${checkbox} ${m.label}</li>`;
+		})
+		.join("");
+
+	const compendiumLink = tracker.compendiumUUID
+		? `<p>@UUID[${tracker.compendiumUUID}]{${tracker.checklistTitle}}</p>`
+		: "";
+
+	const content = `<h3>${actor.name}'s Memories</h3>
+		<ul style="list-style: none; padding-left: 0.5em;">${memoryItems}</ul>
+		${compendiumLink}`;
+
+	await ChatMessage.create({
+		content,
+		speaker: ChatMessage.getSpeaker({ actor }),
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+	});
+
+	return true;
 }
 
 /**
@@ -674,13 +747,16 @@ function extractChecklistItems(opts, checkedOnly = false) {
 
 /**
  * Build HTML for a checklist
+ * @param items - Array of checklist items
+ * @param showCheckboxes - Whether to show checkbox symbols
+ * @param noStrikethrough - If true, don't add strikethrough to checked items
  */
-function buildChecklistHtml(items, showCheckboxes = true) {
+function buildChecklistHtml(items, showCheckboxes = true, noStrikethrough = false) {
 	return items
 		.map((item) => {
 			if (showCheckboxes) {
 				const checkbox = item.checked ? "☑" : "☐";
-				const strikethrough = item.checked ? "text-decoration: line-through; opacity: 0.7;" : "";
+				const strikethrough = !noStrikethrough && item.checked ? "text-decoration: line-through; opacity: 0.7;" : "";
 				return `<li style="${strikethrough}">${checkbox} ${item.label}</li>`;
 			} else {
 				return `<li>• ${item.label}</li>`;
@@ -715,11 +791,14 @@ export async function executeChecklistAction(actor, trackerId) {
 		const advantages = extractChecklistItems(advOpts);
 		const demands = extractChecklistItems(demOpts);
 
+		// Star uses noStrikethrough flag - don't cross out checked items
+		const noStrike = tracker.noStrikethrough === true;
+
 		if (advantages.length > 0) {
-			listHtml += `<p><strong>Advantages:</strong></p><ul style="list-style: none; padding-left: 0.5em;">${buildChecklistHtml(advantages)}</ul>`;
+			listHtml += `<p><strong>Advantages:</strong></p><ul style="list-style: none; padding-left: 0.5em;">${buildChecklistHtml(advantages, true, noStrike)}</ul>`;
 		}
 		if (demands.length > 0) {
-			listHtml += `<p><strong>Demands:</strong></p><ul style="list-style: none; padding-left: 0.5em;">${buildChecklistHtml(demands)}</ul>`;
+			listHtml += `<p><strong>Demands:</strong></p><ul style="list-style: none; padding-left: 0.5em;">${buildChecklistHtml(demands, true, noStrike)}</ul>`;
 		}
 
 		if (advantages.length === 0 && demands.length === 0) {
@@ -774,7 +853,14 @@ export async function executeChecklistAction(actor, trackerId) {
 	// Add compendium link if available
 	const compendiumLink = tracker.compendiumUUID ? `<p>@UUID[${tracker.compendiumUUID}]{${title}}</p>` : "";
 
-	const content = `<h3>${actor.name}'s ${title}</h3>${listHtml}${compendiumLink}`;
+	// Build header - use headerTitle if available, otherwise checklistTitle
+	// If noActorNameInHeader is set, don't prepend actor name
+	const headerTitle = tracker.headerTitle ?? title;
+	const header = tracker.noActorNameInHeader
+		? `<h3>${headerTitle}</h3>`
+		: `<h3>${actor.name}'s ${headerTitle}</h3>`;
+
+	const content = `${header}${listHtml}${compendiumLink}`;
 
 	await ChatMessage.create({
 		content,
