@@ -374,6 +374,7 @@
 	],
 	"flags": {
 		"hotReload": {
+			"extensions": ["css", "hbs", "json"],
 			"paths": ["dist/styles", "dist/templates", "dist/lang"]
 		}
 	},
