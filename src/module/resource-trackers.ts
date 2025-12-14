@@ -535,7 +535,7 @@ export async function shareMoveByName(actor, moveName) {
 		await ChatMessage.create({
 			content: `<h3>${move.name}</h3><p>${move.system.description ?? ""}</p>`,
 			speaker: ChatMessage.getSpeaker({ actor }),
-			type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER,
 		});
 	}
 
@@ -599,7 +599,7 @@ export async function executeBullHeartAction(actor, delta) {
 				await ChatMessage.create({
 					content: `<h3>${move.name}</h3><p>${move.system.description ?? ""}</p>`,
 					speaker: ChatMessage.getSpeaker({ actor }),
-					type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+					style: CONST.CHAT_MESSAGE_STYLES.OTHER,
 				});
 			}
 		} else {
@@ -621,34 +621,30 @@ export async function executeBullHeartAction(actor, delta) {
 }
 
 /**
- * Helper to filter out placeholder [Text] labels and extract valid items
+ * Helper to extract valid checklist items
+ * PbtA stores user-entered text in `userLabel`, while `label` contains the placeholder "[Text]"
  */
 function extractChecklistItems(opts, checkedOnly = false) {
-	// Debug: log what we receive
-	console.log(`[${NS}] extractChecklistItems called with:`, JSON.stringify(opts, null, 2));
-
 	const entries = Object.entries(opts);
-	console.log(`[${NS}] Found ${entries.length} entries`);
 
 	const filtered = entries.filter(([key, opt]) => {
-		// Must have a label that's not the placeholder
-		if (!opt?.label || opt.label === "[Text]" || opt.label.trim() === "") {
-			console.log(`[${NS}] Filtering out key=${key}: label="${opt?.label}"`);
+		// Get the actual label - prefer userLabel (user-entered text), fall back to label
+		const actualLabel = opt?.userLabel ?? opt?.label ?? "";
+
+		// Must have a non-empty label that's not the placeholder
+		if (!actualLabel || actualLabel === "[Text]" || actualLabel.trim() === "") {
 			return false;
 		}
 		// If checkedOnly, only include checked items
 		if (checkedOnly && opt.value !== true) {
-			console.log(`[${NS}] Filtering out key=${key}: not checked (checkedOnly mode)`);
 			return false;
 		}
-		console.log(`[${NS}] Keeping key=${key}: label="${opt?.label}", value=${opt?.value}`);
 		return true;
 	});
 
-	console.log(`[${NS}] After filtering: ${filtered.length} items`);
-
 	return filtered.map(([key, opt]) => ({
-		label: opt.label,
+		// Use userLabel if available, otherwise label
+		label: opt.userLabel ?? opt.label,
 		checked: opt.value === true,
 	}));
 }
@@ -677,24 +673,11 @@ function buildChecklistHtml(items, showCheckboxes = true) {
 export async function executeChecklistAction(actor, trackerId) {
 	if (!actor) return false;
 
-	const playbook = getPlaybookName(actor);
 	const { left, right } = getPlaybookTrackers(actor);
 	const allTrackers = [...left, ...right];
 	const tracker = allTrackers.find((t) => t.id === trackerId);
 
-	// Debug logging
-	console.log(`[${NS}] executeChecklistAction:`, {
-		actorName: actor.name,
-		playbook,
-		trackerId,
-		allTrackerIds: allTrackers.map((t) => t.id),
-		foundTracker: tracker ? { id: tracker.id, type: tracker.type } : null,
-		trackerTypeMatch: tracker?.type === TrackerType.CHECKLIST,
-	});
-
 	if (!tracker || tracker.type !== TrackerType.CHECKLIST) {
-		console.warn(`[${NS}] Tracker not found or not checklist type:`, trackerId, "playbook:", playbook);
-		ui.notifications?.warn?.(`Checklist tracker "${trackerId}" not found for ${playbook}`);
 		return false;
 	}
 
@@ -727,9 +710,11 @@ export async function executeChecklistAction(actor, trackerId) {
 		const villains = [];
 
 		for (const [key, opt] of Object.entries(opts)) {
-			if (opt?.label && opt.label !== "[Text]" && opt.label.trim() !== "") {
+			// Use userLabel (user-entered text) if available, otherwise label
+			const villainName = opt?.userLabel ?? opt?.label ?? "";
+			if (villainName && villainName !== "[Text]" && villainName.trim() !== "") {
 				const obligations = opt.values ? Object.values(opt.values).filter((v) => v?.value === true).length : 0;
-				villains.push({ name: opt.label, obligations });
+				villains.push({ name: villainName, obligations });
 			}
 		}
 
@@ -771,7 +756,7 @@ export async function executeChecklistAction(actor, trackerId) {
 	await ChatMessage.create({
 		content,
 		speaker: ChatMessage.getSpeaker({ actor }),
-		type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER,
 	});
 
 	return true;
@@ -811,14 +796,14 @@ export async function executeDoomTrackAction(actor, delta) {
 			await ChatMessage.create({
 				content,
 				speaker: ChatMessage.getSpeaker({ actor }),
-				type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+				style: CONST.CHAT_MESSAGE_STYLES.OTHER,
 			});
 		} else {
 			// Just announce the doom change
 			await ChatMessage.create({
 				content: `<h3>${actor.name}'s Doom advances to ${next}/${max}</h3>`,
 				speaker: ChatMessage.getSpeaker({ actor }),
-				type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+				style: CONST.CHAT_MESSAGE_STYLES.OTHER,
 			});
 		}
 	}
@@ -859,7 +844,7 @@ export async function executeInfluenceChecklistAction(actor) {
 	await ChatMessage.create({
 		content,
 		speaker: ChatMessage.getSpeaker({ actor }),
-		type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+		style: CONST.CHAT_MESSAGE_STYLES.OTHER,
 	});
 
 	return true;

@@ -1245,15 +1245,6 @@ const TurnCardsHUD = {
 		const trackerId = el.dataset.trackerId;
 		const trackerType = el.dataset.trackerType;
 
-		// Debug logging
-		console.log(`[${NS}] _handleTracker called:`, {
-			trackerId,
-			trackerType,
-			actorName: actor?.name,
-			TrackerTypeCHECKLIST: TrackerType.CHECKLIST,
-			isChecklistMatch: trackerType === TrackerType.CHECKLIST,
-		});
-
 		if (!actor || !trackerId) return;
 
 		const myActor = getMyActor();
