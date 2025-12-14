@@ -1,0 +1,59 @@
+{{!-- Power Card: Individual move as an accordion item --}}
+{{!-- Uses CSS-only accordion with radio inputs for mutual exclusion --}}
+<div class="power-card item {{#if item.system.rollType}}power-card--{{item.system.rollType}}{{/if}}"
+	data-item-id="{{item._id}}" draggable="true">
+	{{!-- Hidden radio for accordion behavior --}}
+	<input type="radio" name="{{accordionName}}" id="power-{{item._id}}" class="power-card__radio" {{#if (eq item._id expandedPowerCardId)}}checked{{/if}} />
+
+	{{!-- Clickable header/label --}}
+	<label for="power-{{item._id}}" class="power-card__header">
+		<img class="power-card__icon item-image {{#if item.system.rollType}}rollable{{else if item.system.rollFormula}}rollable{{/if}}"
+			src="{{item.img}}" alt="{{item.name}}"
+			data-action="{{#if item.system.rollType}}roll-move{{else if item.system.rollFormula}}roll-move{{else}}share-move{{/if}}"
+			data-tooltip="{{#if item.system.rollType}}{{localize 'DISPATCH.Actions.Roll'}}{{else if item.system.rollFormula}}{{localize 'DISPATCH.Actions.Roll'}}{{else}}{{localize 'DISPATCH.Actions.ShareMove'}}{{/if}}"
+			data-tooltip-direction="UP" />
+		<span class="power-card__name">{{item.name}}</span>
+		{{!-- Show stat tags (danger, freak, savior, superior, mundane) with icons --}}
+		{{#if (eq item.system.rollType "danger")}}
+		<span class="power-card__tag"><i class="fa-solid fa-hand-fist"></i>{{#with (lookup statSettings "danger")}}{{this.label}}{{else}}Danger{{/with}}</span>
+		{{else if (eq item.system.rollType "freak")}}
+		<span class="power-card__tag"><i class="fa-solid fa-hat-wizard"></i>{{#with (lookup statSettings "freak")}}{{this.label}}{{else}}Freak{{/with}}</span>
+		{{else if (eq item.system.rollType "savior")}}
+		<span class="power-card__tag"><i class="fa-solid fa-shield-heart"></i>{{#with (lookup statSettings "savior")}}{{this.label}}{{else}}Savior{{/with}}</span>
+		{{else if (eq item.system.rollType "superior")}}
+		<span class="power-card__tag"><i class="fa-solid fa-graduation-cap"></i>{{#with (lookup statSettings "superior")}}{{this.label}}{{else}}Superior{{/with}}</span>
+		{{else if (eq item.system.rollType "mundane")}}
+		<span class="power-card__tag"><i class="fa-solid fa-hat-cowboy"></i>{{#with (lookup statSettings "mundane")}}{{this.label}}{{else}}Mundane{{/with}}</span>
+		{{!-- Show prompt/ask/formula tags only when explicitly set --}}
+		{{else if (eq item.system.rollType "prompt")}}
+		<span class="power-card__tag power-card__tag--prompt">Prompt</span>
+		{{else if (eq item.system.rollType "ask")}}
+		<span class="power-card__tag power-card__tag--prompt">Ask</span>
+		{{else if (eq item.system.rollType "formula")}}
+		<span class="power-card__tag power-card__tag--prompt">Formula</span>
+		{{/if}}
+		{{!-- No tag shown if rollType is empty or unrecognized --}}
+	</label>
+
+	{{!-- Expandable content (description + actions) --}}
+	<div class="power-card__content">
+		<div class="power-card__inner">
+			{{#if item.system.description}}
+			<div class="power-card__description">
+				{{{item.system.description}}}
+			</div>
+			{{/if}}
+			<div class="power-card__actions">
+				<button type="button" class="power-card__action" data-action="share-move" data-tooltip="{{localize 'DISPATCH.Actions.ShareMove'}}" data-tooltip-direction="UP">
+					<i class="fas fa-comment"></i>
+				</button>
+				<button type="button" class="power-card__action" data-action="edit-item" data-tooltip="{{localize 'DISPATCH.Actions.Edit'}}" data-tooltip-direction="UP">
+					<i class="fas fa-edit"></i>
+				</button>
+				<button type="button" class="power-card__action power-card__action--delete" data-action="delete-item" data-tooltip="{{localize 'DISPATCH.Actions.Delete'}}" data-tooltip-direction="UP">
+					<i class="fas fa-trash"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -358,23 +358,23 @@
 			"folders": []
 		}
 	],
-	"esmodules": ["dist/dispatch.js"],
-	"styles": ["dist/styles/dispatch.css"],
+	"esmodules": ["dispatch.js"],
+	"styles": ["styles/dispatch.css"],
 	"languages": [
 		{
 			"lang": "en",
 			"name": "English",
-			"path": "dist/lang/en.json"
+			"path": "lang/en.json"
 		},
 		{
 			"lang": "es",
 			"name": "Spanish",
-			"path": "dist/lang/es.json"
+			"path": "lang/es.json"
 		}
 	],
 	"flags": {
 		"hotReload": {
-			"paths": ["dist/styles", "dist/templates", "dist/lang"]
+			"paths": ["styles", "templates", "lang"]
 		}
 	},
 	"relationships": {
@@ -388,9 +388,22 @@
 			}
 		]
 	},
-	"url": "",
-	"manifest": "",
-	"download": "",
+	"url": "https://github.com/RcKeller/masks-newgeneration-unofficial",
+	"manifest": "https://github.com/RcKeller/masks-newgeneration-unofficial/releases/latest/download/module.json",
+	"download": "https://github.com/RcKeller/masks-newgeneration-unofficial/releases/latest/download/module.zip",
 	"license": "LICENSE",
-	"readme": "README.md"
+	"readme": "README.md",
+	"includes": [
+		"module.json",
+		"dispatch.js",
+		"dispatch.js.map",
+		"styles/",
+		"templates/",
+		"lang/",
+		"packs/",
+		"images/",
+		"LICENSE",
+		"README.md",
+		"CHANGELOG.md"
+	]
 }

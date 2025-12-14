@@ -1,0 +1,39 @@
+{
+  "include": ["src/**/*", "src/module/types/global.d.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "moduleDetection": "auto",
+
+    "rootDir": ".",
+    "moduleResolution": "bundler",
+    "baseUrl": "./",
+    "types": ["fvtt-types", "jquery"],
+    "resolveJsonModule": true,
+
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    "allowJs": true,
+    "checkJs": false,
+
+    "outDir": "dist",
+    "sourceMap": true,
+
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "strict": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+
+    "skipLibCheck": true
+  },
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

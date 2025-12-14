@@ -62,14 +62,11 @@ PLEASE CHANGE THE STAR icon we implemented for potential to "fa-solid fa-seedlin
 
 Scrutinize how all the classes work. Some playbooks, like Doomed, have a unique resource tracker. For example, gadgets for the brain, or burn/flares for Nova. Add custom buttons directly above the star for marking potential, as a tool for players to track these resources. Similar to potential, players can add/remove their own resource here or the GM can do it, otherwise it is disabled (but not greyed out) for other players. These buttons should be themed based on the class, for example the doomed should have a purple skull meter that can be incremented/decrimented similar to how we handle Potential. Be sure to peruse the resources dir closely to make sure we've accounted for them all, as many of these playbook specific features are missing.
 
-Examples of resources to track:
-
-
-
-
 =============
-TRACKABLES
+PLAYBOOK MECHANICS
+NOT ALL OF THESE HAVE TO BE IMPLEMENTED AS QUICK ACTIONS
 Not all of these are implemented as straight integers, some of them are more nuanced.
+
 =============
 
 ## Basic Playbooks

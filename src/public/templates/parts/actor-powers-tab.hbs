@@ -1,0 +1,122 @@
+{{!-- Powers Tab: Moves as standalone accordion cards --}}
+<div class="tab powers" data-group="primary" data-tab="powers">
+	<section class="sheet-tab powers-tab">
+		{{!-- Roll modifiers bar (only show if at least one is visible) --}}
+		{{#if (or (not sheetSettings.hideRollFormula) (not sheetSettings.hideHold) (not sheetSettings.hideRollMode))}}
+		<div class="powers-modifiers">
+			{{#if (not sheetSettings.hideRollFormula)}}
+			<div class="modifier-field">
+				<label>{{localize "PBTA.RollFormulaOverride"}}</label>
+				<input type="text" name="system.resources.rollFormula" value="{{system.resources.rollFormula}}" placeholder="ex: 3d6kh2"/>
+			</div>
+			{{/if}}
+
+			{{#if (not sheetSettings.hideHold)}}
+			<div class="modifier-field">
+				<label>{{localize "PBTA.Hold"}}</label>
+				<div class="modifier-stepper">
+					<button type="button" data-action="decrease" data-attr="resources.hold.value">-</button>
+					<input type="number" name="system.resources.hold.value" value="{{system.resources.hold.value}}" data-dtype="Number"/>
+					<button type="button" data-action="increase" data-attr="resources.hold.value">+</button>
+				</div>
+			</div>
+			{{/if}}
+
+			{{#if (not sheetSettings.hideRollMode)}}
+			<div class="modifier-field">
+				<label>{{localize "PBTA.RollMode"}}</label>
+				{{radioBoxes 'flags.pbta.rollMode' config.rollModes checked=flags.pbta.rollMode localize=true}}
+			</div>
+			{{/if}}
+		</div>
+		{{/if}}
+
+		{{!-- Powers List - Organized by section --}}
+		<div class="powers-sections">
+			{{!-- Playbook Moves --}}
+			{{#if moves.playbook.length}}
+			<section class="powers-section" data-move-type="playbook">
+				<header class="powers-section__header">
+					<h3 class="powers-section__title">{{getLabel moveTypes "playbook"}}</h3>
+					<button type="button" class="powers-section__add" data-action="add-move" data-move-type="playbook" data-tooltip="Add Move">
+						<i class="fas fa-plus"></i>
+					</button>
+				</header>
+				<div class="powers-section__cards">
+					{{#each moves.playbook as |item id|}}
+					{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings expandedPowerCardId=../expandedPowerCardId}}
+					{{/each}}
+				</div>
+			</section>
+			{{/if}}
+
+			{{!-- Basic Moves --}}
+			{{#if moves.basic.length}}
+			<section class="powers-section" data-move-type="basic">
+				<header class="powers-section__header">
+					<h3 class="powers-section__title">{{getLabel moveTypes "basic"}}</h3>
+					<button type="button" class="powers-section__add" data-action="add-move" data-move-type="basic" data-tooltip="Add Move">
+						<i class="fas fa-plus"></i>
+					</button>
+				</header>
+				<div class="powers-section__cards">
+					{{#each moves.basic as |item id|}}
+					{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings expandedPowerCardId=../expandedPowerCardId}}
+					{{/each}}
+				</div>
+			</section>
+			{{/if}}
+
+			{{!-- Adult Moves --}}
+			{{#if moves.adult.length}}
+			<section class="powers-section" data-move-type="adult">
+				<header class="powers-section__header">
+					<h3 class="powers-section__title">{{getLabel moveTypes "adult"}}</h3>
+					<button type="button" class="powers-section__add" data-action="add-move" data-move-type="adult" data-tooltip="Add Move">
+						<i class="fas fa-plus"></i>
+					</button>
+				</header>
+				<div class="powers-section__cards">
+					{{#each moves.adult as |item id|}}
+					{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings expandedPowerCardId=../expandedPowerCardId}}
+					{{/each}}
+				</div>
+			</section>
+			{{/if}}
+
+			{{!-- Rules Moves --}}
+			{{#if moves.rules.length}}
+			<section class="powers-section" data-move-type="rules">
+				<header class="powers-section__header">
+					<h3 class="powers-section__title">{{getLabel moveTypes "rules"}}</h3>
+					<button type="button" class="powers-section__add" data-action="add-move" data-move-type="rules" data-tooltip="Add Move">
+						<i class="fas fa-plus"></i>
+					</button>
+				</header>
+				<div class="powers-section__cards">
+					{{#each moves.rules as |item id|}}
+					{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings expandedPowerCardId=../expandedPowerCardId}}
+					{{/each}}
+				</div>
+			</section>
+			{{/if}}
+
+			{{!-- Other Moves --}}
+			{{#if moves.PBTA_OTHER.length}}
+			<section class="powers-section" data-move-type="PBTA_OTHER">
+				<header class="powers-section__header">
+					<h3 class="powers-section__title">{{localize "PBTA_OTHER"}}</h3>
+					<button type="button" class="powers-section__add" data-action="add-move" data-move-type="PBTA_OTHER" data-tooltip="Add Move">
+						<i class="fas fa-plus"></i>
+					</button>
+				</header>
+				<div class="powers-section__cards">
+					{{#each moves.PBTA_OTHER as |item id|}}
+					{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-power-card.hbs" item=item accordionName="power-accordion" statSettings=../statSettings sheetSettings=../sheetSettings expandedPowerCardId=../expandedPowerCardId}}
+					{{/each}}
+				</div>
+			</section>
+			{{/if}}
+		</div>
+	</section>
+</div>

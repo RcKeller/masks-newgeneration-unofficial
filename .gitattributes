@@ -1,4 +1,2 @@
-packs/** binary
-
-# Auto detect text files and perform LF normalization
-* text=auto
+# FoundryVTT packs are binary data and should be treated as such within git.
+src/packs/*/* binary
