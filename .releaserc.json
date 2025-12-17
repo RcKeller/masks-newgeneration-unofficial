@@ -32,6 +32,11 @@
           {
             "path": "module.zip",
             "label": "Module Release Package"
+          },
+          {
+            "path": "dist/module.json",
+            "name": "module.json",
+            "label": "Module Manifest"
           }
         ]
       }
