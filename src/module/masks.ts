@@ -12,12 +12,12 @@ Hooks.once("init", () => {
         label: 'DISPATCH.SheetConfig.character',
     });
 
-    // Register Call sheet for NPC actors (used for Dispatch-style vignettes)
-    // Users create an NPC and switch to this sheet to make it a "Call"
-    // IMPORTANT: Use module namespace so all clients can find the sheet class
+    // Register Call sheet for the "other" actor type (displayed as "Call" in UI)
+    // PbtA's "other" type is specifically designed for custom actor types like this
+    // All Call-specific data is stored in flags, not PbtA's system data
     Actors.registerSheet('masks-newgeneration-unofficial', CallSheet, {
-        types: ['npc'],
-        makeDefault: false,
+        types: ['other'],
+        makeDefault: true,  // Default sheet for "other" type actors
         label: 'DISPATCH.SheetConfig.call',
     });
 

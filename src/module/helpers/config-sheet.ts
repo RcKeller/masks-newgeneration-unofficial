@@ -707,6 +707,23 @@ export const configSheet = async () => {
           },
         },
       },
+      // "Call" actor type - uses PbtA's built-in "other" type
+      // This makes "Call" appear in the actor creation dropdown
+      // All Call-specific data is stored in flags, not PbtA's system data
+      other: {
+        label: game.i18n.localize("DISPATCH.Call.TypeLabel"),
+        // Minimal config - Calls don't use PbtA stats/attributes
+        stats: {},
+        attributes: {},
+        details: {
+          biography: {
+            label: game.i18n.localize("DISPATCH.Call.Description"),
+            type: "LongText",
+            value: "",
+          },
+        },
+        moveTypes: {},
+      },
     },
   };
 };
