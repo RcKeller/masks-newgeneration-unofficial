@@ -5,6 +5,8 @@ export const preloadHandlebarsTemplates = async function () {
     return loadTemplates([
       // Main sheet
       'modules/masks-newgeneration-unofficial/dist/templates/sheets/actor-sheet.hbs',
+      // Call sheet (Dispatch-style vignettes)
+      'modules/masks-newgeneration-unofficial/dist/templates/sheets/call-sheet.hbs',
       // Legacy partials (NPC sheet)
       'modules/masks-newgeneration-unofficial/dist/templates/parts/actor-header.hbs',
       'modules/masks-newgeneration-unofficial/dist/templates/parts/actor-attributes.hbs',

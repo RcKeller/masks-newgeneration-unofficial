@@ -113,7 +113,7 @@ export function MasksActorSheetMixin(Base) {
 			if (this.actor?.type === "character") {
 				// Labels graph data (for the pentagon visualization)
 				context.labelsGraph = createLabelsGraphData(this.actor, {
-					size: 100,
+					size: 200,
 					borderWidth: 2,
 					showInnerLines: true,
 					showIcons: true,

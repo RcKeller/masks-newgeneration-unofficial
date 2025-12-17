@@ -1,6 +1,7 @@
 import { configSheet } from "./helpers/config-sheet";
 import * as utils from "./helpers/utils";
 import { MasksActorSheetMixin } from './sheets/actor-sheet';
+import { CallSheet, registerCallSheetQueries } from './sheets/call-sheet';
 
 Hooks.once("init", () => {
     const masksActorSheet = MasksActorSheetMixin(game.pbta.applications.actor.PbtaActorSheet);
@@ -9,6 +10,15 @@ Hooks.once("init", () => {
         types: ['character'],
         makeDefault: true,
         label: 'DISPATCH.SheetConfig.character',
+    });
+
+    // Register Call sheet for NPC actors (used for Dispatch-style vignettes)
+    // Users create an NPC and switch to this sheet to make it a "Call"
+    // IMPORTANT: Use module namespace so all clients can find the sheet class
+    Actors.registerSheet('masks-newgeneration-unofficial', CallSheet, {
+        types: ['npc'],
+        makeDefault: false,
+        label: 'DISPATCH.SheetConfig.call',
     });
 
     game.settings.register("masks-newgeneration-unofficial", "enable_dark_mode", {
@@ -72,6 +82,9 @@ Hooks.once("init", () => {
 });
 
 Hooks.once('ready', async function () {
+    // Register query handlers for call sheet actions (V13+ query system)
+    registerCallSheetQueries();
+
     if (!game.user.isGM) return;
     if (game.settings.get('masks-newgeneration-unofficial', 'firstTime')) {
         game.settings.set('masks-newgeneration-unofficial', 'firstTime', false);

@@ -15,6 +15,14 @@ const LABEL_ORDER = Object.freeze([
 ]);
 
 /**
+ * Value range constants
+ * Labels can range from -3 to +4 (8 distinct values, 7 steps between them)
+ */
+const MIN_VALUE = -3;
+const MAX_VALUE = 4;
+const VALUE_RANGE = MAX_VALUE - MIN_VALUE; // 7
+
+/**
  * Display names for labels (capitalized)
  */
 const LABEL_DISPLAY_NAMES = Object.freeze({
@@ -82,6 +90,29 @@ const COLORS = Object.freeze({
 });
 
 /**
+ * Convert a label value to a normalized radius fraction (0 to 1)
+ * -3 maps to 0 (center), +4 maps to 1 (outer edge)
+ * @param {number} value - The label value (-3 to +4)
+ * @returns {number} Normalized fraction (0 to 1)
+ */
+function valueToRadiusFraction(value) {
+	const clamped = Math.max(MIN_VALUE, Math.min(MAX_VALUE, value));
+	return (clamped - MIN_VALUE) / VALUE_RANGE;
+}
+
+/**
+ * Get the integer values for inner grid lines
+ * Returns all integer values between min and max (exclusive)
+ */
+function getInnerGridValues(): number[] {
+	const values: number[] = [];
+	for (let v = MIN_VALUE + 1; v < MAX_VALUE; v++) {
+		values.push(v); // [-2, -1, 0, 1, 2, 3]
+	}
+	return values;
+}
+
+/**
  * Get the pentagon vertex positions
  * @param {number} cx - Center X
  * @param {number} cy - Center Y
@@ -120,7 +151,7 @@ function polygonPath(points) {
  *
  * Effective value formula per label:
  *   effective = base - conditionPenalty + globalBonus
- *   (clamped to roll modifier range: -3 to +4)
+ *   (clamped to MIN_VALUE..MAX_VALUE, currently -3 to +4)
  *
  * Where:
  *   - base: the label's base value from character sheet
@@ -151,13 +182,13 @@ export function extractLabelsData(actor) {
 	}
 
 	// Calculate effective values: base - conditionPenalty + globalBonus
-	// Clamped to roll modifier range: -3 to +4
+	// Clamped to roll modifier range: MIN_VALUE to MAX_VALUE
 	const totalPenalty = affectedLabels.size * 2;
 	const labels = {};
 	for (const key of LABEL_ORDER) {
 		const base = Number(stats[key]?.value) || 0;
 		const penalty = affectedLabels.has(key) ? 2 : 0;
-		labels[key] = Math.max(-3, Math.min(4, base - penalty + globalBonus));
+		labels[key] = Math.max(MIN_VALUE, Math.min(MAX_VALUE, base - penalty + globalBonus));
 	}
 
 	return {
@@ -181,6 +212,7 @@ export function extractLabelsData(actor) {
  * @param {number} [options.borderWidth=1.5] - Width of the outer pentagon border
  * @param {boolean} [options.showInnerLines=true] - Show inner grid lines and spokes
  * @param {boolean} [options.showIcons=false] - Show label icons at vertices
+ * @param {boolean} [options.showVertexDots=false] - Show dots at data polygon vertices
  * @returns {string} SVG markup string
  */
 export function generateLabelsGraphSVG(options) {
@@ -192,6 +224,7 @@ export function generateLabelsGraphSVG(options) {
 		borderWidth = 1.5,
 		showInnerLines = true,
 		showIcons = false,
+		showVertexDots = false,
 	} = options;
 
 	// When showing icons, we need extra padding around the pentagon
@@ -203,21 +236,14 @@ export function generateLabelsGraphSVG(options) {
 	const cy = totalSize / 2;
 	// Pentagon stays at full size (not reduced)
 	const outerRadius = (size / 2) - 2;
-	// Roll modifier range: -3 to +4 (7 steps)
-	// At -3 (minimum), the spoke should be at dead center
-	const minValue = -3, maxValue = 4, range = 7;
 
-	// Normalize value to 0-1 range for radius calculation
-	// At minValue (-3), returns 0 (center); at maxValue (+4), returns 1 (outer edge)
-	const normalize = (v) => (Math.max(minValue, Math.min(maxValue, v)) - minValue) / range;
-
-	// Pentagon vertices
+	// Pentagon vertices (outer edge = +4)
 	const outerVerts = getPentagonVertices(cx, cy, outerRadius);
 
-	// Data polygon vertices
+	// Data polygon vertices - use consistent valueToRadiusFraction for all values
 	const dataVerts = LABEL_ORDER.map((key, i) => {
-		const norm = normalize(labels[key] ?? 0);
-		const r = outerRadius * Math.max(0.08, norm);
+		const fraction = valueToRadiusFraction(labels[key] ?? 0);
+		const r = outerRadius * fraction;
 		const angle = ((i * 72) - 90) * (Math.PI / 180);
 		return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
 	});
@@ -235,12 +261,15 @@ export function generateLabelsGraphSVG(options) {
 		`<path d="${polygonPath(outerVerts)}" fill="${COLORS.pentagonBg}" stroke="${COLORS.pentagonBorder}" stroke-width="${borderWidth}" />`,
 	];
 
-	// Inner grid lines and spokes
+	// Inner grid lines at each integer value, and spokes from center to vertices
 	if (showInnerLines) {
-		for (let level = 1; level < 4; level++) {
-			const verts = getPentagonVertices(cx, cy, (outerRadius * level) / 4);
+		// Draw inner pentagon rings at each integer value from -2 to +3
+		for (const value of getInnerGridValues()) {
+			const fraction = valueToRadiusFraction(value);
+			const verts = getPentagonVertices(cx, cy, outerRadius * fraction);
 			parts.push(`<path d="${polygonPath(verts)}" fill="none" stroke="${COLORS.gridLines}" stroke-width="0.5" />`);
 		}
+		// Draw spokes from center to each vertex
 		for (const v of outerVerts) {
 			parts.push(`<path d="M ${cx} ${cy} L ${v.x} ${v.y}" stroke="${COLORS.gridLines}" stroke-width="0.5" />`);
 		}
@@ -248,6 +277,16 @@ export function generateLabelsGraphSVG(options) {
 
 	// Data polygon - with class for CSS transitions and data attributes for animation
 	parts.push(`<path class="labels-graph-data" d="${polygonPath(dataVerts)}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, borderWidth - 0.5)}" style="transition: d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease;" />`);
+
+	// Vertex dots at data polygon points
+	if (showVertexDots) {
+		const dotRadius = size * 0.02;
+		for (const v of dataVerts) {
+			parts.push(
+				`<circle cx="${v.x}" cy="${v.y}" r="${dotRadius}" fill="rgba(255, 255, 255, 1)" class="vertex-dot" />`
+			);
+		}
+	}
 
 	// Label icons at vertices (positioned close to the pentagon vertices)
 	if (showIcons) {
@@ -314,13 +353,11 @@ export function calculateLabelsGraphPath(options) {
 	const cx = totalSize / 2;
 	const cy = totalSize / 2;
 	const outerRadius = (size / 2) - 2;
-	const minValue = -3, maxValue = 4, range = 7;
 
-	const normalize = (v) => (Math.max(minValue, Math.min(maxValue, v)) - minValue) / range;
-
+	// Use consistent valueToRadiusFraction for all values
 	const dataVerts = LABEL_ORDER.map((key, i) => {
-		const norm = normalize(labels[key] ?? 0);
-		const r = outerRadius * Math.max(0.08, norm);
+		const fraction = valueToRadiusFraction(labels[key] ?? 0);
+		const r = outerRadius * fraction;
 		const angle = ((i * 72) - 90) * (Math.PI / 180);
 		return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
 	});
@@ -379,13 +416,22 @@ export function updateLabelsGraphAnimated(container, actor, options = {}) {
 	return true;
 }
 
+/** SVG generation options */
+interface LabelsGraphSVGOptions {
+	size?: number;
+	borderWidth?: number;
+	showInnerLines?: boolean;
+	showIcons?: boolean;
+	showVertexDots?: boolean;
+}
+
 /**
  * Create labels graph data for template rendering
  * @param {Actor} actor - The Foundry actor
  * @param {Object} [svgOptions] - Optional SVG generation options
  * @returns {Object|null} Data object for template or null if invalid
  */
-export function createLabelsGraphData(actor, svgOptions = {}) {
+export function createLabelsGraphData(actor, svgOptions: LabelsGraphSVGOptions = {}) {
 	const data = extractLabelsData(actor);
 	if (!data) return null;
 
@@ -397,6 +443,7 @@ export function createLabelsGraphData(actor, svgOptions = {}) {
 		borderWidth: svgOptions.borderWidth ?? 1.5,
 		showInnerLines: svgOptions.showInnerLines ?? true,
 		showIcons: svgOptions.showIcons ?? false,
+		showVertexDots: svgOptions.showVertexDots ?? false,
 	});
 
 	const tooltip = generateLabelsTooltip(data.labels, data.affectedLabels);
@@ -416,11 +463,19 @@ export function createLabelsGraphData(actor, svgOptions = {}) {
  * LabelsGraph class for programmatic usage
  */
 export class LabelsGraph {
-	constructor(options = {}) {
+	container;
+	size;
+	borderWidth;
+	showInnerLines;
+	showVertexDots;
+	_data;
+
+	constructor(options: LabelsGraphSVGOptions & { container?: HTMLElement; actor?: Actor } = {}) {
 		this.container = options.container;
 		this.size = options.size ?? 28;
 		this.borderWidth = options.borderWidth ?? 1.5;
 		this.showInnerLines = options.showInnerLines ?? true;
+		this.showVertexDots = options.showVertexDots ?? false;
 		this._data = null;
 		if (options.actor) this.setActor(options.actor);
 	}
@@ -439,6 +494,7 @@ export class LabelsGraph {
 			size: this.size,
 			borderWidth: this.borderWidth,
 			showInnerLines: this.showInnerLines,
+			showVertexDots: this.showVertexDots,
 		});
 	}
 
@@ -447,7 +503,7 @@ export class LabelsGraph {
 		return generateLabelsTooltip(this._data.labels, this._data.affectedLabels);
 	}
 
-	static fromActor(actor, options = {}) {
+	static fromActor(actor, options: LabelsGraphSVGOptions = {}) {
 		const data = extractLabelsData(actor);
 		if (!data) return "";
 		return generateLabelsGraphSVG({
@@ -457,9 +513,21 @@ export class LabelsGraph {
 			size: options.size ?? 28,
 			borderWidth: options.borderWidth ?? 1.5,
 			showInnerLines: options.showInnerLines ?? true,
+			showVertexDots: options.showVertexDots ?? false,
 		});
 	}
 }
 
 // Export constants for external use
 export { LABEL_ORDER, LABEL_DISPLAY_NAMES, LABEL_ICONS, CONDITION_TO_LABEL, COLORS };
+
+// Export shared utilities for use by labels-graph-overlay.ts
+export {
+	MIN_VALUE,
+	MAX_VALUE,
+	VALUE_RANGE,
+	valueToRadiusFraction,
+	getInnerGridValues,
+	getPentagonVertices,
+	polygonPath,
+};

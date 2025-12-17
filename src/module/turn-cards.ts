@@ -24,6 +24,8 @@ import {
 	TrackerType,
 } from "./resource-trackers";
 
+import { setCallSheetHoveredActor } from "./sheets/call-sheet";
+
 const NS = "masks-newgeneration-unofficial";
 const SOCKET_NS = `module.${NS}`;
 const TEMPLATE = `modules/${NS}/dist/templates/turncards.hbs`;
@@ -1446,6 +1448,11 @@ const TurnCardsHUD = {
 				icon: '<i class="fa-solid fa-bullseye"></i>',
 				callback: (li) => this._ctxUseInfluence(li),
 			},
+			{
+				name: "Assign to Call",
+				icon: '<i class="fa-solid fa-phone"></i>',
+				callback: (li) => this._ctxAssignToCall(li),
+			},
 		];
 
 		try {
@@ -1541,6 +1548,45 @@ const TurnCardsHUD = {
 		} else {
 			ui.notifications?.warn?.("A GM must be online.");
 		}
+	},
+
+	/**
+	 * Assign hero to open Call sheet(s)
+	 * Finds all open Call sheets and assigns this actor to them
+	 */
+	async _ctxAssignToCall(li) {
+		const el = this._liEl(li);
+		const targetActorId = el?.dataset?.actorId;
+		if (!targetActorId) return;
+
+		const targetActor = game.actors?.get?.(targetActorId);
+		if (!targetActor) {
+			ui.notifications?.warn?.("Actor not found.");
+			return;
+		}
+
+		// Find all open Call sheet windows (NPC actors with Call sheet class)
+		const openCallSheets = Object.values(ui.windows).filter((w) => {
+			return w.constructor.name === "CallSheet" && w.actor;
+		});
+
+		if (openCallSheets.length === 0) {
+			ui.notifications?.info?.("No Call sheets open. Create an NPC and switch its sheet to 'Dispatch Call Sheet'.");
+			return;
+		}
+
+		// Assign to all open Call sheets
+		for (const sheet of openCallSheets) {
+			const callActor = sheet.actor;
+			if (callActor) {
+				await callActor.setFlag(NS, "assignedActorIds", [targetActorId]);
+			}
+		}
+
+		// Trigger hover update for live preview
+		setCallSheetHoveredActor(targetActorId);
+
+		ui.notifications?.info?.(`Assigned ${targetActor.name} to ${openCallSheets.length} Call(s).`);
 	},
 
 	_applyCooldownBarAnimations() {

@@ -2,7 +2,8 @@
     "TYPES.Item.masks-newgeneration-unofficial.influence": "Influence",
     "DISPATCH": {
         "SheetConfig": {
-            "character": "Masks Character Sheet"
+            "character": "Masks Character Sheet",
+            "call": "Dispatch Call Sheet"
         },
         "Settings": {
             "game": {
@@ -189,6 +190,32 @@
                     "value": " <i>: is still active and prominent in the city.</i><br> <i>: is retired and quite judgmental.</i><br> <i>: is the next possible member of your legacy.</i><br> <i>: is the greatest opponent your legacy ever faced...and is still at large.</i>"
                 },
                 "theBeaconLabel": "Drives"
+            }
+        },
+        "Call": {
+            "Types": {
+                "assault": "Assault",
+                "rescue": "Rescue",
+                "investigation": "Investigation",
+                "social": "Social Event",
+                "disaster": "Natural Disaster"
+            },
+            "CallerName": "Caller",
+            "Quote": "The Call",
+            "AssignedHero": "Assigned Hero",
+            "Requirements": "Requirements",
+            "Dispatch": "Dispatch",
+            "Assessing": "Assessing...",
+            "GMSection": "GM Only - Call Setup",
+            "LabelRequirements": "Label Requirements",
+            "HeroEffective": "Hero Stats",
+            "Difference": "Meets?",
+            "RevealFit": "Preview Fit",
+            "Fit": {
+                "great": "Great Fit",
+                "good": "Good Fit",
+                "decent": "Decent Fit",
+                "poor": "Poor Fit"
             }
         }
     }
