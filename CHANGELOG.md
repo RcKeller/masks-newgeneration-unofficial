@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.1.0...v1.2.0) (2025-12-17)
+
+
+### Features
+
+* save wip ([f626842](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/f626842ffe955f24d7dcdc1520c1dd12b76e6f55))
+
 # [1.1.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.0.0...v1.1.0) (2025-12-17)
 
 
