@@ -176,6 +176,12 @@ Hooks.on("preCreateActor", async function (document) {
     if (document.type === 'character') {
         document.updateSource({'flags.masks-newgeneration-unofficial.influences': []});
     }
+    // For "other" type actors, set customType to "call" so PbtA looks up our config
+    // PbtA's OtherData uses system.customType for sheetType getter: customType ?? type
+    // Without this, sheetType would be "" (empty string) causing mergeObject to fail
+    if (document.type === 'other') {
+        document.updateSource({'system.customType': 'call'});
+    }
 });
 
 // Note: Influence handlers are now in actor-sheet.mjs as part of the V2 sheet implementation.

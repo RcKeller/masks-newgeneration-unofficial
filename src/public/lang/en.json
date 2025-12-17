@@ -5,22 +5,6 @@
             "character": "Masks Character Sheet",
             "call": "Dispatch Call Sheet"
         },
-        "Call": {
-            "TypeLabel": "Call",
-            "Description": "Description",
-            "Types": {
-                "assault": "Assault",
-                "rescue": "Rescue",
-                "investigation": "Investigation",
-                "social": "Social",
-                "disaster": "Disaster"
-            },
-            "Fit": {
-                "great": "Great Fit",
-                "good": "Decent Fit",
-                "poor": "Poor Fit"
-            }
-        },
         "Settings": {
             "game": {
 				"heading": "Masks: A New Generation",
