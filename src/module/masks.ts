@@ -12,12 +12,10 @@ Hooks.once("init", () => {
         label: 'DISPATCH.SheetConfig.character',
     });
 
-    // Register Call sheet for the "other" actor type (displayed as "Call" in UI)
-    // PbtA's "other" type is specifically designed for custom actor types like this
-    // All Call-specific data is stored in flags, not PbtA's system data
+    // Call sheet for "other" actor type (custom subtype "call")
     Actors.registerSheet('masks-newgeneration-unofficial', CallSheet, {
         types: ['other'],
-        makeDefault: true,  // Default sheet for "other" type actors
+        makeDefault: true,
         label: 'DISPATCH.SheetConfig.call',
     });
 
@@ -176,9 +174,7 @@ Hooks.on("preCreateActor", async function (document) {
     if (document.type === 'character') {
         document.updateSource({'flags.masks-newgeneration-unofficial.influences': []});
     }
-    // For "other" type actors, set customType to "call" so PbtA looks up our config
-    // PbtA's OtherData uses system.customType for sheetType getter: customType ?? type
-    // Without this, sheetType would be "" (empty string) causing mergeObject to fail
+    // Set customType so PbtA resolves sheetType to "call" config
     if (document.type === 'other') {
         document.updateSource({'system.customType': 'call'});
     }

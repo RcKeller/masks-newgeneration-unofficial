@@ -707,14 +707,10 @@ export const configSheet = async () => {
           },
         },
       },
-      // "Call" custom actor type - registered under "call" key
-      // PbtA's "other" base type uses system.customType to look up the config
-      // We set customType="call" on actor creation (see preCreateActor hook in masks.ts)
+      // Call actor type (uses PbtA's "other" base type with customType="call")
       call: {
         label: game.i18n.localize("DISPATCH.Call.TypeLabel"),
-        // baseType tells PbtA which template structure to use
         baseType: "npc",
-        // Minimal config - Calls store all data in flags, not PbtA system data
         attributes: {
           callType: {
             label: game.i18n.localize("DISPATCH.Call.TypeLabel"),
