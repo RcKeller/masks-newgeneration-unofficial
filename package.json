@@ -1,6 +1,6 @@
 {
   "name": "masks-newgeneration-unofficial",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "Masks: A New Generation (Bear Edition) - FoundryVTT Module",
   "main": "dist/dispatch.js",
   "type": "module",
