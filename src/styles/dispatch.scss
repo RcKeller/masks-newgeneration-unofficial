@@ -766,33 +766,6 @@
 }
 
 /* =============================================================================
-   COMBAT TRACKER OVERLAY
-   ============================================================================= */
-
-#combat {
-  li.combatant {
-    position: relative;
-
-    > .pbta-gone-toggle {
-      position: absolute;
-      left: 4px;
-      top: 4px;
-      z-index: 2;
-      opacity: 0;
-      transition: var(--ui-fade-delay);
-      width: 55px;
-      height: 55px;
-      font-size: 65px;
-      background-color: transparent;
-      color: var(--color-level-success-bg);
-    }
-
-    &:hover > .pbta-gone-toggle { opacity: 0.4; }
-    > .pbta-gone-toggle:focus { opacity: 0.4; }
-  }
-}
-
-/* =============================================================================
    CHAT CUSTOMIZATIONS
    ============================================================================= */
 

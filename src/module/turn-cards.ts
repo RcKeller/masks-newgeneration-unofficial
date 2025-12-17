@@ -1,11 +1,9 @@
 // module/turn-cards.mjs
 // Turn Cards HUD - Using v13 Query System for reliable GM delegation
 // Handles: Team Pool, Cooldown System, Potential, Forward/Aid, Label Shifting, Playbook Resources
-/* global Hooks, game, ui, foundry, renderTemplate, ChatMessage, CONST, canvas, Dialog, ContextMenu, CONFIG, Handlebars */
+/* global Hooks, game, ui, foundry, renderTemplate, ChatMessage, CONST, canvas, Dialog, CONFIG, Handlebars */
 
 import {
-	normalize,
-	candidateTokenNames,
 	compositeKey,
 	InfluenceIndex,
 } from "./helpers/influence";
@@ -24,7 +22,6 @@ import {
 	TrackerType,
 } from "./resource-trackers";
 
-import { setCallSheetHoveredActor } from "./sheets/call-sheet";
 
 const NS = "masks-newgeneration-unofficial";
 const SOCKET_NS = `module.${NS}`;
@@ -101,11 +98,6 @@ function getMyActor() {
 	if (game.user?.character) return game.user.character;
 	const tok = canvas?.tokens?.placeables?.find((t) => t?.actor?.isOwner);
 	return tok?.actor ?? null;
-}
-
-function getTokenForActor(actor) {
-	if (!actor) return null;
-	return canvas?.tokens?.placeables?.find((t) => t?.actor?.id === actor.id) ?? null;
 }
 
 function isDowned(combatant) {
@@ -471,168 +463,6 @@ async function applyShiftLabels(actor, upKey, downKey, { announce = true, reason
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// Influence Helpers (for context menu)
-// ────────────────────────────────────────────────────────────────────────────
-
-function readInfluences(actor) {
-	return foundry.utils.deepClone(actor?.getFlag?.(NS, "influences") || []);
-}
-
-function pickStorageName(actor, token) {
-	const cands = candidateTokenNames(actor, token);
-	return cands[0] || actor?.name || token?.document?.name || "Unknown";
-}
-
-function ensureInfluenceEntry(arr, name) {
-	const want = normalize(name);
-	let idx = arr.findIndex((e) => normalize(e?.name) === want);
-	if (idx >= 0) return { idx, obj: arr[idx] };
-	const obj = {
-		id: foundry.utils.randomID?.(16) ?? Math.random().toString(36).slice(2),
-		name,
-		hasInfluenceOver: false,
-		haveInfluenceOver: false,
-		locked: false,
-	};
-	arr.push(obj);
-	return { idx: arr.length - 1, obj };
-}
-
-function mutateInfluenceSide(arr, name, which) {
-	const { idx, obj } = ensureInfluenceEntry(arr, name);
-	const prev = { has: !!obj.hasInfluenceOver, have: !!obj.haveInfluenceOver };
-
-	if (obj.locked && which !== "reset") {
-		return { changed: false, prev, now: prev, pruned: false };
-	}
-
-	if (which === "gt") obj.haveInfluenceOver = true;
-	else if (which === "lt") obj.hasInfluenceOver = true;
-	else if (which === "eq") {
-		obj.haveInfluenceOver = true;
-		obj.hasInfluenceOver = true;
-	} else {
-		obj.haveInfluenceOver = false;
-		obj.hasInfluenceOver = false;
-	}
-
-	let pruned = false;
-	if (!obj.hasInfluenceOver && !obj.haveInfluenceOver && !obj.locked) {
-		arr.splice(idx, 1);
-		pruned = true;
-	}
-
-	return {
-		changed: prev.has !== !!obj.hasInfluenceOver || prev.have !== !!obj.haveInfluenceOver || pruned,
-		prev,
-		now: { has: !!obj.hasInfluenceOver, have: !!obj.haveInfluenceOver },
-		pruned,
-	};
-}
-
-function stateSymbol(e) {
-	const out = !!e?.haveInfluenceOver;
-	const inn = !!e?.hasInfluenceOver;
-	if (out && inn) return "⬌";
-	if (out) return "⬆";
-	if (inn) return "⬇";
-	return "x";
-}
-
-async function writeInfluencesIfChanged(actor, before, after) {
-	const eq =
-		before.length === after.length &&
-		before.every((a, i) => {
-			const b = after[i];
-			return (
-				a &&
-				b &&
-				normalize(a.name) === normalize(b.name) &&
-				!!a.hasInfluenceOver === !!b.hasInfluenceOver &&
-				!!a.haveInfluenceOver === !!b.haveInfluenceOver &&
-				!!a.locked === !!b.locked
-			);
-		});
-
-	if (eq) return false;
-	await actor.setFlag(NS, "influences", after);
-	return true;
-}
-
-async function announceInfluenceChange(srcName, tgtName, beforeSym, afterSym) {
-	if (!game.settings.get(NS, "announceInfluenceChanges")) return;
-
-	const badge = (s) => {
-		const css = "display:inline-block;padding:0 .35rem;border-radius:.25rem;font-weight:700;";
-		if (s === "⬆") return `<span style="${css}background:#4CAF50;color:#fff">${s}</span>`;
-		if (s === "⬇") return `<span style="${css}background:#9C27B0;color:#fff">${s}</span>`;
-		if (s === "⬌") return `<span style="${css}background:#2196F3;color:#fff">${s}</span>`;
-		return `<span style="${css}background:#F44336;color:#fff">${s}</span>`;
-	};
-
-	let title;
-	switch (afterSym) {
-		case "⬆":
-			title = `${srcName} gains Influence over ${tgtName}`;
-			break;
-		case "⬇":
-			title = `${srcName} gives Influence to ${tgtName}`;
-			break;
-		case "⬌":
-			title = `${srcName} and ${tgtName} share Influence`;
-			break;
-		default:
-			title = `${srcName} and ${tgtName} do not share Influence`;
-	}
-
-	let content = `<h6>${badge(afterSym)} ${title}</h6>`;
-	if (beforeSym !== "x" && beforeSym !== afterSym) {
-		content += `<b>Previous:</b> <em>${srcName}</em> ${badge(beforeSym)} <em>${tgtName}</em>`;
-	}
-
-	await ChatMessage.create({ content, type: CONST.CHAT_MESSAGE_TYPES.OTHER });
-}
-
-async function applyInfluencePair({ actorA, tokA, actorB, tokB, directive }) {
-	if (!actorA || !actorB || actorA.type !== "character" || actorB.type !== "character") {
-		ui.notifications?.warn?.("Influence actions are for Character ↔ Character.");
-		return;
-	}
-
-	const aBefore = readInfluences(actorA);
-	const bBefore = readInfluences(actorB);
-	const aAfter = foundry.utils.deepClone(aBefore);
-	const bAfter = foundry.utils.deepClone(bBefore);
-
-	const nameAforB = pickStorageName(actorA, tokA);
-	const nameBforA = pickStorageName(actorB, tokB);
-
-	const stA = mutateInfluenceSide(aAfter, nameBforA, directive);
-	const aPrevSym = stateSymbol({ hasInfluenceOver: stA.prev.has, haveInfluenceOver: stA.prev.have });
-	const aNowSym = stateSymbol({ hasInfluenceOver: stA.now.has, haveInfluenceOver: stA.now.have });
-
-	let whichB = "reset";
-	if (directive === "gt") whichB = "lt";
-	else if (directive === "lt") whichB = "gt";
-	else if (directive === "eq") whichB = "eq";
-
-	mutateInfluenceSide(bAfter, nameAforB, whichB);
-
-	const tasks = [];
-	if (canEditActor(actorA)) tasks.push(writeInfluencesIfChanged(actorA, aBefore, aAfter));
-	if (canEditActor(actorB)) tasks.push(writeInfluencesIfChanged(actorB, bBefore, bAfter));
-	await Promise.all(tasks);
-
-	try {
-		await InfluenceIndex?.syncCharacterPairFlags?.(actorA);
-	} catch (_) {
-		/* no-op */
-	}
-
-	await announceInfluenceChange(actorA.name ?? nameAforB, nameBforA, aPrevSym, aNowSym);
-}
-
-// ────────────────────────────────────────────────────────────────────────────
 // Cooldown System
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -909,7 +739,6 @@ async function queryGM(queryName, data, options = {}) {
 const TurnCardsHUD = {
 	root: null,
 	_hooksRegistered: false,
-	_contextMenu: null,
 	_renderQueued: false,
 	_lastCooldownFrac: new Map(),
 	_lastLabelsGraphState: new Map(), // Store previous labels graph states for animation
@@ -1414,181 +1243,6 @@ const TurnCardsHUD = {
 		});
 	},
 
-	_setupContextMenu() {
-		const $ = globalThis.jQuery ?? globalThis.$;
-		if (!$ || !this.root) return;
-
-		if (this._contextMenu) {
-			try {
-				this._contextMenu.close?.();
-			} catch (_) {
-				/* ignore */
-			}
-			this._contextMenu = null;
-		}
-
-		const items = [
-			{
-				name: "Gain Influence over",
-				icon: '<i class="fa-solid fa-up"></i>',
-				callback: (li) => this._ctxInfluence(li, "gt"),
-			},
-			{
-				name: "Gain Synergy (mutual)",
-				icon: '<i class="fa-solid fa-left-right"></i>',
-				callback: (li) => this._ctxInfluence(li, "eq"),
-			},
-			{
-				name: "Give Influence to",
-				icon: '<i class="fa-solid fa-down"></i>',
-				callback: (li) => this._ctxInfluence(li, "lt"),
-			},
-			{
-				name: "Use Influence against…",
-				icon: '<i class="fa-solid fa-bullseye"></i>',
-				callback: (li) => this._ctxUseInfluence(li),
-			},
-			{
-				name: "Assign to Call",
-				icon: '<i class="fa-solid fa-phone"></i>',
-				callback: (li) => this._ctxAssignToCall(li),
-			},
-		];
-
-		try {
-			this._contextMenu = new ContextMenu($(this.root), ".turncard[data-actor-id]:not(.turncard--team)", items);
-		} catch (e) {
-			console.warn(`[${NS}] ContextMenu failed`, e);
-		}
-	},
-
-	_liEl(li) {
-		if (!li) return null;
-		if (li instanceof HTMLElement) return li;
-		if (Array.isArray(li) && li[0] instanceof HTMLElement) return li[0];
-		return li?.[0] instanceof HTMLElement ? li[0] : null;
-	},
-
-	async _resolveSource() {
-		const ctrl = canvas?.tokens?.controlled ?? [];
-		if (ctrl.length === 1 && ctrl[0]?.actor) {
-			return { token: ctrl[0], actor: ctrl[0].actor };
-		}
-
-		const my = game.user?.character;
-		if (my) return { token: getTokenForActor(my), actor: my };
-
-		const owned = canvas?.tokens?.placeables?.find((t) => t.actor?.isOwner);
-		if (owned) return { token: owned, actor: owned.actor };
-
-		ui.notifications?.warn?.("Select your character token or set User Character.");
-		return null;
-	},
-
-	async _ctxInfluence(li, directive) {
-		const el = this._liEl(li);
-		const targetActorId = el?.dataset?.actorId;
-		if (!targetActorId) return;
-
-		const targetActor = game.actors?.get?.(targetActorId);
-		if (!targetActor) return;
-
-		const src = await this._resolveSource();
-		if (!src?.actor || src.actor.id === targetActor.id) {
-			ui.notifications?.warn?.("Pick another card.");
-			return;
-		}
-
-		const tgtTok = getTokenForActor(targetActor);
-		await applyInfluencePair({
-			actorA: src.actor,
-			tokA: src.token,
-			actorB: targetActor,
-			tokB: tgtTok,
-			directive,
-		});
-	},
-
-	async _ctxUseInfluence(li) {
-		const el = this._liEl(li);
-		const targetActorId = el?.dataset?.actorId;
-		if (!targetActorId) return;
-
-		const targetActor = game.actors?.get?.(targetActorId);
-		if (!targetActor) return;
-
-		const src = await this._resolveSource();
-		if (!src?.actor || src.actor.id === targetActor.id) {
-			ui.notifications?.warn?.("Can't use Influence against yourself.");
-			return;
-		}
-
-		if (!InfluenceIndex.hasEdgeFromKeyToKey(compositeKey(src.actor), compositeKey(targetActor))) {
-			ui.notifications?.warn?.(`No Influence over ${targetActor.name}.`);
-			return;
-		}
-
-		const picked = await promptShiftLabels(targetActor, `Use Influence on: ${targetActor.name}`);
-		if (!picked) return;
-
-		if (canEditActor(targetActor)) {
-			await applyShiftLabels(targetActor, picked.up, picked.down, {
-				announce: true,
-				reason: "useInfluence",
-				sourceActor: src.actor,
-			});
-		} else if (hasActiveGM()) {
-			await queryGM("shiftLabels", {
-				targetActorId: targetActor.id,
-				sourceActorId: src.actor.id,
-				up: picked.up,
-				down: picked.down,
-				reason: "useInfluence",
-			});
-		} else {
-			ui.notifications?.warn?.("A GM must be online.");
-		}
-	},
-
-	/**
-	 * Assign hero to open Call sheet(s)
-	 * Finds all open Call sheets and assigns this actor to them
-	 */
-	async _ctxAssignToCall(li) {
-		const el = this._liEl(li);
-		const targetActorId = el?.dataset?.actorId;
-		if (!targetActorId) return;
-
-		const targetActor = game.actors?.get?.(targetActorId);
-		if (!targetActor) {
-			ui.notifications?.warn?.("Actor not found.");
-			return;
-		}
-
-		// Find all open Call sheet windows (NPC actors with Call sheet class)
-		const openCallSheets = Object.values(ui.windows).filter((w) => {
-			return w.constructor.name === "CallSheet" && w.actor;
-		});
-
-		if (openCallSheets.length === 0) {
-			ui.notifications?.info?.("No Call sheets open. Create an NPC and switch its sheet to 'Dispatch Call Sheet'.");
-			return;
-		}
-
-		// Assign to all open Call sheets
-		for (const sheet of openCallSheets) {
-			const callActor = sheet.actor;
-			if (callActor) {
-				await callActor.setFlag(NS, "assignedActorIds", [targetActorId]);
-			}
-		}
-
-		// Trigger hover update for live preview
-		setCallSheetHoveredActor(targetActorId);
-
-		ui.notifications?.info?.(`Assigned ${targetActor.name} to ${openCallSheets.length} Call(s).`);
-	},
-
 	_applyCooldownBarAnimations() {
 		if (!this.root) return;
 		const bars = this.root.querySelectorAll(".turncard__cooldown-bar[data-cooldown-target]");
@@ -1755,7 +1409,6 @@ const TurnCardsHUD = {
 
 		this._applyCooldownBarAnimations();
 		this._animateLabelsGraphs();
-		this._setupContextMenu();
 	},
 
 	/**
