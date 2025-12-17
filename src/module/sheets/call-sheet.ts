@@ -4,11 +4,13 @@
 
 import {
 	createOverlayGraphData,
+	updateOverlayGraphAnimated,
 	checkFitResult,
 	type CallRequirements,
 	type FitResult,
 } from "../labels-graph-overlay";
-import { extractLabelsData, LABEL_ORDER } from "../labels-graph";
+import { extractLabelsData, LABEL_ORDER, GRAPH_PRESETS } from "../labels-graph";
+import { CooldownSystem, getTeamCombatants, getActiveCombat } from "../turn-cards";
 
 const NS = "masks-newgeneration-unofficial";
 const TEMPLATE = `modules/${NS}/dist/templates/sheets/call-sheet.hbs`;
@@ -59,10 +61,19 @@ export class CallSheet extends ActorSheet {
 	_hoveredActorId: string | null = null;
 
 	/** Track previous graph state for animation */
-	_previousGraphState: { heroPath: string; reqPath: string } | null = null;
+	_previousGraphState: { heroPath: string; reqPath: string; overlapPath?: string } | null = null;
 
 	/** Bound handler for actor updates */
 	_boundActorUpdateHandler: ((actor: Actor, changes: object, options: object, userId: string) => void) | null = null;
+
+	/** Debounce timer for requirement changes */
+	_requirementDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+	/** Cached hero labels for partial updates */
+	_cachedHeroLabels: Record<string, number> | null = null;
+
+	/** Cached requirements for partial updates */
+	_cachedRequirements: CallRequirements | null = null;
 
 	/** @override */
 	get title() {
@@ -190,32 +201,37 @@ export class CallSheet extends ActorSheet {
 			};
 		});
 
-		// Get combatants from active combat (only show heroes in combat)
-		const activeCombat = game.combat;
-		const combatantActorIds = new Set(
-			(activeCombat?.combatants?.contents ?? [])
-				.map((c) => c.actorId)
-				.filter(Boolean)
+		// Get active combat and team combatants for hero filtering
+		const activeCombat = getActiveCombat();
+		const teamCombatants = activeCombat ? getTeamCombatants(activeCombat) : [];
+		const teamSize = teamCombatants.length;
+		const maxCd = CooldownSystem.maxCooldown(teamSize);
+
+		// Build map of actor ID -> combatant for cooldown lookup
+		const combatantByActorId = new Map(
+			teamCombatants.map((c) => [c.actorId, c])
 		);
 
-		// Get all character actors for assignment dropdown
-		// Filter out: non-characters, non-combatants, and busy (on cooldown) heroes
-		const currentTurn = activeCombat?.turn ?? 0;
-		const characterActors = (game.actors?.contents ?? [])
-			.filter((a) => {
-				if (a.type !== "character") return false;
-				// Only show actors currently in combat
-				if (activeCombat && !combatantActorIds.has(a.id ?? "")) return false;
-				// Exclude busy heroes (on cooldown) - check lastActionTurn flag
-				const lastActionTurn = a.getFlag(NS, "lastActionTurn") as number | undefined;
-				if (lastActionTurn != null && lastActionTurn === currentTurn) return false;
-				return true;
-			})
-			.map((a) => ({
-				id: a.id,
-				name: a.name,
-				selected: assignedActorIds.includes(a.id ?? ""),
-			}));
+		// REQUIRE active combat for hero selection
+		// Filter to only available heroes (in combat + not on cooldown)
+		let characterActors: { id: string | null; name: string | null; selected: boolean; cooldownRemaining?: number }[] = [];
+		let noCombatWarning = false;
+
+		if (!activeCombat) {
+			// No active combat - show warning, no heroes available
+			noCombatWarning = true;
+			characterActors = [];
+		} else {
+			// Filter team combatants by cooldown status
+			characterActors = teamCombatants
+				.filter((cbt) => !CooldownSystem.isOnCooldown(cbt, maxCd))
+				.map((cbt) => ({
+					id: cbt.actorId,
+					name: cbt.actor?.name ?? "Unknown",
+					selected: assignedActorIds.includes(cbt.actorId ?? ""),
+					cooldownRemaining: CooldownSystem.remaining(cbt, maxCd),
+				}));
+		}
 
 		// Dispatch button states - Limited permission can also dispatch
 		const canDispatch = assignedActor !== null && dispatchStatus === "idle" && canInteract;
@@ -270,6 +286,10 @@ export class CallSheet extends ActorSheet {
 			forwardMessage = `${assignedActor.name} takes ${sign}${forwardChange} Forward`;
 		}
 
+		// Cache hero labels and requirements for partial updates
+		this._cachedHeroLabels = overlayGraph.heroLabels;
+		this._cachedRequirements = requirements;
+
 		return {
 			...context,
 			// Permissions
@@ -295,6 +315,7 @@ export class CallSheet extends ActorSheet {
 			assignedActor,
 			previewActor,
 			characterActors,
+			noCombatWarning,
 
 			// Dispatch state
 			dispatchStatus,
@@ -378,15 +399,22 @@ export class CallSheet extends ActorSheet {
 
 	/**
 	 * Handle actor hover from turn cards
+	 * Uses partial update for smooth animation without full re-render
 	 */
 	_onHoverActor(actorId: string | null) {
 		if (this._hoveredActorId === actorId) return;
 		this._hoveredActorId = actorId;
-		this.render(false);
+
+		// Try partial update first for smooth animation
+		if (!this._updateGraphInPlace('hero')) {
+			// Fallback to full render if partial update failed
+			this.render(false);
+		}
 	}
 
 	/**
 	 * Register listener for actor updates (to update graph when assigned hero's labels change)
+	 * Uses partial update for smooth animation without full re-render
 	 */
 	_registerActorUpdateListener() {
 		if (this._boundActorUpdateHandler) return; // Already registered
@@ -400,7 +428,11 @@ export class CallSheet extends ActorSheet {
 			if (foundry.utils.hasProperty(changes, "system.stats") ||
 				foundry.utils.hasProperty(changes, "system.resources") ||
 				foundry.utils.hasProperty(changes, "flags")) {
-				this.render(false);
+				// Try partial update first for smooth animation
+				if (!this._updateGraphInPlace('hero')) {
+					// Fallback to full render if partial update failed
+					this.render(false);
+				}
 			}
 		};
 
@@ -453,6 +485,8 @@ export class CallSheet extends ActorSheet {
 	 * Handle requirement value change
 	 * Empty string = clear the requirement (undefined, treated as -9 for comparison)
 	 * -3 to 4 = set the requirement
+	 *
+	 * Uses debounced handler for smooth graph animation without full re-render
 	 */
 	async _onChangeRequirement(event: JQuery.ChangeEvent) {
 		const input = event.currentTarget as HTMLInputElement;
@@ -466,34 +500,8 @@ export class CallSheet extends ActorSheet {
 		// Otherwise clamp to -3 to 4 range
 		const numValue = (value === "" || isNaN(parsed)) ? null : Math.max(-3, Math.min(4, parsed));
 
-		// Get current requirements
-		const currentRequirements = this.actor.getFlag(NS, "requirements") ?? {};
-
-		// Build new requirements object - explicitly set null for cleared values
-		// This ensures Foundry detects the change and updates properly
-		const newRequirements: Record<string, number | null> = {};
-		for (const key of LABEL_ORDER) {
-			if (key === labelKey) {
-				// Set the changed value (null if cleared, otherwise the new value)
-				if (numValue !== null) {
-					newRequirements[key] = numValue;
-				}
-				// If null, don't include in new object (effectively deleted/undefined)
-			} else {
-				// Keep existing values that are not null/undefined
-				const existing = currentRequirements[key];
-				if (existing != null) {
-					newRequirements[key] = existing;
-				}
-			}
-		}
-
-		// Unset the entire requirements flag first, then set new value
-		// This forces Foundry to detect the change
-		await this.actor.unsetFlag(NS, "requirements");
-		if (Object.keys(newRequirements).length > 0) {
-			await this.actor.setFlag(NS, "requirements", newRequirements);
-		}
+		// Use debounced handler for smooth animation
+		await this._updateRequirementsDebounced(labelKey, numValue);
 	}
 
 	/**
@@ -651,6 +659,117 @@ export class CallSheet extends ActorSheet {
 
 		this._previousGraphState = null;
 	}
+
+	/**
+	 * Update the overlay graph in-place without full re-render
+	 * This is used for smooth animations when hero or requirements change
+	 *
+	 * @param changes - What changed: 'hero', 'requirements', or 'all'
+	 * @returns true if partial update succeeded, false if full re-render needed
+	 */
+	_updateGraphInPlace(changes: 'hero' | 'requirements' | 'all'): boolean {
+		const container = this.element?.[0]?.querySelector('.call-sheet__graph') as HTMLElement | null;
+		if (!container) return false;
+
+		// Get current state
+		const dispatchStatus: DispatchStatus = this.actor.getFlag(NS, "dispatchStatus") ?? "idle";
+		const isGM = game.user?.isGM ?? false;
+		const isAssessed = dispatchStatus === "qualified";
+		const showRequirementsOverlay = isGM || isAssessed;
+
+		// Get requirements (use cached or fetch fresh)
+		const requirements: CallRequirements = this._cachedRequirements ?? this.actor.getFlag(NS, "requirements") ?? {};
+
+		// Get hero labels (for changes = 'hero' or 'all')
+		let heroLabels: Record<string, number> | null = null;
+		if (changes === 'hero' || changes === 'all') {
+			// Determine which actor to use (hover preview or assigned)
+			const assignedActorIds: string[] = this.actor.getFlag(NS, "assignedActorIds") ?? [];
+			const assignedActor = assignedActorIds.length > 0 ? game.actors?.get(assignedActorIds[0]) : null;
+			const hoveredActor = this._hoveredActorId ? game.actors?.get(this._hoveredActorId) : null;
+			const graphActor = hoveredActor ?? assignedActor;
+
+			// Use snapshot for qualified calls, otherwise extract from actor
+			if (isAssessed) {
+				heroLabels = this.actor.getFlag(NS, "snapshotHeroLabels") ?? null;
+			} else if (graphActor) {
+				const data = extractLabelsData(graphActor);
+				heroLabels = data?.labels ?? null;
+			}
+
+			// Update cache
+			this._cachedHeroLabels = heroLabels;
+		} else {
+			// Use cached labels
+			heroLabels = this._cachedHeroLabels;
+		}
+
+		// Call the overlay update function
+		const success = updateOverlayGraphAnimated(
+			container,
+			heroLabels,
+			showRequirementsOverlay ? requirements : {},
+			{
+				size: GRAPH_PRESETS.callSheet.size,
+				showIcons: GRAPH_PRESETS.callSheet.showIcons,
+				isAssessed,
+			}
+		);
+
+		// Update tooltip
+		if (success && heroLabels) {
+			const tooltipParts: string[] = [];
+			for (const key of LABEL_ORDER) {
+				const hero = heroLabels[key] ?? 0;
+				tooltipParts.push(`${key.charAt(0).toUpperCase() + key.slice(1)}: ${hero}`);
+			}
+			container.setAttribute('data-tooltip', tooltipParts.join(' | '));
+		}
+
+		return success;
+	}
+
+	/**
+	 * Debounced requirement change handler for smooth graph updates
+	 */
+	async _updateRequirementsDebounced(labelKey: string, value: number | null) {
+		// Clear any pending debounce
+		if (this._requirementDebounceTimer) {
+			clearTimeout(this._requirementDebounceTimer);
+		}
+
+		// Update cached requirements immediately for smooth animation
+		if (!this._cachedRequirements) {
+			this._cachedRequirements = { ...this.actor.getFlag(NS, "requirements") ?? {} };
+		}
+
+		if (value !== null) {
+			this._cachedRequirements[labelKey as keyof CallRequirements] = value;
+		} else {
+			delete this._cachedRequirements[labelKey as keyof CallRequirements];
+		}
+
+		// Animate graph immediately using cached value
+		this._updateGraphInPlace('requirements');
+
+		// Debounce the actual flag update
+		this._requirementDebounceTimer = setTimeout(async () => {
+			// Build new requirements object
+			const newRequirements: Record<string, number> = {};
+			for (const key of LABEL_ORDER) {
+				const val = this._cachedRequirements?.[key as keyof CallRequirements];
+				if (val != null) {
+					newRequirements[key] = val;
+				}
+			}
+
+			// Update the flag (will trigger a render, but graph is already animated)
+			await this.actor.unsetFlag(NS, "requirements");
+			if (Object.keys(newRequirements).length > 0) {
+				await this.actor.setFlag(NS, "requirements", newRequirements);
+			}
+		}, 150);
+	}
 }
 
 /**
@@ -666,6 +785,11 @@ export function setCallSheetHoveredActor(actorId: string | null) {
 
 /**
  * Execute the dispatch logic (extracted for reuse by both owner and GM proxy)
+ * - Calculates fit result
+ * - Snapshots hero labels at dispatch time
+ * - Applies forward change to hero
+ * - Applies cooldown to hero in active combat
+ * - Posts chat message with result
  */
 async function executeDispatch(callActor: Actor, assignedActor: Actor): Promise<{ success: boolean }> {
 	await callActor.setFlag(NS, "dispatchStatus", "assessing");
@@ -691,6 +815,16 @@ async function executeDispatch(callActor: Actor, assignedActor: Actor): Promise<
 		const cur = Number(foundry.utils.getProperty(assignedActor, "system.resources.forward.value")) || 0;
 		const next = Math.max(FORWARD_MIN, Math.min(FORWARD_MAX, cur + forwardChange));
 		if (next !== cur) await assignedActor.update({ "system.resources.forward.value": next });
+	}
+
+	// Apply cooldown to the dispatched hero (GM only)
+	const combat = getActiveCombat();
+	if (combat && game.user?.isGM) {
+		const teamCombatants = getTeamCombatants(combat);
+		const heroCombatant = teamCombatants.find((c) => c.actorId === assignedActor.id);
+		if (heroCombatant) {
+			await CooldownSystem.gmApplyTurn(combat, heroCombatant.id);
+		}
 	}
 
 	const fitName = fitResult === "great" ? "great fit" : fitResult === "good" ? "decent fit" : "poor fit";

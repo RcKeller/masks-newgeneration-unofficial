@@ -518,6 +518,37 @@ export class LabelsGraph {
 	}
 }
 
+/**
+ * Graph Presets - predefined configurations for different contexts
+ * These ensure consistent rendering across turn cards, character sheets, and call sheets
+ */
+export const GRAPH_PRESETS = Object.freeze({
+	turnCard: {
+		size: 32,
+		borderWidth: 0.5,
+		showInnerLines: false,
+		showVertexDots: false,
+		showIcons: false,
+		showSpokeDots: false,
+	},
+	characterSheet: {
+		size: 200,
+		borderWidth: 2,
+		showInnerLines: true,
+		showVertexDots: false,
+		showIcons: true,
+		showSpokeDots: false,
+	},
+	callSheet: {
+		size: 280,
+		borderWidth: 2.5,
+		showInnerLines: true,
+		showVertexDots: false,
+		showIcons: true,
+		showSpokeDots: true,
+	},
+});
+
 // Export constants for external use
 export { LABEL_ORDER, LABEL_DISPLAY_NAMES, LABEL_ICONS, CONDITION_TO_LABEL, COLORS };
 

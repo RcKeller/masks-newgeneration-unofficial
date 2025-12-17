@@ -98,7 +98,7 @@
       </header>
 
       {{!-- Overlay Graph Preview --}}
-      <div class="call-sheet__graph" data-tooltip="{{overlayGraph.tooltip}}">
+      <div class="call-sheet__graph" data-graph-container data-tooltip="{{overlayGraph.tooltip}}" data-tooltip-direction="UP">
         {{{overlayGraph.svg}}}
         {{#if previewActor}}
           <div class="graph-preview-label">Preview: {{previewActor.name}}</div>
@@ -106,12 +106,20 @@
       </div>
 
 
+      {{!-- No Combat Warning --}}
+      {{#if noCombatWarning}}
+        <div class="call-sheet__no-combat-warning">
+          <i class="fa-solid fa-exclamation-triangle"></i>
+          <span>No active combat. Start a combat encounter to assign heroes.</span>
+        </div>
+      {{/if}}
+
       {{!-- Assignment with View Hero Button - everyone can interact --}}
       <div class="call-sheet__assignment">
         <label class="assignment-label">{{localize "DISPATCH.Call.AssignedHero"}}</label>
         <div class="assignment-controls">
-          <select class="hero-select" data-action="assign-hero" {{#if isQualified}}disabled{{/if}}>
-            <option value="">-- Select Hero --</option>
+          <select class="hero-select" data-action="assign-hero" {{#if isQualified}}disabled{{/if}} {{#if noCombatWarning}}disabled{{/if}}>
+            <option value="">{{#if noCombatWarning}}-- No Combat Active --{{else}}-- Select Hero --{{/if}}</option>
             {{#each characterActors}}
               <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
             {{/each}}

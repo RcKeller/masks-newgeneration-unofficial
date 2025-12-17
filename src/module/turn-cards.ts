@@ -1512,6 +1512,9 @@ Hooks.once("ready", () => {
 });
 
 // ────────────────────────────────────────────────────────────────────────────
-// Exports for external usage (e.g., actor sheet shift labels)
+// Exports for external usage (e.g., actor sheet shift labels, call sheets)
 // ────────────────────────────────────────────────────────────────────────────
 export { promptShiftLabels, applyShiftLabels };
+
+// Export cooldown system and team utilities for call sheets
+export { CooldownSystem, getTeamCombatants, getActiveCombat };
