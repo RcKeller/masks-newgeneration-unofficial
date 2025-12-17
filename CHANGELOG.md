@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.0.0...v1.1.0) (2025-12-17)
+
+
+### Features
+
+* suggested change ([0951f8f](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/0951f8fea50a61a1c39eb09472b997aade45e626))
+* suggested change ([504e1b7](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/504e1b729c148144f7af8b2e47c50f3f3b2a6f60))
+
 # 1.0.0 (2025-12-17)
 
 
