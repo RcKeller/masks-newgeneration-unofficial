@@ -831,6 +831,17 @@ const TurnCardsHUD = {
 			await this._handleTracker(trackerBtn, -1);
 			return;
 		}
+
+		// GM can right-click a turn card to reset its cooldown
+		if (isGM()) {
+			const card = target.closest(".turncard[data-combatant-id]:not(.turncard--team)");
+			if (card) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				await this._handleResetCooldown(card.dataset.combatantId);
+				return;
+			}
+		}
 	},
 
 	async _handleAction(action, el, ev) {
@@ -1165,6 +1176,18 @@ const TurnCardsHUD = {
 		}
 
 		await queryGM("changeTeam", { delta });
+	},
+
+	async _handleResetCooldown(combatantId) {
+		if (!isGM()) return;
+
+		const combat = getActiveCombat();
+		const cbt = combat?.combatants?.get?.(combatantId);
+		if (!combat || !cbt) return;
+
+		// Reset cooldown to 0
+		await cbt.setFlag(NS, FLAG_COOLDOWN, 0);
+		ui.notifications?.info?.(`Reset cooldown for ${cbt.actor?.name ?? "character"}.`);
 	},
 
 	_registerHooks() {
