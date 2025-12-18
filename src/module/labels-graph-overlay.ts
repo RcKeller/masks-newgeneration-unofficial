@@ -365,7 +365,7 @@ export function generateOverlayGraphSVG(options: OverlayGraphOptions): string {
 	// Spoke dots at data points - smaller, just emphasizing tips
 	if (showSpokeDots) {
 		// Smaller dot radius - just enough to emphasize spoke tips
-		const dotRadius = size * 0.018;
+		const dotRadius = size * 0.010;
 
 		// Requirements dots - only for labels with actual requirements
 		for (const v of reqVerts) {
