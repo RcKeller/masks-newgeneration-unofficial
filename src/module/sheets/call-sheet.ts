@@ -424,6 +424,11 @@ export class CallSheet extends ActorSheet {
 			const assignedActorIds: string[] = this.actor.getFlag(NS, "assignedActorIds") ?? [];
 			if (!assignedActorIds.includes(actor.id ?? "")) return;
 
+			// Skip updates during dispatch process - the graph should remain frozen
+			// until dispatch completes and the snapshot is saved
+			const dispatchStatus: DispatchStatus = this.actor.getFlag(NS, "dispatchStatus") ?? "idle";
+			if (dispatchStatus === "assessing") return;
+
 			// Check if stats/labels changed (system.stats)
 			if (foundry.utils.hasProperty(changes, "system.stats") ||
 				foundry.utils.hasProperty(changes, "system.resources") ||
@@ -838,11 +843,14 @@ async function executeDispatch(callActor: Actor, assignedActor: Actor): Promise<
 		type: CONST.CHAT_MESSAGE_TYPES.OTHER,
 	});
 
-	await callActor.setFlag(NS, "dispatchStatus", "qualified");
-	await callActor.setFlag(NS, "fitResult", fitResult);
-	await callActor.setFlag(NS, "forwardChange", forwardChange);
-	// Save snapshotted labels so the graph shows the stats at dispatch time
-	await callActor.setFlag(NS, "snapshotHeroLabels", snapshotHeroLabels);
+	// Set all final flags atomically to prevent intermediate re-renders with inconsistent state
+	// (e.g., status="qualified" but snapshot not yet saved would cause graph to extract live labels)
+	await callActor.update({
+		[`flags.${NS}.dispatchStatus`]: "qualified",
+		[`flags.${NS}.fitResult`]: fitResult,
+		[`flags.${NS}.forwardChange`]: forwardChange,
+		[`flags.${NS}.snapshotHeroLabels`]: snapshotHeroLabels,
+	});
 	return { success: true };
 }
 
