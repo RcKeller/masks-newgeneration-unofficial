@@ -14,6 +14,26 @@ import {
 } from "./labels-graph";
 
 /**
+ * Generate a unique ID for overlay elements (clipPath, mask)
+ * Needed to prevent ID collisions when multiple graphs are on the same page
+ */
+function makeOverlayUid(): string {
+	// Prefer Foundry's randomID if available
+	const rid = (globalThis as any)?.foundry?.utils?.randomID?.();
+	if (rid) return String(rid);
+
+	// Fallback to crypto
+	if (globalThis.crypto?.getRandomValues) {
+		const bytes = new Uint8Array(8);
+		globalThis.crypto.getRandomValues(bytes);
+		return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+	}
+
+	// Last resort
+	return Math.random().toString(36).slice(2, 10);
+}
+
+/**
  * Overlay colors for Call sheet graphs
  *
  * THREE-POLYGON ARCHITECTURE:
@@ -153,50 +173,6 @@ export function checkFitResult(
 	return "poor";
 }
 
-/**
- * Calculate overlap vertices - the intersection area where hero meets requirements
- * For partial success, this shows only the area where hero stat >= requirement
- *
- * @param heroLabels - Hero's effective label values
- * @param requirements - Call requirements
- * @param cx - Center X coordinate
- * @param cy - Center Y coordinate
- * @param outerRadius - Outer pentagon radius
- * @returns Array of vertices for the overlap polygon
- */
-function calculateOverlapVertices(
-	heroLabels: Record<string, number>,
-	requirements: CallRequirements,
-	cx: number,
-	cy: number,
-	outerRadius: number
-): { x: number; y: number; labelKey: string }[] {
-	const vertices: { x: number; y: number; labelKey: string }[] = [];
-
-	LABEL_ORDER.forEach((key, i) => {
-		const req = requirements[key as keyof CallRequirements];
-		// Only include labels that have requirements defined
-		if (req == null) return;
-
-		const heroValue = heroLabels[key] ?? 0;
-
-		// Overlap at this vertex = minimum of hero and requirement radii
-		// This represents where both polygons "cover" the area
-		const heroFrac = valueToRadiusFraction(heroValue);
-		const reqFrac = valueToRadiusFraction(req);
-		const overlapFrac = Math.min(heroFrac, reqFrac);
-
-		const r = outerRadius * overlapFrac;
-		const angle = ((i * 72) - 90) * (Math.PI / 180);
-		vertices.push({
-			x: cx + r * Math.cos(angle),
-			y: cy + r * Math.sin(angle),
-			labelKey: key,
-		});
-	});
-
-	return vertices;
-}
 
 /**
  * Get overlap polygon colors based on fit result
@@ -279,12 +255,17 @@ export function generateOverlayGraphSVG(options: OverlayGraphOptions): string {
 	const cy = totalSize / 2;
 	const outerRadius = (size / 2) - 2;
 
+	// Generate unique IDs for clip/mask to avoid collisions when multiple graphs exist
+	const overlayUid = makeOverlayUid();
+	const heroClipId = `labels-graph-hero-clip-${overlayUid}`;
+	const heroMaskId = `labels-graph-hero-mask-${overlayUid}`;
+
 	// Pentagon vertices
 	const outerVerts = getPentagonVertices(cx, cy, outerRadius);
 
 	// Build SVG
 	const parts: string[] = [
-		`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalSize} ${totalSize}" width="${totalSize}" height="${totalSize}" class="labels-graph-overlay-svg">`,
+		`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalSize} ${totalSize}" width="${totalSize}" height="${totalSize}" class="labels-graph-overlay-svg" data-overlay-uid="${overlayUid}">`,
 		// Pentagon background
 		`<path d="${polygonPath(outerVerts)}" fill="${OVERLAY_COLORS.pentagonBg}" stroke="${OVERLAY_COLORS.pentagonBorder}" stroke-width="${borderWidth}" />`,
 	];
@@ -307,65 +288,77 @@ export function generateOverlayGraphSVG(options: OverlayGraphOptions): string {
 	const reqData = calculateRequirementVertices(requirements, cx, cy, outerRadius);
 	const reqVerts = reqData.vertices;
 
+	// Compute requirement path once for reuse
+	const reqPathD =
+		reqVerts.length === 2
+			? `M ${reqVerts[0].x} ${reqVerts[0].y} L ${reqVerts[1].x} ${reqVerts[1].y}`
+			: reqVerts.length >= 3
+			? polygonPath(reqVerts)
+			: "";
+
 	// Only draw requirements shape if there are defined requirements
-	if (reqVerts.length > 0) {
-		// For 1 point: just a dot (handled by spoke dots below)
-		// For 2 points: a line
-		// For 3+ points: a polygon
-		if (reqVerts.length >= 2) {
-			const reqPath = reqVerts.length === 2
-				? `M ${reqVerts[0].x} ${reqVerts[0].y} L ${reqVerts[1].x} ${reqVerts[1].y}`
-				: polygonPath(reqVerts);
-			parts.push(
-				`<path class="labels-graph-overlay-requirements" d="${reqPath}" ` +
-				`fill="${reqVerts.length >= 3 ? OVERLAY_COLORS.requirementFill : "none"}" ` +
-				`stroke="${OVERLAY_COLORS.requirementStroke}" stroke-width="${Math.max(1.5, borderWidth - 0.5)}" stroke-dasharray="4,2" ` +
-				`style="transition: d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease;" />`
-			);
-		}
+	if (reqVerts.length >= 2 && reqPathD) {
+		parts.push(
+			`<path class="labels-graph-overlay-requirements" d="${reqPathD}" ` +
+			`fill="${reqVerts.length >= 3 ? OVERLAY_COLORS.requirementFill : "none"}" ` +
+			`stroke="${OVERLAY_COLORS.requirementStroke}" stroke-width="${Math.max(1.5, borderWidth - 0.5)}" stroke-dasharray="4,2" ` +
+			`style="transition: d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease;" />`
+		);
 	}
 
 	// Hero data polygon (if hero assigned) - ALWAYS yellow
 	let heroVerts: { x: number; y: number }[] = [];
+	let heroPathD = "";
 	if (heroLabels) {
 		heroVerts = calculateDataVertices(heroLabels, cx, cy, outerRadius);
+		heroPathD = polygonPath(heroVerts);
 		parts.push(
-			`<path class="labels-graph-overlay-hero" d="${polygonPath(heroVerts)}" ` +
+			`<path class="labels-graph-overlay-hero" d="${heroPathD}" ` +
 			`fill="${OVERLAY_COLORS.heroFill}" stroke="${OVERLAY_COLORS.heroStroke}" stroke-width="${Math.max(1.5, borderWidth - 0.5)}" ` +
 			`style="transition: d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease;" />`
 		);
 	}
 
-	// Overlap polygon - only rendered after dispatch (isAssessed=true)
-	// Shows the intersection area between hero and requirements
-	if (isAssessed && heroLabels && reqVerts.length > 0) {
+	// Add defs for clip/mask - used by overlap layer for true geometric intersection/difference
+	// These reference the hero polygon shape for clipping (good fit) or masking (poor fit)
+	parts.push(
+		`<defs>` +
+			`<clipPath id="${heroClipId}" clipPathUnits="userSpaceOnUse">` +
+				`<path class="labels-graph-overlay-clip-hero" d="${heroPathD}" />` +
+			`</clipPath>` +
+			`<mask id="${heroMaskId}" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">` +
+				`<rect x="0" y="0" width="${totalSize}" height="${totalSize}" fill="white" />` +
+				`<path class="labels-graph-overlay-mask-hero" d="${heroPathD}" fill="black" />` +
+			`</mask>` +
+		`</defs>`
+	);
+
+	// Overlap layer - uses SVG clip/mask for true geometric overlap
+	// great: show full requirement area in green (no clip/mask)
+	// good: intersection = requirements clipped by hero (yellow/orange)
+	// poor: show only the part of requirements NOT overlapped by hero (red)
+	if (isAssessed && heroLabels && reqVerts.length >= 2 && reqPathD) {
 		const overlapColors = getOverlapColors(fitResult);
 
 		if (overlapColors) {
-			// For "great" fit: overlap covers entire requirements area (all met)
-			// For "poor" fit: overlap covers entire requirements area (colored red)
-			// For "good" fit: overlap shows only the intersection (where hero meets/exceeds req)
-			let overlapVerts: { x: number; y: number; labelKey: string }[];
-
+			let clipMaskAttr = "";
+			// great: show full requirement area (no clip/mask)
+			// good: intersection = requirements clipped by hero
 			if (fitResult === "good") {
-				// Partial success: show actual overlap area
-				overlapVerts = calculateOverlapVertices(heroLabels, requirements, cx, cy, outerRadius);
-			} else {
-				// Great or Poor: color the entire requirements area
-				overlapVerts = reqVerts;
+				clipMaskAttr = `clip-path="url(#${heroClipId})"`;
+			}
+			// poor: show only the part of requirements NOT overlapped by hero
+			else if (fitResult === "poor") {
+				clipMaskAttr = `mask="url(#${heroMaskId})"`;
 			}
 
-			if (overlapVerts.length >= 2) {
-				const overlapPath = overlapVerts.length === 2
-					? `M ${overlapVerts[0].x} ${overlapVerts[0].y} L ${overlapVerts[1].x} ${overlapVerts[1].y}`
-					: polygonPath(overlapVerts);
-				parts.push(
-					`<path class="labels-graph-overlay-overlap" d="${overlapPath}" ` +
-					`fill="${overlapVerts.length >= 3 ? overlapColors.fill : "none"}" ` +
-					`stroke="${overlapColors.stroke}" stroke-width="${Math.max(1.5, borderWidth - 0.5)}" ` +
-					`style="transition: d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease;" />`
-				);
-			}
+			parts.push(
+				`<path class="labels-graph-overlay-overlap" d="${reqPathD}" ` +
+				`fill="${reqVerts.length >= 3 ? overlapColors.fill : "none"}" ` +
+				`stroke="${overlapColors.stroke}" stroke-width="${Math.max(1.5, borderWidth - 0.5)}" ` +
+				`${clipMaskAttr} ` +
+				`style="transition: d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease;" />`
+			);
 		}
 	}
 
@@ -514,6 +507,15 @@ export function updateOverlayGraphAnimated(
 	// If SVG structure doesn't exist, need full re-render
 	if (!svg) return false;
 
+	// Get overlay UID and clip/mask elements for syncing
+	const overlayUid = svg.getAttribute("data-overlay-uid") ?? "";
+	const clipHeroPath = overlayUid
+		? (svg.querySelector(`#labels-graph-hero-clip-${overlayUid} .labels-graph-overlay-clip-hero`) as SVGPathElement | null)
+		: null;
+	const maskHeroPath = overlayUid
+		? (svg.querySelector(`#labels-graph-hero-mask-${overlayUid} .labels-graph-overlay-mask-hero`) as SVGPathElement | null)
+		: null;
+
 	// Get current size from SVG viewBox
 	const viewBox = svg.getAttribute("viewBox")?.split(" ");
 	const totalSize = viewBox ? parseFloat(viewBox[2]) : 120;
@@ -541,11 +543,16 @@ export function updateOverlayGraphAnimated(
 	const reqData = calculateRequirementVertices(requirements, cx, cy, outerRadius);
 	const reqVerts = reqData.vertices;
 
+	// Compute requirement path once for reuse
+	const reqPathD =
+		reqVerts.length === 2
+			? `M ${reqVerts[0].x} ${reqVerts[0].y} L ${reqVerts[1].x} ${reqVerts[1].y}`
+			: reqVerts.length >= 3
+			? polygonPath(reqVerts)
+			: "";
+
 	if (reqPath) {
-		if (reqVerts.length >= 2) {
-			const reqPathD = reqVerts.length === 2
-				? `M ${reqVerts[0].x} ${reqVerts[0].y} L ${reqVerts[1].x} ${reqVerts[1].y}`
-				: polygonPath(reqVerts);
+		if (reqVerts.length >= 2 && reqPathD) {
 			reqPath.setAttribute("d", reqPathD);
 			reqPath.setAttribute("fill", reqVerts.length >= 3 ? OVERLAY_COLORS.requirementFill : "none");
 			reqPath.setAttribute("stroke", OVERLAY_COLORS.requirementStroke);
@@ -557,37 +564,55 @@ export function updateOverlayGraphAnimated(
 		}
 	}
 
-	// Update hero path (always yellow)
+	// Update hero path (always yellow) and sync clip/mask hero shapes
+	let heroPathD = "";
 	if (heroPath && labels) {
 		const heroVerts = calculateDataVertices(labels, cx, cy, outerRadius);
-		heroPath.setAttribute("d", polygonPath(heroVerts));
+		heroPathD = polygonPath(heroVerts);
+		heroPath.setAttribute("d", heroPathD);
 		heroPath.setAttribute("fill", OVERLAY_COLORS.heroFill);
 		heroPath.setAttribute("stroke", OVERLAY_COLORS.heroStroke);
 	}
 
+	// Keep clip/mask hero shapes synced (needed for correct overlap in good/poor)
+	if (clipHeroPath) clipHeroPath.setAttribute("d", heroPathD);
+	if (maskHeroPath) maskHeroPath.setAttribute("d", heroPathD);
+
+	// Check if SVG has the required elements for assessed state
+	if (isAssessed) {
+		// If assessed but the SVG doesn't have the overlap layer/defs (older markup), force re-render
+		if (!overlapPath || !overlayUid || !clipHeroPath || !maskHeroPath) return false;
+	}
+
 	// Update overlap path (only when assessed)
-	if (overlapPath && isAssessed && labels && reqVerts.length > 0) {
-		const overlapColors = getOverlapColors(fitResult);
+	if (overlapPath) {
+		if (isAssessed && labels && reqVerts.length >= 2 && reqPathD) {
+			const overlapColors = getOverlapColors(fitResult);
+			if (!overlapColors) return true;
 
-		if (overlapColors) {
-			let overlapVerts: { x: number; y: number; labelKey: string }[];
+			overlapPath.setAttribute("d", reqPathD);
+			overlapPath.setAttribute("fill", reqVerts.length >= 3 ? overlapColors.fill : "none");
+			overlapPath.setAttribute("stroke", overlapColors.stroke);
 
+			// Switch behavior by fit:
 			if (fitResult === "good") {
-				// Partial success: show actual overlap area
-				overlapVerts = calculateOverlapVertices(labels, requirements, cx, cy, outerRadius);
+				overlapPath.setAttribute("clip-path", `url(#labels-graph-hero-clip-${overlayUid})`);
+				overlapPath.removeAttribute("mask");
+			} else if (fitResult === "poor") {
+				overlapPath.setAttribute("mask", `url(#labels-graph-hero-mask-${overlayUid})`);
+				overlapPath.removeAttribute("clip-path");
 			} else {
-				// Great or Poor: color the entire requirements area
-				overlapVerts = reqVerts;
+				// great - no clip/mask, show full requirements area
+				overlapPath.removeAttribute("clip-path");
+				overlapPath.removeAttribute("mask");
 			}
-
-			if (overlapVerts.length >= 2) {
-				const overlapPathD = overlapVerts.length === 2
-					? `M ${overlapVerts[0].x} ${overlapVerts[0].y} L ${overlapVerts[1].x} ${overlapVerts[1].y}`
-					: polygonPath(overlapVerts);
-				overlapPath.setAttribute("d", overlapPathD);
-				overlapPath.setAttribute("fill", overlapVerts.length >= 3 ? overlapColors.fill : "none");
-				overlapPath.setAttribute("stroke", overlapColors.stroke);
-			}
+		} else {
+			// Not assessed or missing inputs -> hide overlap
+			overlapPath.setAttribute("d", "");
+			overlapPath.setAttribute("fill", "none");
+			overlapPath.setAttribute("stroke", "none");
+			overlapPath.removeAttribute("clip-path");
+			overlapPath.removeAttribute("mask");
 		}
 	}
 
