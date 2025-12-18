@@ -151,7 +151,8 @@ export class CallSheet extends ActorSheet {
 
 		// Create overlay graph data
 		// Pass empty requirements to players until dispatch is complete
-		// When qualified, use snapshotted labels to show stats at dispatch time (not current stats)
+		// Snapshot is the definitive source of truth when it exists - the overlay
+		// function will use it if present, otherwise fall back to live actor data
 		const overlayGraph = createOverlayGraphData(
 			graphActor,
 			showRequirementsOverlay ? requirements : {},
@@ -163,8 +164,7 @@ export class CallSheet extends ActorSheet {
 				showSpokeDots: true,
 				isAssessed: dispatchStatus === "qualified",
 			},
-			// Use snapshot for qualified calls, live data for preview
-			dispatchStatus === "qualified" ? snapshotHeroLabels : null
+			snapshotHeroLabels
 		);
 
 		// Prepare call types for select
@@ -586,16 +586,19 @@ export class CallSheet extends ActorSheet {
 			return;
 		}
 
-		// Reset all dispatch state including assigned actors
-		// Note: requirements are preserved - only dispatch state is cleared
-		await this.actor.setFlag(NS, "dispatchStatus", "idle");
-		await this.actor.setFlag(NS, "fitResult", null);
-		await this.actor.setFlag(NS, "forwardChange", null);
-		await this.actor.setFlag(NS, "assignedActorIds", []);
-		await this.actor.setFlag(NS, "snapshotHeroLabels", null);
-
 		// Clear previous graph state to ensure clean animation
 		this._previousGraphState = null;
+
+		// Reset all dispatch state atomically to prevent intermediate re-renders
+		// with inconsistent state (e.g., snapshot cleared before status reset)
+		// Note: requirements are preserved - only dispatch state is cleared
+		await this.actor.update({
+			[`flags.${NS}.dispatchStatus`]: "idle",
+			[`flags.${NS}.fitResult`]: null,
+			[`flags.${NS}.forwardChange`]: null,
+			[`flags.${NS}.assignedActorIds`]: [],
+			[`flags.${NS}.snapshotHeroLabels`]: null,
+		});
 	}
 
 	/**
@@ -688,18 +691,23 @@ export class CallSheet extends ActorSheet {
 		// Get hero labels (for changes = 'hero' or 'all')
 		let heroLabels: Record<string, number> | null = null;
 		if (changes === 'hero' || changes === 'all') {
-			// Determine which actor to use (hover preview or assigned)
-			const assignedActorIds: string[] = this.actor.getFlag(NS, "assignedActorIds") ?? [];
-			const assignedActor = assignedActorIds.length > 0 ? game.actors?.get(assignedActorIds[0]) : null;
-			const hoveredActor = this._hoveredActorId ? game.actors?.get(this._hoveredActorId) : null;
-			const graphActor = hoveredActor ?? assignedActor;
+			// Snapshot is the definitive source of truth when it exists
+			// This prevents flashes during dispatch/reset transitions
+			const snapshotLabels: Record<string, number> | null = this.actor.getFlag(NS, "snapshotHeroLabels") ?? null;
 
-			// Use snapshot for qualified calls, otherwise extract from actor
-			if (isAssessed) {
-				heroLabels = this.actor.getFlag(NS, "snapshotHeroLabels") ?? null;
-			} else if (graphActor) {
-				const data = extractLabelsData(graphActor);
-				heroLabels = data?.labels ?? null;
+			if (snapshotLabels) {
+				heroLabels = snapshotLabels;
+			} else {
+				// No snapshot - extract live data from actor
+				const assignedActorIds: string[] = this.actor.getFlag(NS, "assignedActorIds") ?? [];
+				const assignedActor = assignedActorIds.length > 0 ? game.actors?.get(assignedActorIds[0]) : null;
+				const hoveredActor = this._hoveredActorId ? game.actors?.get(this._hoveredActorId) : null;
+				const graphActor = hoveredActor ?? assignedActor;
+
+				if (graphActor) {
+					const data = extractLabelsData(graphActor);
+					heroLabels = data?.labels ?? null;
+				}
 			}
 
 			// Update cache
