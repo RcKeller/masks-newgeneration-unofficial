@@ -39,11 +39,11 @@ const LABEL_CONFIG = Object.freeze({
  * Indexed by condition storage index in PbtA system
  */
 const CONDITION_CONFIG = Object.freeze({
-	0: { key: "afraid", icon: "fa-solid fa-ghost", cssClass: "afraid", affectsLabel: "danger", tooltip: "-2 Danger" },
-	1: { key: "angry", icon: "fa-solid fa-face-angry", cssClass: "angry", affectsLabel: "mundane", tooltip: "-2 Mundane" },
-	2: { key: "guilty", icon: "fa-solid fa-scale-unbalanced", cssClass: "guilty", affectsLabel: "superior", tooltip: "-2 Superior" },
-	3: { key: "hopeless", icon: "fa-solid fa-heart-crack", cssClass: "hopeless", affectsLabel: "freak", tooltip: "-2 Freak" },
-	4: { key: "insecure", icon: "fa-solid fa-face-frown-open", cssClass: "insecure", affectsLabel: "savior", tooltip: "-2 Savior" },
+	0: { key: "afraid", icon: "fa-solid fa-ghost", cssClass: "afraid", affectsLabel: "danger", tooltip: "-2 Danger", cleanLabel: "Afraid" },
+	1: { key: "angry", icon: "fa-solid fa-face-angry", cssClass: "angry", affectsLabel: "mundane", tooltip: "-2 Mundane", cleanLabel: "Angry" },
+	2: { key: "guilty", icon: "fa-solid fa-scale-unbalanced", cssClass: "guilty", affectsLabel: "superior", tooltip: "-2 Superior", cleanLabel: "Guilty" },
+	3: { key: "hopeless", icon: "fa-solid fa-heart-crack", cssClass: "hopeless", affectsLabel: "freak", tooltip: "-2 Freak", cleanLabel: "Hopeless" },
+	4: { key: "insecure", icon: "fa-solid fa-face-frown-open", cssClass: "insecure", affectsLabel: "savior", tooltip: "-2 Savior", cleanLabel: "Insecure" },
 });
 
 /**
@@ -60,6 +60,24 @@ const BOUNDS = Object.freeze({
 	forward: { min: -1, max: 8 },
 	ongoing: { min: -1, max: 8 },
 });
+
+/**
+ * Cached i18n label names (populated on first use to avoid repeated lookups)
+ */
+let _cachedLabelNames: Record<string, string> | null = null;
+
+/**
+ * Get cached label display name (populates cache on first access)
+ */
+function getCachedLabelName(key: string): string {
+	if (!_cachedLabelNames) {
+		_cachedLabelNames = {};
+		for (const k of LABEL_ORDER) {
+			_cachedLabelNames[k] = game.i18n.localize(`DISPATCH.CharacterSheets.stats.${k}`);
+		}
+	}
+	return _cachedLabelNames[key] ?? key;
+}
 
 export function MasksActorSheetMixin(Base) {
 	return class MasksActorSheet extends Base {
@@ -96,6 +114,41 @@ export function MasksActorSheetMixin(Base) {
 		 */
 		_expandedPowerCardId = null;
 
+		/**
+		 * Cached labels graph data (regenerated only when values change)
+		 * @type {ReturnType<typeof createLabelsGraphData> | null}
+		 */
+		_cachedLabelsGraph: ReturnType<typeof createLabelsGraphData> | null = null;
+
+		/**
+		 * Cache key for labels graph invalidation
+		 * @type {string | null}
+		 */
+		_labelsGraphCacheKey: string | null = null;
+
+		/**
+		 * Generate a cache key for the labels graph based on values that affect rendering
+		 * @returns {string} Cache key string
+		 */
+		_getLabelsGraphCacheKey(): string {
+			const stats = this.actor.system.stats ?? {};
+			const conditions = this.actor.system.attributes?.conditions?.options ?? {};
+			return [
+				stats.danger?.value ?? 0,
+				stats.freak?.value ?? 0,
+				stats.savior?.value ?? 0,
+				stats.superior?.value ?? 0,
+				stats.mundane?.value ?? 0,
+				this.actor.system.resources?.forward?.value ?? 0,
+				this.actor.system.resources?.ongoing?.value ?? 0,
+				conditions[0]?.value ? 1 : 0,
+				conditions[1]?.value ? 1 : 0,
+				conditions[2]?.value ? 1 : 0,
+				conditions[3]?.value ? 1 : 0,
+				conditions[4]?.value ? 1 : 0,
+			].join("|");
+		}
+
 		/** @override */
 		async getData() {
 			const context = await super.getData();
@@ -105,13 +158,18 @@ export function MasksActorSheetMixin(Base) {
 
 			// Only add v2 data for character sheets
 			if (this.actor?.type === "character") {
-				// Labels graph data (for the pentagon visualization)
-				context.labelsGraph = createLabelsGraphData(this.actor, {
-					size: 200,
-					borderWidth: 2,
-					showInnerLines: true,
-					showIcons: true,
-				});
+				// Labels graph data (cached - only regenerate when values change)
+				const graphCacheKey = this._getLabelsGraphCacheKey();
+				if (this._labelsGraphCacheKey !== graphCacheKey || !this._cachedLabelsGraph) {
+					this._cachedLabelsGraph = createLabelsGraphData(this.actor, {
+						size: 200,
+						borderWidth: 2,
+						showInnerLines: true,
+						showIcons: true,
+					});
+					this._labelsGraphCacheKey = graphCacheKey;
+				}
+				context.labelsGraph = this._cachedLabelsGraph;
 
 				// Prepare label rows for the sidebar
 				context.labelRows = this._prepareLabelRows();
@@ -154,7 +212,7 @@ export function MasksActorSheetMixin(Base) {
 			for (const key of LABEL_ORDER) {
 				const config = LABEL_CONFIG[key];
 				const value = Number(stats[key]?.value) || 0;
-				const displayName = stats[key]?.label ?? game.i18n.localize(`DISPATCH.CharacterSheets.stats.${key}`);
+				const displayName = stats[key]?.label ?? getCachedLabelName(key);
 
 				rows[key] = {
 					key,
@@ -229,14 +287,10 @@ export function MasksActorSheetMixin(Base) {
 				const config = CONDITION_CONFIG[idx];
 				if (!config || !opt) continue;
 
-				// Extract just the condition name from labels like "Afraid (-2 Danger)"
-				const rawLabel = opt.label ?? "";
-				const cleanLabel = rawLabel.split("(")[0].trim();
-
 				tags.push({
 					idx,
 					key: config.key,
-					label: cleanLabel,
+					label: config.cleanLabel,
 					icon: config.icon,
 					cssClass: config.cssClass,
 					value: !!opt.value,
@@ -342,53 +396,39 @@ export function MasksActorSheetMixin(Base) {
 
 		/** @override */
 		async _render(force = false, options = {}) {
-			// Save scroll position before re-render
-			const tabContent = this.element?.[0]?.querySelector(".tab-content");
-			if (tabContent) {
-				this._scrollTop = tabContent.scrollTop;
-			}
+			// Batch pre-render state preservation (single element reference)
+			const el = this.element?.[0];
+			if (el) {
+				const tabContent = el.querySelector(".tab-content");
+				const activeTabBtn = el.querySelector(".tab-btn.active");
+				const expandedRadio = el.querySelector(".power-card__radio:checked");
+				const graphContainer = el.querySelector(".labels-graph-clickable");
 
-			// Save active tab
-			const activeTabBtn = this.element?.[0]?.querySelector(".tab-btn.active");
-			if (activeTabBtn?.dataset.tab) {
-				this._activeTab = activeTabBtn.dataset.tab;
-			}
-
-			// Save expanded power card state
-			const expandedRadio = this.element?.[0]?.querySelector(".power-card__radio:checked");
-			if (expandedRadio) {
-				// Extract item ID from the radio's id attribute (format: "power-{itemId}")
-				const radioId = expandedRadio.id;
-				this._expandedPowerCardId = radioId?.replace("power-", "") ?? null;
-			} else {
-				// No card expanded - reset to null to prevent re-expansion on re-render
-				this._expandedPowerCardId = null;
-			}
-
-			// Save labels graph state for animation (using shared utility)
-			const graphContainer = this.element?.[0]?.querySelector(".labels-graph-clickable");
-			if (graphContainer && this.actor?.id) {
-				saveGraphAnimationState(`actor-${this.actor.id}`, graphContainer as HTMLElement);
+				if (tabContent) this._scrollTop = (tabContent as HTMLElement).scrollTop;
+				if (activeTabBtn?.dataset.tab) this._activeTab = activeTabBtn.dataset.tab;
+				this._expandedPowerCardId = expandedRadio?.id?.replace("power-", "") ?? null;
+				if (graphContainer && this.actor?.id) {
+					saveGraphAnimationState(`actor-${this.actor.id}`, graphContainer as HTMLElement);
+				}
 			}
 
 			await super._render(force, options);
 
-			// Restore scroll position after render
-			const newTabContent = this.element?.[0]?.querySelector(".tab-content");
-			if (newTabContent && this._scrollTop > 0) {
-				newTabContent.scrollTop = this._scrollTop;
-			}
+			// Batch post-render restoration (single element reference)
+			const newEl = this.element?.[0];
+			if (newEl) {
+				const newTabContent = newEl.querySelector(".tab-content");
+				if (newTabContent && this._scrollTop > 0) {
+					(newTabContent as HTMLElement).scrollTop = this._scrollTop;
+				}
 
-			// Restore active tab
-			this._restoreActiveTab();
+				this._restoreActiveTab();
+				this._restoreExpandedPowerCard();
 
-			// Restore expanded power card
-			this._restoreExpandedPowerCard();
-
-			// Animate labels graph (using shared utility)
-			const newGraphContainer = this.element?.[0]?.querySelector(".labels-graph-clickable");
-			if (newGraphContainer && this.actor?.id) {
-				animateGraphFromSavedState(`actor-${this.actor.id}`, newGraphContainer as HTMLElement);
+				const newGraphContainer = newEl.querySelector(".labels-graph-clickable");
+				if (newGraphContainer && this.actor?.id) {
+					animateGraphFromSavedState(`actor-${this.actor.id}`, newGraphContainer as HTMLElement);
+				}
 			}
 		}
 
