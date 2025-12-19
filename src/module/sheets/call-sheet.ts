@@ -66,6 +66,9 @@ export class CallSheet extends ActorSheet {
 	/** Bound handler for actor updates */
 	_boundActorUpdateHandler: ((actor: Actor, changes: object, options: object, userId: string) => void) | null = null;
 
+	/** Bound handler for hover events */
+	_boundHoverHandler: ((actorId: string | null) => void) | null = null;
+
 	/** Debounce timer for requirement changes */
 	_requirementDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -386,15 +389,18 @@ export class CallSheet extends ActorSheet {
 	 * Register listener for turn card hover events
 	 */
 	_registerHoverListener() {
-		// Listen for custom hover events from turn cards
-		Hooks.on("masksCallHoverActor", this._onHoverActor.bind(this));
+		if (this._boundHoverHandler) return; // Already registered
+		this._boundHoverHandler = this._onHoverActor.bind(this);
+		Hooks.on("masksCallHoverActor", this._boundHoverHandler);
 	}
 
 	/**
 	 * Unregister hover listener
 	 */
 	_unregisterHoverListener() {
-		Hooks.off("masksCallHoverActor", this._onHoverActor.bind(this));
+		if (!this._boundHoverHandler) return;
+		Hooks.off("masksCallHoverActor", this._boundHoverHandler);
+		this._boundHoverHandler = null;
 	}
 
 	/**

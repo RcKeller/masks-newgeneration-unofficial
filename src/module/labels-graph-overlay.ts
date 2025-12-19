@@ -551,6 +551,15 @@ export function updateOverlayGraphAnimated(
 			? polygonPath(reqVerts)
 			: "";
 
+	// Check for structural mismatches that require full re-render
+	// 1. Hero exists but hero path element is missing
+	if (labels && !heroPath) return false;
+	// 2. Requirements >= 2 but requirements path element is missing
+	if (reqVerts.length >= 2 && !reqPath) return false;
+	// 3. Number of requirement dots changed (structure mismatch)
+	const reqDots = svg.querySelectorAll(".spoke-dot-req");
+	if (reqDots.length !== reqVerts.length) return false;
+
 	if (reqPath) {
 		if (reqVerts.length >= 2 && reqPathD) {
 			// Save old values for animation
