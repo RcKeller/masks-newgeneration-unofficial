@@ -35,7 +35,7 @@ jobs:
           echo "zip_name=${PACKAGE_NAME}-${VERSION}.zip" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build module
         run: npm run ci
