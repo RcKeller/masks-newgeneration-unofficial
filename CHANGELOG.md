@@ -1,3 +1,37 @@
+# [1.3.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.2.0...v1.3.0) (2025-12-19)
+
+
+### Bug Fixes
+
+* ci fix ([ca1e953](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/ca1e953d24453794938dace59946473efebb0a1a))
+* ci fix 2 ([6f1fbd1](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/6f1fbd1ff3e4394fef1c5f95a95c041186b2c65b))
+* module copy ([2253844](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/22538449a56a0100464e965356b5fc0456042ef0))
+* no need to copy packs dir ([5b34adc](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/5b34adc0f2c6ee6b6fb121b33b7432506f26b601))
+* style issues ([d0cb1e2](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/d0cb1e234d920f1766a74b5b9bcf95b5dd4d0219))
+
+
+### Features
+
+* (broken) can see option but not create ([c3ce504](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/c3ce504f9612216bb0391e8702450a14d6f1906c))
+* apply bugfix ([c6bf8be](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/c6bf8be412d0ad05cb42eecab23e930962283207))
+* fixed ([4d04c7d](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/4d04c7de42b4e655a25b74787b5697eff8178c1c))
+* gm reset cooldown ([0384a05](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/0384a05573d6d558d4faf95308dc8078d9f2b789))
+* looks better ([1d9ec0d](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/1d9ec0de0b4c87fd8b23dd9a2cbde19723bd6428))
+* looks great ([a3bec6a](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/a3bec6a9f7b6ea538793e9f98e728573701661d4))
+* okay that works great ([62c1350](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/62c135054676b1640efd32a31b6cb1e76d6ff5a9))
+* package.json update ([bdcf14b](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/bdcf14b2c56a961f8aa0fa26ba982fe86ea93ead))
+* refactor ([aba9576](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/aba957645fdd7c2b1bff08700da8a54bad593a92))
+* save ([7ad7e21](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/7ad7e21f711149fd0f17e739bab083ed32da57c6))
+* save index.html at root ([d9fcc29](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/d9fcc295196a1f87918c7652e3ea8ce15d246c83))
+* save wip ([c2b1b03](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/c2b1b037e7eaf17be074f672a48d0f1458154833))
+* save wip ([49a00b4](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/49a00b4f0f95bbaf9cd62aed21e95e5f858e2c66))
+* save wip ([9253692](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/92536927a315f4f51f9203760f999a2e14adecff))
+* save wip ([a62ac64](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/a62ac64c55e23ccaa23e19f2ae656e1f37f834fa))
+* save wip ([c31c5e8](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/c31c5e865edd2f2a4bce1be251fea51d5e5d20f4))
+* save wip - looks good ([b57bdaa](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/b57bdaa9bcc4b2528b5c3fe19ebd4fff5218eeb6))
+* start recording product reqs ([d32c0b1](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/d32c0b180565fb1c5f437406f4e3fc470bba63e3))
+* test ([f0ae857](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/f0ae85709a7adeeb7cdad67c54a0c9d990a79efe))
+
 # [1.2.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.1.0...v1.2.0) (2025-12-17)
 
 
