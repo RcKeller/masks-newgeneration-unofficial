@@ -13,6 +13,9 @@ testing
 /.idea/watcherTasks.xml
 /test/__snapshots__/
 
+!dev/module.json
+dev
+
 # IDE
 .idea/
 .vs/

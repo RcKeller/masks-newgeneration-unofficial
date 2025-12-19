@@ -1,14 +1,20 @@
 {
   "name": "masks-newgeneration-unofficial",
-  "version": "1.2.0",
-  "description": "Masks: A New Generation (Bear Edition) - FoundryVTT Module",
-  "main": "dist/dispatch.js",
+  "version": "3.0.0",
+  "description": "FoundryVTT Module for Dispatch (Masks: A New Generation)",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "watch": "vite build --watch --mode development",
-    "dev": "vite build --watch --mode development",
-    "serve": "vite --mode development",
+    "lint": "eslint . --ext .ts,.js",
+    "check-types": "tsc --noEmit",
+    "ci": "vite build && node scripts/inject-id.js",
+    "update-readme": "node scripts/update-readme.js",
+    "link:dev": "node scripts/link-dev.js",
+    "dev": "pnpm link:dev && vite dev",
+    "link:dist": "node scripts/link-dist.js",
+    "build": "pnpm link:dist && vite build && node scripts/inject-id.js",
+    "build:rc": "npm run check-types && vite build && node scripts/inject-id.js",
+    "postbuild:rc": "dotenv -e .env -- sh -c 'rsync -avz --delete dist/ \"$DEPLOY_HOST_ALIAS:$DEPLOY_PATH\"'",
     "test": "jest",
     "coverageTest": "jest --collect-coverage --collect-coverage-from='./src/**/*.ts'",
     "releaseLocal": "npm run build && node scripts/releaseLocal.cjs",
@@ -21,9 +27,16 @@
   },
   "author": "Andrew Keller Barrows",
   "license": "MIT",
+  "packageManager": "pnpm@10.6.1",
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "esbuild"
+    ],
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
   "devDependencies": {
-    "@types/react": "^19.1.12",
-    "@types/react-dom": "^19.1.9",
     "@anthropic-ai/sdk": "^0.71.2",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
@@ -36,10 +49,14 @@
     "@types/jest": "^30.0.0",
     "@types/jquery": "^3.5.33",
     "@types/lodash": "^4.17.20",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
     "autoprefixer": "^10.4.21",
-    "dotenv-cli": "^8.0.0",
     "dotenv": "^17.2.3",
+    "dotenv-cli": "^8.0.0",
+    "eslint": "^9.33.0",
     "fs-extra": "^11.3.2",
+    "fvtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#main",
     "husky": "^9.0.11",
     "jest": "^30.2.0",
     "lodash": "^4.17.21",
@@ -55,11 +72,15 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.40.0",
-    "eslint": "^9.33.0",
-    "fvtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#main",
-    "vite": "^7.1.9"
+    "vite": "^7.1.9",
+    "vite-plugin-static-copy": "^3.1.4"
   },
   "dependencies": {
-    "@types/node": "^24.7.2"
+    "@tailwindcss/vite": "^4.1.12",
+    "@types/node": "^24.7.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "symlink-dir": "^6.0.5",
+    "tailwindcss": "^4.1.12"
   }
 }
