@@ -1,3 +1,9 @@
+node_modules
+pnpm-lock.yaml
+dist
+testing
+.env
+
 /node_modules/
 /npm-debug.log
 
@@ -6,6 +12,9 @@
 /dist
 /.idea/watcherTasks.xml
 /test/__snapshots__/
+
+!dev/module.json
+dev
 
 # IDE
 .idea/

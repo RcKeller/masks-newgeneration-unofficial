@@ -1,18 +1,32 @@
 {
   "id": "masks-newgeneration-unofficial",
-  "title": "Masks: A New Generation (Bear Edition)",
-  "description": "Masks: A New Generation from Magpie Games, customized by Andrew Barrows",
-  "version": "1.2.0",
-  "socket": true,
+  "title": "Masks: A New Generation (Dev)",
+  "description": "Masks: A New Generation RPG support for the PbtA system in Foundry VTT",
+  "version": "0.0.0-dev",
+  "esmodules": ["http://localhost:30001/modules/masks-newgeneration-unofficial/src/index.js"],
   "compatibility": {
-    "minimum": 13,
-    "verified": 13.35,
-    "maximum": 15
+    "minimum": "13",
+    "verified": "13"
   },
+  "socket": true,
   "authors": [
     {
       "name": "RcKeller",
       "url": "https://github.com/RcKeller"
+    }
+  ],
+  "manifest": "",
+  "download": "",
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "es",
+      "name": "Spanish",
+      "path": "lang/es.json"
     }
   ],
   "packs": [
@@ -358,36 +372,10 @@
       "folders": []
     }
   ],
-  "esmodules": [
-    "dispatch.js"
-  ],
-  "styles": [
-    "styles/dispatch.css"
-  ],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json"
-    },
-    {
-      "lang": "es",
-      "name": "Spanish",
-      "path": "lang/es.json"
-    }
-  ],
   "flags": {
     "hotReload": {
-      "extensions": [
-        "css",
-        "hbs",
-        "json"
-      ],
-      "paths": [
-        "styles",
-        "templates",
-        "lang"
-      ]
+      "extensions": ["css", "hbs", "json"],
+      "paths": ["assets", "templates", "lang"]
     }
   },
   "relationships": {
@@ -399,24 +387,14 @@
           "minimum": "1.1.16"
         }
       }
+    ],
+    "requires": [],
+    "recommends": [
+      {
+        "id": "aeris-core",
+        "type": "module",
+        "compatibility": {}
+      }
     ]
-  },
-  "url": "https://github.com/RcKeller/masks-newgeneration-unofficial",
-  "manifest": "https://github.com/RcKeller/masks-newgeneration-unofficial/releases/latest/download/module.json",
-  "download": "https://github.com/RcKeller/masks-newgeneration-unofficial/releases/latest/download/module.zip",
-  "license": "LICENSE",
-  "readme": "README.md",
-  "includes": [
-    "module.json",
-    "dispatch.js",
-    "dispatch.js.map",
-    "styles/",
-    "templates/",
-    "lang/",
-    "packs/",
-    "images/",
-    "LICENSE",
-    "README.md",
-    "CHANGELOG.md"
-  ]
+  }
 }

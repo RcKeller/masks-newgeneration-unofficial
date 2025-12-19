@@ -707,6 +707,33 @@ export const configSheet = async () => {
           },
         },
       },
+      // Call actor type (uses PbtA's "other" base type with customType="call")
+      call: {
+        label: game.i18n.localize("DISPATCH.Call.TypeLabel"),
+        baseType: "npc",
+        attributes: {
+          callType: {
+            label: game.i18n.localize("DISPATCH.Call.TypeLabel"),
+            description: null,
+            customLabel: false,
+            userLabel: false,
+            type: "Text",
+            value: "",
+            position: "Left",
+          },
+        },
+        details: {
+          biography: {
+            label: game.i18n.localize("DISPATCH.Call.Description"),
+            description: null,
+            customLabel: false,
+            userLabel: false,
+            type: "LongText",
+            value: "",
+          },
+        },
+        moveTypes: {},
+      },
     },
   };
 };

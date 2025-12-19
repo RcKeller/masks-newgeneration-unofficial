@@ -1,7 +1,7 @@
 {
 	"id": "masks-newgeneration-unofficial",
-	"title": "Masks: A New Generation (Bear Edition)",
-	"description": "Masks: A New Generation from Magpie Games, customized by Andrew Barrows",
+	"title": "Dispatch",
+	"description": "Dispatch adaptation using Masks: A New Generation",
 	"version": "2.0.0",
 	"socket": true,
 	"compatibility": {

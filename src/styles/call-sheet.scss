@@ -734,11 +734,11 @@
   border-radius: 0;
 
   .dispatch-header {
-    font-size: 1rem;
+    font-size: 1.25rem;
     margin-bottom: 0.25rem;
 
     a {
-      color: var(--masks-gold);
+      color: var(--masks-blue-light);
       text-decoration: none;
       font-weight: 600;
 
@@ -776,5 +776,31 @@
 
   &.call-dispatch-result--poor {
     border-left-color: var(--call-fit-poor);
+  }
+}
+
+/* =============================================================================
+   NO COMBAT WARNING
+   ============================================================================= */
+
+.call-sheet__no-combat-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  background: rgba(255, 193, 7, 0.15);
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  border-radius: 4px;
+  color: #ffc107;
+  font-size: 0.85rem;
+
+  i {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  span {
+    line-height: 1.3;
   }
 }

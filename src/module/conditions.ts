@@ -47,6 +47,20 @@ const FX_FLAG = "autoConditionEffect";
 
 /** Health depends on unique active conditions - this file ensures they're properly managed */
 
+/**
+ * Normalize ActiveEffect.statuses to an array of strings.
+ * Handles both Set (common in Foundry) and Array types safely.
+ */
+function getStatuses(eff: any): string[] {
+	const raw = eff?.statuses;
+	if (!raw) return [];
+	try {
+		return Array.from(raw, (s) => String(s));
+	} catch {
+		return [];
+	}
+}
+
 // Lowercase helpers and reverse lookups
 const COND_KEYS = Object.keys(MANAGED);
 const LOWER = Object.fromEntries(COND_KEYS.map((k) => [k, k.toLowerCase()]));
@@ -138,12 +152,12 @@ function getConditionState(actor, condKey) {
 function classifyEffectToConditionKey(eff) {
 	if (!eff) return null;
 
+	const statuses = getStatuses(eff);
+
 	// 1) If it carries our managed status id(s), it's definitely ours.
-	if (Array.isArray(eff.statuses)) {
-		for (const s of eff.statuses) {
-			const key = ID_TO_KEY[s];
-			if (key) return key;
-		}
+	for (const s of statuses) {
+		const key = ID_TO_KEY[s];
+		if (key) return key;
 	}
 
 	// 2) If its name matches a known condition name (case-insensitive)
@@ -155,12 +169,10 @@ function classifyEffectToConditionKey(eff) {
 	}
 
 	// 3) If any free-form statuses look like condition names ("afraid","angry",…)
-	if (Array.isArray(eff.statuses)) {
-		const lowers = eff.statuses.map((s) => String(s).toLowerCase());
-		for (const k of COND_KEYS) {
-			if (lowers.includes(LOWER[k]) || lowers.includes(`condition-${LOWER[k]}`))
-				return k;
-		}
+	const lowers = statuses.map((s) => s.toLowerCase());
+	for (const k of COND_KEYS) {
+		if (lowers.includes(LOWER[k]) || lowers.includes(`condition-${LOWER[k]}`))
+			return k;
 	}
 
 	// 4) Exact image match to our canonical icon (rare, but safe)
@@ -174,10 +186,8 @@ function classifyEffectToConditionKey(eff) {
 function isOurEffect(eff) {
 	if (!eff) return false;
 	if (eff.getFlag(NS, FX_FLAG) === true) return true;
-	if (Array.isArray(eff.statuses)) {
-		return eff.statuses.some((s) => ID_TO_KEY[s]); // contains one of our status ids
-	}
-	return false;
+	const statuses = getStatuses(eff);
+	return statuses.some((s) => ID_TO_KEY[s]); // contains one of our status ids
 }
 
 /* --------------------------- Read / De-dup Present ------------------------- */
@@ -188,7 +198,7 @@ function readCurrentManagedByStatus(actor) {
 	if (!actor?.effects) return map;
 	for (const eff of actor.effects) {
 		if (!isOurEffect(eff)) continue;
-		for (const s of eff.statuses ?? []) {
+		for (const s of getStatuses(eff)) {
 			if (ID_TO_KEY[s]) map.set(s, eff.id);
 		}
 	}

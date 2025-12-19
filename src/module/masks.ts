@@ -12,12 +12,10 @@ Hooks.once("init", () => {
         label: 'DISPATCH.SheetConfig.character',
     });
 
-    // Register Call sheet for NPC actors (used for Dispatch-style vignettes)
-    // Users create an NPC and switch to this sheet to make it a "Call"
-    // IMPORTANT: Use module namespace so all clients can find the sheet class
+    // Call sheet for "other" actor type (custom subtype "call")
     Actors.registerSheet('masks-newgeneration-unofficial', CallSheet, {
-        types: ['npc'],
-        makeDefault: false,
+        types: ['other'],
+        makeDefault: true,
         label: 'DISPATCH.SheetConfig.call',
     });
 
@@ -36,7 +34,7 @@ Hooks.once("init", () => {
 		var link = document.createElement('link');
 		link.rel = 'stylesheet';
 		link.type = 'text/css';
-		link.href = './modules/masks-newgeneration-unofficial/css/dark-mode.css';
+		link.href = 'modules/masks-newgeneration-unofficial/assets/dark-mode.css';
 		//Append link element to HTML head
 		head.appendChild(link);
 	}
@@ -176,6 +174,10 @@ Hooks.on("preCreateActor", async function (document) {
     if (document.type === 'character') {
         document.updateSource({'flags.masks-newgeneration-unofficial.influences': []});
     }
+    // Set customType so PbtA resolves sheetType to "call" config
+    if (document.type === 'other') {
+        document.updateSource({'system.customType': 'call'});
+    }
 });
 
 // Note: Influence handlers are now in actor-sheet.mjs as part of the V2 sheet implementation.
@@ -273,7 +275,6 @@ import './team';
 import './tools';
 import './xcard';
 import './advantage';
-import './encounter-tracker';
 import './conditions';
 import './health';
 import './turn-cards';

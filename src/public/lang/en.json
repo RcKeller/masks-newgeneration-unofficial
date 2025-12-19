@@ -193,6 +193,8 @@
             }
         },
         "Call": {
+            "TypeLabel": "Call",
+            "Description": "Description",
             "Types": {
                 "assault": "Assault",
                 "rescue": "Rescue",
@@ -213,7 +215,7 @@
             "RevealFit": "Preview Fit",
             "Fit": {
                 "great": "Great Fit",
-                "good": "Good Fit",
+                "good": "Decent Fit",
                 "decent": "Decent Fit",
                 "poor": "Poor Fit"
             }
