@@ -8,7 +8,7 @@ import {
 	InfluenceIndex,
 } from "./helpers/influence";
 
-import { createLabelsGraphData } from "./labels-graph";
+import { createLabelsGraphData, saveGraphAnimationState, animateGraphFromSavedState } from "./labels-graph";
 
 import {
 	getPlaybookName,
@@ -741,7 +741,6 @@ const TurnCardsHUD = {
 	_hooksRegistered: false,
 	_renderQueued: false,
 	_lastCooldownFrac: new Map(),
-	_lastLabelsGraphState: new Map(), // Store previous labels graph states for animation
 
 	mount() {
 		const host =
@@ -1435,78 +1434,28 @@ const TurnCardsHUD = {
 	},
 
 	/**
-	 * Save current labels graph states for animation
+	 * Save current labels graph states for animation (using shared utility)
 	 */
 	_saveLabelsGraphStates() {
 		if (!this.root) return;
-
-		// Select character turn cards (not team card) - class is "turncard" not "turn-card"
 		const cards = this.root.querySelectorAll(".turncard[data-actor-id]");
 		for (const card of cards) {
 			const actorId = card.dataset.actorId;
 			if (!actorId) continue;
-
-			const dataPath = card.querySelector(".labels-graph-data");
-			if (dataPath) {
-				this._lastLabelsGraphState.set(actorId, {
-					path: dataPath.getAttribute("d"),
-					fill: dataPath.getAttribute("fill"),
-					stroke: dataPath.getAttribute("stroke"),
-				});
-			}
+			saveGraphAnimationState(`turncard-${actorId}`, card as HTMLElement);
 		}
 	},
 
 	/**
-	 * Animate labels graphs from previous state to new state
+	 * Animate labels graphs from previous state to new state (using shared utility)
 	 */
 	_animateLabelsGraphs() {
 		if (!this.root) return;
-
-		// Select character turn cards (not team card) - class is "turncard" not "turn-card"
 		const cards = this.root.querySelectorAll(".turncard[data-actor-id]");
 		for (const card of cards) {
 			const actorId = card.dataset.actorId;
 			if (!actorId) continue;
-
-			const prev = this._lastLabelsGraphState.get(actorId);
-			if (!prev) continue;
-
-			const dataPath = card.querySelector(".labels-graph-data");
-			if (!dataPath) continue;
-
-			// Get the new (target) values that were just rendered
-			const newPath = dataPath.getAttribute("d");
-			const newFill = dataPath.getAttribute("fill");
-			const newStroke = dataPath.getAttribute("stroke");
-
-			// Only animate if values actually changed
-			if (prev.path === newPath && prev.fill === newFill && prev.stroke === newStroke) {
-				continue;
-			}
-
-			// Temporarily disable transition, set old values
-			dataPath.style.transition = "none";
-			dataPath.setAttribute("d", prev.path);
-			dataPath.setAttribute("fill", prev.fill);
-			dataPath.setAttribute("stroke", prev.stroke);
-
-			// Force reflow to apply old values immediately
-			void dataPath.getBoundingClientRect();
-
-			// Re-enable transition and set new values - this triggers the animation
-			dataPath.style.transition = "d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease";
-			dataPath.setAttribute("d", newPath);
-			dataPath.setAttribute("fill", newFill);
-			dataPath.setAttribute("stroke", newStroke);
-		}
-
-		// Clean up old entries for actors no longer present
-		const presentActorIds = new Set(Array.from(cards).map(c => c.dataset.actorId).filter(Boolean));
-		for (const key of Array.from(this._lastLabelsGraphState.keys())) {
-			if (!presentActorIds.has(key)) {
-				this._lastLabelsGraphState.delete(key);
-			}
+			animateGraphFromSavedState(`turncard-${actorId}`, card as HTMLElement);
 		}
 	},
 };

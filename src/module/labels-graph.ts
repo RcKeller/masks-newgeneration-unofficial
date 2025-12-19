@@ -549,6 +549,86 @@ export const GRAPH_PRESETS = Object.freeze({
 	},
 });
 
+// ────────────────────────────────────────────────────────────────────────────
+// Shared Animation State Management
+// ────────────────────────────────────────────────────────────────────────────
+
+interface GraphAnimationState {
+	path: string;
+	fill: string;
+	stroke: string;
+}
+
+// Module-level cache for animation states (keyed by unique identifier)
+const graphAnimationStateCache = new Map<string, GraphAnimationState>();
+
+/**
+ * Save the current state of a labels graph for later animation
+ * Call this BEFORE replacing/re-rendering the graph HTML
+ * @param key - Unique identifier (e.g., "actor-{id}", "turncard-{id}")
+ * @param container - Container element or SVG element
+ */
+export function saveGraphAnimationState(key: string, container: HTMLElement | SVGElement | null): void {
+	if (!container) return;
+	const dataPath = container.querySelector(".labels-graph-data") as SVGPathElement | null;
+	if (!dataPath) return;
+	graphAnimationStateCache.set(key, {
+		path: dataPath.getAttribute("d") ?? "",
+		fill: dataPath.getAttribute("fill") ?? "",
+		stroke: dataPath.getAttribute("stroke") ?? "",
+	});
+}
+
+/**
+ * Animate a labels graph from its previously saved state to its current state
+ * Call this AFTER the new graph HTML is in the DOM
+ * @param key - Unique identifier matching the saveGraphAnimationState call
+ * @param container - Container element or SVG element with the new graph
+ * @returns true if animation was applied, false if skipped
+ */
+export function animateGraphFromSavedState(key: string, container: HTMLElement | SVGElement | null): boolean {
+	const prev = graphAnimationStateCache.get(key);
+	graphAnimationStateCache.delete(key); // Always clean up
+
+	if (!prev || !container) return false;
+
+	const dataPath = container.querySelector(".labels-graph-data") as SVGPathElement | null;
+	if (!dataPath) return false;
+
+	const newPath = dataPath.getAttribute("d") ?? "";
+	const newFill = dataPath.getAttribute("fill") ?? "";
+	const newStroke = dataPath.getAttribute("stroke") ?? "";
+
+	// Skip animation if nothing changed
+	if (prev.path === newPath && prev.fill === newFill && prev.stroke === newStroke) {
+		return false;
+	}
+
+	// 1. Disable transitions and set OLD values
+	dataPath.style.transition = "none";
+	dataPath.setAttribute("d", prev.path);
+	dataPath.setAttribute("fill", prev.fill);
+	dataPath.setAttribute("stroke", prev.stroke);
+
+	// 2. Force reflow to apply old values synchronously
+	void dataPath.getBoundingClientRect();
+
+	// 3. Re-enable transitions and set NEW values - triggers animation
+	dataPath.style.transition = "d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease";
+	dataPath.setAttribute("d", newPath);
+	dataPath.setAttribute("fill", newFill);
+	dataPath.setAttribute("stroke", newStroke);
+
+	return true;
+}
+
+/**
+ * Clear any stale animation states (call on cleanup)
+ */
+export function clearGraphAnimationState(key: string): void {
+	graphAnimationStateCache.delete(key);
+}
+
 // Export constants for external use
 export { LABEL_ORDER, LABEL_DISPLAY_NAMES, LABEL_ICONS, CONDITION_TO_LABEL, COLORS };
 

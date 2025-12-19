@@ -429,9 +429,10 @@ export class CallSheet extends ActorSheet {
 			const dispatchStatus: DispatchStatus = this.actor.getFlag(NS, "dispatchStatus") ?? "idle";
 			if (dispatchStatus === "assessing") return;
 
-			// Check if stats/labels changed (system.stats)
+			// Check if stats/labels/conditions changed
 			if (foundry.utils.hasProperty(changes, "system.stats") ||
 				foundry.utils.hasProperty(changes, "system.resources") ||
+				foundry.utils.hasProperty(changes, "system.attributes.conditions") ||
 				foundry.utils.hasProperty(changes, "flags")) {
 				// Try partial update first for smooth animation
 				if (!this._updateGraphInPlace('hero')) {

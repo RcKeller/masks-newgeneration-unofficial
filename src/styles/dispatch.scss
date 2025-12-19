@@ -1950,8 +1950,8 @@ textarea:disabled {
     &:hover { transform: scale(1.05); }
 
     .labels-graph-svg {
-      width: 100px;
-      height: 100px;
+      width: 200px;
+      height: 200px;
 
       path:last-of-type {
         transition: fill 0.3s ease, stroke 0.3s ease, d 0.3s ease;
