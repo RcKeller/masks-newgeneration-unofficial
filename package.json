@@ -3,7 +3,6 @@
   "version": "3.0.0",
   "description": "FoundryVTT Module for Dispatch (Masks: A New Generation)",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "lint": "eslint . --ext .ts,.js",
     "check-types": "tsc --noEmit",
