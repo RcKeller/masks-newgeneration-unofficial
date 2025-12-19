@@ -21,16 +21,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: 'npm'
 
       - name: Set version outputs
         id: version
@@ -40,10 +35,10 @@ jobs:
           echo "zip_name=${PACKAGE_NAME}-${VERSION}.zip" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Build module
-        run: pnpm run ci
+        run: npm run ci
 
       - name: Update module.json with version
         run: |

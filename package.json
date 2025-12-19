@@ -9,9 +9,9 @@
     "ci": "vite build && node scripts/inject-id.js",
     "update-readme": "node scripts/update-readme.js",
     "link:dev": "node scripts/link-dev.js",
-    "dev": "pnpm link:dev && vite dev",
+    "dev": "npm run link:dev && vite dev",
     "link:dist": "node scripts/link-dist.js",
-    "build": "pnpm link:dist && vite build && node scripts/inject-id.js",
+    "build": "npm run link:dist && vite build && node scripts/inject-id.js",
     "build:rc": "npm run check-types && vite build && node scripts/inject-id.js",
     "postbuild:rc": "dotenv -e .env -- sh -c 'rsync -avz --delete dist/ \"$DEPLOY_HOST_ALIAS:$DEPLOY_PATH\"'",
     "test": "jest",
@@ -26,15 +26,6 @@
   },
   "author": "Andrew Keller Barrows",
   "license": "MIT",
-  "packageManager": "pnpm@10.6.1",
-  "pnpm": {
-    "ignoredBuiltDependencies": [
-      "esbuild"
-    ],
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
-  },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@commitlint/cli": "^20.1.0",
