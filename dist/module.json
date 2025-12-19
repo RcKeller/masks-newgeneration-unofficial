@@ -2,7 +2,7 @@
   "id": "masks-newgeneration-unofficial",
   "title": "Dispatch",
   "description": "Dispatch adaptation using Masks: A New Generation",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "socket": true,
   "compatibility": {
     "minimum": 13,
@@ -359,21 +359,21 @@
     }
   ],
   "esmodules": [
-    "dist/dispatch.js"
+    "main.bundle.js"
   ],
   "styles": [
-    "dist/styles/dispatch.css"
+    "assets/main.css"
   ],
   "languages": [
     {
       "lang": "en",
       "name": "English",
-      "path": "dist/lang/en.json"
+      "path": "lang/en.json"
     },
     {
       "lang": "es",
       "name": "Spanish",
-      "path": "dist/lang/es.json"
+      "path": "lang/es.json"
     }
   ],
   "flags": {
@@ -384,9 +384,9 @@
         "json"
       ],
       "paths": [
-        "dist/styles",
-        "dist/templates",
-        "dist/lang"
+        "assets",
+        "templates",
+        "lang"
       ]
     }
   },
@@ -407,16 +407,13 @@
   "license": "LICENSE",
   "readme": "README.md",
   "includes": [
+    "assets",
+    "docs",
+    "images",
+    "lang",
+    "main.bundle.js",
+    "main.bundle.js.map",
     "module.json",
-    "dist/dispatch.js",
-    "dist/dispatch.js.map",
-    "dist/styles/",
-    "dist/templates/",
-    "dist/lang/",
-    "packs/",
-    "images/",
-    "LICENSE",
-    "README.md",
-    "CHANGELOG.md"
+    "templates"
   ]
 }
