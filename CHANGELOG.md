@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.4.0...v1.4.1) (2025-12-19)
+
+
+### Bug Fixes
+
+* dist/templates ([d9b815f](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/d9b815f78e74d725418dd682e36f41ced46bc22e))
+
 # [1.4.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.3.0...v1.4.0) (2025-12-19)
 
 
