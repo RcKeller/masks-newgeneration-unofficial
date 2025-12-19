@@ -3,7 +3,7 @@
 	{{!-- New Character Sheet Layout --}}
 	<div class="masks-sheet">
 		{{!-- Left Panel: Portrait, Identity, Conditions --}}
-		{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-left-panel.hbs"}}
+		{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-left-panel.hbs"}}
 
 		{{!-- Right Section: Tabs + Stats Sidebar --}}
 		<div class="masks-sheet__right">
@@ -27,14 +27,14 @@
 
 				{{!-- Tab Content --}}
 				<div class="tab-content">
-					{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-info-tab.hbs"}}
-					{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-powers-tab.hbs"}}
-					{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-playbook-tab.hbs"}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-info-tab.hbs"}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-powers-tab.hbs"}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-playbook-tab.hbs"}}
 				</div>
 			</div>
 
 			{{!-- Stats Sidebar --}}
-			{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-labels-sidebar.hbs"}}
+			{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-labels-sidebar.hbs"}}
 		</div>
 	</div>
 
@@ -42,11 +42,11 @@
 	{{!-- NPC Sheet - Keep existing layout for now --}}
 	<div class="sheet-wrapper npc-sheet">
 		{{!-- Sheet Header --}}
-		{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-header.hbs" }}
+		{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-header.hbs" }}
 
 		<section class="sheet-top flexcol">
 			<section class="sheet-attributes-top">
-				{{~> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-attributes.hbs" attrs=system.attrTop cssClass="cell--attributes-top flexrow" owner=owner editable=editable ~}}
+				{{~> "modules/masks-newgeneration-unofficial/templates/parts/actor-attributes.hbs" attrs=system.attrTop cssClass="cell--attributes-top flexrow" owner=owner editable=editable ~}}
 			</section>
 		</section>
 
@@ -74,7 +74,7 @@
 					{{> "pbta.actor-description" }}
 
 					{{!-- Moves Tab --}}
-					{{> "modules/masks-newgeneration-unofficial/dist/templates/parts/actor-movelist.hbs" }}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-movelist.hbs" }}
 				</section>
 			</section>
 		</section>
