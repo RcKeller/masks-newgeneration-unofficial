@@ -884,8 +884,8 @@ export async function executeDoomTrackAction(actor, delta) {
 
 		if (checkedTriggers.length > 0) {
 			const triggersList = checkedTriggers.map((t) => `<li>• ${t.label}</li>`).join("");
-			const content = `<h3>${actor.name}'s Doom advances to ${next}/${max}</h3>
-				<p><em>What brings your doom closer:</em></p>
+			const content = `<h6>Moved closer to their Doom... (${next}/${max})</h6>
+				<p><em>What brings ${actor.name}'s closer to their Doom:</em></p>
 				<ul style="list-style: none; padding-left: 0.5em;">${triggersList}</ul>`;
 
 			await ChatMessage.create({
@@ -896,7 +896,7 @@ export async function executeDoomTrackAction(actor, delta) {
 		} else {
 			// Just announce the doom change
 			await ChatMessage.create({
-				content: `<h3>${actor.name}'s Doom advances to ${next}/${max}</h3>`,
+				content: `<h6>${actor.name}'s moves closer to their Doom... (${next}/${max})</h6>`,
 				speaker: ChatMessage.getSpeaker({ actor }),
 				style: CONST.CHAT_MESSAGE_STYLES.OTHER,
 			});

@@ -72,9 +72,9 @@ const COLORS = Object.freeze({
 	fillDefault: "rgba(180, 160, 90, 0.6)",     // Dull yellow
 	strokeDefault: "rgba(220, 200, 100, 0.95)", // Brighter yellow edges
 
-	// Bonus active (Forward + Ongoing > 0)
-	fillBonus: "rgba(60, 140, 200, 0.6)",       // Blue
-	strokeBonus: "rgba(100, 180, 240, 0.95)",   // Brighter blue edges
+	// Bonus active (Forward + Ongoing >= 1)
+	fillBonus: "rgba(60, 180, 80, 0.6)",        // Green
+	strokeBonus: "rgba(80, 220, 100, 0.95)",    // Brighter green edges
 
 	// Condition affecting a stat (red)
 	fillCondition: "rgba(180, 60, 60, 0.6)",    // Red
@@ -196,8 +196,8 @@ export function extractLabelsData(actor) {
 		affectedLabels,
 		globalBonus,
 		totalPenalty,
-		// Color: blue if bonus >= penalties, red if penalties win, yellow if neutral
-		isPositive: globalBonus >= totalPenalty && globalBonus > 0,
+		// Color: green if bonus >= 1, red if penalties > bonus, yellow otherwise
+		isPositive: globalBonus >= 1,
 		isNegative: totalPenalty > globalBonus,
 	};
 }
@@ -248,7 +248,7 @@ export function generateLabelsGraphSVG(options) {
 		return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
 	});
 
-	// Color: blue if positive, red if negative, yellow default
+	// Color: green if positive (bonus >= 1), red if negative (penalties > bonus), yellow default
 	const [fill, stroke] = isPositive
 		? [COLORS.fillBonus, COLORS.strokeBonus]
 		: isNegative

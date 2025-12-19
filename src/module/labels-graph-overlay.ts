@@ -42,20 +42,20 @@ function makeOverlayUid(): string {
  * 3. Overlap polygon: green/yellow/red based on fit result
  */
 export const OVERLAY_COLORS = Object.freeze({
-	// Hero polygon - ALWAYS yellow (never changes)
-	heroFill: "rgba(180, 160, 90, 0.6)",
-	heroStroke: "rgba(220, 200, 100, 0.95)",
+	// Hero polygon - ALWAYS blue (never changes based on fit)
+	heroFill: "rgba(90, 140, 200, 0.6)",
+	heroStroke: "rgba(100, 170, 240, 0.95)",
 
 	// Requirements polygon - ALWAYS grey (neutral)
 	requirementFill: "rgba(150, 150, 150, 0.4)",
 	requirementStroke: "rgba(200, 200, 200, 0.9)",
 
 	// Overlap polygon - color depends on fit result
-	overlapGreatFill: "rgba(60, 180, 80, 0.6)",       // Green - success (all met)
+	overlapGreatFill: "rgba(60, 180, 80, 0.6)",       // Green - success (all requirements met)
 	overlapGreatStroke: "rgba(80, 220, 100, 0.95)",
-	overlapGoodFill: "rgba(245, 158, 11, 0.6)",       // Yellow - partial success (some met)
+	overlapGoodFill: "rgba(245, 158, 11, 0.6)",       // Yellow - partial success (2+ requirements met)
 	overlapGoodStroke: "rgba(251, 191, 36, 0.95)",
-	overlapPoorFill: "rgba(200, 80, 80, 0.6)",        // Red - failure (none met)
+	overlapPoorFill: "rgba(200, 80, 80, 0.6)",        // Red - failure (<2 requirements met)
 	overlapPoorStroke: "rgba(240, 100, 100, 0.95)",
 
 	// Grid/web lines
@@ -139,37 +139,45 @@ function calculateRequirementVertices(
 }
 
 /**
- * Check if hero meets all requirements
- * Undefined requirements are treated as -9 (always met since hero range is -3 to +4)
+ * Check if hero meets requirements and determine fit result
+ *
+ * Criteria:
+ * - "great" (success): Meet ALL requirements
+ * - "good" (partial): Meet at least 2 requirements
+ * - "poor" (failure): Meet fewer than 2 requirements
+ *
+ * Undefined/null requirements are not counted (not required for that label)
  */
 export function checkFitResult(
 	heroLabels: Record<string, number>,
 	requirements: CallRequirements
 ): FitResult {
-	let anyRequired = false;
-	let allMet = true;
-	let anyMet = false;
+	let totalRequired = 0;
+	let metCount = 0;
 
 	for (const key of LABEL_ORDER) {
 		const req = requirements[key as keyof CallRequirements];
-		// Undefined/null = not required (treated as -9, always met)
+		// Undefined/null = not required (skip this label)
 		if (req == null) continue;
 
-		anyRequired = true;
+		totalRequired++;
 		const heroValue = heroLabels[key] ?? 0;
 
 		if (heroValue >= req) {
-			anyMet = true;
-		} else {
-			allMet = false;
+			metCount++;
 		}
 	}
 
 	// No requirements = auto pass
-	if (!anyRequired) return "great";
+	if (totalRequired === 0) return "great";
 
-	if (allMet) return "great";
-	if (anyMet) return "good";
+	// Meet ALL requirements = success
+	if (metCount === totalRequired) return "great";
+
+	// Meet at least 2 requirements = partial success
+	if (metCount >= 2) return "good";
+
+	// Meet fewer than 2 requirements = failure
 	return "poor";
 }
 

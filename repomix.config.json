@@ -13,7 +13,7 @@
     "files": true,
     "removeComments": false,
     "removeEmptyLines": false,
-    "compress": false,
+    "compress": true,
     "topFilesLength": 5,
     "showLineNumbers": false,
     "truncateBase64": false,
@@ -29,15 +29,10 @@
     }
   },
   "include": [
-    "src/scss",
+    "src/module",
     "src/module/sheets",
-    "src/module/masks.ts",
     "src/module/helpers",
-    "src/public/templates",
-    "src/public/lang/en.json",
-    "module.json",
-    "package.json",
-    "CONTRIBUTING.md"
+    "module.json"
   ],
   "ignore": {
     "useGitignore": true,
