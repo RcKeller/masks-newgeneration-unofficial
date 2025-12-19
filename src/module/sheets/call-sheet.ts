@@ -13,7 +13,7 @@ import { extractLabelsData, LABEL_ORDER, GRAPH_PRESETS } from "../labels-graph";
 import { CooldownSystem, getTeamCombatants, getActiveCombat } from "../turn-cards";
 
 const NS = "masks-newgeneration-unofficial";
-const TEMPLATE = `modules/${NS}/dist/templates/sheets/call-sheet.hbs`;
+const TEMPLATE = `modules/${NS}/templates/sheets/call-sheet.hbs`;
 
 // Forward bounds (from turn-cards.ts)
 const FORWARD_MIN = -1;

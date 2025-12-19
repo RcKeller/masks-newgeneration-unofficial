@@ -33,7 +33,7 @@
  */
 
 const NS = "masks-newgeneration-unofficial";
-const TEMPLATE_PATH = `modules/${NS}/dist/templates/xcard.hbs`;
+const TEMPLATE_PATH = `modules/${NS}/templates/xcard.hbs`;
 
 // --- Settings (new + legacy/deprecated) ---
 const KEY_XCARD_MODE = "xcardTriggerMode"; // client select: user-configurable mode

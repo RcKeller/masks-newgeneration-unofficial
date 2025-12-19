@@ -34,7 +34,7 @@ Hooks.once("init", () => {
 		var link = document.createElement('link');
 		link.rel = 'stylesheet';
 		link.type = 'text/css';
-		link.href = './modules/masks-newgeneration-unofficial/css/dark-mode.css';
+		link.href = 'modules/masks-newgeneration-unofficial/assets/dark-mode.css';
 		//Append link element to HTML head
 		head.appendChild(link);
 	}

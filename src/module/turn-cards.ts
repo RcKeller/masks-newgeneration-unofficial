@@ -25,7 +25,7 @@ import {
 
 const NS = "masks-newgeneration-unofficial";
 const SOCKET_NS = `module.${NS}`;
-const TEMPLATE = `modules/${NS}/dist/templates/turncards.hbs`;
+const TEMPLATE = `modules/${NS}/templates/turncards.hbs`;
 
 // Flags
 const FLAG_COOLDOWN = "turnCardsCooldownRemaining";
