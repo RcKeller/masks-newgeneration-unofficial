@@ -10,7 +10,7 @@ import {
 	type FitResult,
 } from "../labels-graph-overlay";
 import { extractLabelsData, LABEL_ORDER, GRAPH_PRESETS } from "../labels-graph";
-import { CooldownSystem, getTeamCombatants, getActiveCombat } from "../turn-cards";
+import { CooldownSystem, getTeamCombatants, getActiveCombat, isDowned } from "../turn-cards";
 import { HookRegistry } from "../helpers/hook-registry";
 
 const NS = "masks-newgeneration-unofficial";
@@ -223,9 +223,9 @@ export class CallSheet extends ActorSheet {
 			noCombatWarning = true;
 			characterActors = [];
 		} else {
-			// Filter team combatants by cooldown status
+			// Filter team combatants: exclude downed and on-cooldown heroes
 			characterActors = teamCombatants
-				.filter((cbt) => !CooldownSystem.isOnCooldown(cbt, maxCd))
+				.filter((cbt) => !isDowned(cbt) && !CooldownSystem.isOnCooldown(cbt, maxCd))
 				.map((cbt) => ({
 					id: cbt.actorId,
 					name: cbt.actor?.name ?? "Unknown",

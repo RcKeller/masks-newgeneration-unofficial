@@ -1552,4 +1552,4 @@ Hooks.once("ready", () => {
 export { promptShiftLabels, applyShiftLabels };
 
 // Export cooldown system and team utilities for call sheets
-export { CooldownSystem, getTeamCombatants, getActiveCombat };
+export { CooldownSystem, getTeamCombatants, getActiveCombat, isDowned };
