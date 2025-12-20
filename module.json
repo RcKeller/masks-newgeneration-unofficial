@@ -394,5 +394,5 @@
   "download": "https://github.com/RcKeller/masks-newgeneration-unofficial/releases/latest/download/module.zip",
   "license": "LICENSE",
   "readme": "README.md",
-  "includes": ["assets", "docs", "images", "lang", "main.bundle.js", "main.bundle.js.map", "module.json", "templates"]
+  "includes": ["assets", "docs", "images", "lang", "main.bundle.js", "main.bundle.js.map", "module.json", "packs", "templates"]
 }

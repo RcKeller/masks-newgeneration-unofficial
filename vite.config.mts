@@ -20,6 +20,10 @@ export default defineConfig(({ mode }) => {
                         src: "module.json",
                         dest: "",
                     },
+                    {
+                        src: "packs",
+                        dest: "",
+                    },
                 ],
             }),
         ],
