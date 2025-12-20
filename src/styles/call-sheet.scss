@@ -342,6 +342,37 @@
   }
 }
 
+.show-to-everyone-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--masks-text-secondary);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--masks-corner-radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  i {
+    font-size: 0.7rem;
+  }
+
+  &:hover {
+    color: var(--masks-text-primary);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--masks-gold);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
 .call-sheet__graph {
   position: relative;
   display: flex;

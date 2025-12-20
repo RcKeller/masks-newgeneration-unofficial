@@ -1,7 +1,7 @@
 import { configSheet } from "./helpers/config-sheet";
 import * as utils from "./helpers/utils";
 import { MasksActorSheetMixin } from './sheets/actor-sheet';
-import { CallSheet, registerCallSheetQueries } from './sheets/call-sheet';
+import { CallSheet, registerCallSheetQueries, registerCallSheetSocketHandler } from './sheets/call-sheet';
 
 Hooks.once("init", () => {
     const masksActorSheet = MasksActorSheetMixin(game.pbta.applications.actor.PbtaActorSheet);
@@ -95,6 +95,9 @@ Hooks.once("init", () => {
 Hooks.once('ready', async function () {
     // Register query handlers for call sheet actions (V13+ query system)
     registerCallSheetQueries();
+
+    // Register socket handler for call sheet actions (Show to Everyone)
+    registerCallSheetSocketHandler();
 
     if (!game.user.isGM) return;
     if (game.settings.get('masks-newgeneration-unofficial', 'firstTime')) {

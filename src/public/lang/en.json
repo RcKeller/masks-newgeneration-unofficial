@@ -223,7 +223,9 @@
                 "good": "Decent Fit",
                 "decent": "Decent Fit",
                 "poor": "Poor Fit"
-            }
+            },
+            "ShowToEveryone": "Show to Everyone",
+            "ShowToEveryoneTooltip": "Open this call for all connected players"
         }
     }
 }

@@ -14,6 +14,7 @@ import { CooldownSystem, getTeamCombatants, getActiveCombat, isDowned } from "..
 import { HookRegistry } from "../helpers/hook-registry";
 
 const NS = "masks-newgeneration-unofficial";
+const SOCKET_NS = `module.${NS}`;
 const TEMPLATE = `modules/${NS}/templates/sheets/call-sheet.hbs`;
 
 // Forward bounds (from turn-cards.ts)
@@ -421,6 +422,9 @@ export class CallSheet extends ActorSheet {
 		// Reveal button (GM only - shows pass/fail preview)
 		html.on("click", "[data-action='reveal-fit']", this._onRevealFit.bind(this));
 
+		// Show to Everyone button
+		html.on("click", "[data-action='show-to-everyone']", this._onShowToEveryone.bind(this));
+
 		// Register Foundry hooks ONCE per sheet instance (not on every render)
 		// This prevents hook accumulation that causes exponential performance degradation
 		if (!this._hooksRegistered) {
@@ -787,6 +791,27 @@ export class CallSheet extends ActorSheet {
 		this.render(false);
 	}
 
+	/**
+	 * Handle "Show to Everyone" button click
+	 * Broadcasts to all clients to open this call sheet
+	 * Players will have other call sheets closed, GMs will not
+	 */
+	async _onShowToEveryone(event: JQuery.ClickEvent) {
+		event.preventDefault();
+
+		// Broadcast to all connected clients
+		game.socket?.emit(SOCKET_NS, {
+			action: "showCallToEveryone",
+			callActorId: this.actor.id,
+			callActorUuid: this.actor.uuid,
+			fromUserId: game.user?.id,
+		});
+
+		// Also handle locally for the sender
+		// (GM doesn't close their own sheets, but other users do)
+		handleShowCallToEveryone(this.actor.id!, game.user?.id ?? "");
+	}
+
 	/** @override */
 	async _render(force?: boolean, options?: RenderOptions) {
 		// Save graph state for animation
@@ -1076,4 +1101,97 @@ async function queryGM<T>(queryName: string, data: object): Promise<T | null> {
 		console.error(`[${NS}] Query failed:`, e);
 		return null;
 	}
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// "Show to Everyone" Socket Handler
+// ────────────────────────────────────────────────────────────────────────────
+
+/** Module-level socket handler reference for cleanup on hot reload */
+let _callSheetSocketHandler: ((data: unknown) => void) | null = null;
+
+/**
+ * Handle the "Show to Everyone" action
+ * - For non-GM users: closes all other open call sheets, then opens the target call
+ * - For GM users: just opens the call sheet (doesn't close others)
+ */
+function handleShowCallToEveryone(callActorId: string, _fromUserId: string): void {
+	const currentUser = game.user;
+	if (!currentUser) return; // Safety check - should never happen after ready
+
+	const isGM = currentUser.isGM ?? false;
+
+	// Get the call actor
+	const callActor = game.actors?.get(callActorId);
+	if (!callActor) {
+		console.warn(`[${NS}] Call actor not found: ${callActorId}`);
+		return;
+	}
+
+	// Check if user can view this call (at least LIMITED permission)
+	if (!callActor.testUserPermission(currentUser, "LIMITED")) {
+		console.log(`[${NS}] User lacks permission to view call: ${callActorId}`);
+		return;
+	}
+
+	// For non-GM users: close all other open call sheets first
+	if (!isGM) {
+		// Find all open windows that are call sheets (other than the one being shown)
+		const openWindows = Object.values(ui.windows) as Application[];
+		for (const app of openWindows) {
+			// Check if this is a CallSheet for a different call
+			if (app instanceof CallSheet && app.actor?.id !== callActorId) {
+				app.close();
+			}
+		}
+	}
+
+	// Open the call sheet
+	// Use render(true) to bring to front if already open
+	callActor.sheet?.render(true);
+}
+
+/**
+ * Register socket handler for call sheet actions
+ * Called once during module init
+ */
+export function registerCallSheetSocketHandler(): void {
+	if (!game.socket) {
+		console.warn(`[${NS}] Socket not available for call sheet handler`);
+		return;
+	}
+
+	// Remove existing handler to prevent duplicates on hot reload
+	if (_callSheetSocketHandler) {
+		game.socket.off(SOCKET_NS, _callSheetSocketHandler);
+		_callSheetSocketHandler = null;
+	}
+
+	// Create and register new handler
+	_callSheetSocketHandler = (data: unknown) => {
+		const payload = data as {
+			action?: string;
+			callActorId?: string;
+			callActorUuid?: string;
+			fromUserId?: string;
+		} | null;
+
+		if (!payload?.action) return;
+
+		// Handle "Show to Everyone" broadcasts
+		if (payload.action === "showCallToEveryone") {
+			const callActorId = payload.callActorId;
+			const fromUserId = payload.fromUserId ?? "";
+
+			if (!callActorId) {
+				console.warn(`[${NS}] showCallToEveryone: missing callActorId`);
+				return;
+			}
+
+			handleShowCallToEveryone(callActorId, fromUserId);
+		}
+	};
+
+	game.socket.on(SOCKET_NS, _callSheetSocketHandler);
+	console.log(`[${NS}] Call sheet socket handler registered`);
 }

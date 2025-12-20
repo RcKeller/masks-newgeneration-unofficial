@@ -106,6 +106,9 @@
       <div class="call-sheet__right-content">
         <header class="call-sheet__title">
           <input type="text" class="call-title-input" name="name" value="{{actor.name}}" {{#unless canEdit}}disabled{{/unless}} placeholder="Call Title" />
+          <button type="button" class="show-to-everyone-btn" data-action="show-to-everyone" title="{{localize 'DISPATCH.Call.ShowToEveryoneTooltip'}}">
+            <i class="fa-solid fa-users"></i> {{localize "DISPATCH.Call.ShowToEveryone"}}
+          </button>
         </header>
 
         {{!-- Overlay Graph Preview --}}
