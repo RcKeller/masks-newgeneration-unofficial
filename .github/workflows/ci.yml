@@ -60,6 +60,10 @@ jobs:
           rm -f package-lock.json
           npm install
 
+      - name: Compile compendium packs
+        shell: bash
+        run: npm run pullJSONtoLDB
+
       - name: Run tests
         shell: bash
         run: npm run coverageTest

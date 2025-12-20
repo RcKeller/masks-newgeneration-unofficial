@@ -39,6 +39,9 @@ jobs:
           rm -f package-lock.json
           npm install
 
+      - name: Compile compendium packs
+        run: npm run pullJSONtoLDB
+
       - name: Build module
         run: npm run ci
 
