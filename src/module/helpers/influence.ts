@@ -88,6 +88,12 @@ class InfluenceIndexImpl {
     /** Guard set for symmetry sync (avoid infinite loops) */
     this._syncGuard = new Set();
 
+    /** Guard set for Nomad influence count sync (prevent cascading updates) */
+    this._nomadSyncGuard = new Set();
+
+    /** Debounced rebuild queue flag */
+    this._rebuildQueued = false;
+
     this._registerMinimalHooks();
   }
 
@@ -130,6 +136,19 @@ class InfluenceIndexImpl {
       this.fromKeys.add(fromKey);
     }
     set.add(toKey);
+  }
+
+  /**
+   * Queue a rebuild to batch multiple rapid changes.
+   * Uses queueMicrotask to coalesce updates within the same event loop tick.
+   */
+  queueRebuild() {
+    if (this._rebuildQueued) return;
+    this._rebuildQueued = true;
+    queueMicrotask(() => {
+      this._rebuildQueued = false;
+      this.rebuild();
+    });
   }
 
   /* ---------------------------- Querying & Match ---------------------------- */
@@ -294,16 +313,16 @@ class InfluenceIndexImpl {
     const updates = [];
     for (const { doc, infl, dirty } of targetMap.values()) {
       if (!dirty) continue;
-      // Guard to avoid loops
+      // Guard to avoid loops - released when the promise settles
       this._syncGuard.add(doc.id);
-      try {
-        updates.push(doc.setFlag("masks-newgeneration-unofficial", "influences", infl));
-      } catch (err) {
-        console.error(`[${NS}] Failed to sync Influence flags on ${doc.name}`, err);
-      } finally {
-        // let Foundry finish its update cycle before releasing guard
-        setTimeout(() => this._syncGuard.delete(doc.id), 0);
-      }
+      const promise = doc.setFlag("masks-newgeneration-unofficial", "influences", infl)
+        .catch(err => {
+          console.error(`[${NS}] Failed to sync Influence flags on ${doc.name}`, err);
+        })
+        .finally(() => {
+          this._syncGuard.delete(doc.id);
+        });
+      updates.push(promise);
     }
     if (updates.length) {
       try { await Promise.allSettled(updates); }
@@ -331,7 +350,13 @@ class InfluenceIndexImpl {
           // Fire and forget; do not await to keep UI snappy.
           this.syncCharacterPairFlags(actor);
         }
-        this.rebuild();
+        // Use debounced rebuild to batch rapid changes
+        this.queueRebuild();
+      }
+
+      // Sync Nomad influence counts when influences change (guarded to prevent cascades)
+      if (inflChanged) {
+        syncNomadInfluenceCount(actor, this._nomadSyncGuard);
       }
     });
 
@@ -351,13 +376,19 @@ export const InfluenceIndex = new InfluenceIndexImpl();
  * Sync The Nomad's theNomad attribute with the count of influence given.
  * The Nomad can only give 6 Influence total, so we clamp to 0-6.
  * This value is derived from how many entries have hasInfluenceOver === true.
+ *
+ * @param actor - The actor to check/sync
+ * @param guard - Optional guard Set to prevent cascading updates
  */
-async function syncNomadInfluenceCount(actor) {
+async function syncNomadInfluenceCount(actor, guard = null) {
   if (!actor || actor.type !== "character") return;
 
   // Only sync for The Nomad playbook
   const playbook = actor.system?.playbook?.name ?? "";
   if (playbook !== "The Nomad") return;
+
+  // Check guard to prevent cascading updates
+  if (guard?.has(actor.id)) return;
 
   const influences = readInfluences(actor);
   if (!Array.isArray(influences)) return;
@@ -373,11 +404,15 @@ async function syncNomadInfluenceCount(actor) {
   const currentValue = Number(foundry.utils.getProperty(actor, "system.attributes.theNomad.value")) || 0;
 
   if (currentValue !== clampedValue) {
+    // Add to guard before update to prevent re-entry
+    guard?.add(actor.id);
     try {
       await actor.update({ "system.attributes.theNomad.value": clampedValue });
       console.log(`[${NS}] Synced Nomad influence count: ${currentValue} -> ${clampedValue}`);
     } catch (err) {
       console.error(`[${NS}] Failed to sync Nomad influence count`, err);
+    } finally {
+      guard?.delete(actor.id);
     }
   }
 }
@@ -385,13 +420,16 @@ async function syncNomadInfluenceCount(actor) {
 /**
  * Check all Nomad actors and sync their influence counts.
  * Called on init and when influence data changes.
+ * Uses the InfluenceIndex's guard to prevent cascading updates.
  */
 export function syncAllNomadInfluenceCounts() {
   const nomads = (game.actors?.contents ?? []).filter(
     a => a?.type === "character" && a.system?.playbook?.name === "The Nomad"
   );
+  // Use the InfluenceIndex's Nomad sync guard to prevent cascades
+  const guard = InfluenceIndex._nomadSyncGuard;
   for (const nomad of nomads) {
-    syncNomadInfluenceCount(nomad);
+    syncNomadInfluenceCount(nomad, guard);
   }
 }
 
@@ -406,18 +444,7 @@ export function registerInfluenceHelpers() {
   return true;
 }
 
-// Register hook to sync Nomad counts when influences change
-Hooks.on("updateActor", (actor, changes) => {
-  const inflChanged = foundry.utils.getProperty(changes, FLAG_PATH) !== undefined;
-  if (inflChanged) {
-    // Sync this actor if it's a Nomad
-    syncNomadInfluenceCount(actor);
-    // Also sync any Nomads that might be affected by this actor's changes
-    syncAllNomadInfluenceCounts();
-  }
-});
-
-// Sync all Nomads on game ready
+// Sync all Nomads on game ready (one-time initialization)
 Hooks.once("ready", () => {
   // Small delay to ensure all data is loaded
   setTimeout(() => syncAllNomadInfluenceCounts(), 1000);

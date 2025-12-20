@@ -24,6 +24,8 @@ import {
   registerInfluenceHelpers
 } from "./helpers/influence";
 
+import { HookRegistry } from "./helpers/hook-registry";
+
 // Settings (client)
 const KEY_ENABLED = "influenceLinesEnabled";
 const KEY_HALF_OPACITY = "influenceLinesHalfOpacity";
@@ -35,8 +37,9 @@ const COLOR_IN  = 0x9C27B0; // red
 const COLOR_MUT = 0x2196F3; // yellow
 
 const InfluenceLines = {
-  container: null,
-  currentHoverTokenId: null,
+  container: null as PIXI.Container | null,
+  currentHoverTokenId: null as string | null,
+  _hooks: null as HookRegistry | null,
 
   get enabled() {
     return game.settings.get(NS, KEY_ENABLED) === true;
@@ -53,13 +56,26 @@ const InfluenceLines = {
   ensureContainer() {
     if (!canvas?.stage) return;
 
-    // Replace any previous container (scene change, etc.)
-    if (this.container && this.container.parent) {
-      this.container.parent.removeChild(this.container);
-      try { this.container.destroy({ children: true }); } catch (_) {}
+    // If container exists and is still properly attached, no action needed
+    if (this.container && this.container.parent === canvas.stage) {
+      return;
+    }
+
+    // Cleanup orphaned or detached container
+    if (this.container) {
+      // Remove from any parent if still attached
+      if (this.container.parent) {
+        this.container.parent.removeChild(this.container);
+      }
+      try {
+        this.container.destroy({ children: true });
+      } catch (e) {
+        console.warn(`[${NS}] Failed to destroy influence container`, e);
+      }
       this.container = null;
     }
 
+    // Create new container
     this.container = new PIXI.Container();
     this.container.label = "masks-influence-lines";
     this.container.eventMode = "none";
@@ -182,25 +198,33 @@ Hooks.once("init", () => {
 Hooks.once("ready", () => {
   InfluenceLines.ensureContainer();
 
+  // Initialize hook registry for proper cleanup
+  if (!InfluenceLines._hooks) {
+    InfluenceLines._hooks = new HookRegistry();
+  }
+
+  const hooks = InfluenceLines._hooks;
+
   // Fresh container and clear caches when the canvas is ready or changes
-  Hooks.on("canvasReady", () => {
+  hooks.on("canvasReady", () => {
     InfluenceLines.ensureContainer();
     InfluenceLines.clear();
     InfluenceIndex.invalidateAllTokens();
   });
 
   // Hover behavior — now works for both PCs and NPCs
-  Hooks.on("hoverToken", (token, hovered) => {
+  hooks.on("hoverToken", (token: unknown, hovered: unknown) => {
+    const tok = token as { id?: string };
     if (!InfluenceLines.enabled) {
       InfluenceLines.clear();
       InfluenceLines.currentHoverTokenId = null;
       return;
     }
     if (hovered) {
-      InfluenceLines.currentHoverTokenId = token?.id ?? null;
+      InfluenceLines.currentHoverTokenId = tok?.id ?? null;
       InfluenceLines.drawFor(token);
     } else {
-      if (InfluenceLines.currentHoverTokenId === token?.id) {
+      if (InfluenceLines.currentHoverTokenId === tok?.id) {
         InfluenceLines.currentHoverTokenId = null;
       }
       InfluenceLines.clear();
@@ -208,23 +232,27 @@ Hooks.once("ready", () => {
   });
 
   // If tokens move, transform, rename, or actors update, refresh active lines.
-  Hooks.on("updateToken", (doc, changes) => {
+  hooks.on("updateToken", (doc: unknown, changes: unknown) => {
+    const d = doc as { id?: string };
+    const c = changes as { name?: string };
     // If the token's name changed, invalidate its cached key.
-    if (changes?.name !== undefined) InfluenceIndex.invalidateToken(doc.id);
+    if (c?.name !== undefined && d?.id) InfluenceIndex.invalidateToken(d.id);
     InfluenceLines._redrawIfActive();
   });
-  Hooks.on("controlToken",   () => InfluenceLines._redrawIfActive());
-  Hooks.on("refreshToken",   () => InfluenceLines._redrawIfActive());
-  Hooks.on("deleteToken",    () => InfluenceLines._redrawIfActive());
+  hooks.on("controlToken",  () => InfluenceLines._redrawIfActive());
+  hooks.on("refreshToken",  () => InfluenceLines._redrawIfActive());
+  hooks.on("deleteToken",   () => InfluenceLines._redrawIfActive());
 
-  Hooks.on("updateActor", (actor, changes) => {
+  hooks.on("updateActor", (actor: unknown, changes: unknown) => {
+    const a = actor as { id?: string };
+    const c = changes as { name?: string };
     // If names changed, token keys that reference this actor may need invalidation.
-    const nameChanged = changes.name !== undefined ||
-      foundry.utils.getProperty(changes, "system.attributes.realName.value") !== undefined;
+    const nameChanged = c.name !== undefined ||
+      foundry.utils.getProperty(c, "system.attributes.realName.value") !== undefined;
     if (nameChanged) {
       // Invalidate all tokens of this actor on the current scene
       for (const t of (canvas.tokens?.placeables ?? [])) {
-        if (t?.actor?.id === actor.id) InfluenceIndex.invalidateToken(t.id);
+        if (t?.actor?.id === a.id) InfluenceIndex.invalidateToken(t.id);
       }
     }
     // Edges map is rebuilt inside the helpers when relevant; just re-draw if active

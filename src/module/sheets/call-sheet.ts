@@ -11,6 +11,7 @@ import {
 } from "../labels-graph-overlay";
 import { extractLabelsData, LABEL_ORDER, GRAPH_PRESETS } from "../labels-graph";
 import { CooldownSystem, getTeamCombatants, getActiveCombat } from "../turn-cards";
+import { HookRegistry } from "../helpers/hook-registry";
 
 const NS = "masks-newgeneration-unofficial";
 const TEMPLATE = `modules/${NS}/templates/sheets/call-sheet.hbs`;
@@ -63,11 +64,8 @@ export class CallSheet extends ActorSheet {
 	/** Track previous graph state for animation */
 	_previousGraphState: { heroPath: string; reqPath: string; overlapPath?: string } | null = null;
 
-	/** Bound handler for actor updates */
-	_boundActorUpdateHandler: ((actor: Actor, changes: object, options: object, userId: string) => void) | null = null;
-
-	/** Bound handler for hover events */
-	_boundHoverHandler: ((actorId: string | null) => void) | null = null;
+	/** Hook registry for proper cleanup */
+	_hooks: HookRegistry | null = null;
 
 	/** Debounce timer for requirement changes */
 	_requirementDebounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -380,27 +378,33 @@ export class CallSheet extends ActorSheet {
 
 	/** @override */
 	async close(options?: Application.CloseOptions) {
-		this._unregisterHoverListener();
-		this._unregisterActorUpdateListener();
+		// Cleanup all hooks via registry
+		if (this._hooks) {
+			this._hooks.unregisterAll();
+			this._hooks = null;
+		}
 		return super.close(options);
 	}
 
 	/**
-	 * Register listener for turn card hover events
+	 * Register listeners using HookRegistry for proper cleanup
 	 */
 	_registerHoverListener() {
-		if (this._boundHoverHandler) return; // Already registered
-		this._boundHoverHandler = this._onHoverActor.bind(this);
-		Hooks.on("masksCallHoverActor", this._boundHoverHandler);
+		if (!this._hooks) {
+			this._hooks = new HookRegistry();
+		}
+
+		// Register hover listener
+		this._hooks.on("masksCallHoverActor", (actorId: unknown) => {
+			this._onHoverActor(actorId as string | null);
+		});
 	}
 
 	/**
-	 * Unregister hover listener
+	 * Unregister hover listener (now handled by HookRegistry)
 	 */
 	_unregisterHoverListener() {
-		if (!this._boundHoverHandler) return;
-		Hooks.off("masksCallHoverActor", this._boundHoverHandler);
-		this._boundHoverHandler = null;
+		// Handled by close() via HookRegistry.unregisterAll()
 	}
 
 	/**
@@ -423,12 +427,18 @@ export class CallSheet extends ActorSheet {
 	 * Uses partial update for smooth animation without full re-render
 	 */
 	_registerActorUpdateListener() {
-		if (this._boundActorUpdateHandler) return; // Already registered
+		if (!this._hooks) {
+			this._hooks = new HookRegistry();
+		}
 
-		this._boundActorUpdateHandler = (actor: Actor, changes: object, _options: object, _userId: string) => {
+		// Register actor update listener with early filtering
+		this._hooks.on("updateActor", (actor: unknown, changes: unknown, _options: unknown, _userId: unknown) => {
+			const a = actor as Actor;
+			const c = changes as object;
+
 			// Check if the updated actor is our assigned hero
 			const assignedActorIds: string[] = this.actor.getFlag(NS, "assignedActorIds") ?? [];
-			if (!assignedActorIds.includes(actor.id ?? "")) return;
+			if (!assignedActorIds.includes(a.id ?? "")) return;
 
 			// Skip updates during dispatch process - the graph should remain frozen
 			// until dispatch completes and the snapshot is saved
@@ -436,29 +446,24 @@ export class CallSheet extends ActorSheet {
 			if (dispatchStatus === "assessing") return;
 
 			// Check if stats/labels/conditions changed
-			if (foundry.utils.hasProperty(changes, "system.stats") ||
-				foundry.utils.hasProperty(changes, "system.resources") ||
-				foundry.utils.hasProperty(changes, "system.attributes.conditions") ||
-				foundry.utils.hasProperty(changes, "flags")) {
+			if (foundry.utils.hasProperty(c, "system.stats") ||
+				foundry.utils.hasProperty(c, "system.resources") ||
+				foundry.utils.hasProperty(c, "system.attributes.conditions") ||
+				foundry.utils.hasProperty(c, "flags")) {
 				// Try partial update first for smooth animation
 				if (!this._updateGraphInPlace('hero')) {
 					// Fallback to full render if partial update failed
 					this.render(false);
 				}
 			}
-		};
-
-		Hooks.on("updateActor", this._boundActorUpdateHandler);
+		});
 	}
 
 	/**
-	 * Unregister actor update listener
+	 * Unregister actor update listener (now handled by HookRegistry)
 	 */
 	_unregisterActorUpdateListener() {
-		if (this._boundActorUpdateHandler) {
-			Hooks.off("updateActor", this._boundActorUpdateHandler);
-			this._boundActorUpdateHandler = null;
-		}
+		// Handled by close() via HookRegistry.unregisterAll()
 	}
 
 	/**

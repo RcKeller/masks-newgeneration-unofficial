@@ -8,6 +8,7 @@ import {
 	InfluenceIndex,
 } from "./helpers/influence";
 
+import { HookRegistry } from "./helpers/hook-registry";
 import { createLabelsGraphData, saveGraphAnimationState, animateGraphFromSavedState } from "./labels-graph";
 
 import {
@@ -678,20 +679,31 @@ ${AID_MOVE_UUID}`;
 // Socket Handler (for broadcasts only - Team sync)
 // ────────────────────────────────────────────────────────────────────────────
 
+/** Module-level socket handler reference for cleanup on hot reload */
+let _turnCardsSocketHandler: ((data: unknown) => void) | null = null;
+
 function registerSocketHandler() {
 	if (!game.socket) {
 		console.warn(`[${NS}] Socket not available`);
 		return;
 	}
 
-	game.socket.on(SOCKET_NS, async (data) => {
-		if (!data?.action) return;
+	// Remove existing handler to prevent duplicates on hot reload
+	if (_turnCardsSocketHandler) {
+		game.socket.off(SOCKET_NS, _turnCardsSocketHandler);
+		_turnCardsSocketHandler = null;
+	}
+
+	// Create and register new handler
+	_turnCardsSocketHandler = async (data: unknown) => {
+		const payload = data as { action?: string; toUserId?: string; value?: number; userId?: string } | null;
+		if (!payload?.action) return;
 
 		// Everyone receives team sync broadcasts
-		if (data.action === "turnCardsTeamSync") {
-			const to = data.toUserId;
+		if (payload.action === "turnCardsTeamSync") {
+			const to = payload.toUserId;
 			if (!to || to === game.user?.id) {
-				const v = Number(data.value);
+				const v = Number(payload.value);
 				if (Number.isFinite(v)) TeamService._cache = Math.max(0, Math.floor(v));
 				TurnCardsHUD._queueRender();
 			}
@@ -699,12 +711,13 @@ function registerSocketHandler() {
 		}
 
 		// GM handles sync requests
-		if (data.action === "turnCardsTeamSyncRequest" && isGM()) {
+		if (payload.action === "turnCardsTeamSyncRequest" && isGM()) {
 			await TeamService.init();
-			TeamService._broadcast(TeamService.value, data.userId ?? null);
+			TeamService._broadcast(TeamService.value, payload.userId ?? null);
 		}
-	});
+	};
 
+	game.socket.on(SOCKET_NS, _turnCardsSocketHandler);
 	console.log(`[${NS}] Socket handler registered`);
 }
 
@@ -712,24 +725,48 @@ function registerSocketHandler() {
 // GM Query Helper - Players use this to request GM actions
 // ────────────────────────────────────────────────────────────────────────────
 
-async function queryGM(queryName, data, options = {}) {
+/** Pending queries map for deduplication */
+const _pendingQueries = new Map<string, Promise<unknown>>();
+
+/**
+ * Query the GM with deduplication to prevent duplicate requests.
+ * If an identical query is already in flight, returns the existing promise.
+ */
+async function queryGM(queryName: string, data: object, options: { timeout?: number } = {}) {
 	const gm = game.users?.activeGM;
 	if (!gm) {
 		ui.notifications?.warn?.("GM must be online.");
 		return null;
 	}
 
-	try {
-		const result = await gm.query(`${NS}.${queryName}`, data, { timeout: options.timeout ?? 10000 });
-		if (result && !result.success && result.error) {
-			ui.notifications?.warn?.(result.error);
-		}
-		return result;
-	} catch (err) {
-		console.error(`[${NS}] Query failed:`, err);
-		ui.notifications?.error?.("Request timed out or failed.");
-		return null;
+	// Create a key for deduplication (query name + serialized data)
+	const key = `${queryName}:${JSON.stringify(data)}`;
+
+	// Return existing promise if query is already in flight
+	if (_pendingQueries.has(key)) {
+		return _pendingQueries.get(key);
 	}
+
+	// Create and track the query promise
+	const promise = (async () => {
+		try {
+			const result = await gm.query(`${NS}.${queryName}`, data, { timeout: options.timeout ?? 10000 });
+			if (result && typeof result === 'object' && 'success' in result && !result.success && 'error' in result) {
+				ui.notifications?.warn?.(String(result.error));
+			}
+			return result;
+		} catch (err) {
+			console.error(`[${NS}] Query failed:`, err);
+			ui.notifications?.error?.("Request timed out or failed.");
+			return null;
+		}
+	})().finally(() => {
+		// Remove from pending once settled
+		_pendingQueries.delete(key);
+	});
+
+	_pendingQueries.set(key, promise);
+	return promise;
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -737,19 +774,21 @@ async function queryGM(queryName, data, options = {}) {
 // ────────────────────────────────────────────────────────────────────────────
 
 const TurnCardsHUD = {
-	root: null,
-	_hooksRegistered: false,
+	root: null as HTMLElement | null,
+	_hooks: null as HookRegistry | null,
 	_renderQueued: false,
-	_lastCooldownFrac: new Map(),
+	_lastCooldownFrac: new Map<string, number>(),
 
 	mount() {
+		// Cleanup existing state before mounting
+		this.unmount();
+
 		const host =
 			document.querySelector("#ui-middle #ui-bottom") ||
 			document.querySelector("#ui-bottom") ||
 			document.querySelector("#ui-middle") ||
 			document.body;
 
-		this.root?.remove();
 		this.root = document.createElement("section");
 		this.root.id = "masks-turncards";
 		this.root.setAttribute("role", "group");
@@ -763,6 +802,22 @@ const TurnCardsHUD = {
 		TeamService.requestSync();
 
 		this._queueRender();
+	},
+
+	unmount() {
+		// Cleanup hooks
+		if (this._hooks) {
+			this._hooks.unregisterAll();
+			this._hooks = null;
+		}
+
+		// Remove DOM element
+		if (this.root) {
+			this.root.remove();
+			this.root = null;
+		}
+
+		this._lastCooldownFrac.clear();
 	},
 
 	_bindEvents() {
@@ -1190,66 +1245,73 @@ const TurnCardsHUD = {
 	},
 
 	_registerHooks() {
-		if (this._hooksRegistered) return;
-		this._hooksRegistered = true;
+		// Create registry if needed
+		if (!this._hooks) {
+			this._hooks = new HookRegistry();
+		}
 
-		Hooks.on("createCombat", () => this._queueRender());
-		Hooks.on("deleteCombat", () => this._queueRender());
-		Hooks.on("updateCombat", () => this._queueRender());
-		Hooks.on("createCombatant", () => this._queueRender());
-		Hooks.on("deleteCombatant", () => this._queueRender());
+		// Combat lifecycle hooks
+		this._hooks.on("createCombat", () => this._queueRender());
+		this._hooks.on("deleteCombat", () => this._queueRender());
+		this._hooks.on("updateCombat", () => this._queueRender());
+		this._hooks.on("createCombatant", () => this._queueRender());
+		this._hooks.on("deleteCombatant", () => this._queueRender());
 
-		Hooks.on("updateCombatant", (doc, changes) => {
+		// Combatant change detection - optimized with Set
+		const combatantWatchedKeys = new Set(["defeated", `flags.${NS}.${FLAG_COOLDOWN}`, "hidden"]);
+		this._hooks.on("updateCombatant", (doc: Combatant, changes: object) => {
 			const active = getActiveCombat();
 			if (!active || doc?.combat?.id !== active.id) return;
 
 			const flat = foundry.utils.flattenObject(changes ?? {});
-			const keys = Object.keys(flat);
-			const wants = ["defeated", `flags.${NS}.${FLAG_COOLDOWN}`, "hidden"];
-			if (keys.some((k) => wants.some((w) => k === w || k.startsWith(w)))) {
-				this._queueRender();
-			}
+			const shouldRender = Object.keys(flat).some(k =>
+				combatantWatchedKeys.has(k) ||
+				[...combatantWatchedKeys].some(w => k.startsWith(w + "."))
+			);
+			if (shouldRender) this._queueRender();
 		});
 
-		Hooks.on("updateActor", (_actor, changes) => {
+		// Actor change detection - optimized with Set
+		const actorWatchedKeys = new Set([
+			"system.attributes.xp.value",
+			"system.resources.forward.value",
+			"system.resources.ongoing.value",
+			"system.attributes.hp.value",
+			"system.stats",
+			`flags.${NS}.${FLAG_POTENTIAL_FALLBACK}`,
+			"img",
+			"name",
+			// Playbook-specific resource attributes
+			"system.attributes.theDoomed",
+			"system.attributes.theNova",
+			"system.attributes.theNomad",
+			"system.attributes.theSoldier",
+			"system.attributes.theBrainGadgets",
+			"system.attributes.theBeacon",
+			"system.attributes.theInnocent",
+			"system.attributes.theNewborn",
+			"system.attributes.theReformed",
+			"system.playbook",
+		]);
+		this._hooks.on("updateActor", (_actor: Actor, changes: object) => {
 			const flat = foundry.utils.flattenObject(changes ?? {});
-			const keys = Object.keys(flat);
-			const wants = [
-				"system.attributes.xp.value",
-				"system.resources.forward.value",
-				"system.resources.ongoing.value",
-				"system.attributes.hp.value",
-				"system.stats",
-				`flags.${NS}.${FLAG_POTENTIAL_FALLBACK}`,
-				"img",
-				"name",
-				// Playbook-specific resource attributes
-				"system.attributes.theDoomed",
-				"system.attributes.theNova",
-				"system.attributes.theNomad",
-				"system.attributes.theSoldier",
-				"system.attributes.theBrainGadgets",
-				"system.attributes.theBeacon",
-				"system.attributes.theInnocent",
-				"system.attributes.theNewborn",
-				"system.attributes.theReformed",
-				"system.playbook",
-			];
-			if (keys.some((k) => wants.some((w) => k === w || k.startsWith(w)))) {
-				this._queueRender();
-			}
+			const shouldRender = Object.keys(flat).some(k =>
+				actorWatchedKeys.has(k) ||
+				[...actorWatchedKeys].some(w => k.startsWith(w + "."))
+			);
+			if (shouldRender) this._queueRender();
 		});
 
-		Hooks.on("updateJournalEntry", (doc) => {
+		this._hooks.on("updateJournalEntry", (doc: JournalEntry) => {
 			if (TeamService._doc && doc.id === TeamService._doc.id) this._queueRender();
 		});
 
-		Hooks.on("canvasReady", () => {
+		this._hooks.on("canvasReady", () => {
 			if (!document.getElementById("masks-turncards")) this.mount();
 			else this._queueRender();
 		});
 
-		Hooks.on("masksTeamUpdated", () => this._queueRender());
+		this._hooks.on("masksTeamUpdated", () => this._queueRender());
 	},
 
 	_queueRender() {

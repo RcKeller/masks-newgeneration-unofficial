@@ -342,9 +342,9 @@ const QuickInfluence = {
       if (st.now)  bNowSym  = stateSymbol({ hasInfluenceOver: st.now.has,  haveInfluenceOver: st.now.have  });
     }
 
-    // Attempt writes we’re allowed to do; optionally GM‑relay the rest
+    // Attempt writes we're allowed to do; optionally GM‑relay the rest
     const tasks = [];
-    const gmPayload = { action: "applyPair", srcId: actorA.id, tgtId: actorB.id, directive };
+    const gmPayload = { action: "applyPair", srcId: actorA.id, tgtId: actorB.id, directive, userId: game.user?.id };
 
     if (aIsChar) {
       if (canEditActor(actorA)) {
@@ -386,26 +386,50 @@ const QuickInfluence = {
     }
   },
 
-  /** GM-side socket application for counterpart writes. */
-  async _gmApplyFromSocket(data) {
+  /**
+   * GM-side socket application for counterpart writes.
+   * Validates that the requesting user has appropriate permissions before applying.
+   */
+  async _gmApplyFromSocket(data: unknown) {
     if (!game.user?.isGM) return;
-    if (data?.action !== "applyPair") return;
 
-    const actorA = game.actors?.get(data.srcId);
-    const actorB = game.actors?.get(data.tgtId);
+    const payload = data as {
+      action?: string;
+      srcId?: string;
+      tgtId?: string;
+      userId?: string;
+      aAfter?: unknown[];
+      bAfter?: unknown[];
+    } | null;
+
+    if (payload?.action !== "applyPair") return;
+
+    const actorA = game.actors?.get(payload.srcId ?? "");
+    const actorB = game.actors?.get(payload.tgtId ?? "");
     if (!actorA || !actorB) return;
+
+    // Validate that the requesting user exists and owns at least one of the actors
+    const requestingUser = payload.userId ? game.users?.get(payload.userId) : null;
+    if (requestingUser) {
+      const ownsA = actorA.testUserPermission(requestingUser, "OWNER");
+      const ownsB = actorB.testUserPermission(requestingUser, "OWNER");
+      if (!ownsA && !ownsB) {
+        console.warn(`[${NS}] GM relay rejected: user ${requestingUser.name} does not own either actor`);
+        return;
+      }
+    }
 
     const aIsChar = actorA.type === "character";
     const bIsChar = actorB.type === "character";
 
     const aBefore = aIsChar ? readInfluences(actorA) : null;
     const bBefore = bIsChar ? readInfluences(actorB) : null;
-    const aAfter  = aIsChar ? (data.aAfter ?? aBefore) : null;
-    const bAfter  = bIsChar ? (data.bAfter ?? bBefore) : null;
+    const aAfter  = aIsChar ? (payload.aAfter as unknown[] ?? aBefore) : null;
+    const bAfter  = bIsChar ? (payload.bAfter as unknown[] ?? bBefore) : null;
 
-    const tasks = [];
-    if (aIsChar && aAfter) tasks.push(writeInfluencesIfChanged(actorA, aBefore, aAfter));
-    if (bIsChar && bAfter) tasks.push(writeInfluencesIfChanged(actorB, bBefore, bAfter));
+    const tasks: Promise<boolean>[] = [];
+    if (aIsChar && aAfter) tasks.push(writeInfluencesIfChanged(actorA, aBefore ?? [], aAfter));
+    if (bIsChar && bAfter) tasks.push(writeInfluencesIfChanged(actorB, bBefore ?? [], bAfter));
     try { await Promise.all(tasks); }
     catch (err) { console.error(`[${NS}] GM relay failed`, err); }
   }
@@ -493,11 +517,23 @@ Hooks.once("init", () => {
   }
 });
 
+/** Module-level socket handler reference for cleanup on hot reload */
+let _toolsSocketHandler: ((data: unknown) => void) | null = null;
+
 Hooks.once("ready", () => {
   // GM-side socket: perform counterpart writes on behalf of players
-  try {
-    game.socket?.on(SOCKET_NS, (data) => QuickInfluence._gmApplyFromSocket(data));
-  } catch (err) {
-    console.warn(`[${NS}] Socket unavailable; GM relay disabled.`, err);
+  if (!game.socket) {
+    console.warn(`[${NS}] Socket unavailable; GM relay disabled.`);
+    return;
   }
+
+  // Remove existing handler to prevent duplicates on hot reload
+  if (_toolsSocketHandler) {
+    game.socket.off(SOCKET_NS, _toolsSocketHandler);
+    _toolsSocketHandler = null;
+  }
+
+  // Create and register new handler
+  _toolsSocketHandler = (data: unknown) => QuickInfluence._gmApplyFromSocket(data);
+  game.socket.on(SOCKET_NS, _toolsSocketHandler);
 });
