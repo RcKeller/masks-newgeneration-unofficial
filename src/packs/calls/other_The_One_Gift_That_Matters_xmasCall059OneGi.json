@@ -1,0 +1,47 @@
+{
+  "name": "The One Gift That Matters",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "pursuit",
+      "callerName": "Twelve-Year-Old Miguel",
+      "callerQuote": "<p>\"Someone stole my backpack at the bus stop. I know you deal with big stuff but... my mom's in the hospital. The only present I could afford was in that bag—I saved up for months. It's a locket with our family photo. Please. She's gonna be alone on Christmas.\"</p>",
+      "requirementsText": "<ul><li><b>Track down</b> whoever took Miguel's backpack</li><li><b>Recover the locket</b>—it's irreplaceable</li><li>Get it to the hospital <b>in time</b> for Christmas morning</li></ul>",
+      "requirements": {
+        "danger": -3,
+        "freak": null,
+        "savior": 1,
+        "mundane": 1,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000059,
+    "modifiedTime": 1734700000059,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall059OneGi",
+  "sort": 100059,
+  "_key": "!actors!xmasCall059OneGi"
+}

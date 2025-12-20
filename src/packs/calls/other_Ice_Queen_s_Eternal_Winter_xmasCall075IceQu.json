@@ -1,0 +1,47 @@
+{
+  "name": "Ice Queen's Eternal Winter",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "City Meteorologist",
+      "callerQuote": "<p>\"This is impossible—a localized blizzard is forming over downtown, but the weather patterns don't support it. Temperature's dropping to -40. There's a woman at the center of it, floating, creating ice from nothing. She's screaming about making 'winter last forever.' The city is FREEZING.\"</p>",
+      "requirementsText": "<ul><li><b>Confront</b> the Ice Queen at the storm's center</li><li><b>Stop the blizzard</b> before the city freezes</li><li>Find out <b>what drove her</b> to this—can she be reasoned with?</li></ul>",
+      "requirements": {
+        "danger": 2,
+        "freak": 2,
+        "savior": 1,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000075,
+    "modifiedTime": 1734700000075,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall075IceQu",
+  "sort": 100075,
+  "_key": "!actors!xmasCall075IceQu"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Charity Scam Ring",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "FBI Agent Reyes",
+      "callerQuote": "<p>\"We've got reports of fake Santas collecting 'donations' all over the city. It's not petty theft—the money is funneling to a known supervillain organization. They're exploiting people's holiday generosity to fund god-knows-what. We need someone to infiltrate and trace the money.\"</p>",
+      "requirementsText": "<ul><li><b>Identify</b> the fake charity Santas</li><li><b>Trace the money</b> to the villain organization</li><li>Shut down the operation <b>without tipping them off</b></li></ul>",
+      "requirements": {
+        "danger": -3,
+        "freak": null,
+        "savior": null,
+        "mundane": 1,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000069,
+    "modifiedTime": 1734700000069,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall069Scam0",
+  "sort": 100069,
+  "_key": "!actors!xmasCall069Scam0"
+}

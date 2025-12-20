@@ -1,0 +1,47 @@
+{
+  "name": "Holiday Dance Disaster",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "social",
+      "callerName": "Dance Committee Chair",
+      "callerQuote": "<p>\"The Winter Formal is a DISASTER. The DJ got food poisoning, the decorations caught fire, and someone spiked the punch with something that makes everyone glow in the dark. Also, your crush is here and keeps looking at you. Can you help salvage this?\"</p>",
+      "requirementsText": "<ul><li><b>Fix the dance</b> before it's completely ruined</li><li>Investigate the <b>glowing punch</b>—is it dangerous?</li><li>Maybe talk to your <b>crush</b>? If there's time?</li></ul>",
+      "requirements": {
+        "danger": -3,
+        "freak": 0,
+        "savior": null,
+        "mundane": 1,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000088,
+    "modifiedTime": 1734700000088,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall088Dance",
+  "sort": 100088,
+  "_key": "!actors!xmasCall088Dance"
+}

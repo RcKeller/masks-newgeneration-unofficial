@@ -1,0 +1,47 @@
+{
+  "name": "Yearbook Photo Needed",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "minor-inconvenience",
+      "callerName": "Yearbook Editor Desperate",
+      "callerQuote": "<p>\"You're the ONLY person who hasn't submitted a yearbook photo! I've tried to catch you FOUR times and you always disappear! The deadline is TODAY. If you don't have a photo, you'll just be a blank space with your name. Is that what you want? A BLANK SPACE?\"</p>",
+      "requirementsText": "<ul><li>Actually <b>show up</b> for the yearbook photo</li><li>Don't have any <b>visible injuries</b> from hero work</li><li>Try to look <b>normal</b>—harder than it sounds</li></ul>",
+      "requirements": {
+        "danger": null,
+        "freak": null,
+        "savior": -3,
+        "mundane": 1,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000093,
+    "modifiedTime": 1734700000093,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall093Yearb",
+  "sort": 100093,
+  "_key": "!actors!xmasCall093Yearb"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Family Photo Emergency",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "minor-inconvenience",
+      "callerName": "Your Mom (again)",
+      "callerQuote": "<p>\"We were FINALLY taking the family Christmas photo when you ran off! I don't care if there's an 'emergency'—Aunt Martha flew in from Wisconsin! The photographer charges by the HOUR! You have FIVE MINUTES to get back here or I swear I will ground you until EASTER.\"</p>",
+      "requirementsText": "<ul><li><b>Finish</b> whatever hero thing interrupted you—FAST</li><li>Get back for the <b>family photo</b> before mom explodes</li><li>Try not to look <b>disheveled</b> in the picture</li></ul>",
+      "requirements": {
+        "danger": -3,
+        "freak": 0,
+        "savior": 1,
+        "mundane": 1,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000087,
+    "modifiedTime": 1734700000087,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall087Photo",
+  "sort": 100087,
+  "_key": "!actors!xmasCall087Photo"
+}

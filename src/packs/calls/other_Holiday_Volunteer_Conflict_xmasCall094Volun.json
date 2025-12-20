@@ -1,0 +1,47 @@
+{
+  "name": "Holiday Volunteer Conflict",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "social",
+      "callerName": "Volunteer Coordinator",
+      "callerQuote": "<p>\"You promised to help serve Christmas dinner at the shelter, but you never showed. Those families were counting on us—counting on YOU. I had to turn people away because we were short-staffed. I don't want excuses. I want to know: do you actually care?\"</p>",
+      "requirementsText": "<ul><li><b>Make it right</b> with the shelter—actions, not words</li><li>Figure out how to <b>balance</b> hero work and commitments</li><li>This one <b>stings</b>—you let people down</li></ul>",
+      "requirements": {
+        "danger": null,
+        "freak": -3,
+        "savior": 1,
+        "mundane": 1,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000094,
+    "modifiedTime": 1734700000094,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall094Volun",
+  "sort": 100094,
+  "_key": "!actors!xmasCall094Volun"
+}

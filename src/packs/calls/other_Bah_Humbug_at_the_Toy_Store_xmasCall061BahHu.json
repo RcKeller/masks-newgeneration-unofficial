@@ -1,0 +1,47 @@
+{
+  "name": "Bah Humbug at the Toy Store",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "assault",
+      "callerName": "Mall Santa Gary",
+      "callerQuote": "<p>\"Some jackass in a 'Bah Humbug' sweater just released a swarm of robotic locusts into the toy store! He's screaming about 'ending the commercialization of Christmas' while everything burns! Kids are crying! Parents are panicking! Someone stop this Grinch wannabe!\"</p>",
+      "requirementsText": "<ul><li><b>Stop</b> the anti-Christmas villain</li><li><b>Disable</b> the robotic locust swarm</li><li>Save the <b>remaining toys</b>—and the kids' Christmas spirit</li></ul>",
+      "requirements": {
+        "danger": 2,
+        "freak": 1,
+        "savior": null,
+        "mundane": -3,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000061,
+    "modifiedTime": 1734700000061,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall061BahHu",
+  "sort": 100061,
+  "_key": "!actors!xmasCall061BahHu"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "The Scrooge Protocol",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "First National Bank Manager",
+      "callerQuote": "<p>\"Someone hacked our ATM network—and every other bank in the city! All Christmas bonus withdrawals are FROZEN. A message on every screen says 'Bah Humbug—Your Money Is Mine Now.' Millions of dollars in holiday pay, just... gone. People can't buy presents, pay bills, nothing!\"</p>",
+      "requirementsText": "<ul><li><b>Trace the hack</b> to its source</li><li><b>Restore access</b> to the frozen funds</li><li>Find out who's <b>behind 'The Scrooge Protocol'</b></li></ul>",
+      "requirements": {
+        "danger": -3,
+        "freak": null,
+        "savior": null,
+        "mundane": 0,
+        "superior": 2
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000063,
+    "modifiedTime": 1734700000063,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall063Scroo",
+  "sort": 100063,
+  "_key": "!actors!xmasCall063Scroo"
+}

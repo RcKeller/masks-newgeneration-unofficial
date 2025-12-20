@@ -1,0 +1,47 @@
+{
+  "name": "The Heat Miser's Revenge",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "Climate Scientist Dr. Patel",
+      "callerQuote": "<p>\"Someone is MELTING all the snow in the city! Targeted heat bursts—every snowman, every snow-covered yard, gone. There's a man in a red suit generating thermal energy, ranting about 'ruining your precious White Christmas.' He's heading for the ski resort next!\"</p>",
+      "requirementsText": "<ul><li><b>Stop Heat Miser</b> before he reaches the ski resort</li><li><b>Protect</b> remaining snow—people were counting on a white Christmas</li><li>His powers are <b>heat-based</b>—plan accordingly</li></ul>",
+      "requirements": {
+        "danger": 1,
+        "freak": 2,
+        "savior": 0,
+        "mundane": null,
+        "superior": -3
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000076,
+    "modifiedTime": 1734700000076,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall076HeatM",
+  "sort": 100076,
+  "_key": "!actors!xmasCall076HeatM"
+}

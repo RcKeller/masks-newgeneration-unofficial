@@ -1,0 +1,47 @@
+{
+  "name": "Holiday Hostage at the Bank",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "assault",
+      "callerName": "Bank Silent Alarm",
+      "callerQuote": "<p>\"Armed robbery in progress at Central Savings. Four hostiles, automatic weapons, 23 hostages including children there to see the holiday decorations. Leader is demanding $2 million and a helicopter. They've already shot out the cameras. SWAT is 20 minutes out. We need someone NOW.\"</p>",
+      "requirementsText": "<ul><li><b>Neutralize</b> the armed robbers without hostage casualties</li><li><b>Protect</b> the children—they're terrified</li><li>Move fast—the robbers are <b>getting nervous</b></li></ul>",
+      "requirements": {
+        "danger": 2,
+        "freak": 1,
+        "savior": 2,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000068,
+    "modifiedTime": 1734700000068,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall068Hosta",
+  "sort": 100068,
+  "_key": "!actors!xmasCall068Hosta"
+}
