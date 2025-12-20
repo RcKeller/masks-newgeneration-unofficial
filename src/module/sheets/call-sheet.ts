@@ -401,8 +401,9 @@ export class CallSheet extends ActorSheet {
 		html.on("click", "[data-action='select-hero']", this._onSelectHero.bind(this));
 
 		// Hero button hover for graph preview - CRITICAL FEATURE
+		// Use mouseenter on buttons to preview, mouseleave on container to reset
 		html.on("mouseenter", "[data-action='select-hero']", this._onHeroButtonEnter.bind(this));
-		html.on("mouseleave", "[data-action='select-hero']", this._onHeroButtonLeave.bind(this));
+		html.on("mouseleave", ".hero-button-group", this._onHeroGroupLeave.bind(this));
 
 		// Dispatch button
 		html.on("click", "[data-action='dispatch']", this._onDispatch.bind(this));
@@ -668,10 +669,14 @@ export class CallSheet extends ActorSheet {
 	}
 
 	/**
-	 * Handle hero button mouse leave - return to assigned hero's labels
-	 * Clears the hover preview, reverting to the currently assigned hero
+	 * Handle mouse leaving the hero button group container
+	 * Resets the graph to show the currently assigned hero
+	 * Only triggers when mouse leaves the entire container, not when moving between buttons
 	 */
-	_onHeroButtonLeave(_event: JQuery.MouseLeaveEvent) {
+	_onHeroGroupLeave(_event: JQuery.MouseLeaveEvent) {
+		// Only reset if we were actually hovering a preview
+		if (this._hoveredActorId === null) return;
+
 		// Clear hovered actor
 		this._hoveredActorId = null;
 
