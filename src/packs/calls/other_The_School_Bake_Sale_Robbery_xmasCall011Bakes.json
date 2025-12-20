@@ -1,0 +1,47 @@
+{
+  "name": "The School Bake Sale Robbery",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "honey-heist",
+      "callerName": "PTA President Sandra",
+      "callerQuote": "<p>\"A bear in a purple crown took our bake sale proceeds—$847! But she left business cards for a 'Bear Parenting Support Group' and told Mrs. Henderson that her snickerdoodles needed more cinnamon. She's not wrong about the cookies but STILL.\"</p>",
+      "requirementsText": "<ul><li>Recover the <b>bake sale funds</b></li><li>Track Petunia to her <b>parenting support group</b>—is it real?</li><li>Maybe get the <b>cookie recipe</b> critique—for science</li></ul>",
+      "requirements": {
+        "danger": null,
+        "freak": null,
+        "savior": null,
+        "mundane": 0,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000011,
+    "modifiedTime": 1734700000011,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall011Bakes",
+  "sort": 100011,
+  "_key": "!actors!xmasCall011Bakes"
+}

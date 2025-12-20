@@ -1,0 +1,47 @@
+{
+  "name": "Greg's Bank Job Noir",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "honey-heist",
+      "callerName": "Officer Chen",
+      "callerQuote": "<p>\"We've got a break-in at First National Bank—security footage shows a panda in a cowboy hat monologuing to the cameras about 'the city that never sleeps and the dame who never calls.' He's been at it for twenty minutes. The vault's wide open.\"</p>",
+      "requirementsText": "<ul><li>Track the <b>getaway vehicle</b> (witnesses report a semi truck)</li><li>Identify the <b>bear gang's</b> next target</li><li><b>Do not engage</b> directly—these bears are more dangerous than they look</li></ul>",
+      "requirements": {
+        "danger": null,
+        "freak": null,
+        "savior": 1,
+        "mundane": 0,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000001,
+    "modifiedTime": 1734700000001,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall001GregB",
+  "sort": 100001,
+  "_key": "!actors!xmasCall001GregB"
+}

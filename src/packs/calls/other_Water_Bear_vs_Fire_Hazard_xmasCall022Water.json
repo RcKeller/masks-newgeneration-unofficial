@@ -1,0 +1,47 @@
+{
+  "name": "Water Bear vs Fire Hazard",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "Fire Chief Rodriguez",
+      "callerQuote": "<p>\"We've got a warehouse fire, but there's a tardigrade in a flat cap spraying water everywhere—from an industrial canteen? He's actually HELPING put out the fire while also definitely stealing the water from our trucks. Do we arrest him or give him a medal?\"</p>",
+      "requirementsText": "<ul><li>Help <b>contain the fire</b>—Puddles is doing his best</li><li>Decide what to do about Puddles <b>after</b> the crisis</li><li>Maybe recruit him for the <b>fire department</b>?</li></ul>",
+      "requirements": {
+        "danger": null,
+        "freak": 1,
+        "savior": 1,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000022,
+    "modifiedTime": 1734700000022,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall022Water",
+  "sort": 100022,
+  "_key": "!actors!xmasCall022Water"
+}

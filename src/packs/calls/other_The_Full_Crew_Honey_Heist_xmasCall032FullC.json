@@ -1,0 +1,47 @@
+{
+  "name": "The Full Crew Honey Heist",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "honey-heist",
+      "callerName": "Golden Bee Honey Factory",
+      "callerQuote": "<p>\"They're ALL here! A grizzly giving orders, a panda monologuing at cameras, a five-limbed thing on the ceiling, something tiny filling water containers, a badger backing up a semi, and a bear on a laptop! Our ENTIRE honey reserve is being stolen!\"</p>",
+      "requirementsText": "<ul><li>Face the <b>full bear crew</b>—all six at once</li><li>Each bear has <b>different tactics</b>—divide and conquer?</li><li>Stop them before they escape with <b>10,000 gallons of honey</b></li></ul>",
+      "requirements": {
+        "danger": 2,
+        "freak": 2,
+        "savior": 1,
+        "mundane": 1,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000032,
+    "modifiedTime": 1734700000032,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall032FullC",
+  "sort": 100032,
+  "_key": "!actors!xmasCall032FullC"
+}

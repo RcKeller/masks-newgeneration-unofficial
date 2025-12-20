@@ -1,0 +1,47 @@
+{
+  "name": "The Bee Debt",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "Mysterious Beekeeper",
+      "callerQuote": "<p>\"You want to stop the honey badger? Then understand WHY he steals. He owes a debt to the bees—a life debt. The Beeves saved him once, and now he drives for them. Forever. Unless you can find another way to free him.\"</p>",
+      "requirementsText": "<ul><li>Investigate <b>Slick's past</b>—what happened?</li><li>Find the <b>Beeves</b> and negotiate his freedom</li><li>Is there another way to <b>pay the debt</b>?</li></ul>",
+      "requirements": {
+        "danger": null,
+        "freak": 1,
+        "savior": null,
+        "mundane": 1,
+        "superior": 2
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000027,
+    "modifiedTime": 1734700000027,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall027BeeDe",
+  "sort": 100027,
+  "_key": "!actors!xmasCall027BeeDe"
+}

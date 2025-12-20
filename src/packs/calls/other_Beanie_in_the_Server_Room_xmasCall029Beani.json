@@ -1,0 +1,47 @@
+{
+  "name": "Beanie in the Server Room",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "TechNova CEO",
+      "callerQuote": "<p>\"Our servers were breached last night. The only evidence is a black beanie with bear fur on it and a sticky note that says 'thx 4 the data lol.' We need to know what was stolen before it goes public.\"</p>",
+      "requirementsText": "<ul><li>Analyze what <b>data was stolen</b></li><li>Track acid_burn's <b>digital footprint</b></li><li>What are the bears planning to <b>do with this data</b>?</li></ul>",
+      "requirements": {
+        "danger": null,
+        "freak": null,
+        "savior": null,
+        "mundane": 0,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000029,
+    "modifiedTime": 1734700000029,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall029Beani",
+  "sort": 100029,
+  "_key": "!actors!xmasCall029Beani"
+}

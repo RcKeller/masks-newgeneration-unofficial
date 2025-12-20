@@ -1,0 +1,47 @@
+{
+  "name": "Bear Crypto Scheme",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "SEC Agent Williams",
+      "callerQuote": "<p>\"We've traced a crypto pump-and-dump scheme to an entity called 'BEAR_COIN_2024.' The wallet is funding the bear crime spree. We need someone to trace the blockchain back to the source. The hacker uses the handle 'acid_burn.'\"</p>",
+      "requirementsText": "<ul><li>Follow the <b>crypto trail</b> to acid_burn</li><li>Shut down the <b>bear funding operation</b></li><li>This is <b>white-collar crime</b>—think smart, not strong</li></ul>",
+      "requirements": {
+        "danger": null,
+        "freak": null,
+        "savior": null,
+        "mundane": 0,
+        "superior": 2
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000030,
+    "modifiedTime": 1734700000030,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall030Crypt",
+  "sort": 100030,
+  "_key": "!actors!xmasCall030Crypt"
+}

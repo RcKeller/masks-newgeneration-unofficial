@@ -1,0 +1,47 @@
+{
+  "name": "Build-A-Bear Championship Heist",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "honey-heist",
+      "callerName": "Build-A-Bear Manager",
+      "callerQuote": "<p>\"Code purple! A real grizzly bear is trying to steal our Build-A-Bear Body Championship trophy from the display case. She keeps saying 'This was MINE in '09' and 'They rigged the competition!' The children are... honestly kind of delighted.\"</p>",
+      "requirementsText": "<ul><li>Stop Petunia from <b>stealing the trophy</b></li><li>Investigate her claim—was she actually <b>robbed of victory</b>?</li><li>Keep the <b>kids safe</b> while they cheer for the bear</li></ul>",
+      "requirements": {
+        "danger": 0,
+        "freak": null,
+        "savior": 0,
+        "mundane": 1,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000009,
+    "modifiedTime": 1734700000009,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall009Build",
+  "sort": 100009,
+  "_key": "!actors!xmasCall009Build"
+}
