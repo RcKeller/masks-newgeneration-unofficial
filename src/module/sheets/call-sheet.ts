@@ -76,6 +76,12 @@ export class CallSheet extends ActorSheet {
 	/** Cached requirements for partial updates */
 	_cachedRequirements: CallRequirements | null = null;
 
+	/** Pending hover update frame ID for cancellation */
+	_pendingHoverFrame: number | null = null;
+
+	/** Lock to prevent concurrent graph updates */
+	_graphUpdateLock: boolean = false;
+
 	/** @override */
 	get title() {
 		const callType = this.actor.getFlag(NS, "callType") ?? "assault";
@@ -419,6 +425,18 @@ export class CallSheet extends ActorSheet {
 
 	/** @override */
 	async close(options?: Application.CloseOptions) {
+		// Cancel any pending hover frame
+		if (this._pendingHoverFrame !== null) {
+			cancelAnimationFrame(this._pendingHoverFrame);
+			this._pendingHoverFrame = null;
+		}
+
+		// Clear any pending debounce timers
+		if (this._requirementDebounceTimer) {
+			clearTimeout(this._requirementDebounceTimer);
+			this._requirementDebounceTimer = null;
+		}
+
 		// Cleanup all hooks via registry
 		if (this._hooks) {
 			this._hooks.unregisterAll();
@@ -632,20 +650,21 @@ export class CallSheet extends ActorSheet {
 	/**
 	 * Handle hero button mouse enter - preview hero's labels on graph
 	 * CRITICAL FEATURE: Shows the hovered hero's stats on the graph
+	 * Uses requestAnimationFrame for smooth updates and cancels pending updates
 	 */
 	_onHeroButtonEnter(event: JQuery.MouseEnterEvent) {
 		const button = event.currentTarget as HTMLButtonElement;
 		const actorId = button.dataset.actorId;
 		if (!actorId) return;
 
+		// Skip if already hovering this actor
+		if (this._hoveredActorId === actorId) return;
+
 		// Set hovered actor for graph preview
 		this._hoveredActorId = actorId;
 
-		// Update graph in place for smooth animation
-		if (!this._updateGraphInPlace('hero')) {
-			// Fallback to full render if partial update failed
-			this.render(false);
-		}
+		// Schedule graph update
+		this._scheduleGraphUpdate();
 	}
 
 	/**
@@ -656,11 +675,42 @@ export class CallSheet extends ActorSheet {
 		// Clear hovered actor
 		this._hoveredActorId = null;
 
-		// Update graph in place for smooth animation
-		if (!this._updateGraphInPlace('hero')) {
-			// Fallback to full render if partial update failed
-			this.render(false);
+		// Schedule graph update
+		this._scheduleGraphUpdate();
+	}
+
+	/**
+	 * Schedule a graph update using requestAnimationFrame
+	 * Cancels any pending update to prevent race conditions
+	 */
+	_scheduleGraphUpdate() {
+		// Cancel any pending update
+		if (this._pendingHoverFrame !== null) {
+			cancelAnimationFrame(this._pendingHoverFrame);
+			this._pendingHoverFrame = null;
 		}
+
+		// Schedule new update
+		this._pendingHoverFrame = requestAnimationFrame(() => {
+			this._pendingHoverFrame = null;
+
+			// Skip if a graph update is already in progress
+			if (this._graphUpdateLock) return;
+
+			this._graphUpdateLock = true;
+			try {
+				// Update graph in place for smooth animation
+				if (!this._updateGraphInPlace('hero')) {
+					// Fallback to full render if partial update failed
+					this.render(false);
+				}
+			} finally {
+				// Release lock after a short delay to allow animation to settle
+				setTimeout(() => {
+					this._graphUpdateLock = false;
+				}, 50);
+			}
+		});
 	}
 
 	/**

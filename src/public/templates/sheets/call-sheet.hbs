@@ -2,7 +2,7 @@
 <form class="call-sheet {{#if isQualified}}call-sheet--qualified{{/if}} {{fitClass}}" autocomplete="off">
   {{!-- Main Content Area - 2 Column Layout --}}
   <section class="call-sheet__top">
-    {{!-- Left Panel: Call Type, Caller Info, The Call (2/3 width) --}}
+    {{!-- Left Panel: Call Type, Caller Info, The Call --}}
     <div class="call-sheet__left-panel">
       <header class="call-sheet__type-header">
         <i class="call-type-icon {{currentTypeIcon}}"></i>
@@ -30,24 +30,7 @@
         {{/if}}
       </div>
 
-      {{!-- GM Controls - Reset button and preview fit (GM only) --}}
-      {{#if isGM}}
-      <div class="call-sheet__gm-controls">
-        <button type="button" class="gm-reset-btn" data-action="reset-call">
-          <i class="fa-solid fa-rotate-left"></i> Reset Call
-        </button>
-        {{!-- Preview Fit Indicator (shows before dispatch, GM only) --}}
-        {{#unless isQualified}}
-          {{#if previewFitLabel}}
-            <div class="preview-fit-indicator {{previewFitClass}}">
-              {{previewFitLabel}}
-            </div>
-          {{/if}}
-        {{/unless}}
-      </div>
-      {{/if}}
-
-      {{!-- GM Stats Table - Compact, in right column --}}
+      {{!-- GM Stats Table --}}
       {{#if canSeeBottom}}
       <div class="call-sheet__gm-stats">
         <header class="gm-stats-header">
@@ -106,65 +89,9 @@
           <blockquote class="quote-text">{{{callerQuote}}}</blockquote>
         {{/if}}
       </div>
-    </div>
 
-    {{!-- Right Panel: Title, Graph, Assignment, Dispatch, GM Stats (1/3 width) --}}
-    <div class="call-sheet__right-panel">
-      <header class="call-sheet__title">
-        <input type="text" class="call-title-input" name="name" value="{{actor.name}}" {{#unless canEdit}}disabled{{/unless}} placeholder="Call Title" />
-      </header>
-
-      {{!-- Overlay Graph Preview --}}
-      <div class="call-sheet__graph" data-graph-container data-tooltip="{{overlayGraph.tooltip}}" data-tooltip-direction="UP">
-        {{{overlayGraph.svg}}}
-        {{#if previewActor}}
-          <div class="graph-preview-label">Preview: {{previewActor.name}}</div>
-        {{/if}}
-      </div>
-
-
-      {{!-- No Combat Warning --}}
-      {{#if noCombatWarning}}
-        <div class="call-sheet__no-combat-warning">
-          <i class="fa-solid fa-exclamation-triangle"></i>
-          <span>No active combat. Start a combat encounter to assign heroes.</span>
-        </div>
-      {{/if}}
-
-      {{!-- Hero Selection Button Group --}}
-      <div class="call-sheet__hero-selection">
-        <label class="assignment-label">{{localize "DISPATCH.Call.AssignedHero"}}</label>
-        <div class="hero-button-group" role="radiogroup" aria-label="Select hero">
-          {{#each heroButtons}}
-            <button type="button"
-                    class="hero-btn {{#if this.selected}}hero-btn--selected{{/if}} {{#if this.unavailable}}hero-btn--unavailable{{/if}}"
-                    data-action="select-hero"
-                    data-actor-id="{{this.id}}"
-                    {{#if this.unavailable}}disabled{{/if}}
-                    {{#if ../isQualified}}disabled{{/if}}
-                    role="radio"
-                    aria-checked="{{#if this.selected}}true{{else}}false{{/if}}"
-                    data-tooltip="{{this.tooltip}}">
-              <span class="hero-btn__name">{{this.name}}</span>
-              {{#if this.unavailableReason}}
-                <span class="hero-btn__status">{{this.unavailableReason}}</span>
-              {{/if}}
-            </button>
-          {{/each}}
-          {{#unless heroButtons.length}}
-            <div class="hero-button-group__empty">
-              {{#if noCombatWarning}}
-                No combat active
-              {{else}}
-                No heroes available
-              {{/if}}
-            </div>
-          {{/unless}}
-        </div>
-      </div>
-
-      {{!-- Dispatch Button - Always visible, consistent position --}}
-      <div class="call-sheet__dispatch">
+      {{!-- Fit Result / Preview - Bottom of left column --}}
+      <div class="call-sheet__fit-area">
         {{#if isQualified}}
           <div class="dispatch-result fit-badge {{fitClass}}">
             <span class="fit-label">{{fitLabel}}</span>
@@ -174,18 +101,99 @@
               {{forwardMessage}}
             </div>
           {{/if}}
-        {{else if isAssessing}}
-          <button type="button" class="dispatch-btn dispatch-btn--assessing" disabled>
-            <i class="fa-solid fa-spinner fa-spin"></i> {{localize "DISPATCH.Call.Assessing"}}
-          </button>
-        {{else}}
-          <button type="button" class="dispatch-btn" data-action="dispatch" {{#unless canDispatch}}disabled{{/unless}}>
-            <i class="fa-solid fa-paper-plane"></i>
-            {{#if assignedActor}}
-              {{localize "DISPATCH.Call.Dispatch"}} {{assignedActor.name}}
-            {{else}}
-              {{localize "DISPATCH.Call.SelectHero"}}
-            {{/if}}
+        {{else if isGM}}
+          {{#if previewFitLabel}}
+            <div class="preview-fit-indicator {{previewFitClass}}">
+              {{previewFitLabel}}
+            </div>
+          {{/if}}
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- Right Panel: Title, Graph, Heroes, Actions --}}
+    <div class="call-sheet__right-panel">
+      {{!-- Scrollable content area --}}
+      <div class="call-sheet__right-content">
+        <header class="call-sheet__title">
+          <input type="text" class="call-title-input" name="name" value="{{actor.name}}" {{#unless canEdit}}disabled{{/unless}} placeholder="Call Title" />
+        </header>
+
+        {{!-- Overlay Graph Preview --}}
+        <div class="call-sheet__graph" data-graph-container>
+          {{{overlayGraph.svg}}}
+        </div>
+
+        {{!-- Preview indicator - shows which hero's stats are displayed --}}
+        {{#if previewActor}}
+          <div class="graph-preview-label">Previewing: {{previewActor.name}}</div>
+        {{/if}}
+
+        {{!-- No Combat Warning --}}
+        {{#if noCombatWarning}}
+          <div class="call-sheet__no-combat-warning">
+            <i class="fa-solid fa-exclamation-triangle"></i>
+            <span>No active combat</span>
+          </div>
+        {{/if}}
+
+        {{!-- Hero Selection Button Group - Compact 3-column grid --}}
+        <div class="call-sheet__hero-selection">
+          <div class="hero-button-group" role="radiogroup" aria-label="Select hero">
+            {{#each heroButtons}}
+              <button type="button"
+                      class="hero-btn {{#if this.selected}}hero-btn--selected{{/if}} {{#if this.unavailable}}hero-btn--unavailable{{/if}}"
+                      data-action="select-hero"
+                      data-actor-id="{{this.id}}"
+                      {{#if this.unavailable}}disabled{{/if}}
+                      {{#if ../isQualified}}disabled{{/if}}
+                      role="radio"
+                      aria-checked="{{#if this.selected}}true{{else}}false{{/if}}">
+                <span class="hero-btn__name">{{this.name}}</span>
+                {{#if this.unavailableReason}}
+                  <span class="hero-btn__status">{{this.unavailableReason}}</span>
+                {{/if}}
+              </button>
+            {{/each}}
+            {{#unless heroButtons.length}}
+              <div class="hero-button-group__empty">
+                {{#if noCombatWarning}}
+                  No combat active
+                {{else}}
+                  No heroes available
+                {{/if}}
+              </div>
+            {{/unless}}
+          </div>
+        </div>
+      </div>
+
+      {{!-- Bottom Action Bar - Fixed position --}}
+      <div class="call-sheet__actions">
+        {{!-- Dispatch Button --}}
+        <div class="call-sheet__dispatch">
+          {{#if isQualified}}
+            <div class="dispatch-complete">Dispatched</div>
+          {{else if isAssessing}}
+            <button type="button" class="dispatch-btn dispatch-btn--assessing" disabled>
+              <i class="fa-solid fa-spinner fa-spin"></i> {{localize "DISPATCH.Call.Assessing"}}
+            </button>
+          {{else}}
+            <button type="button" class="dispatch-btn" data-action="dispatch" {{#unless canDispatch}}disabled{{/unless}}>
+              <i class="fa-solid fa-paper-plane"></i>
+              {{#if assignedActor}}
+                {{localize "DISPATCH.Call.Dispatch"}} {{assignedActor.name}}
+              {{else}}
+                {{localize "DISPATCH.Call.SelectHero"}}
+              {{/if}}
+            </button>
+          {{/if}}
+        </div>
+
+        {{!-- GM Reset Button --}}
+        {{#if isGM}}
+          <button type="button" class="reset-btn" data-action="reset-call">
+            <i class="fa-solid fa-rotate-left"></i>
           </button>
         {{/if}}
       </div>
