@@ -76,6 +76,14 @@
             {{/each}}
           </tbody>
         </table>
+        {{!-- Persistent Preview Fit Indicator (GM only) --}}
+        <div class="gm-preview-fit {{#if previewFitLabel}}{{previewFitClass}}{{else}}preview-fit--placeholder{{/if}}">
+          {{#if previewFitLabel}}
+            {{previewFitLabel}}
+          {{else}}
+            &nbsp;
+          {{/if}}
+        </div>
       </div>
       {{/if}}
 
@@ -90,25 +98,6 @@
         {{/if}}
       </div>
 
-      {{!-- Fit Result / Preview - Bottom of left column --}}
-      <div class="call-sheet__fit-area">
-        {{#if isQualified}}
-          <div class="dispatch-result fit-badge {{fitClass}}">
-            <span class="fit-label">{{fitLabel}}</span>
-          </div>
-          {{#if forwardMessage}}
-            <div class="forward-message {{#if (gt forwardChange 0)}}forward--positive{{else if (lt forwardChange 0)}}forward--negative{{/if}}">
-              {{forwardMessage}}
-            </div>
-          {{/if}}
-        {{else if isGM}}
-          {{#if previewFitLabel}}
-            <div class="preview-fit-indicator {{previewFitClass}}">
-              {{previewFitLabel}}
-            </div>
-          {{/if}}
-        {{/if}}
-      </div>
     </div>
 
     {{!-- Right Panel: Title, Graph, Heroes, Actions --}}
@@ -174,6 +163,12 @@
         <div class="call-sheet__dispatch">
           {{#if isQualified}}
             <div class="dispatch-complete">Dispatched</div>
+            {{!-- Forward result notification --}}
+            {{#if forwardMessage}}
+              <div class="forward-message {{#if forwardChange}}{{#if (gt forwardChange 0)}}forward--positive{{else}}forward--negative{{/if}}{{/if}}">
+                {{forwardMessage}}
+              </div>
+            {{/if}}
           {{else if isAssessing}}
             <button type="button" class="dispatch-btn dispatch-btn--assessing" disabled>
               <i class="fa-solid fa-spinner fa-spin"></i> {{localize "DISPATCH.Call.Assessing"}}

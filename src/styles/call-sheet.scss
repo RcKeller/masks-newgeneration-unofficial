@@ -284,8 +284,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem;
-  background: rgba(0, 0, 0, 0.4);
-  border-top: 1px solid var(--call-panel-border);
+  background: rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
 }
 
@@ -566,10 +565,12 @@
 }
 
 .forward-message {
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  padding: 0.35rem 0.75rem;
+  padding: 0.25rem 0.5rem;
   border-radius: var(--masks-corner-radius);
+  text-align: center;
+  white-space: nowrap;
 
   &.forward--positive {
     color: var(--call-fit-great);
@@ -731,6 +732,45 @@
 
   &.diff--unmet {
     color: var(--call-fit-poor);
+  }
+}
+
+/* GM Preview Fit Indicator - Persistent, under stats table */
+.gm-preview-fit {
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--masks-corner-radius);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  min-height: 1.5rem;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+
+  /* Placeholder state - invisible but takes space */
+  &.preview-fit--placeholder {
+    background: transparent;
+    border: 1px solid transparent;
+    color: transparent;
+  }
+
+  &.preview-fit--great {
+    background: var(--call-fit-great-bg);
+    color: var(--call-fit-great);
+    border: 1px solid var(--call-fit-great);
+  }
+
+  &.preview-fit--decent {
+    background: var(--call-fit-decent-bg);
+    color: var(--call-fit-decent);
+    border: 1px solid var(--call-fit-decent);
+  }
+
+  &.preview-fit--poor {
+    background: var(--call-fit-poor-bg);
+    color: var(--call-fit-poor);
+    border: 1px solid var(--call-fit-poor);
   }
 }
 
