@@ -1,3 +1,16 @@
+# [1.8.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.7.0...v1.8.0) (2025-12-20)
+
+
+### Features
+
+* finish calls ([dec3f08](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/dec3f08b731d7c7e85011999d9f3f9d44a050b18))
+* include those packs ([aef0c15](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/aef0c15e31cfb34170c60f599495f7c751e97bf2))
+* save wip ([141a435](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/141a435efc7d71d7e9449dcc737ab6f46ede0d4a))
+* save wip ([49e309b](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/49e309b3ce8557247944860620709c3756b5403a))
+* save wip ([0ef1290](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/0ef1290e51434079199929c4402f96dca922667f))
+* split calls tools ([d4d752f](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/d4d752f463ad9e7759dda869d7b71fefccd031c2))
+* wip ([3acf924](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/3acf92433ced9fae4c11ac7f7df61af6981ecd1e))
+
 # [1.7.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.6.0...v1.7.0) (2025-12-20)
 
 
