@@ -317,7 +317,7 @@ class InfluenceIndexImpl {
       this._syncGuard.add(doc.id);
       const promise = doc.setFlag("masks-newgeneration-unofficial", "influences", infl)
         .catch(err => {
-          console.error(`[${NS}] Failed to sync Influence flags on ${doc.name}`, err);
+          // console.error(`[${NS}] Failed to sync Influence flags on ${doc.name}`, err);
         })
         .finally(() => {
           this._syncGuard.delete(doc.id);
