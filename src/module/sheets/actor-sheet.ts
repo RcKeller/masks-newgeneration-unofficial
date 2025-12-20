@@ -780,6 +780,7 @@ export function MasksActorSheetMixin(Base) {
 		async _onMoveIconClick(event) {
 			event.preventDefault();
 			event.stopPropagation();
+			event.stopImmediatePropagation(); // Prevent other jQuery delegated handlers from firing
 			const icon = event.currentTarget;
 			const action = icon.dataset.action;
 			const itemId = icon.closest("[data-item-id]")?.dataset.itemId;

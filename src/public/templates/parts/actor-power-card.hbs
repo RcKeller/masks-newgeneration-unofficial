@@ -7,7 +7,7 @@
 
 	{{!-- Clickable header/label --}}
 	<label for="power-{{item._id}}" class="power-card__header">
-		<img class="power-card__icon item-image {{#if item.system.rollType}}rollable{{else if item.system.rollFormula}}rollable{{/if}}"
+		<img class="power-card__icon"
 			src="{{item.img}}" alt="{{item.name}}"
 			data-action="{{#if item.system.rollType}}roll-move{{else if item.system.rollFormula}}roll-move{{else}}share-move{{/if}}"
 			data-tooltip="{{#if item.system.rollType}}{{localize 'DISPATCH.Actions.Roll'}}{{else if item.system.rollFormula}}{{localize 'DISPATCH.Actions.Roll'}}{{else}}{{localize 'DISPATCH.Actions.ShareMove'}}{{/if}}"

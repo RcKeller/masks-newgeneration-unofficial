@@ -2,7 +2,7 @@
 <div class="move-content {{#if item.system.rollType}}has-roll roll-{{item.system.rollType}}{{/if}} {{#if item.system.rollFormula}}has-roll{{/if}}">
 	<div class="move-header">
 		{{!-- Move icon - clickable: rolls if has roll type/formula, otherwise shares --}}
-		<img class="move-icon {{#if item.system.rollType}}rollable{{else if item.system.rollFormula}}rollable{{/if}}"
+		<img class="move-icon"
 			src="{{item.img}}" alt="{{item.name}}"
 			data-action="{{#if item.system.rollType}}roll-move{{else if item.system.rollFormula}}roll-move{{else}}share-move{{/if}}"
 			data-tooltip="{{#if item.system.rollType}}{{localize 'DISPATCH.Actions.Roll'}}{{else if item.system.rollFormula}}{{localize 'DISPATCH.Actions.Roll'}}{{else}}{{localize 'DISPATCH.Actions.ShareMove'}}{{/if}}"
