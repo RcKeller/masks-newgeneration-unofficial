@@ -131,58 +131,64 @@
         </div>
       {{/if}}
 
-      {{!-- Assignment with View Hero Button - everyone can interact --}}
-      <div class="call-sheet__assignment">
+      {{!-- Hero Selection Button Group --}}
+      <div class="call-sheet__hero-selection">
         <label class="assignment-label">{{localize "DISPATCH.Call.AssignedHero"}}</label>
-        <div class="assignment-controls">
-          <select class="hero-select" data-action="assign-hero" {{#if isQualified}}disabled{{/if}} {{#if noCombatWarning}}disabled{{/if}}>
-            <option value="">{{#if noCombatWarning}}-- No Combat Active --{{else}}-- Select Hero --{{/if}}</option>
-            {{#each characterActors}}
-              <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
-            {{/each}}
-          </select>
-          <button type="button" class="view-hero-btn" data-action="view-hero" {{#unless assignedActor}}disabled{{/unless}} data-tooltip="View Hero Sheet">
-            <i class="fa-solid fa-eye"></i>
-          </button>
+        <div class="hero-button-group" role="radiogroup" aria-label="Select hero">
+          {{#each heroButtons}}
+            <button type="button"
+                    class="hero-btn {{#if this.selected}}hero-btn--selected{{/if}} {{#if this.unavailable}}hero-btn--unavailable{{/if}}"
+                    data-action="select-hero"
+                    data-actor-id="{{this.id}}"
+                    {{#if this.unavailable}}disabled{{/if}}
+                    {{#if ../isQualified}}disabled{{/if}}
+                    role="radio"
+                    aria-checked="{{#if this.selected}}true{{else}}false{{/if}}"
+                    data-tooltip="{{this.tooltip}}">
+              <span class="hero-btn__name">{{this.name}}</span>
+              {{#if this.unavailableReason}}
+                <span class="hero-btn__status">{{this.unavailableReason}}</span>
+              {{/if}}
+            </button>
+          {{/each}}
+          {{#unless heroButtons.length}}
+            <div class="hero-button-group__empty">
+              {{#if noCombatWarning}}
+                No combat active
+              {{else}}
+                No heroes available
+              {{/if}}
+            </div>
+          {{/unless}}
         </div>
       </div>
 
-      {{!-- Dispatch Button --}}
+      {{!-- Dispatch Button - Always visible, consistent position --}}
       <div class="call-sheet__dispatch">
         {{#if isQualified}}
           <div class="dispatch-result fit-badge {{fitClass}}">
             <span class="fit-label">{{fitLabel}}</span>
           </div>
+          {{#if forwardMessage}}
+            <div class="forward-message {{#if (gt forwardChange 0)}}forward--positive{{else if (lt forwardChange 0)}}forward--negative{{/if}}">
+              {{forwardMessage}}
+            </div>
+          {{/if}}
         {{else if isAssessing}}
           <button type="button" class="dispatch-btn dispatch-btn--assessing" disabled>
             <i class="fa-solid fa-spinner fa-spin"></i> {{localize "DISPATCH.Call.Assessing"}}
           </button>
         {{else}}
           <button type="button" class="dispatch-btn" data-action="dispatch" {{#unless canDispatch}}disabled{{/unless}}>
-            <i class="fa-solid fa-paper-plane"></i> {{localize "DISPATCH.Call.Dispatch"}}
+            <i class="fa-solid fa-paper-plane"></i>
+            {{#if assignedActor}}
+              {{localize "DISPATCH.Call.Dispatch"}} {{assignedActor.name}}
+            {{else}}
+              {{localize "DISPATCH.Call.SelectHero"}}
+            {{/if}}
           </button>
-        {{/if}}
-        {{#if isGM}}
-          <button type="button" class="dispatch-reset-btn" data-action="reset-call">
-            <i class="fa-solid fa-rotate-left"></i> Reset
-          </button>
-        {{/if}}
-        {{#if forwardMessage}}
-          <div
-            class="forward-message {{#if (gt forwardChange 0)}}forward--positive{{else if (lt forwardChange 0)}}forward--negative{{/if}}">
-            {{forwardMessage}}
-          </div>
         {{/if}}
       </div>
-
-      {{!-- Dynamic Preview Fit Indicator (shows before dispatch, GM only) --}}
-      {{#unless isQualified}}
-        {{#if previewFitLabel}}
-          <div class="preview-fit-indicator {{previewFitClass}}">
-            {{previewFitLabel}}
-          </div>
-        {{/if}}
-      {{/unless}}
     </div>
   </section>
 </form>

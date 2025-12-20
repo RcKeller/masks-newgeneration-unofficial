@@ -128,6 +128,47 @@
   gap: 0.25rem;
 }
 
+/* =============================================================================
+   GM CONTROLS - Reset button and preview fit indicator (left panel)
+   ============================================================================= */
+
+.call-sheet__gm-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(139, 0, 0, 0.15);
+  border: 1px dashed var(--masks-danger-color);
+  border-radius: var(--masks-corner-radius);
+}
+
+.gm-reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--masks-bg-input);
+  border: 1px solid var(--call-panel-border);
+  color: var(--masks-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: var(--masks-corner-radius);
+  cursor: pointer;
+  transition: all var(--masks-transition-fast);
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(139, 0, 0, 0.3);
+    color: var(--masks-text-primary);
+    border-color: var(--masks-danger-color);
+  }
+
+  i {
+    font-size: 0.7rem;
+  }
+}
+
 .caller-label,
 .quote-label {
   font-size: 0.7rem;
@@ -336,11 +377,15 @@
   }
 }
 
-.call-sheet__assignment {
+/* =============================================================================
+   HERO SELECTION BUTTON GROUP
+   ============================================================================= */
+
+.call-sheet__hero-selection {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
   width: 100%;
 }
 
@@ -351,74 +396,100 @@
   color: var(--masks-text-muted);
 }
 
-.assignment-controls {
+.hero-button-group {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
   width: 100%;
+  min-height: 2.5rem; /* Consistent height even when empty */
 }
 
-.hero-select {
-  flex: 1;
-  background: var(--masks-bg-input);
-  border: 1px solid var(--call-panel-border);
-  color: var(--masks-text-primary);
+.hero-button-group__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--masks-text-muted);
+  font-style: italic;
+}
+
+.hero-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
   padding: 0.5rem 0.75rem;
+  min-width: 80px;
+  flex: 1 1 auto;
+  max-width: calc(50% - 0.25rem);
+  background: var(--masks-bg-input);
+  border: 2px solid var(--call-panel-border);
+  color: var(--masks-text-primary);
+  font-size: 0.85rem;
+  font-weight: 500;
   border-radius: var(--masks-corner-radius);
   cursor: pointer;
-  /* Fix height and overflow - ensure text is not clipped */
-  max-width: 100%;
-  min-height: 2.25rem;
-  height: auto;
-  line-height: 1.4;
-  overflow: visible;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--masks-blue-dark);
+    border-color: var(--masks-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
 
   &:focus {
     outline: none;
     border-color: var(--masks-accent);
   }
 
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  /* Selected state */
+  &.hero-btn--selected {
+    background: var(--masks-mundane-color);
+    border-color: var(--masks-gold);
+    color: white;
+    box-shadow: 0 0 8px rgba(var(--masks-gold-rgb, 212, 175, 55), 0.4);
+
+    &:hover:not(:disabled) {
+      background: var(--masks-blue-light);
+    }
   }
 
-  option {
-    background: var(--masks-bg-input);
-    color: var(--masks-text-primary);
-    padding: 0.25rem;
+  /* Unavailable state (downed or on cooldown) */
+  &.hero-btn--unavailable {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(60, 60, 60, 0.5);
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
   }
 }
 
-.view-hero-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  padding: 0;
-  background: var(--masks-bg-input);
-  border: 1px solid var(--call-panel-border);
-  color: var(--masks-text-secondary);
-  border-radius: var(--masks-corner-radius);
-  cursor: pointer;
-  transition: all var(--masks-transition-fast);
-  flex-shrink: 0;
+.hero-btn__name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
 
-  &:hover:not(:disabled) {
-    background: var(--masks-blue-dark);
-    color: var(--masks-text-primary);
-    border-color: var(--masks-accent);
-  }
-
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  i {
-    font-size: 0.9rem;
-  }
+.hero-btn__status {
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--call-fit-poor);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .call-sheet__dispatch {
@@ -491,26 +562,6 @@
   }
 }
 
-.dispatch-reset-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  background: var(--masks-bg-input);
-  border: 1px solid var(--call-panel-border);
-  color: var(--masks-text-secondary);
-  font-size: 0.75rem;
-  border-radius: var(--masks-corner-radius);
-  cursor: pointer;
-  transition: all var(--masks-transition-fast);
-
-  &:hover {
-    background: var(--masks-blue-dark);
-    color: var(--masks-text-primary);
-  }
-}
 
 .forward-message {
   font-size: 0.9rem;

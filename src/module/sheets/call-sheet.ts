@@ -214,24 +214,61 @@ export class CallSheet extends ActorSheet {
 		);
 
 		// REQUIRE active combat for hero selection
-		// Filter to only available heroes (in combat + not on cooldown)
-		let characterActors: { id: string | null; name: string | null; selected: boolean; cooldownRemaining?: number }[] = [];
 		let noCombatWarning = false;
+
+		// Build hero buttons array - ALL heroes from combat, with availability status
+		interface HeroButton {
+			id: string | null;
+			name: string;
+			selected: boolean;
+			unavailable: boolean;
+			unavailableReason: string;
+			tooltip: string;
+			cooldownRemaining: number;
+			isDowned: boolean;
+		}
+
+		let heroButtons: HeroButton[] = [];
 
 		if (!activeCombat) {
 			// No active combat - show warning, no heroes available
 			noCombatWarning = true;
-			characterActors = [];
+			heroButtons = [];
 		} else {
-			// Filter team combatants: exclude downed and on-cooldown heroes
-			characterActors = teamCombatants
-				.filter((cbt) => !isDowned(cbt) && !CooldownSystem.isOnCooldown(cbt, maxCd))
-				.map((cbt) => ({
+			// Include ALL team combatants with their availability status
+			heroButtons = teamCombatants.map((cbt) => {
+				const isSelected = assignedActorIds.includes(cbt.actorId ?? "");
+				const heroIsDowned = isDowned(cbt);
+				const cooldownRemaining = CooldownSystem.remaining(cbt, maxCd);
+				const isOnCooldown = CooldownSystem.isOnCooldown(cbt, maxCd);
+
+				let unavailable = false;
+				let unavailableReason = "";
+				let tooltip = cbt.actor?.name ?? "Unknown";
+
+				if (heroIsDowned) {
+					unavailable = true;
+					unavailableReason = "Downed";
+					tooltip = `${tooltip} (Downed)`;
+				} else if (isOnCooldown) {
+					unavailable = true;
+					unavailableReason = `CD: ${cooldownRemaining}`;
+					tooltip = `${tooltip} (Cooldown: ${cooldownRemaining} turns)`;
+				} else {
+					tooltip = `${tooltip} - Click to assign`;
+				}
+
+				return {
 					id: cbt.actorId,
 					name: cbt.actor?.name ?? "Unknown",
-					selected: assignedActorIds.includes(cbt.actorId ?? ""),
-					cooldownRemaining: CooldownSystem.remaining(cbt, maxCd),
-				}));
+					selected: isSelected,
+					unavailable,
+					unavailableReason,
+					tooltip,
+					cooldownRemaining,
+					isDowned: heroIsDowned,
+				};
+			});
 		}
 
 		// Dispatch button states - Limited permission can also dispatch
@@ -315,7 +352,7 @@ export class CallSheet extends ActorSheet {
 			assignedActorIds,
 			assignedActor,
 			previewActor,
-			characterActors,
+			heroButtons,
 			noCombatWarning,
 
 			// Dispatch state
@@ -354,11 +391,12 @@ export class CallSheet extends ActorSheet {
 		// Requirement value changes
 		html.on("change", "[data-action='change-requirement']", this._onChangeRequirement.bind(this));
 
-		// Assignment
-		html.on("change", "[data-action='assign-hero']", this._onAssignHero.bind(this));
+		// Hero button selection (replaces select dropdown)
+		html.on("click", "[data-action='select-hero']", this._onSelectHero.bind(this));
 
-		// View hero button
-		html.on("click", "[data-action='view-hero']", this._onViewHero.bind(this));
+		// Hero button hover for graph preview - CRITICAL FEATURE
+		html.on("mouseenter", "[data-action='select-hero']", this._onHeroButtonEnter.bind(this));
+		html.on("mouseleave", "[data-action='select-hero']", this._onHeroButtonLeave.bind(this));
 
 		// Dispatch button
 		html.on("click", "[data-action='dispatch']", this._onDispatch.bind(this));
@@ -374,6 +412,9 @@ export class CallSheet extends ActorSheet {
 
 		// Register for actor updates (to update graph when assigned hero's labels change)
 		this._registerActorUpdateListener();
+
+		// Register for combat state changes (cooldowns, downed, etc.)
+		this._registerCombatListeners();
 	}
 
 	/** @override */
@@ -460,6 +501,46 @@ export class CallSheet extends ActorSheet {
 	}
 
 	/**
+	 * Register listeners for combat state changes
+	 * Updates hero button group when cooldowns expire, heroes downed, etc.
+	 */
+	_registerCombatListeners() {
+		if (!this._hooks) {
+			this._hooks = new HookRegistry();
+		}
+
+		// Combat turn advances - cooldowns may expire
+		this._hooks.on("updateCombat", (_combat: unknown, _changes: unknown) => {
+			// Re-render to update hero button availability
+			this.render(false);
+		});
+
+		// Combatant updated (cooldown changed, downed, etc.)
+		this._hooks.on("updateCombatant", (_combatant: unknown, _changes: unknown) => {
+			// Re-render to update hero button availability
+			this.render(false);
+		});
+
+		// Combat started or ended
+		this._hooks.on("createCombat", () => {
+			this.render(false);
+		});
+
+		this._hooks.on("deleteCombat", () => {
+			this.render(false);
+		});
+
+		// Combatant added or removed
+		this._hooks.on("createCombatant", () => {
+			this.render(false);
+		});
+
+		this._hooks.on("deleteCombatant", () => {
+			this.render(false);
+		});
+	}
+
+	/**
 	 * Unregister actor update listener (now handled by HookRegistry)
 	 */
 	_unregisterActorUpdateListener() {
@@ -522,39 +603,64 @@ export class CallSheet extends ActorSheet {
 	}
 
 	/**
-	 * Handle hero assignment change
+	 * Handle hero button click - select/deselect a hero
 	 * Uses GM query if user doesn't have ownership
 	 */
-	async _onAssignHero(event: JQuery.ChangeEvent) {
-		const select = event.currentTarget as HTMLSelectElement;
-		const actorId = select.value;
-		const assignedActorIds = actorId ? [actorId] : [];
+	async _onSelectHero(event: JQuery.ClickEvent) {
+		event.preventDefault();
+		const button = event.currentTarget as HTMLButtonElement;
+		const actorId = button.dataset.actorId;
+		if (!actorId) return;
+
+		// Get current assignment
+		const currentIds: string[] = this.actor.getFlag(NS, "assignedActorIds") ?? [];
+		const isCurrentlySelected = currentIds.includes(actorId);
+
+		// Toggle: if already selected, deselect; otherwise select this hero
+		const newAssignedActorIds = isCurrentlySelected ? [] : [actorId];
 
 		// If user has ownership, update directly
 		if (this.actor.isOwner) {
-			await this.actor.setFlag(NS, "assignedActorIds", assignedActorIds);
+			await this.actor.setFlag(NS, "assignedActorIds", newAssignedActorIds);
 			return;
 		}
 
 		// Otherwise, request GM to make the change via query
-		await queryGM("assignHero", { callActorId: this.actor.id, assignedActorIds });
+		await queryGM("assignHero", { callActorId: this.actor.id, assignedActorIds: newAssignedActorIds });
 	}
 
 	/**
-	 * Handle view hero button click
-	 * Opens the character sheet of the assigned hero
+	 * Handle hero button mouse enter - preview hero's labels on graph
+	 * CRITICAL FEATURE: Shows the hovered hero's stats on the graph
 	 */
-	_onViewHero(event: JQuery.ClickEvent) {
-		event.preventDefault();
+	_onHeroButtonEnter(event: JQuery.MouseEnterEvent) {
+		const button = event.currentTarget as HTMLButtonElement;
+		const actorId = button.dataset.actorId;
+		if (!actorId) return;
 
-		const assignedActorIds: string[] = this.actor.getFlag(NS, "assignedActorIds") ?? [];
-		if (assignedActorIds.length === 0) return;
+		// Set hovered actor for graph preview
+		this._hoveredActorId = actorId;
 
-		const assignedActor = game.actors?.get(assignedActorIds[0]);
-		if (!assignedActor) return;
+		// Update graph in place for smooth animation
+		if (!this._updateGraphInPlace('hero')) {
+			// Fallback to full render if partial update failed
+			this.render(false);
+		}
+	}
 
-		// Open the actor's sheet
-		assignedActor.sheet?.render(true);
+	/**
+	 * Handle hero button mouse leave - return to assigned hero's labels
+	 * Clears the hover preview, reverting to the currently assigned hero
+	 */
+	_onHeroButtonLeave(_event: JQuery.MouseLeaveEvent) {
+		// Clear hovered actor
+		this._hoveredActorId = null;
+
+		// Update graph in place for smooth animation
+		if (!this._updateGraphInPlace('hero')) {
+			// Fallback to full render if partial update failed
+			this.render(false);
+		}
 	}
 
 	/**
