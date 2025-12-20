@@ -577,24 +577,33 @@ export function updateOverlayGraphAnimated(
 			const newReqFill = reqVerts.length >= 3 ? OVERLAY_COLORS.requirementFill : "none";
 			const newReqStroke = OVERLAY_COLORS.requirementStroke;
 
-			// Only animate if values actually changed
+			// Animate if values changed
 			if (oldReqPath !== reqPathD || oldReqFill !== newReqFill || oldReqStroke !== newReqStroke) {
-				// Disable transition, set old values
+				// Use CSS transitions for fill/stroke (reliable)
 				reqPath.style.transition = "none";
-				reqPath.setAttribute("d", oldReqPath);
-				reqPath.setAttribute("fill", oldReqFill);
-				reqPath.setAttribute("stroke", oldReqStroke);
+				void reqPath.getBoundingClientRect(); // Force reflow
+				reqPath.style.transition = "fill 0.4s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
+				reqPath.setAttribute("fill", newReqFill);
+				reqPath.setAttribute("stroke", newReqStroke);
 
-				// Force reflow to apply old values synchronously
-				void reqPath.getBoundingClientRect();
-
-				// Re-enable transition and set new values - triggers animation
-				reqPath.style.transition = "d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease";
+				// For path 'd' animation, use Web Animations API
+				if (oldReqPath !== reqPathD) {
+					try {
+						const anim = reqPath.animate(
+							[{ d: `path("${oldReqPath}")` }, { d: `path("${reqPathD}")` }],
+							{ duration: 400, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
+						);
+						anim.onfinish = () => reqPath.setAttribute("d", reqPathD);
+					} catch {
+						reqPath.setAttribute("d", reqPathD);
+					}
+				}
+			} else {
+				// No change needed
+				reqPath.setAttribute("d", reqPathD);
+				reqPath.setAttribute("fill", newReqFill);
+				reqPath.setAttribute("stroke", newReqStroke);
 			}
-
-			reqPath.setAttribute("d", reqPathD);
-			reqPath.setAttribute("fill", newReqFill);
-			reqPath.setAttribute("stroke", newReqStroke);
 		} else {
 			// No requirements - hide the path
 			reqPath.setAttribute("d", "");
@@ -603,8 +612,7 @@ export function updateOverlayGraphAnimated(
 		}
 	}
 
-	// Update hero path (always yellow) and sync clip/mask hero shapes
-	// Use animation trick: save old, disable transition, set old, reflow, enable transition, set new
+	// Update hero path (always blue) and sync clip/mask hero shapes
 	let heroPathD = "";
 	if (heroPath && labels) {
 		const heroVerts = calculateDataVertices(labels, cx, cy, outerRadius);
@@ -615,36 +623,60 @@ export function updateOverlayGraphAnimated(
 		const oldHeroFill = heroPath.getAttribute("fill") ?? "";
 		const oldHeroStroke = heroPath.getAttribute("stroke") ?? "";
 
-		// Only animate if values actually changed
 		const newFill = OVERLAY_COLORS.heroFill;
 		const newStroke = OVERLAY_COLORS.heroStroke;
+
+		// Animate if values changed
 		if (oldHeroPath !== heroPathD || oldHeroFill !== newFill || oldHeroStroke !== newStroke) {
-			// Disable transition, set old values
+			// Use CSS transitions for fill/stroke (reliable)
 			heroPath.style.transition = "none";
-			heroPath.setAttribute("d", oldHeroPath);
-			heroPath.setAttribute("fill", oldHeroFill);
-			heroPath.setAttribute("stroke", oldHeroStroke);
+			void heroPath.getBoundingClientRect(); // Force reflow
+			heroPath.style.transition = "fill 0.4s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
+			heroPath.setAttribute("fill", newFill);
+			heroPath.setAttribute("stroke", newStroke);
 
-			// Force reflow to apply old values synchronously
-			void heroPath.getBoundingClientRect();
-
-			// Re-enable transition and set new values - triggers animation
-			heroPath.style.transition = "d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease";
+			// For path 'd' animation, use Web Animations API
+			if (oldHeroPath !== heroPathD) {
+				try {
+					const anim = heroPath.animate(
+						[{ d: `path("${oldHeroPath}")` }, { d: `path("${heroPathD}")` }],
+						{ duration: 400, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
+					);
+					anim.onfinish = () => heroPath.setAttribute("d", heroPathD);
+				} catch {
+					heroPath.setAttribute("d", heroPathD);
+				}
+			}
+		} else {
+			heroPath.setAttribute("d", heroPathD);
+			heroPath.setAttribute("fill", newFill);
+			heroPath.setAttribute("stroke", newStroke);
 		}
-
-		heroPath.setAttribute("d", heroPathD);
-		heroPath.setAttribute("fill", newFill);
-		heroPath.setAttribute("stroke", newStroke);
 
 		// Update hero spoke dots to match new vertex positions (with animation)
 		const heroDots = svg.querySelectorAll(".spoke-dot-hero");
 		heroVerts.forEach((v: { x: number; y: number }, i: number) => {
 			const dot = heroDots[i] as SVGCircleElement | undefined;
 			if (dot) {
-				// Animate spoke dots too
-				dot.style.transition = "cx 0.4s cubic-bezier(0.4, 0, 0.2, 1), cy 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
-				dot.setAttribute("cx", String(v.x));
-				dot.setAttribute("cy", String(v.y));
+				const oldCx = dot.getAttribute("cx") ?? String(v.x);
+				const oldCy = dot.getAttribute("cy") ?? String(v.y);
+
+				// Animate if position changed
+				if (oldCx !== String(v.x) || oldCy !== String(v.y)) {
+					try {
+						const anim = dot.animate(
+							[{ cx: oldCx, cy: oldCy }, { cx: String(v.x), cy: String(v.y) }],
+							{ duration: 400, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
+						);
+						anim.onfinish = () => {
+							dot.setAttribute("cx", String(v.x));
+							dot.setAttribute("cy", String(v.y));
+						};
+					} catch {
+						dot.setAttribute("cx", String(v.x));
+						dot.setAttribute("cy", String(v.y));
+					}
+				}
 			}
 		});
 	}

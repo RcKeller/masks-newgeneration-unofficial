@@ -275,8 +275,8 @@ export function generateLabelsGraphSVG(options) {
 		}
 	}
 
-	// Data polygon - with class for CSS transitions and data attributes for animation
-	parts.push(`<path class="labels-graph-data" d="${polygonPath(dataVerts)}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, borderWidth - 0.5)}" style="transition: d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease;" />`);
+	// Data polygon - with class for programmatic animation
+	parts.push(`<path class="labels-graph-data" d="${polygonPath(dataVerts)}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, borderWidth - 0.5)}" />`);
 
 	// Vertex dots at data polygon points
 	if (showVertexDots) {
@@ -377,6 +377,7 @@ export function calculateLabelsGraphPath(options) {
 
 /**
  * Update an existing labels graph SVG in-place for smooth animation
+ * Uses attribute-based animation with CSS transitions for reliable SVG animation
  * @param {HTMLElement} container - Container element holding the SVG
  * @param {Actor} actor - The actor to get data from
  * @param {Object} [options] - SVG options (size, showIcons)
@@ -386,13 +387,18 @@ export function updateLabelsGraphAnimated(container, actor, options = {}) {
 	if (!container || !actor) return false;
 
 	const svg = container.querySelector(".labels-graph-svg");
-	const dataPath = svg?.querySelector(".labels-graph-data");
+	const dataPath = svg?.querySelector(".labels-graph-data") as SVGPathElement | null;
 
 	// If SVG structure doesn't exist, need full re-render
 	if (!svg || !dataPath) return false;
 
 	const data = extractLabelsData(actor);
 	if (!data) return false;
+
+	// Capture current state before calculating new
+	const prevPath = dataPath.getAttribute("d") ?? "";
+	const prevFill = dataPath.getAttribute("fill") ?? "";
+	const prevStroke = dataPath.getAttribute("stroke") ?? "";
 
 	const { path, fill, stroke } = calculateLabelsGraphPath({
 		labels: data.labels,
@@ -402,10 +408,48 @@ export function updateLabelsGraphAnimated(container, actor, options = {}) {
 		showIcons: options.showIcons ?? false,
 	});
 
-	// Update path attributes - CSS transition will animate these
-	dataPath.setAttribute("d", path);
+	// Skip animation if nothing changed
+	if (prevPath === path && prevFill === fill && prevStroke === stroke) {
+		return true; // Still successful, just no change
+	}
+
+	// Animation strategy: set to old values, force reflow, then animate to new values
+	// This ensures the browser registers the "from" state before transitioning
+
+	// Step 1: Disable transitions and ensure we're at old values
+	dataPath.style.transition = "none";
+	// Values are already at prevPath/prevFill/prevStroke, but re-set for safety
+
+	// Step 2: Force reflow
+	void dataPath.getBoundingClientRect();
+
+	// Step 3: Enable transitions for fill/stroke and set new values
+	dataPath.style.transition = "fill 0.4s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
 	dataPath.setAttribute("fill", fill);
 	dataPath.setAttribute("stroke", stroke);
+
+	// For path 'd' animation, use Web Animations API
+	if (prevPath !== path) {
+		try {
+			const anim = dataPath.animate(
+				[
+					{ d: `path("${prevPath}")` },
+					{ d: `path("${path}")` }
+				],
+				{
+					duration: 400,
+					easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+					fill: "forwards"
+				}
+			);
+			anim.onfinish = () => {
+				dataPath.setAttribute("d", path);
+			};
+		} catch {
+			// Fallback: just set the path immediately
+			dataPath.setAttribute("d", path);
+		}
+	}
 
 	// Update tooltip if container has data-tooltip
 	const tooltip = generateLabelsTooltip(data.labels, data.affectedLabels);
@@ -582,6 +626,7 @@ export function saveGraphAnimationState(key: string, container: HTMLElement | SV
 /**
  * Animate a labels graph from its previously saved state to its current state
  * Call this AFTER the new graph HTML is in the DOM
+ * Uses attribute-based animation with CSS transitions for reliable SVG path animation
  * @param key - Unique identifier matching the saveGraphAnimationState call
  * @param container - Container element or SVG element with the new graph
  * @returns true if animation was applied, false if skipped
@@ -604,20 +649,51 @@ export function animateGraphFromSavedState(key: string, container: HTMLElement |
 		return false;
 	}
 
-	// 1. Disable transitions and set OLD values
+	// Animation strategy:
+	// 1. Disable transitions and set to OLD values
+	// 2. Force reflow to ensure browser registers old state
+	// 3. Re-enable transitions and set NEW values
+	// This reliably triggers CSS transitions for fill/stroke
+	// For the path 'd' attribute, we also try Web Animations API
+
+	// Step 1: Set to old values without transition
 	dataPath.style.transition = "none";
 	dataPath.setAttribute("d", prev.path);
 	dataPath.setAttribute("fill", prev.fill);
 	dataPath.setAttribute("stroke", prev.stroke);
 
-	// 2. Force reflow to apply old values synchronously
+	// Step 2: Force reflow
 	void dataPath.getBoundingClientRect();
 
-	// 3. Re-enable transitions and set NEW values - triggers animation
-	dataPath.style.transition = "d 0.4s cubic-bezier(0.4, 0, 0.2, 1), fill 0.3s ease, stroke 0.3s ease";
-	dataPath.setAttribute("d", newPath);
+	// Step 3: Re-enable transitions and set new values
+	dataPath.style.transition = "fill 0.4s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
 	dataPath.setAttribute("fill", newFill);
 	dataPath.setAttribute("stroke", newStroke);
+
+	// For path 'd' attribute animation, use Web Animations API (CSS d property)
+	// This is supported in modern Chromium (Foundry VTT v13+)
+	if (prev.path !== newPath) {
+		try {
+			const anim = dataPath.animate(
+				[
+					{ d: `path("${prev.path}")` },
+					{ d: `path("${newPath}")` }
+				],
+				{
+					duration: 400,
+					easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+					fill: "forwards"
+				}
+			);
+			// Ensure attribute is set to final value when animation ends
+			anim.onfinish = () => {
+				dataPath.setAttribute("d", newPath);
+			};
+		} catch {
+			// Fallback: just set the new path immediately (no shape animation)
+			dataPath.setAttribute("d", newPath);
+		}
+	}
 
 	return true;
 }

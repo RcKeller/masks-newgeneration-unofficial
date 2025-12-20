@@ -1278,6 +1278,7 @@ const TurnCardsHUD = {
 			"system.resources.ongoing.value",
 			"system.attributes.hp.value",
 			"system.stats",
+			"system.attributes.conditions", // Conditions affect label graph colors
 			`flags.${NS}.${FLAG_POTENTIAL_FALLBACK}`,
 			"img",
 			"name",
