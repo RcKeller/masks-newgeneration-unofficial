@@ -30,6 +30,23 @@
         {{/if}}
       </div>
 
+      {{!-- GM Controls - Reset button and preview fit (GM only) --}}
+      {{#if isGM}}
+      <div class="call-sheet__gm-controls">
+        <button type="button" class="gm-reset-btn" data-action="reset-call">
+          <i class="fa-solid fa-rotate-left"></i> Reset Call
+        </button>
+        {{!-- Preview Fit Indicator (shows before dispatch, GM only) --}}
+        {{#unless isQualified}}
+          {{#if previewFitLabel}}
+            <div class="preview-fit-indicator {{previewFitClass}}">
+              {{previewFitLabel}}
+            </div>
+          {{/if}}
+        {{/unless}}
+      </div>
+      {{/if}}
+
       {{!-- GM Stats Table - Compact, in right column --}}
       {{#if canSeeBottom}}
       <div class="call-sheet__gm-stats">
