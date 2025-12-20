@@ -136,16 +136,6 @@
           <div class="dispatch-result fit-badge {{fitClass}}">
             <span class="fit-label">{{fitLabel}}</span>
           </div>
-          {{#if forwardMessage}}
-            <div class="forward-message {{#if (gt forwardChange 0)}}forward--positive{{else if (lt forwardChange 0)}}forward--negative{{/if}}">
-              {{forwardMessage}}
-            </div>
-          {{/if}}
-          {{#if isGM}}
-            <button type="button" class="dispatch-reset-btn" data-action="reset-call">
-              <i class="fa-solid fa-rotate-left"></i> Reset
-            </button>
-          {{/if}}
         {{else if isAssessing}}
           <button type="button" class="dispatch-btn dispatch-btn--assessing" disabled>
             <i class="fa-solid fa-spinner fa-spin"></i> {{localize "DISPATCH.Call.Assessing"}}
@@ -154,6 +144,17 @@
           <button type="button" class="dispatch-btn" data-action="dispatch" {{#unless canDispatch}}disabled{{/unless}}>
             <i class="fa-solid fa-paper-plane"></i> {{localize "DISPATCH.Call.Dispatch"}}
           </button>
+        {{/if}}
+        {{#if isGM}}
+          <button type="button" class="dispatch-reset-btn" data-action="reset-call">
+            <i class="fa-solid fa-rotate-left"></i> Reset
+          </button>
+        {{/if}}
+        {{#if forwardMessage}}
+          <div
+            class="forward-message {{#if (gt forwardChange 0)}}forward--positive{{else if (lt forwardChange 0)}}forward--negative{{/if}}">
+            {{forwardMessage}}
+          </div>
         {{/if}}
       </div>
 
