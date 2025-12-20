@@ -1,3 +1,12 @@
+# [1.7.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.6.0...v1.7.0) (2025-12-20)
+
+
+### Features
+
+* delete gitignored ([aa83da0](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/aa83da0437f7ce9268f295fbe9a9a2af12c90ebe))
+* fix leveldb step ([920bfb7](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/920bfb717269e25a46815bf243c21a32f1d3f5d9))
+* save wip ([f37c3de](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/f37c3de3144905e81967aa75bd08a15985c8bd99))
+
 # [1.6.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.5.0...v1.6.0) (2025-12-20)
 
 
