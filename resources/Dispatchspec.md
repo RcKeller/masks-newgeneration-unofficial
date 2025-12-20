@@ -1,3 +1,5 @@
+YOUR TASK - ORGANIZE ALL MY THOUGHTS AND COME UP WITH A SPECIFIC AND ACTIONABLE PROMPT THAT I CAN USE TO ASK AN AI TO GENERATE 100 CREATIVE CALL SCENARIOS FOR MY CHRISTMAS SPECIAL TTRPG GAME.
+===============
 I have adapted the mechanics for the TTRPG based on Powered by the Apocalypse called Masks: A New Generation. This repository has all the code and resources used to run this game.
 
 I have implemented a "Dispatch" mechanic in the game which is where we present a series of Calls from citizens and organizations requesting the aid of a superhero. We have roughly mapped out some of the mechanics from the gameplay of dispatch to how we handle these in our game system:
@@ -4104,3 +4106,151 @@ Dispatch icon charisma Charisma:
 1	Dispatch icon mobility Mobility:
 10(9!)
 ===============
+HONEY HEIST GAME LOG (the villains came from this game)
+================
+Welcome to HONEY HEIST
+Two things:
+You have a complex plan that requires precise timing.
+You are a GODDAMN BEAR.
+Mechanics
+You have two stats, both start at 3: BEAR and CRIMINAL.
+Roll 1d6 when the outcome is in doubt. If the roll is ≤ the relevant stat, you succeed; otherwise you fail.
+If you’re using your Bear special skill or your Role, roll 2d6 and keep the lowest.
+ 
+Image
+Image
+Rules
+Never edit posts that include actions (post a correction if needed).
+Start every mechanical action with $$ and keep it brief/specific.
+Example: $$ Slip under the velvet rope and lift a VIP badge (CRIMINAL, Thief).
+Rolls: Use your server’s roller (e.g., /roll 1d6) right after your action. If using a role/special skill, roll /roll 2d6 and keep the lowest (state which die you’re keeping).
+Flashbacks: Start with $$ FLASHBACK: and do a 2–5 sentence montage; adjust stats as above.
+The GM will end each update with an Action Queue (who we’re waiting on).
+If you’re at the top of the queue, please post within 24 hours or pre‑load your actions via DM.
+You may DM the GM pre‑loads/conditionals (e.g., “If I’m spotted, I immediately climb the trailer (BEAR, Black).”).
+Changing States
+Actions
+Flashback: You may move 1 from BEAR to CRIMINAL by playing a quick flashback scene of planning in a smoky back room.
+Eat Honey: You may move 1 from CRIMINAL to BEAR by eating a load of honey.
+Reactions
+Frustration: When the plan hits a snag or you fail meaningfully, move 1 point from CRIMINAL to BEAR.
+Greed: When things go off without a hitch or you pull a slick success, move 1 point from BEAR to CRIMINAL.
+Goals
+If CRIMINAL = 6 > you’re lured into a life of crime and betray the crew.
+If BEAR = 6 > you flip out bear‑style and lose control until animal control arrives.
+Character Creation
+Roll 3d6 (or choose): one for Descriptor, one for Bear Type / Skill, one for Role. Hats are optional (1d8).
+DESCRIPTOR (1d6): 1 Rookie • 2 Washed‑Up • 3 Retired • 4 Unhinged • 5 Slick • 6 Incompetent
+ROLE (1d6): 1 Muscle • 2 Brains • 3 Driver • 4 Hacker • 5 Thief • 6 Face
+BEAR TYPE / SPECIAL SKILL (1d6): 1 Grizzly (Terrify) • 2 Polar (Swim) • 3 Panda (Eat anything that looks like bamboo) • 4 Black (Climb) • 5 Sun (Sense honey) • 6 Honey Badger (Carnage) • BONUS: Binturong (Climb)
+BONUS HAT (1d8, optional): 1 Trilby • 2 Top • 3 Bowler • 4 Flat Cap • 5 Cowboy • 6 Fez • 7 Crown • 8 Roll Twice
+Once you're done, share this with the channel:
+Name:
+Descriptor / Role / Bear Type (Skill):
+Hat (optional):
+BEAR 3 | CRIMINAL 3
+Why I need the honey (1-2 sentences):
+Personal quirk or tell:
+ 
+The Cast
+👑 @icey: Petunia -  Washed‑Up Grizzly (Muscle & Terrify) with a Purple Crown 💜
+🤠 @Tom: grrrr a.k.a. Greg  -  Retired Panda (Brains & Eat Bamboo) with a Cowboy Hat
+:DetectivePika: @scottie Slick -  Slick Honey Badger (Driver & Carnage) with a Trilby Hat
+🐝  @Cyforg: Subject 1A AKA Puddles - Unhinged Tardigrade (Thief & Swim) with a Flat Cap
+:pa_hack: @Disaster_of_Rad: acid_burn - Black Bear (Hacker & Climb) with a Beanie
+🐈‍⬛ @Daim: Barbara - Retired Bearcat (Thief & Climb) with a small little glitter-covered cardboard crown
+Anyone else joining: roll or pick using the tables above and paste your mini‑sheet
+ 
+Scenario
+HONEYCON 2025 isn’t a single ballroom this year - it’s a moving spectacle: a busy truck convoy called The Nectar Fleet, eighteen gleaming refrigerated rigs snaking down the interstate with pop‑up tasting lounges, influencer lounges, and VIP vault‑trailers.
+Organizer: Greedy and Wicked - Mellifera Global, helmed (on this tour stop) by regional director Astra Kline, a smile as sweet as a cease‑and‑desist letter.
+Venue Quality: Busy Truck Convoy - tonight’s overnight stop is the neon‑bright Buc‑ee’s mega travel center off the highway.
+The Prize (aside from heaps of honey): a briefcase of pure Mānuka extract worth $5 million, scheduled for a midnight reveal and press photo.
+Security (visible):
+Armed guards in black polos with earpieces;
+A thick CCTV network mounted on truck corners and drone perches.
+Rumors in the parking lot:
+Influencers have special wristbands to access VIP lounges.
+The vault‑trailer is numbered #09, sandwiched between the tasting lounge and the merch truck.
+A forklift was seen moving a glossy carbon‑fiber case an hour ago.
+Clock: It’s 11:11 PM. Midnight is in 49 minutes. 
+The night air hums with sodium lights and diesel idling. Buc‑ee’s neon beaver grins down as The Nectar Fleet hisses to a halt across three rows of truck slots. Polished trailers mirror each other in perfect lines, each stamped with a golden hexagon and the motto: “Purity. Provenance. Power.”
+
+A pop‑up stage blares synthpop; honey cocktails sparkle in mason jars; influencers in black‑and‑yellow drip walk past a velvet rope toward VIP Trailer #09 - the rumored vault.
+
+Security sweeps the perimeter: pairs of guards stroll predictable loops; drones blink red above the roofs; cameras pivot in lazy arcs. A laminated sign reads: “MIDNIGHT UNVEILING: PURE MĀNUKA EXTRACT  -  $5,000,000.”
+
+You’ve cased the lot. You’ve got 49 minutes. Honey’s on the other side of those doors.
+
+Where do we first see you, and what do you do?
+Suggested entry vectors
+Pick one or create your own
+Social Engineering (CRIMINAL): Blend with VIPs/influencers, forge/steal a wristband, talk your way past the velvet rope.
+Silent Route (CRIMINAL or BEAR‑Climb): Up the service ladder, across trailer roofs, dropping in from the catwalk to an access hatch.
+Hot Wheels (Driver/Mechanics): Get a forklift, golf cart, or even a semi moving to rearrange trailers and make a corridor - or a distraction.
+All-out Bear (BEAR): Intimidate, terrify, or cause calculated carnage to scatter security.
+ACTION QUEUE
+--> @icey, @Tom @scottie , @Cyforg , @Disaster_of_Rad , @Daim  -  declare approach & first action. 
+----------------
+🤒 Buc-ee
+
+ — 11/7/25, 1:53 PM
+11:13 PM
+Roofline over Trailer #09
+Barbara leaps. Glossy aluminum sings under soft paws as the little glitter crown snags neon like a lure. She skims the convoy spine—#06, #07, #08—breath fogging in the cold from the reefers. Down below, mason jars clink and someone laughs too loud at a brand joke. She hits the rubber boot‑seam on #09 and sticks it. The metal is beaded with condensation; one corner bristles with a low camera turret that ticks in a lazy arc. A drone blinks red and keeps not‑looking up. Her tail anchors; her claws find the maintenance hatch by touch, that sweet circus muscle memory coming back before the thought does.
+
+Inside the trailer, muffled voices. A soft keypad chirp. The prize hums in the air like it knows its name.
+@Daim Barbara (Retired Bearcat • Thief): BEAR 2 (-1) | CRIMINAL 4 (+1)
+Result: you made the climb clean (≤ BEAR 3)
+Greed: smooth success > moved 1 from BEAR > CRIMINAL.
+Correction: I misspoke earlier, success is less than or equal to your stat, not greater. You still succeeded.
+You’re above #09 with a hand on the hatch. How do you proceed?
+ 
+11:14 PM
+Perimeter crowd by the velvet rope
+Flashback: criminal scheming...
+Grrrrreg’s trenchcoat silhouette billows in the wind. A Mellifera crew lead slips out to doomscroll, lanyard crooked, wristband glinting. The side door breathes conditioned air twenty feet away; a pair of polos drift through their loop, all momentum and no urgency. Pancakes from the flashback still haunt your tongue. The debt, too.
+
+You angle in, catching the crew lead’s eye like you planned it hours ago—because you did.
+@Tom - Grrrrreg (Retired Panda • Brains): BEAR 2 (-1) | CRIMINAL 4 (+1)
+To blackmail somebody into letting you in through the side door, /roll 2d6, keep the lowest, aiming ≤ 4 (CRIMINAL with Brains).
+Tell us the leverage you use as you press in close.
+ 
+11:15 PM
+VIP rope at Trailer #09
+Sequins. Ring lights. A DJ who thinks silence is a rumor. Petunia wades into the influencer eddy with a mom‑smile that parts crowds like shopping carts on a Saturday. The purple crown rides high; the heels bite; the dress is riding up and this whole scene is about to get a pep talk if it doesn’t behave. The wristband scanner chirps in steady little bites as a host waves the chosen through.
+
+You’re at the rope with the look of someone who belongs, who will stare you into believing it if you don’t.
+@icey - Petunia (Washed‑Up Grizzly • Muscle): BEAR 3 | CRIMINAL 3
+Blend and drift past the rope, then /roll 1d6 for CRIMINAL, aiming ≤ 3.
+(If you switch gears and Terrify, say so to use your Bear special: roll 2d6 keep lowest vs BEAR.)
+What’s the vibe or line you drop as the scanner beeps?
+ 
+11:16 PM
+Cab of the parked rig near #10
+Flashback: plan to hijack a semi
+Slick ghost‑slides into a parked semi like it still has his smell in the seat. Key turns. Engine purrs a bassline under the synthpop. He nudges the wheel with two clean licks of the paws—“Ten and two, baby. Ten and two.”—and inches forward casual. The merch truck throws a fat shadow; a camera’s line of sight clips the trailer edge… until your nose threads the rig just so. A drone widens its arc at the noise, then gets bored. A polo half‑glances, then doesn’t.
+
+You can cut a blind corridor here—one clean alley where eyes don’t go. The trilby tilts like it knows.
+@scottie - Slick (Honey Badger • Driver/Carnage): BEAR 2 | CRIMINAL 4
+Ease the semi into the exact blind spot and /roll 2d6, keep the lowest, aiming ≤ 4 (CRIMINAL with Driver)
+Describe the approach you take as you thread that steel needle.
+ 
+At the same time...
+Edge of the lot, by the ice freezer
+The Beeves orbit Puddles like anxious punctuation. The canteen sloshes—comfort and countdown. The air is dry, the night is bright, and the convoy throws golden hexes across the asphalt. Somewhere dead‑center: #09 and five million in Mānuka, the kind of shine that makes a bear do brave, dumb, beautiful things.
+
+Hydration first. Then miracles.
+@Cyforg - Puddles (Unhinged Tardigrade • Thief): BEAR 3 | CRIMINAL 3
+Ruling: Your Tardigrade Special skill is to Squeeze into or Survive deadly environments.
+Declare your first move and roll vs the relevant stat. If Thief or Tardigrade applies, roll 2d6 keep the lowest. Success is ≤ your stat.
+Describe how you stay hydrated as you accomplish this first action.
+ 
+East Wall Utility Conduit (CCTV Junction)
+The utility corner hums with cheap power and bad decisions. A junction box labeled MELLIFERA EYE — VLAN 12 buzzes inside a tangle of zip ties. Someone left an open drone case on a folding table with a spare battery blinking green. Buc‑ee’s guest Wi‑Fi pings your phone like a dare. No one’s watching this pocket… yet.
+
+You in the beanie, paws in the wires, the whole night ready to rewrite itself if you type it fast enough.
+@Disaster_of_Rad - acid_burn (Black Bear • Hacker): BEAR 3 | CRIMINAL 3
+You can change your name, otherwise you'll be named acid_burn
+Declare your first move at the junction and roll against the fitting stat. If you’re hacking, roll CRIMINAL with Hacker: /roll 2d6 keep lowest, aiming ≤ 3. If you go paws‑on hardware, call BEAR. What do you do?
+==================
