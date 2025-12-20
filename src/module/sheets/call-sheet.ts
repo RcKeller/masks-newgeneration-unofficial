@@ -79,8 +79,11 @@ export class CallSheet extends ActorSheet {
 	/** Pending hover update frame ID for cancellation */
 	_pendingHoverFrame: number | null = null;
 
-	/** Lock to prevent concurrent graph updates */
-	_graphUpdateLock: boolean = false;
+	/** Guard to prevent hook re-registration on each render */
+	_hooksRegistered: boolean = false;
+
+	/** Debounce timer for combat updates */
+	_combatRenderTimer: ReturnType<typeof setTimeout> | null = null;
 
 	/** @override */
 	get title() {
@@ -414,14 +417,14 @@ export class CallSheet extends ActorSheet {
 		// Reveal button (GM only - shows pass/fail preview)
 		html.on("click", "[data-action='reveal-fit']", this._onRevealFit.bind(this));
 
-		// Register for hover events from turn cards
-		this._registerHoverListener();
-
-		// Register for actor updates (to update graph when assigned hero's labels change)
-		this._registerActorUpdateListener();
-
-		// Register for combat state changes (cooldowns, downed, etc.)
-		this._registerCombatListeners();
+		// Register Foundry hooks ONCE per sheet instance (not on every render)
+		// This prevents hook accumulation that causes exponential performance degradation
+		if (!this._hooksRegistered) {
+			this._registerHoverListener();
+			this._registerActorUpdateListener();
+			this._registerCombatListeners();
+			this._hooksRegistered = true;
+		}
 	}
 
 	/** @override */
@@ -438,11 +441,21 @@ export class CallSheet extends ActorSheet {
 			this._requirementDebounceTimer = null;
 		}
 
+		// Clear combat render timer
+		if (this._combatRenderTimer) {
+			clearTimeout(this._combatRenderTimer);
+			this._combatRenderTimer = null;
+		}
+
 		// Cleanup all hooks via registry
 		if (this._hooks) {
 			this._hooks.unregisterAll();
 			this._hooks = null;
 		}
+
+		// Reset hook registration flag so hooks can be re-registered if sheet reopens
+		this._hooksRegistered = false;
+
 		return super.close(options);
 	}
 
@@ -522,41 +535,36 @@ export class CallSheet extends ActorSheet {
 	/**
 	 * Register listeners for combat state changes
 	 * Updates hero button group when cooldowns expire, heroes downed, etc.
+	 * Uses debounced rendering to consolidate rapid combat updates.
 	 */
 	_registerCombatListeners() {
 		if (!this._hooks) {
 			this._hooks = new HookRegistry();
 		}
 
+		// Debounced render function to consolidate rapid combat updates
+		// Multiple combat events within 50ms window trigger only one render
+		const queueCombatRender = () => {
+			if (this._combatRenderTimer) return; // Already queued
+			this._combatRenderTimer = setTimeout(() => {
+				this._combatRenderTimer = null;
+				this.render(false);
+			}, 50);
+		};
+
 		// Combat turn advances - cooldowns may expire
-		this._hooks.on("updateCombat", (_combat: unknown, _changes: unknown) => {
-			// Re-render to update hero button availability
-			this.render(false);
-		});
+		this._hooks.on("updateCombat", queueCombatRender);
 
 		// Combatant updated (cooldown changed, downed, etc.)
-		this._hooks.on("updateCombatant", (_combatant: unknown, _changes: unknown) => {
-			// Re-render to update hero button availability
-			this.render(false);
-		});
+		this._hooks.on("updateCombatant", queueCombatRender);
 
 		// Combat started or ended
-		this._hooks.on("createCombat", () => {
-			this.render(false);
-		});
-
-		this._hooks.on("deleteCombat", () => {
-			this.render(false);
-		});
+		this._hooks.on("createCombat", queueCombatRender);
+		this._hooks.on("deleteCombat", queueCombatRender);
 
 		// Combatant added or removed
-		this._hooks.on("createCombatant", () => {
-			this.render(false);
-		});
-
-		this._hooks.on("deleteCombatant", () => {
-			this.render(false);
-		});
+		this._hooks.on("createCombatant", queueCombatRender);
+		this._hooks.on("deleteCombatant", queueCombatRender);
 	}
 
 	/**
@@ -686,34 +694,24 @@ export class CallSheet extends ActorSheet {
 
 	/**
 	 * Schedule a graph update using requestAnimationFrame
-	 * Cancels any pending update to prevent race conditions
+	 * Cancels any pending update to coalesce rapid hover events into single frame
+	 * Note: RAF already provides frame coalescence, so no additional lock is needed
 	 */
 	_scheduleGraphUpdate() {
-		// Cancel any pending update
+		// Cancel any pending update - this coalesces rapid hover events
 		if (this._pendingHoverFrame !== null) {
 			cancelAnimationFrame(this._pendingHoverFrame);
 			this._pendingHoverFrame = null;
 		}
 
-		// Schedule new update
+		// Schedule new update for next animation frame
 		this._pendingHoverFrame = requestAnimationFrame(() => {
 			this._pendingHoverFrame = null;
 
-			// Skip if a graph update is already in progress
-			if (this._graphUpdateLock) return;
-
-			this._graphUpdateLock = true;
-			try {
-				// Update graph in place for smooth animation
-				if (!this._updateGraphInPlace('hero')) {
-					// Fallback to full render if partial update failed
-					this.render(false);
-				}
-			} finally {
-				// Release lock after a short delay to allow animation to settle
-				setTimeout(() => {
-					this._graphUpdateLock = false;
-				}, 50);
+			// Update graph in place for smooth animation
+			if (!this._updateGraphInPlace('hero')) {
+				// Fallback to full render if partial update failed
+				this.render(false);
 			}
 		});
 	}

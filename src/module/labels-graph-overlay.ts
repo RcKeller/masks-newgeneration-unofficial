@@ -14,6 +14,42 @@ import {
 } from "./labels-graph";
 
 /**
+ * Store for active animations per SVG element
+ * Used to cancel stacking animations before starting new ones
+ * WeakMap ensures cleanup when SVG elements are garbage collected
+ */
+const ACTIVE_ANIMATIONS = new WeakMap<Element, Animation[]>();
+
+/**
+ * Cancel all active animations on an element and clear the store
+ */
+function cancelActiveAnimations(svg: Element): void {
+	const anims = ACTIVE_ANIMATIONS.get(svg);
+	if (anims) {
+		for (const anim of anims) {
+			try {
+				anim.cancel();
+			} catch {
+				// Animation may already be finished/cancelled
+			}
+		}
+		ACTIVE_ANIMATIONS.delete(svg);
+	}
+}
+
+/**
+ * Store an animation for later cancellation
+ */
+function trackAnimation(svg: Element, anim: Animation): void {
+	let anims = ACTIVE_ANIMATIONS.get(svg);
+	if (!anims) {
+		anims = [];
+		ACTIVE_ANIMATIONS.set(svg, anims);
+	}
+	anims.push(anim);
+}
+
+/**
  * Generate a unique ID for overlay elements (clipPath, mask)
  * Needed to prevent ID collisions when multiple graphs are on the same page
  */
@@ -515,6 +551,10 @@ export function updateOverlayGraphAnimated(
 	// If SVG structure doesn't exist, need full re-render
 	if (!svg) return false;
 
+	// Cancel any stacking animations from previous updates
+	// This prevents memory leaks and CPU thrashing from overlapping animations
+	cancelActiveAnimations(svg);
+
 	// Get overlay UID and clip/mask elements for syncing
 	const overlayUid = svg.getAttribute("data-overlay-uid") ?? "";
 	const clipHeroPath = overlayUid
@@ -593,6 +633,7 @@ export function updateOverlayGraphAnimated(
 							[{ d: `path("${oldReqPath}")` }, { d: `path("${reqPathD}")` }],
 							{ duration: 400, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
 						);
+						trackAnimation(svg, anim);
 						anim.onfinish = () => reqPath.setAttribute("d", reqPathD);
 					} catch {
 						reqPath.setAttribute("d", reqPathD);
@@ -642,6 +683,7 @@ export function updateOverlayGraphAnimated(
 						[{ d: `path("${oldHeroPath}")` }, { d: `path("${heroPathD}")` }],
 						{ duration: 400, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
 					);
+					trackAnimation(svg, anim);
 					anim.onfinish = () => heroPath.setAttribute("d", heroPathD);
 				} catch {
 					heroPath.setAttribute("d", heroPathD);
@@ -668,6 +710,7 @@ export function updateOverlayGraphAnimated(
 							[{ cx: oldCx, cy: oldCy }, { cx: String(v.x), cy: String(v.y) }],
 							{ duration: 400, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
 						);
+						trackAnimation(svg, anim);
 						anim.onfinish = () => {
 							dot.setAttribute("cx", String(v.x));
 							dot.setAttribute("cy", String(v.y));
