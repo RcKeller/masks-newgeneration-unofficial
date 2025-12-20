@@ -1,3 +1,25 @@
+# [1.5.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.4.1...v1.5.0) (2025-12-20)
+
+
+### Features
+
+* animation improved ([15d5f04](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/15d5f0469a0d9c674d98bb700fcdf3cfd42927e5))
+* better previews ([e75c0d9](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/e75c0d96b7eb5e9f31b010bd6284a82ca0305603))
+* bug is fixed ([8a09930](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/8a099306f6510a48a8a793eea49f6c10105d7de4))
+* double roll bug fixed ([dd9beb3](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/dd9beb3df9f973ed6326efbb7ed989b1424490cc))
+* fixed an annoying influence bug ([e0f9c69](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/e0f9c69827a87a2b7b32a5932f2974d801040b5e))
+* foundry and aegis docs ([303c4a8](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/303c4a81f7129391d77ca00126442d5c79e28c9a))
+* great design ([b7626a8](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/b7626a807d519a4913f0a79f6e6cfc352b478311))
+* laggy but nice ux ([3fff685](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/3fff68565cb54f668d3e9f7d8d627e3185cc4845))
+* more cleanup ([0a7ce4c](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/0a7ce4c0e8dfc51722be28a083a348f0b3d05903))
+* refactor is good ([11784f8](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/11784f883edc170c59a3539d2ea06ddc2b2fced3))
+* save reset button change ([d2efc4c](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/d2efc4c194e81e47b5d759066485b7a30e197d7c))
+* save wip ([a9c97a9](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/a9c97a91a33ee94c9aa75b87bb4061dd59c393b6))
+* save wip ([29ef898](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/29ef898e5b56b71e477a647577d33b5bf2f81db3))
+* save wip (BROKEN) ([3b85174](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/3b8517474769571cff714df27205b5de18d0a23e))
+* was wip (BROKEN) ([4bf7768](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/4bf776881f6a7c713b8a467acb0ce6819b488dbc))
+* working on call selection ui refactor ([3a79f5f](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/3a79f5fc388746220d87c0672b855207056bf2dc))
+
 ## [1.4.1](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.4.0...v1.4.1) (2025-12-19)
 
 
