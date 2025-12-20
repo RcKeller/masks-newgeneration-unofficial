@@ -1,6 +1,6 @@
 {
   "name": "masks-newgeneration-unofficial",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "FoundryVTT Module for Dispatch (Masks: A New Generation)",
   "main": "index.js",
   "scripts": {

@@ -1,3 +1,11 @@
+# [1.6.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.5.0...v1.6.0) (2025-12-20)
+
+
+### Features
+
+* add missing templates ([9a59334](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/9a593348a1d5eb7c91e14112dfca6acdb1e8cc19))
+* save wip ([bbc0201](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/bbc0201bf35784014e1658d6c1fb443932f7e2de))
+
 # [1.5.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.4.1...v1.5.0) (2025-12-20)
 
 
