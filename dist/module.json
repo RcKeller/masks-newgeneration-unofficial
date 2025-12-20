@@ -328,6 +328,18 @@
         "TRUSTED": "OWNER",
         "ASSISTANT": "OWNER"
       }
+    },
+    {
+      "name": "calls",
+      "label": "Dispatch Calls",
+      "path": "packs/calls",
+      "type": "Actor",
+      "system": "pbta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OWNER",
+        "ASSISTANT": "OWNER"
+      }
     }
   ],
   "packFolders": [

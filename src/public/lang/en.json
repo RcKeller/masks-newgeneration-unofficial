@@ -200,7 +200,11 @@
                 "rescue": "Rescue",
                 "investigation": "Investigation",
                 "social": "Social Event",
-                "disaster": "Natural Disaster"
+                "disaster": "Natural Disaster",
+                "minorInconvenience": "Minor Inconvenience",
+                "robbery": "Robbery",
+                "honeyHeist": "Honey Heist",
+                "pursuit": "Pursuit"
             },
             "CallerName": "Caller",
             "Quote": "The Call",

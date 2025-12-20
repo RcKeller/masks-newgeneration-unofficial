@@ -29,6 +29,10 @@ export const CALL_TYPES = Object.freeze({
 	investigation: { key: "investigation", label: "DISPATCH.Call.Types.investigation", icon: "fa-solid fa-magnifying-glass" },
 	social: { key: "social", label: "DISPATCH.Call.Types.social", icon: "fa-solid fa-comments" },
 	disaster: { key: "disaster", label: "DISPATCH.Call.Types.disaster", icon: "fa-solid fa-house-crack" },
+	"minor-inconvenience": { key: "minor-inconvenience", label: "DISPATCH.Call.Types.minorInconvenience", icon: "fa-solid fa-mug-hot" },
+	robbery: { key: "robbery", label: "DISPATCH.Call.Types.robbery", icon: "fa-solid fa-mask" },
+	"honey-heist": { key: "honey-heist", label: "DISPATCH.Call.Types.honeyHeist", icon: "fa-solid fa-paw" },
+	pursuit: { key: "pursuit", label: "DISPATCH.Call.Types.pursuit", icon: "fa-solid fa-person-running" },
 });
 
 /**
