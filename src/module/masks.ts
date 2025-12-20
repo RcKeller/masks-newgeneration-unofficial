@@ -77,6 +77,19 @@ Hooks.once("init", () => {
         if (!obj || !key) return "";
         return obj[key]?.label ?? key;
     });
+
+    // stripUuidLinks helper - converts @UUID[Type.id]{Label} to just Label
+    // Used for displaying move descriptions before lazy enrichment
+    Handlebars.registerHelper("stripUuidLinks", function(text) {
+        if (!text) return "";
+        // Convert @UUID[Type.id]{Label} to just Label
+        // Also handle @UUID[Type.id] without label (use "link" as fallback)
+        return new Handlebars.SafeString(
+            String(text)
+                .replace(/@UUID\[[^\]]+\]\{([^}]+)\}/g, "$1")
+                .replace(/@UUID\[[^\]]+\]/g, "[link]")
+        );
+    });
 });
 
 Hooks.once('ready', async function () {

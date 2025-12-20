@@ -149,6 +149,66 @@ export function MasksActorSheetMixin(Base) {
 			].join("|");
 		}
 
+		/**
+		 * @override
+		 * Skip expensive TextEditor.enrichHTML during getData.
+		 * PbtA's base _prepareItems enriches ALL move descriptions sequentially,
+		 * causing O(n*m) async lookups for @UUID links. This override skips enrichment
+		 * and marks items for lazy enrichment when power cards are expanded.
+		 */
+		async _prepareItems(context: Record<string, any>) {
+			// Only apply optimization for character sheets
+			if (this.actor?.type !== "character") {
+				return super._prepareItems(context);
+			}
+
+			const moveType = "move";
+			const sheetConfig = (game as any).pbta?.sheetConfig;
+			const sheetType = this.actor.sheetType ?? this.actor.type;
+			const moveTypes = sheetConfig?.actorTypes?.[sheetType]?.moveTypes;
+			const equipmentTypes = sheetConfig?.actorTypes?.[sheetType]?.equipmentTypes;
+
+			context.moveTypes = {};
+			context.moves = {};
+
+			if (moveTypes) {
+				for (const [k, v] of Object.entries(moveTypes)) {
+					context.moveTypes[k] = (v as { label: string }).label;
+					context.moves[k] = [];
+				}
+			}
+
+			context.equipmentTypes = {};
+			context.equipment = {};
+
+			if (equipmentTypes) {
+				for (const [k, v] of Object.entries(equipmentTypes)) {
+					context.equipmentTypes[k] = (v as { label: string }).label;
+					context.equipment[k] = [];
+				}
+			}
+
+			if (!context.equipment.PBTA_OTHER) context.equipment.PBTA_OTHER = [];
+			if (!context.moves.PBTA_OTHER) context.moves.PBTA_OTHER = [];
+
+			// Iterate through items WITHOUT enriching descriptions (the expensive part)
+			for (const item of context.items) {
+				item.img = item.img || foundry.documents.BaseItem.DEFAULT_ICON;
+				item.isExpanded = (this as any)._expanded?.has(item._id) ?? false;
+
+				// Mark for lazy enrichment instead of enriching now
+				item._needsEnrichment = !!item.system?.description;
+
+				if (item.type === moveType) {
+					const bucket = context.moves[item.system.moveType] ?? context.moves.PBTA_OTHER;
+					bucket.push(item);
+				} else if (item.type === "equipment") {
+					const bucket = context.equipment[item.system.equipmentType] ?? context.equipment.PBTA_OTHER;
+					bucket.push(item);
+				}
+			}
+		}
+
 		/** @override */
 		async getData() {
 			const context = await super.getData();
@@ -539,6 +599,9 @@ export function MasksActorSheetMixin(Base) {
 			// Power card header click - allow re-toggle to collapse (radio buttons don't naturally toggle off)
 			html.on("click", ".power-card__header", this._onPowerCardHeaderClick.bind(this));
 
+			// Power card expand - lazy-enrich description when card is opened
+			html.on("change", ".power-card__radio", this._onPowerCardExpand.bind(this));
+
 			// Powers section add button
 			html.on("click", ".powers-section__add", this._onAddMove.bind(this));
 
@@ -892,11 +955,58 @@ export function MasksActorSheetMixin(Base) {
 
 			const header = event.currentTarget;
 			const card = header.closest(".power-card");
-			const radio = card?.querySelector(".power-card__radio");
+			const radio = card?.querySelector(".power-card__radio") as HTMLInputElement | null;
 			if (!radio) return;
 
 			// Toggle the radio state
 			radio.checked = !radio.checked;
+
+			// Trigger lazy enrichment if expanding
+			if (radio.checked) {
+				this._enrichPowerCardDescription(card);
+			}
+		}
+
+		/**
+		 * Handle power card expand via radio button change - lazy-enrich the description
+		 * This is called when the radio button state changes (from CSS accordion)
+		 */
+		async _onPowerCardExpand(event: JQuery.ChangeEvent) {
+			const radio = event.currentTarget as HTMLInputElement;
+			if (!radio.checked) return; // Only on expand, not collapse
+
+			const card = radio.closest(".power-card");
+			if (card) {
+				await this._enrichPowerCardDescription(card);
+			}
+		}
+
+		/**
+		 * Lazy-enrich a power card's description
+		 * Called when a power card is expanded to resolve @UUID links
+		 */
+		async _enrichPowerCardDescription(card: Element) {
+			const itemId = (card as HTMLElement).dataset?.itemId;
+			if (!itemId) return;
+
+			const descEl = card.querySelector(".power-card__description") as HTMLElement | null;
+			if (!descEl || descEl.dataset.enriched === "true") return; // Already enriched
+
+			const item = this.actor.items.get(itemId);
+			if (!item?.system?.description) return;
+
+			try {
+				const enriched = await TextEditor.enrichHTML(item.system.description, {
+					secrets: this.actor.isOwner,
+					rollData: (item as any).getRollData?.() ?? {},
+					relativeTo: item,
+				});
+
+				descEl.innerHTML = enriched;
+				descEl.dataset.enriched = "true";
+			} catch (err) {
+				console.warn(`[masks] Failed to enrich description for item ${itemId}:`, err);
+			}
 		}
 
 		/**
