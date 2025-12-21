@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "pursuit",
       "callerName": "Animal Control Officer Ruiz",
-      "callerQuote": "<p>\"We've got a reindeer—yes, a FLYING reindeer—loose on Main Street! Its nose is glowing red and causing traffic accidents. Drivers keep swerving. Pretty sure it's THE Rudolph. He seems scared. Also he just ate someone's Christmas wreath.\"</p>",
-      "requirementsText": "<ul><li><b>Catch Rudolph</b> without injuring him</li><li>Stop the <b>traffic chaos</b> his glowing nose is causing</li><li>Figure out <b>why he escaped</b>—is something wrong at the North Pole?</li></ul>",
+      "callerQuote": "<p>\"We've got a reindeer—yes, a FLYING reindeer—loose on Main Street! Its nose is glowing red and causing traffic accidents. Drivers keep swerving. Pretty sure it's THE Rudolph. He seems scared. Also he just ate someone's Christmas wreath.\"</p><h2>Requirements</h2><ul><li><b>Catch Rudolph</b> without injuring him</li><li>Stop the <b>traffic chaos</b> his glowing nose is causing</li><li>Figure out <b>why he escaped</b>—is something wrong at the North Pole?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": -3,
         "freak": 0,

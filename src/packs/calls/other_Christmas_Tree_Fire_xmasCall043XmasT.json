@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Fire Captain Morrison",
-      "callerQuote": "<p>\"The 50-foot Christmas tree in Civic Plaza is on FIRE! The ornaments are exploding from the heat—glass shrapnel everywhere! The tree-lighting ceremony was packed with families. We need evacuation help and someone to contain those burning branches before they spread!\"</p>",
-      "requirementsText": "<ul><li><b>Evacuate</b> civilians from the danger zone</li><li><b>Contain the fire</b> before it spreads to nearby buildings</li><li>Save what you can—this tree was <b>100 years old</b></li></ul>",
+      "callerQuote": "<p>\"The 50-foot Christmas tree in Civic Plaza is on FIRE! The ornaments are exploding from the heat—glass shrapnel everywhere! The tree-lighting ceremony was packed with families. We need evacuation help and someone to contain those burning branches before they spread!\"</p><h2>Requirements</h2><ul><li><b>Evacuate</b> civilians from the danger zone</li><li><b>Contain the fire</b> before it spreads to nearby buildings</li><li>Save what you can—this tree was <b>100 years old</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 1,

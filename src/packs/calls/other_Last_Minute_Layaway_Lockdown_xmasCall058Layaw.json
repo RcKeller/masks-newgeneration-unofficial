@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "social",
       "callerName": "Store Manager Confrontation",
-      "callerQuote": "<p>\"The store closed early and locked down due to a 'security threat' but there are 30 families outside who paid for layaway items MONTHS ago! The manager won't open the doors. Corporate isn't answering. These people's Christmas presents are RIGHT THERE behind locked gates!\"</p>",
-      "requirementsText": "<ul><li><b>Investigate</b> the 'security threat'—is it real?</li><li><b>Negotiate</b> with the manager to release the layaway items</li><li>Keep the <b>crowd calm</b>—tensions are rising</li></ul>",
+      "callerQuote": "<p>\"The store closed early and locked down due to a 'security threat' but there are 30 families outside who paid for layaway items MONTHS ago! The manager won't open the doors. Corporate isn't answering. These people's Christmas presents are RIGHT THERE behind locked gates!\"</p><h2>Requirements</h2><ul><li><b>Investigate</b> the 'security threat'—is it real?</li><li><b>Negotiate</b> with the manager to release the layaway items</li><li>Keep the <b>crowd calm</b>—tensions are rising</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": -3,
         "freak": null,

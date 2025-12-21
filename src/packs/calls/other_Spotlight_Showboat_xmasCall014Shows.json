@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "honey-heist",
       "callerName": "Theater Director Morris",
-      "callerQuote": "<p>\"A bearcat broke into our prop room during intermission. She's taken the crown jewels from Act 3, but instead of leaving she's... performing? She's on stage doing a trapeze act with the chandelier. The audience thinks it's part of the show!\"</p>",
-      "requirementsText": "<ul><li>Wait for Barbara's <b>inevitable bow</b>—that's your window</li><li><b>Capture her</b> without ruining the audience's experience</li><li>Recover the <b>stolen props</b> before Act 3</li></ul>",
+      "callerQuote": "<p>\"A bearcat broke into our prop room during intermission. She's taken the crown jewels from Act 3, but instead of leaving she's... performing? She's on stage doing a trapeze act with the chandelier. The audience thinks it's part of the show!\"</p><h2>Requirements</h2><ul><li>Wait for Barbara's <b>inevitable bow</b>—that's your window</li><li><b>Capture her</b> without ruining the audience's experience</li><li>Recover the <b>stolen props</b> before Act 3</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": 0,

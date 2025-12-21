@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "assault",
       "callerName": "Bank Silent Alarm",
-      "callerQuote": "<p>\"Armed robbery in progress at Central Savings. Four hostiles, automatic weapons, 23 hostages including children there to see the holiday decorations. Leader is demanding $2 million and a helicopter. They've already shot out the cameras. SWAT is 20 minutes out. We need someone NOW.\"</p>",
-      "requirementsText": "<ul><li><b>Neutralize</b> the armed robbers without hostage casualties</li><li><b>Protect</b> the children—they're terrified</li><li>Move fast—the robbers are <b>getting nervous</b></li></ul>",
+      "callerQuote": "<p>\"Armed robbery in progress at Central Savings. Four hostiles, automatic weapons, 23 hostages including children there to see the holiday decorations. Leader is demanding $2 million and a helicopter. They've already shot out the cameras. SWAT is 20 minutes out. We need someone NOW.\"</p><h2>Requirements</h2><ul><li><b>Neutralize</b> the armed robbers without hostage casualties</li><li><b>Protect</b> the children—they're terrified</li><li>Move fast—the robbers are <b>getting nervous</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 2,
         "freak": 1,

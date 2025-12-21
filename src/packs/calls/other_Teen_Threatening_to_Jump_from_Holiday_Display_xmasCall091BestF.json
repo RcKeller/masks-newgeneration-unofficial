@@ -1,0 +1,47 @@
+{
+  "name": "Teen Threatening to Jump from Holiday Display",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "Mall Security",
+      "callerQuote": "<p>\"There's a teenager on top of the giant Christmas tree display in the atrium—says their parents just told them they're divorcing and they can't take it anymore. Cops are here but they're making it worse. We need someone young, someone who understands. The kid is powered—we've seen sparks. Please hurry.\"</p><h2>Requirements</h2><ul><li><b>De-escalate</b> the situation carefully</li><li><b>Connect</b> with the teen—show you understand</li><li>Get them down <b>safely</b> without triggering their powers</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 1,
+        "freak": 2,
+        "savior": 1,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000091,
+    "modifiedTime": 1734700000091,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall091BestF",
+  "sort": 100091,
+  "_key": "!actors!xmasCall091BestF"
+}

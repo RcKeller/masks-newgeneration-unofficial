@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "pursuit",
       "callerName": "Traffic Cop Patterson",
-      "callerQuote": "<p>\"I pulled over a modified street racer for a broken taillight and there's a HONEY BADGER behind the wheel. Trilby hat, licking his paws 'for grip.' Says he's 'driving for the bees.' I don't know what that means but he just peeled out.\"</p>",
-      "requirementsText": "<ul><li><b>Catch Slick</b> before he disappears into the city</li><li>Find out what <b>'driving for the bees'</b> means</li><li>He's fast—you'll need <b>speed or strategy</b></li></ul>",
+      "callerQuote": "<p>\"I pulled over a modified street racer for a broken taillight and there's a HONEY BADGER behind the wheel. Trilby hat, licking his paws 'for grip.' Says he's 'driving for the bees.' I don't know what that means but he just peeled out.\"</p><h2>Requirements</h2><ul><li><b>Catch Slick</b> before he disappears into the city</li><li>Find out what <b>'driving for the bees'</b> means</li><li>He's fast—you'll need <b>speed or strategy</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 0,
         "freak": 1,

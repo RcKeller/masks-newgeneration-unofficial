@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "pursuit",
       "callerName": "Your Friend Alex",
-      "callerQuote": "<p>\"Dude, someone hacked my Instagram and posted that I wet the bed until I was 12! The trail leads to something called 'acid_burn.' I NEED you to find this bear and make him DELETE THAT POST. My social life is OVER.\"</p>",
-      "requirementsText": "<ul><li><b>Track acid_burn</b> through cyberspace</li><li>Make him <b>undo the damage</b> to your friend's reputation</li><li>Why is a bear hacker targeting <b>random teens</b>?</li></ul>",
+      "callerQuote": "<p>\"Dude, someone hacked my Instagram and posted that I wet the bed until I was 12! The trail leads to something called 'acid_burn.' I NEED you to find this bear and make him DELETE THAT POST. My social life is OVER.\"</p><h2>Requirements</h2><ul><li><b>Track acid_burn</b> through cyberspace</li><li>Make him <b>undo the damage</b> to your friend's reputation</li><li>Why is a bear hacker targeting <b>random teens</b>?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": null,

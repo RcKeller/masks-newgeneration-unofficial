@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "assault",
       "callerName": "HOA President Margaret",
-      "callerQuote": "<p>\"There's a villain with LASER EYES systematically destroying every Christmas decoration on Maple Street! He keeps yelling about 'light pollution' and 'aesthetic violations'! The Hendersons' inflatable Santa just EXPLODED! My prize-winning light display is NEXT!\"</p>",
-      "requirementsText": "<ul><li><b>Stop the villain</b> before he destroys more decorations</li><li><b>Protect</b> the remaining displays</li><li>Figure out his <b>real motivation</b>—is this about more than aesthetics?</li></ul>",
+      "callerQuote": "<p>\"There's a villain with LASER EYES systematically destroying every Christmas decoration on Maple Street! He keeps yelling about 'light pollution' and 'aesthetic violations'! The Hendersons' inflatable Santa just EXPLODED! My prize-winning light display is NEXT!\"</p><h2>Requirements</h2><ul><li><b>Stop the villain</b> before he destroys more decorations</li><li><b>Protect</b> the remaining displays</li><li>Figure out his <b>real motivation</b>—is this about more than aesthetics?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 0,

@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "pursuit",
       "callerName": "Twelve-Year-Old Miguel",
-      "callerQuote": "<p>\"Someone stole my backpack at the bus stop. I know you deal with big stuff but... my mom's in the hospital. The only present I could afford was in that bag—I saved up for months. It's a locket with our family photo. Please. She's gonna be alone on Christmas.\"</p>",
-      "requirementsText": "<ul><li><b>Track down</b> whoever took Miguel's backpack</li><li><b>Recover the locket</b>—it's irreplaceable</li><li>Get it to the hospital <b>in time</b> for Christmas morning</li></ul>",
+      "callerQuote": "<p>\"Someone stole my backpack at the bus stop. I know you deal with big stuff but... my mom's in the hospital. The only present I could afford was in that bag—I saved up for months. It's a locket with our family photo. Please. She's gonna be alone on Christmas.\"</p><h2>Requirements</h2><ul><li><b>Track down</b> whoever took Miguel's backpack</li><li><b>Recover the locket</b>—it's irreplaceable</li><li>Get it to the hospital <b>in time</b> for Christmas morning</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": -3,
         "freak": null,

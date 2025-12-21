@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "investigation",
       "callerName": "Dr. Evelyn Cross",
-      "callerQuote": "<p>\"I'm calling about... a research subject. Designation 1A. It's a mutant tardigrade, highly resilient. It was spotted near GenTech Labs—the facility where it was created. I need it recovered. Discretely. It knows things.\"</p>",
-      "requirementsText": "<ul><li>Find out what Puddles is <b>looking for</b> at the lab</li><li>Decide: help <b>Puddles</b> or return him to <b>Dr. Cross</b>?</li><li>What <b>secrets</b> is GenTech hiding?</li></ul>",
+      "callerQuote": "<p>\"I'm calling about... a research subject. Designation 1A. It's a mutant tardigrade, highly resilient. It was spotted near GenTech Labs—the facility where it was created. I need it recovered. Discretely. It knows things.\"</p><h2>Requirements</h2><ul><li>Find out what Puddles is <b>looking for</b> at the lab</li><li>Decide: help <b>Puddles</b> or return him to <b>Dr. Cross</b>?</li><li>What <b>secrets</b> is GenTech hiding?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": 1,

@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "pursuit",
       "callerName": "Carnival Security",
-      "callerQuote": "<p>\"The glitter bearcat is using our Ferris wheel as an escape route! She's swinging from cart to cart like it's a circus act—because apparently IT WAS. She's heading for the roller coaster rails. This is the weirdest chase I've ever radioed in.\"</p>",
-      "requirementsText": "<ul><li><b>Pursue Barbara</b> through the carnival rides</li><li>Don't let her reach the <b>exit</b>—or the rooftops</li><li>Keep <b>carnival guests safe</b> during the aerial chase</li></ul>",
+      "callerQuote": "<p>\"The glitter bearcat is using our Ferris wheel as an escape route! She's swinging from cart to cart like it's a circus act—because apparently IT WAS. She's heading for the roller coaster rails. This is the weirdest chase I've ever radioed in.\"</p><h2>Requirements</h2><ul><li><b>Pursue Barbara</b> through the carnival rides</li><li>Don't let her reach the <b>exit</b>—or the rooftops</li><li>Keep <b>carnival guests safe</b> during the aerial chase</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 1,

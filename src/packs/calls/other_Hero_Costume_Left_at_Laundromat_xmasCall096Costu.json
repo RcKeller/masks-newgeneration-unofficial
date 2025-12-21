@@ -1,0 +1,47 @@
+{
+  "name": "Hero Costume Left at Laundromat",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "Laundromat Owner",
+      "callerQuote": "<p>\"Someone left a superhero costume in one of my dryers—and I don't mean a Halloween knockoff. This thing is REAL. High-tech fabric, built-in electronics, the works. There's a logo I recognize from the news. I don't want to post it online but... should I? Is there a reward? Can someone come get this before it attracts attention?\"</p><h2>Requirements</h2><ul><li><b>Retrieve</b> the costume before anyone else notices</li><li>Figure out <b>whose</b> it is and how it got left behind</li><li>Ensure the laundromat owner stays <b>quiet</b></li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": -3,
+        "freak": 1,
+        "savior": null,
+        "mundane": 1,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000096,
+    "modifiedTime": 1734700000096,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall096Costu",
+  "sort": 100096,
+  "_key": "!actors!xmasCall096Costu"
+}

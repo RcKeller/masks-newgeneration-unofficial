@@ -1,0 +1,47 @@
+{
+  "name": "Photography Studio Hostage Situation",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "assault",
+      "callerName": "Studio Receptionist (whisper)",
+      "callerQuote": "<p>\"Please... there's a man with powers—he's taken over the studio during holiday family portraits. He says he's looking for someone specific in the photos. There are three families in here, kids crying. He's getting agitated. I'm hiding in the supply closet. Help.\"</p><h2>Requirements</h2><ul><li><b>Infiltrate</b> the studio without alerting the hostage-taker</li><li><b>Protect</b> the families—especially the children</li><li>Find out <b>who he's looking for</b> and why</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 2,
+        "freak": 1,
+        "savior": 1,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000087,
+    "modifiedTime": 1734700000087,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall087Photo",
+  "sort": 100087,
+  "_key": "!actors!xmasCall087Photo"
+}

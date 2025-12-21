@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "investigation",
       "callerName": "Mrs. Claus",
-      "callerQuote": "<p>\"Nicholas hasn't checked in for six hours. His magical GPS tracker went dark over the Pacific. I've tried the emergency cocoa beacon—nothing. The reindeer should have enough magic dust to keep flying, but if he's lost... Can you trace residual Christmas magic?\"</p>",
-      "requirementsText": "<ul><li><b>Track Santa's</b> magic residue across the sky</li><li>Figure out <b>what happened</b> to his GPS</li><li><b>Find him</b> before dawn—millions of kids are counting on this</li></ul>",
+      "callerQuote": "<p>\"Nicholas hasn't checked in for six hours. His magical GPS tracker went dark over the Pacific. I've tried the emergency cocoa beacon—nothing. The reindeer should have enough magic dust to keep flying, but if he's lost... Can you trace residual Christmas magic?\"</p><h2>Requirements</h2><ul><li><b>Track Santa's</b> magic residue across the sky</li><li>Figure out <b>what happened</b> to his GPS</li><li><b>Find him</b> before dawn—millions of kids are counting on this</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": 1,

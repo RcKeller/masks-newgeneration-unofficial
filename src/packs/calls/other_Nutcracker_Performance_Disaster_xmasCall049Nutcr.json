@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Stage Manager Vivian",
-      "callerQuote": "<p>\"The mechanical Mouse King prop has gone haywire! It's swinging its sword at the dancers—that thing weighs 500 pounds! The fly system is dropping scenery randomly and the pyrotechnics just... activated early. The show must NOT go on right now!\"</p>",
-      "requirementsText": "<ul><li><b>Disable</b> the rogue Mouse King animatronic</li><li><b>Get dancers</b> off the stage safely</li><li>Figure out if this was <b>sabotage</b> or accident</li></ul>",
+      "callerQuote": "<p>\"The mechanical Mouse King prop has gone haywire! It's swinging its sword at the dancers—that thing weighs 500 pounds! The fly system is dropping scenery randomly and the pyrotechnics just... activated early. The show must NOT go on right now!\"</p><h2>Requirements</h2><ul><li><b>Disable</b> the rogue Mouse King animatronic</li><li><b>Get dancers</b> off the stage safely</li><li>Figure out if this was <b>sabotage</b> or accident</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 0,

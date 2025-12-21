@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "pursuit",
       "callerName": "Anonymous Tipster",
-      "callerQuote": "<p>\"Look, I shouldn't be calling, but there's a panda running down 5th Avenue being chased by guys in suits. He keeps yelling about 'the debt that follows a man like his shadow.' The mob wants their money. Maybe you heroes care?\"</p>",
-      "requirementsText": "<ul><li><b>Intercept</b> the mob enforcers before they catch Greg</li><li>Get Greg to <b>safety</b>—he might have valuable intel</li><li>Decide if you want Greg to <b>testify</b> or let him go</li></ul>",
+      "callerQuote": "<p>\"Look, I shouldn't be calling, but there's a panda running down 5th Avenue being chased by guys in suits. He keeps yelling about 'the debt that follows a man like his shadow.' The mob wants their money. Maybe you heroes care?\"</p><h2>Requirements</h2><ul><li><b>Intercept</b> the mob enforcers before they catch Greg</li><li>Get Greg to <b>safety</b>—he might have valuable intel</li><li>Decide if you want Greg to <b>testify</b> or let him go</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 1,

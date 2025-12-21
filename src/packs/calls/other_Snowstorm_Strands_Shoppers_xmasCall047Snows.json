@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Westfield Mall Manager",
-      "callerQuote": "<p>\"The blizzard hit faster than predicted—we've got 200 people trapped in the mall! Roads are impassable, the parking structure is buried, and the food court is running out of supplies. Some people are panicking. We need help keeping order and maybe a way out.\"</p>",
-      "requirementsText": "<ul><li>Help <b>maintain order</b> among stranded shoppers</li><li>Find <b>supplies</b>—food, blankets, medicine for those who need it</li><li>Create an <b>escape route</b> or wait out the storm safely</li></ul>",
+      "callerQuote": "<p>\"The blizzard hit faster than predicted—we've got 200 people trapped in the mall! Roads are impassable, the parking structure is buried, and the food court is running out of supplies. Some people are panicking. We need help keeping order and maybe a way out.\"</p><h2>Requirements</h2><ul><li>Help <b>maintain order</b> among stranded shoppers</li><li>Find <b>supplies</b>—food, blankets, medicine for those who need it</li><li>Create an <b>escape route</b> or wait out the storm safely</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": 0,

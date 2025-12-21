@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "social",
       "callerName": "The Team",
-      "callerQuote": "<p>\"It's almost midnight on New Year's Eve. The team is together, watching the ball drop. Someone suggests we share our resolutions—what we learned this year, what we want to be next year. It's cheesy, but it feels right. What's YOUR resolution?\"</p>",
-      "requirementsText": "<ul><li><b>Reflect</b> on the year—victories, failures, growth</li><li>Share something <b>real</b> with your team</li><li>Look forward: who do you <b>want to become</b>?</li></ul>",
+      "callerQuote": "<p>\"It's almost midnight on New Year's Eve. The team is together, watching the ball drop. Someone suggests we share our resolutions—what we learned this year, what we want to be next year. It's cheesy, but it feels right. What's YOUR resolution?\"</p><h2>Requirements</h2><ul><li><b>Reflect</b> on the year—victories, failures, growth</li><li>Share something <b>real</b> with your team</li><li>Look forward: who do you <b>want to become</b>?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": -3,

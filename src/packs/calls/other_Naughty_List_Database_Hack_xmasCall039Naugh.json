@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "investigation",
       "callerName": "North Pole IT Elf Gigabyte",
-      "callerQuote": "<p>\"Someone hacked the Naughty/Nice database! They moved EVERYONE to the Nice list—including convicted supervillains! If Santa delivers presents to them thinking they're good... Do you know what happens when Dr. Destruction gets what he ACTUALLY wants for Christmas?!\"</p>",
-      "requirementsText": "<ul><li><b>Trace the hack</b> back to its source</li><li><b>Restore</b> the original Naughty/Nice data before Santa's run</li><li>Find out <b>who benefits</b> from this chaos</li></ul>",
+      "callerQuote": "<p>\"Someone hacked the Naughty/Nice database! They moved EVERYONE to the Nice list—including convicted supervillains! If Santa delivers presents to them thinking they're good... Do you know what happens when Dr. Destruction gets what he ACTUALLY wants for Christmas?!\"</p><h2>Requirements</h2><ul><li><b>Trace the hack</b> back to its source</li><li><b>Restore</b> the original Naughty/Nice data before Santa's run</li><li>Find out <b>who benefits</b> from this chaos</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": -3,
         "freak": null,

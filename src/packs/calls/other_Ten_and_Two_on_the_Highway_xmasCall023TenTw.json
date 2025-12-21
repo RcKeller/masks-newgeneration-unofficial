@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "pursuit",
       "callerName": "Highway Patrol",
-      "callerQuote": "<p>\"We're in pursuit of a stolen semi-truck on I-95. Driver appears to be... a honey badger in a tilted trilby hat. He's maintaining PERFECT lane discipline while going 90 mph. Keeps muttering 'ten and two, baby' into his radio. This is a high-speed chase but weirdly safe?\"</p>",
-      "requirementsText": "<ul><li><b>Stop the truck</b> without causing a highway pileup</li><li>Figure out what's in the <b>cargo</b>—probably honey</li><li>Slick won't fight unless you <b>threaten the bees</b></li></ul>",
+      "callerQuote": "<p>\"We're in pursuit of a stolen semi-truck on I-95. Driver appears to be... a honey badger in a tilted trilby hat. He's maintaining PERFECT lane discipline while going 90 mph. Keeps muttering 'ten and two, baby' into his radio. This is a high-speed chase but weirdly safe?\"</p><h2>Requirements</h2><ul><li><b>Stop the truck</b> without causing a highway pileup</li><li>Figure out what's in the <b>cargo</b>—probably honey</li><li>Slick won't fight unless you <b>threaten the bees</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 1,

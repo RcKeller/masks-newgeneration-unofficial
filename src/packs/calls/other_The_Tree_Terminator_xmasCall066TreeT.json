@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "assault",
       "callerName": "Parks Commissioner Davis",
-      "callerQuote": "<p>\"Someone is systematically destroying every public Christmas tree in the city! They've hit six already—chainsaws, fire, some kind of acid? They left a note: 'Trees belong in forests, not in your living rooms.' The Civic Center tree is the last one standing and they're heading there NOW!\"</p>",
-      "requirementsText": "<ul><li><b>Intercept the Tree Terminator</b> at Civic Center</li><li><b>Protect</b> the last public Christmas tree</li><li>Understand their <b>environmental extremism</b>—is there a valid point buried in the crazy?</li></ul>",
+      "callerQuote": "<p>\"Someone is systematically destroying every public Christmas tree in the city! They've hit six already—chainsaws, fire, some kind of acid? They left a note: 'Trees belong in forests, not in your living rooms.' The Civic Center tree is the last one standing and they're heading there NOW!\"</p><h2>Requirements</h2><ul><li><b>Intercept the Tree Terminator</b> at Civic Center</li><li><b>Protect</b> the last public Christmas tree</li><li>Understand their <b>environmental extremism</b>—is there a valid point buried in the crazy?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 0,

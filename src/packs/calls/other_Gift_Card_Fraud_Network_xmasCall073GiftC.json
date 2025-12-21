@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "investigation",
       "callerName": "Retail Loss Prevention",
-      "callerQuote": "<p>\"We've tracked a massive gift card fraud operation—they're draining cards before customers even activate them. Thousands of people are going to open worthless plastic on Christmas morning. The trail leads to some kind of tech-savvy operation. Can you trace the digital fingerprints?\"</p>",
-      "requirementsText": "<ul><li><b>Trace</b> the gift card fraud network</li><li>Find their <b>technical operation</b> center</li><li>Recover what funds you can <b>before Christmas</b></li></ul>",
+      "callerQuote": "<p>\"We've tracked a massive gift card fraud operation—they're draining cards before customers even activate them. Thousands of people are going to open worthless plastic on Christmas morning. The trail leads to some kind of tech-savvy operation. Can you trace the digital fingerprints?\"</p><h2>Requirements</h2><ul><li><b>Trace</b> the gift card fraud network</li><li>Find their <b>technical operation</b> center</li><li>Recover what funds you can <b>before Christmas</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": -3,
         "freak": null,

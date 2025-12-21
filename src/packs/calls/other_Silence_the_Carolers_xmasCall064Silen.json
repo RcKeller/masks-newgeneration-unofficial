@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "assault",
       "callerName": "Choir Director Mrs. Chen",
-      "callerQuote": "<p>\"A villain with SONIC POWERS is attacking anyone who sings Christmas carols! Three of my choir members are unconscious! She keeps screaming 'NO MORE SONGS' and her voice creates shockwaves! We were just spreading holiday cheer! Please help before she finds the children's choir!\"</p>",
-      "requirementsText": "<ul><li><b>Stop the sonic villain</b> before she hurts more people</li><li><b>Protect</b> the children's choir—they're performing nearby</li><li>Find out <b>why she hates</b> Christmas music so much</li></ul>",
+      "callerQuote": "<p>\"A villain with SONIC POWERS is attacking anyone who sings Christmas carols! Three of my choir members are unconscious! She keeps screaming 'NO MORE SONGS' and her voice creates shockwaves! We were just spreading holiday cheer! Please help before she finds the children's choir!\"</p><h2>Requirements</h2><ul><li><b>Stop the sonic villain</b> before she hurts more people</li><li><b>Protect</b> the children's choir—they're performing nearby</li><li>Find out <b>why she hates</b> Christmas music so much</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 1,

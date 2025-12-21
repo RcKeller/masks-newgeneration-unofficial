@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "pursuit",
       "callerName": "Team Leader",
-      "callerQuote": "<p>\"Major crisis downtown—we need all hands. But I know you have that family thing. I'm not going to order you. But people might die if we're short-handed. Your call. Whatever you choose, the team will understand. Probably. Just... decide fast.\"</p>",
-      "requirementsText": "<ul><li><b>Choose</b>: family or mission</li><li>Live with the <b>consequences</b> either way</li><li>Maybe there's a <b>creative solution</b>? Maybe not.</li></ul>",
+      "callerQuote": "<p>\"Major crisis downtown—we need all hands. But I know you have that family thing. I'm not going to order you. But people might die if we're short-handed. Your call. Whatever you choose, the team will understand. Probably. Just... decide fast.\"</p><h2>Requirements</h2><ul><li><b>Choose</b>: family or mission</li><li>Live with the <b>consequences</b> either way</li><li>Maybe there's a <b>creative solution</b>? Maybe not.</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 0,

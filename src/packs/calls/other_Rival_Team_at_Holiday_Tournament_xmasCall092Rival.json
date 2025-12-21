@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "social",
       "callerName": "Coach Williams",
-      "callerQuote": "<p>\"Our rival school's team has a new player who's... suspiciously good. Like, impossibly good. We're playing them in the holiday tournament finals and I think he might be using powers. Can you investigate? But FAIRLY. If he's cheating, prove it. If not, we lose with dignity.\"</p>",
-      "requirementsText": "<ul><li><b>Investigate</b> the rival player—powers or natural talent?</li><li>Don't <b>cheat yourself</b> in the process</li><li>Figure out the <b>ethical path</b> regardless of outcome</li></ul>",
+      "callerQuote": "<p>\"Our rival school's team has a new player who's... suspiciously good. Like, impossibly good. We're playing them in the holiday tournament finals and I think he might be using powers. Can you investigate? But FAIRLY. If he's cheating, prove it. If not, we lose with dignity.\"</p><h2>Requirements</h2><ul><li><b>Investigate</b> the rival player—powers or natural talent?</li><li>Don't <b>cheat yourself</b> in the process</li><li>Figure out the <b>ethical path</b> regardless of outcome</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": -3,
         "freak": 0,

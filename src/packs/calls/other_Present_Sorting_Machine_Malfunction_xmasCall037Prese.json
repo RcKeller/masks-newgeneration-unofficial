@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Head Elf Tinkerbolt",
-      "callerQuote": "<p>\"The Mega-Sorter 9000 has gone haywire! It's launching presents through the roof at 200 mph! There's wrapped boxes raining down on the city! Someone's going to get hit by a PlayStation! We can't shut it down from here—the controls are INSIDE the machine!\"</p>",
-      "requirementsText": "<ul><li><b>Enter the machine</b> and shut it down from inside</li><li><b>Catch</b> or redirect falling presents before they hurt someone</li><li>Figure out <b>what caused</b> the malfunction</li></ul>",
+      "callerQuote": "<p>\"The Mega-Sorter 9000 has gone haywire! It's launching presents through the roof at 200 mph! There's wrapped boxes raining down on the city! Someone's going to get hit by a PlayStation! We can't shut it down from here—the controls are INSIDE the machine!\"</p><h2>Requirements</h2><ul><li><b>Enter the machine</b> and shut it down from inside</li><li><b>Catch</b> or redirect falling presents before they hurt someone</li><li>Figure out <b>what caused</b> the malfunction</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 1,

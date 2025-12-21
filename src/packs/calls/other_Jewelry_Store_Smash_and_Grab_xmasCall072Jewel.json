@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "robbery",
       "callerName": "Store Owner Screaming",
-      "callerQuote": "<p>\"THEY'RE TAKING EVERYTHING! Drove a van through the front window while the street was packed with last-minute shoppers! They've got hammers and they're smashing every case! There are people TRAPPED under the debris! Help! HELP!\"</p>",
-      "requirementsText": "<ul><li><b>Stop the robbers</b> before they escape</li><li><b>Rescue</b> people trapped in the debris</li><li>Don't let them <b>disappear into the crowd</b></li></ul>",
+      "callerQuote": "<p>\"THEY'RE TAKING EVERYTHING! Drove a van through the front window while the street was packed with last-minute shoppers! They've got hammers and they're smashing every case! There are people TRAPPED under the debris! Help! HELP!\"</p><h2>Requirements</h2><ul><li><b>Stop the robbers</b> before they escape</li><li><b>Rescue</b> people trapped in the debris</li><li>Don't let them <b>disappear into the crowd</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 0,

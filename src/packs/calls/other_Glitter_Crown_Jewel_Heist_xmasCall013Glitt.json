@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "honey-heist",
       "callerName": "Museum Curator Helena",
-      "callerQuote": "<p>\"The Vanderbilt Diamond is being stolen AS WE SPEAK! The thief came through the skylight—some kind of five-limbed creature in a glitter crown? There's a TRAIL OF GLITTER and it smells like... artificial sweetener? She's doing FLIPS.\"</p>",
-      "requirementsText": "<ul><li>Stop Barbara before she <b>escapes the museum</b></li><li>Follow the <b>glitter trail</b>—she's leaving evidence everywhere</li><li>Match her <b>acrobatic abilities</b> or find another way</li></ul>",
+      "callerQuote": "<p>\"The Vanderbilt Diamond is being stolen AS WE SPEAK! The thief came through the skylight—some kind of five-limbed creature in a glitter crown? There's a TRAIL OF GLITTER and it smells like... artificial sweetener? She's doing FLIPS.\"</p><h2>Requirements</h2><ul><li>Stop Barbara before she <b>escapes the museum</b></li><li>Follow the <b>glitter trail</b>—she's leaving evidence everywhere</li><li>Match her <b>acrobatic abilities</b> or find another way</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 2,

@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Christmas Market Organizer",
-      "callerQuote": "<p>\"The life-sized gingerbread house is COLLAPSING! It's 30 feet tall and made of actual gingerbread—some genius thought that was structurally sound! There are kids inside taking photos! The walls are buckling! It smells amazing but people are going to get crushed!\"</p>",
-      "requirementsText": "<ul><li><b>Evacuate</b> everyone from inside the gingerbread house</li><li><b>Shore up</b> the structure or control its collapse</li><li>Maybe <b>save some gingerbread</b>—the orphanage was going to eat it</li></ul>",
+      "callerQuote": "<p>\"The life-sized gingerbread house is COLLAPSING! It's 30 feet tall and made of actual gingerbread—some genius thought that was structurally sound! There are kids inside taking photos! The walls are buckling! It smells amazing but people are going to get crushed!\"</p><h2>Requirements</h2><ul><li><b>Evacuate</b> everyone from inside the gingerbread house</li><li><b>Shore up</b> the structure or control its collapse</li><li>Maybe <b>save some gingerbread</b>—the orphanage was going to eat it</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 0,
         "freak": 1,

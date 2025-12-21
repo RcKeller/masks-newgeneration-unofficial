@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Fire Chief Rodriguez",
-      "callerQuote": "<p>\"We've got a warehouse fire, but there's a tardigrade in a flat cap spraying water everywhere—from an industrial canteen? He's actually HELPING put out the fire while also definitely stealing the water from our trucks. Do we arrest him or give him a medal?\"</p>",
-      "requirementsText": "<ul><li>Help <b>contain the fire</b>—Puddles is doing his best</li><li>Decide what to do about Puddles <b>after</b> the crisis</li><li>Maybe recruit him for the <b>fire department</b>?</li></ul>",
+      "callerQuote": "<p>\"We've got a warehouse fire, but there's a tardigrade in a flat cap spraying water everywhere—from an industrial canteen? He's actually HELPING put out the fire while also definitely stealing the water from our trucks. Do we arrest him or give him a medal?\"</p><h2>Requirements</h2><ul><li>Help <b>contain the fire</b>—Puddles is doing his best</li><li>Decide what to do about Puddles <b>after</b> the crisis</li><li>Maybe recruit him for the <b>fire department</b>?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": 1,

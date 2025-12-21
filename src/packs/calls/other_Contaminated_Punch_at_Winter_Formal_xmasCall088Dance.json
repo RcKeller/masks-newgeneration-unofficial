@@ -1,0 +1,47 @@
+{
+  "name": "Contaminated Punch at Winter Formal",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "High School Vice Principal",
+      "callerQuote": "<p>\"Someone spiked the punch at the Winter Formal with some kind of glowing substance—half the students are now LITERALLY glowing. Some are levitating. One kid's hair turned into fire. We don't know if it's a prank or an attack, but we need powered help NOW before someone gets hurt!\"</p><h2>Requirements</h2><ul><li><b>Contain</b> the affected students before powers go haywire</li><li><b>Identify</b> the contaminant and find an antidote</li><li><b>Track down</b> whoever spiked the punch</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 1,
+        "freak": 2,
+        "savior": 1,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000088,
+    "modifiedTime": 1734700000088,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall088Dance",
+  "sort": 100088,
+  "_key": "!actors!xmasCall088Dance"
+}

@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "City Meteorologist",
-      "callerQuote": "<p>\"This is impossible—a localized blizzard is forming over downtown, but the weather patterns don't support it. Temperature's dropping to -40. There's a woman at the center of it, floating, creating ice from nothing. She's screaming about making 'winter last forever.' The city is FREEZING.\"</p>",
-      "requirementsText": "<ul><li><b>Confront</b> the Ice Queen at the storm's center</li><li><b>Stop the blizzard</b> before the city freezes</li><li>Find out <b>what drove her</b> to this—can she be reasoned with?</li></ul>",
+      "callerQuote": "<p>\"This is impossible—a localized blizzard is forming over downtown, but the weather patterns don't support it. Temperature's dropping to -40. There's a woman at the center of it, floating, creating ice from nothing. She's screaming about making 'winter last forever.' The city is FREEZING.\"</p><h2>Requirements</h2><ul><li><b>Confront</b> the Ice Queen at the storm's center</li><li><b>Stop the blizzard</b> before the city freezes</li><li>Find out <b>what drove her</b> to this—can she be reasoned with?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 2,
         "freak": 2,

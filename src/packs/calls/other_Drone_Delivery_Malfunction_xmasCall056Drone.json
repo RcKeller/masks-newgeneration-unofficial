@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "SkyDrop Tech Support",
-      "callerQuote": "<p>\"Our delivery drone fleet has gone HAYWIRE! A software update corrupted their navigation—200 drones are dropping packages randomly across the city! Some are landing in pools, on roofs, in traffic! One just dropped a 50-pound package through someone's sunroof!\"</p>",
-      "requirementsText": "<ul><li><b>Stop the drones</b> from causing more damage</li><li><b>Catch falling packages</b> before they hurt someone</li><li>Find a way to <b>override the corrupted software</b></li></ul>",
+      "callerQuote": "<p>\"Our delivery drone fleet has gone HAYWIRE! A software update corrupted their navigation—200 drones are dropping packages randomly across the city! Some are landing in pools, on roofs, in traffic! One just dropped a 50-pound package through someone's sunroof!\"</p><h2>Requirements</h2><ul><li><b>Stop the drones</b> from causing more damage</li><li><b>Catch falling packages</b> before they hurt someone</li><li>Find a way to <b>override the corrupted software</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 0,
         "freak": 1,

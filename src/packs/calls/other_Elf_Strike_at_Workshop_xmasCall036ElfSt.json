@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "social",
       "callerName": "Elf Union Rep Jingles",
-      "callerQuote": "<p>\"The elves have walked out! We're demanding dental coverage and reasonable overtime limits—it's been 72-hour shifts since November! Production has STOPPED. Christmas is in 3 days. We need a mediator before this becomes an international incident.\"</p>",
-      "requirementsText": "<ul><li><b>Negotiate</b> between the elves and North Pole management</li><li>Understand both sides' <b>grievances</b></li><li>Find a <b>compromise</b> before Christmas is cancelled</li></ul>",
+      "callerQuote": "<p>\"The elves have walked out! We're demanding dental coverage and reasonable overtime limits—it's been 72-hour shifts since November! Production has STOPPED. Christmas is in 3 days. We need a mediator before this becomes an international incident.\"</p><h2>Requirements</h2><ul><li><b>Negotiate</b> between the elves and North Pole management</li><li>Understand both sides' <b>grievances</b></li><li>Find a <b>compromise</b> before Christmas is cancelled</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": -3,

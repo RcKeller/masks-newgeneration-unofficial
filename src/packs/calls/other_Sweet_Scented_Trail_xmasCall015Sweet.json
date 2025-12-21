@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "investigation",
       "callerName": "Detective Murphy",
-      "callerQuote": "<p>\"We've got a lead on the bearcat thief. Witnesses keep mentioning a 'weirdly pleasant smell' at every crime scene—like cotton candy mixed with fruit. The scent trail leads into the ventilation system. Anyone good at crawling through ducts?\"</p>",
-      "requirementsText": "<ul><li>Follow Barbara's <b>sweet scent</b> through the city vents</li><li>Map out her <b>travel routes</b> for future stakeouts</li><li>Don't get <b>ambushed</b> in the tight spaces</li></ul>",
+      "callerQuote": "<p>\"We've got a lead on the bearcat thief. Witnesses keep mentioning a 'weirdly pleasant smell' at every crime scene—like cotton candy mixed with fruit. The scent trail leads into the ventilation system. Anyone good at crawling through ducts?\"</p><h2>Requirements</h2><ul><li>Follow Barbara's <b>sweet scent</b> through the city vents</li><li>Map out her <b>travel routes</b> for future stakeouts</li><li>Don't get <b>ambushed</b> in the tight spaces</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": 0,

@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "assault",
       "callerName": "Mall Security Chief",
-      "callerQuote": "<p>\"Someone is kidnapping every mall Santa in the city! Seven have disappeared in the last four hours. The latest one was grabbed right off his throne—witnesses say it was a woman in an elf costume with super-strength. She keeps muttering about 'ending the lie.' What is she PLANNING?\"</p>",
-      "requirementsText": "<ul><li><b>Track down</b> the kidnapped mall Santas</li><li>Figure out the villain's <b>endgame</b>—what's the plan?</li><li><b>Stop her</b> before Christmas is ruined for thousands of kids</li></ul>",
+      "callerQuote": "<p>\"Someone is kidnapping every mall Santa in the city! Seven have disappeared in the last four hours. The latest one was grabbed right off his throne—witnesses say it was a woman in an elf costume with super-strength. She keeps muttering about 'ending the lie.' What is she PLANNING?\"</p><h2>Requirements</h2><ul><li><b>Track down</b> the kidnapped mall Santas</li><li>Figure out the villain's <b>endgame</b>—what's the plan?</li><li><b>Stop her</b> before Christmas is ruined for thousands of kids</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 0,

@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "robbery",
       "callerName": "Charity Coordinator Rosa",
-      "callerQuote": "<p>\"They took the WHOLE TRUCK. Three months of donations—500 toys for kids in shelters and foster care. We were supposed to deliver tomorrow morning. The truck had a GPS but it's been disabled. These are kids who have NOTHING and now they'll have even less.\"</p>",
-      "requirementsText": "<ul><li><b>Track the stolen truck</b> and recover the toys</li><li>Find out <b>who did this</b>—and why target a charity?</li><li>Get the toys back <b>in time</b> for Christmas delivery</li></ul>",
+      "callerQuote": "<p>\"They took the WHOLE TRUCK. Three months of donations—500 toys for kids in shelters and foster care. We were supposed to deliver tomorrow morning. The truck had a GPS but it's been disabled. These are kids who have NOTHING and now they'll have even less.\"</p><h2>Requirements</h2><ul><li><b>Track the stolen truck</b> and recover the toys</li><li>Find out <b>who did this</b>—and why target a charity?</li><li>Get the toys back <b>in time</b> for Christmas delivery</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 0,
         "freak": -3,

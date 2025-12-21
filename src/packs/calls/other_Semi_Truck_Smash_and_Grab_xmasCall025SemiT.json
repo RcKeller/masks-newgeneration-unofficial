@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "honey-heist",
       "callerName": "Warehouse Manager Chen",
-      "callerQuote": "<p>\"A semi-truck just backed through our loading dock wall! The driver—some kind of badger in a hat—is loading our entire honey shipment. Security camera caught him licking his paws and saying 'for grip' before each lift. We're losing thousands!\"</p>",
-      "requirementsText": "<ul><li>Stop Slick from <b>loading the truck</b></li><li>Be careful—he's <b>stronger than he looks</b></li><li>The semi is his <b>escape vehicle</b>—disable it?</li></ul>",
+      "callerQuote": "<p>\"A semi-truck just backed through our loading dock wall! The driver—some kind of badger in a hat—is loading our entire honey shipment. Security camera caught him licking his paws and saying 'for grip' before each lift. We're losing thousands!\"</p><h2>Requirements</h2><ul><li>Stop Slick from <b>loading the truck</b></li><li>Be careful—he's <b>stronger than he looks</b></li><li>The semi is his <b>escape vehicle</b>—disable it?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": null,

@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "assault",
       "callerName": "Park Ranger Station",
-      "callerQuote": "<p>\"There's something in Central Park—it looks like Jack Frost but WRONG. Blue skin, ice for eyes. He's freezing people SOLID. Three joggers are statues right now. He keeps saying 'No one appreciates winter anymore' and touching trees, killing them instantly. He's spreading!\"</p>",
-      "requirementsText": "<ul><li><b>Stop Jack Frost</b> from freezing more people</li><li>Find a way to <b>thaw the victims</b> safely</li><li>Determine if this is the <b>real Jack Frost</b> corrupted, or an imposter</li></ul>",
+      "callerQuote": "<p>\"There's something in Central Park—it looks like Jack Frost but WRONG. Blue skin, ice for eyes. He's freezing people SOLID. Three joggers are statues right now. He keeps saying 'No one appreciates winter anymore' and touching trees, killing them instantly. He's spreading!\"</p><h2>Requirements</h2><ul><li><b>Stop Jack Frost</b> from freezing more people</li><li>Find a way to <b>thaw the victims</b> safely</li><li>Determine if this is the <b>real Jack Frost</b> corrupted, or an imposter</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 2,

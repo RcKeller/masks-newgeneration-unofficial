@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "honey-heist",
       "callerName": "Golden Bee Honey Factory",
-      "callerQuote": "<p>\"They're ALL here! A grizzly giving orders, a panda monologuing at cameras, a five-limbed thing on the ceiling, something tiny filling water containers, a badger backing up a semi, and a bear on a laptop! Our ENTIRE honey reserve is being stolen!\"</p>",
-      "requirementsText": "<ul><li>Face the <b>full bear crew</b>—all six at once</li><li>Each bear has <b>different tactics</b>—divide and conquer?</li><li>Stop them before they escape with <b>10,000 gallons of honey</b></li></ul>",
+      "callerQuote": "<p>\"They're ALL here! A grizzly giving orders, a panda monologuing at cameras, a five-limbed thing on the ceiling, something tiny filling water containers, a badger backing up a semi, and a bear on a laptop! Our ENTIRE honey reserve is being stolen!\"</p><h2>Requirements</h2><ul><li>Face the <b>full bear crew</b>—all six at once</li><li>Each bear has <b>different tactics</b>—divide and conquer?</li><li>Stop them before they escape with <b>10,000 gallons of honey</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 2,
         "freak": 2,

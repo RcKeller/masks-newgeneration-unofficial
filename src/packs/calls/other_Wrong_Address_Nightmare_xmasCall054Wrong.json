@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "pursuit",
       "callerName": "Frantic Mom Deborah",
-      "callerQuote": "<p>\"My daughter's ONLY Christmas present—a limited edition Princess Stardust doll—was delivered to the wrong address. ACROSS TOWN. The tracking says 'delivered' but whoever got it isn't answering. The store is sold out everywhere. Please, she's been asking for a YEAR.\"</p>",
-      "requirementsText": "<ul><li><b>Track down</b> the misdelivered package</li><li><b>Convince</b> whoever has it to return it—or retrieve it</li><li>Get it back <b>before Christmas morning</b></li></ul>",
+      "callerQuote": "<p>\"My daughter's ONLY Christmas present—a limited edition Princess Stardust doll—was delivered to the wrong address. ACROSS TOWN. The tracking says 'delivered' but whoever got it isn't answering. The store is sold out everywhere. Please, she's been asking for a YEAR.\"</p><h2>Requirements</h2><ul><li><b>Track down</b> the misdelivered package</li><li><b>Convince</b> whoever has it to return it—or retrieve it</li><li>Get it back <b>before Christmas morning</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": -3,
         "freak": null,

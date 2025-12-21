@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "minor-inconvenience",
       "callerName": "Building Super Hank",
-      "callerQuote": "<p>\"Got 12 carolers stuck in elevator 3. Been in there two hours. They will NOT stop singing. I've heard 'Jingle Bells' 47 times. The other residents are threatening to move out. Please get them out before I lose my mind or my job.\"</p>",
-      "requirementsText": "<ul><li><b>Free the carolers</b> from the stuck elevator</li><li>Maybe get them to <b>take a break</b> from singing?</li><li>Check if the <b>elevator failure</b> was accidental</li></ul>",
+      "callerQuote": "<p>\"Got 12 carolers stuck in elevator 3. Been in there two hours. They will NOT stop singing. I've heard 'Jingle Bells' 47 times. The other residents are threatening to move out. Please get them out before I lose my mind or my job.\"</p><h2>Requirements</h2><ul><li><b>Free the carolers</b> from the stuck elevator</li><li>Maybe get them to <b>take a break</b> from singing?</li><li>Check if the <b>elevator failure</b> was accidental</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": -3,
         "freak": 0,

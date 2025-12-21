@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Factory Floor Supervisor",
-      "callerQuote": "<p>\"The ToyMax factory just EXPLODED! Battery assembly line went up—there's fires on three floors and workers trapped in the east wing! The automated toy testers are still running and blocking rescue routes! This was supposed to be the big Christmas shipment! PEOPLE ARE TRAPPED!\"</p>",
-      "requirementsText": "<ul><li><b>Rescue trapped workers</b> from the burning factory</li><li><b>Disable</b> the automated systems blocking escape routes</li><li><b>Contain the fires</b> before the whole building goes</li></ul>",
+      "callerQuote": "<p>\"The ToyMax factory just EXPLODED! Battery assembly line went up—there's fires on three floors and workers trapped in the east wing! The automated toy testers are still running and blocking rescue routes! This was supposed to be the big Christmas shipment! PEOPLE ARE TRAPPED!\"</p><h2>Requirements</h2><ul><li><b>Rescue trapped workers</b> from the burning factory</li><li><b>Disable</b> the automated systems blocking escape routes</li><li><b>Contain the fires</b> before the whole building goes</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 2,
         "freak": 1,

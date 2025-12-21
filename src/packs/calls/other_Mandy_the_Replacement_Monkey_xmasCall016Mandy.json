@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "social",
       "callerName": "Circus Ringmaster Beaumont",
-      "callerQuote": "<p>\"Our former star Barbara the Bearcat just showed up to confront Mandy, the monkey who replaced her. They're circling each other on the high wire. Barbara keeps yelling about 'stealing her spotlight.' Can someone de-escalate before we have an animal fight 40 feet up?\"</p>",
-      "requirementsText": "<ul><li><b>Calm Barbara down</b> before the confrontation turns violent</li><li>Understand her <b>grievances</b>—was she treated unfairly?</li><li>Maybe find a <b>compromise</b>? Co-headliners?</li></ul>",
+      "callerQuote": "<p>\"Our former star Barbara the Bearcat just showed up to confront Mandy, the monkey who replaced her. They're circling each other on the high wire. Barbara keeps yelling about 'stealing her spotlight.' Can someone de-escalate before we have an animal fight 40 feet up?\"</p><h2>Requirements</h2><ul><li><b>Calm Barbara down</b> before the confrontation turns violent</li><li>Understand her <b>grievances</b>—was she treated unfairly?</li><li>Maybe find a <b>compromise</b>? Co-headliners?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 0,
         "freak": null,

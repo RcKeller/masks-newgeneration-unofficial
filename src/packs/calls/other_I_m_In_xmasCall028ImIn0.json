@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "honey-heist",
       "callerName": "Bank IT Manager",
-      "callerQuote": "<p>\"Our security system just went down—someone hacked it from inside the building! Cameras caught a black bear in a beanie typing really fast and then saying 'I'm in' out loud. To no one. The vault doors are opening!\"</p>",
-      "requirementsText": "<ul><li><b>Stop the bears</b> entering through disabled security</li><li>Find acid_burn and <b>shut down the hack</b></li><li>He's a <b>hacker, not a fighter</b>—corner him</li></ul>",
+      "callerQuote": "<p>\"Our security system just went down—someone hacked it from inside the building! Cameras caught a black bear in a beanie typing really fast and then saying 'I'm in' out loud. To no one. The vault doors are opening!\"</p><h2>Requirements</h2><ul><li><b>Stop the bears</b> entering through disabled security</li><li>Find acid_burn and <b>shut down the hack</b></li><li>He's a <b>hacker, not a fighter</b>—corner him</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": null,

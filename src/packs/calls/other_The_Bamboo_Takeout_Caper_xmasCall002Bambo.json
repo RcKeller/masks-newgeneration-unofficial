@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "honey-heist",
       "callerName": "Golden Dragon Restaurant",
-      "callerQuote": "<p>\"Someone's been ordering 47 bamboo containers a day to the same address for two weeks. Paid in cash. Left a cowboy hat as a tip once. We think it's connected to those bear crimes?\"</p>",
-      "requirementsText": "<ul><li>Stake out the <b>delivery address</b></li><li>Trace Greg's <b>PI office</b> location</li><li>Gather <b>evidence</b> without alerting the target</li></ul>",
+      "callerQuote": "<p>\"Someone's been ordering 47 bamboo containers a day to the same address for two weeks. Paid in cash. Left a cowboy hat as a tip once. We think it's connected to those bear crimes?\"</p><h2>Requirements</h2><ul><li>Stake out the <b>delivery address</b></li><li>Trace Greg's <b>PI office</b> location</li><li>Gather <b>evidence</b> without alerting the target</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": null,

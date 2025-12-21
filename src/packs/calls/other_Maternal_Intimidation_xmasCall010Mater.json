@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "assault",
       "callerName": "Terrified Witness Mark",
-      "callerQuote": "<p>\"I saw the bear heist last week and now there's a grizzly at my door. She's not threatening me exactly, she just keeps saying 'I'm not angry, I'm just disappointed' and asking if my mother knows I'm a snitch. I'M FORTY-THREE.\"</p>",
-      "requirementsText": "<ul><li><b>Protect the witness</b> from Petunia's intimidation tactics</li><li>Get Petunia to <b>back off</b>—violence may escalate things</li><li>Deal with the <b>psychological damage</b> of mom-guilt from a bear</li></ul>",
+      "callerQuote": "<p>\"I saw the bear heist last week and now there's a grizzly at my door. She's not threatening me exactly, she just keeps saying 'I'm not angry, I'm just disappointed' and asking if my mother knows I'm a snitch. I'M FORTY-THREE.\"</p><h2>Requirements</h2><ul><li><b>Protect the witness</b> from Petunia's intimidation tactics</li><li>Get Petunia to <b>back off</b>—violence may escalate things</li><li>Deal with the <b>psychological damage</b> of mom-guilt from a bear</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 1,

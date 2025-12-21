@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Climate Scientist Dr. Patel",
-      "callerQuote": "<p>\"Someone is MELTING all the snow in the city! Targeted heat bursts—every snowman, every snow-covered yard, gone. There's a man in a red suit generating thermal energy, ranting about 'ruining your precious White Christmas.' He's heading for the ski resort next!\"</p>",
-      "requirementsText": "<ul><li><b>Stop Heat Miser</b> before he reaches the ski resort</li><li><b>Protect</b> remaining snow—people were counting on a white Christmas</li><li>His powers are <b>heat-based</b>—plan accordingly</li></ul>",
+      "callerQuote": "<p>\"Someone is MELTING all the snow in the city! Targeted heat bursts—every snowman, every snow-covered yard, gone. There's a man in a red suit generating thermal energy, ranting about 'ruining your precious White Christmas.' He's heading for the ski resort next!\"</p><h2>Requirements</h2><ul><li><b>Stop Heat Miser</b> before he reaches the ski resort</li><li><b>Protect</b> remaining snow—people were counting on a white Christmas</li><li>His powers are <b>heat-based</b>—plan accordingly</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 2,

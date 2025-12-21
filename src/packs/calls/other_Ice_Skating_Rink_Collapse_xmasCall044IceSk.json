@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Rink Manager Peterson",
-      "callerQuote": "<p>\"The ice is CRACKING! The refrigeration system failed and there are 40 skaters out there! Some already fell through into the machinery below. The water's rising and mixing with coolant. We've got maybe five minutes before the whole surface gives way!\"</p>",
-      "requirementsText": "<ul><li><b>Rescue skaters</b> before the ice collapses completely</li><li>Get people out of the <b>machinery pit</b> below</li><li>Someone needs to <b>shut off</b> the flooding coolant lines</li></ul>",
+      "callerQuote": "<p>\"The ice is CRACKING! The refrigeration system failed and there are 40 skaters out there! Some already fell through into the machinery below. The water's rising and mixing with coolant. We've got maybe five minutes before the whole surface gives way!\"</p><h2>Requirements</h2><ul><li><b>Rescue skaters</b> before the ice collapses completely</li><li>Get people out of the <b>machinery pit</b> below</li><li>Someone needs to <b>shut off</b> the flooding coolant lines</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 1,

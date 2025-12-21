@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "assault",
       "callerName": "Mall Santa Gary",
-      "callerQuote": "<p>\"Some jackass in a 'Bah Humbug' sweater just released a swarm of robotic locusts into the toy store! He's screaming about 'ending the commercialization of Christmas' while everything burns! Kids are crying! Parents are panicking! Someone stop this Grinch wannabe!\"</p>",
-      "requirementsText": "<ul><li><b>Stop</b> the anti-Christmas villain</li><li><b>Disable</b> the robotic locust swarm</li><li>Save the <b>remaining toys</b>—and the kids' Christmas spirit</li></ul>",
+      "callerQuote": "<p>\"Some jackass in a 'Bah Humbug' sweater just released a swarm of robotic locusts into the toy store! He's screaming about 'ending the commercialization of Christmas' while everything burns! Kids are crying! Parents are panicking! Someone stop this Grinch wannabe!\"</p><h2>Requirements</h2><ul><li><b>Stop</b> the anti-Christmas villain</li><li><b>Disable</b> the robotic locust swarm</li><li>Save the <b>remaining toys</b>—and the kids' Christmas spirit</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 2,
         "freak": 1,

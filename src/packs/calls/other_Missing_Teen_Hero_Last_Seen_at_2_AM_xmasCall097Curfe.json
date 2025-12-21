@@ -1,0 +1,47 @@
+{
+  "name": "Missing Teen Hero Last Seen at 2 AM",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "pursuit",
+      "callerName": "Frantic Parent",
+      "callerQuote": "<p>\"My kid didn't come home last night—they snuck out around midnight and I just found out they've been doing 'hero stuff' behind my back. Their friend finally told me. I don't know their hero name or what they look like in costume but they said they were going to 'stop something downtown.' It's Christmas morning and they're STILL not back!\"</p><h2>Requirements</h2><ul><li><b>Track down</b> the missing amateur hero</li><li>Find out what <b>situation</b> they got themselves into</li><li>Get them home <b>safely</b>—then have a conversation</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 2,
+        "freak": 1,
+        "savior": 1,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000097,
+    "modifiedTime": 1734700000097,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall097Curfe",
+  "sort": 100097,
+  "_key": "!actors!xmasCall097Curfe"
+}

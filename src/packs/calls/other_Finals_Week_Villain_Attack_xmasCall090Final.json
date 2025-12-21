@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Principal Morrison",
-      "callerQuote": "<p>\"A villain just attacked the school during final exams! Half the building is on fire, but the other half is still full of students taking tests. We're evacuating, but the villain is blocking the main exit. Also, your history final is in 20 minutes. Sorry.\"</p>",
-      "requirementsText": "<ul><li><b>Stop the villain</b> and save the students</li><li>Try to make it back for your <b>history final</b></li><li>Maybe the teacher will give an <b>extension</b>? (Doubtful)</li></ul>",
+      "callerQuote": "<p>\"A villain just attacked the school during final exams! Half the building is on fire, but the other half is still full of students taking tests. We're evacuating, but the villain is blocking the main exit. Also, your history final is in 20 minutes. Sorry.\"</p><h2>Requirements</h2><ul><li><b>Stop the villain</b> and save the students</li><li>Try to make it back for your <b>history final</b></li><li>Maybe the teacher will give an <b>extension</b>? (Doubtful)</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 1,

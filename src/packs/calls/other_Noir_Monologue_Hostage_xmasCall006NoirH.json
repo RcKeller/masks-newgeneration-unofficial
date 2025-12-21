@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "honey-heist",
       "callerName": "Hostage Negotiator Davis",
-      "callerQuote": "<p>\"We've got a situation at City Credit Union. Panda has hostages, but he keeps... pausing dramatically? Every time he monologues about 'the long dark night of the soul,' there's like a 30-second window. Can you work with that?\"</p>",
-      "requirementsText": "<ul><li>Time your entry during Greg's <b>dramatic pauses</b></li><li><b>Rescue hostages</b> without triggering his fight response</li><li>Consider: is Greg even <b>aware</b> he took hostages?</li></ul>",
+      "callerQuote": "<p>\"We've got a situation at City Credit Union. Panda has hostages, but he keeps... pausing dramatically? Every time he monologues about 'the long dark night of the soul,' there's like a 30-second window. Can you work with that?\"</p><h2>Requirements</h2><ul><li>Time your entry during Greg's <b>dramatic pauses</b></li><li><b>Rescue hostages</b> without triggering his fight response</li><li>Consider: is Greg even <b>aware</b> he took hostages?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 0,
         "freak": null,

@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "robbery",
       "callerName": "Delivery Driver Marcus",
-      "callerQuote": "<p>\"These aren't random porch pirates—it's ORGANIZED. They've got a van, walkies, a whole operation. They hit my truck three times this week! Following my route! The cops say they're 'overwhelmed.' These families aren't getting their Christmas presents!\"</p>",
-      "requirementsText": "<ul><li><b>Stake out</b> the delivery route and catch the thieves</li><li><b>Recover</b> the stolen packages if possible</li><li>Find their <b>stash location</b> and shut down the operation</li></ul>",
+      "callerQuote": "<p>\"These aren't random porch pirates—it's ORGANIZED. They've got a van, walkies, a whole operation. They hit my truck three times this week! Following my route! The cops say they're 'overwhelmed.' These families aren't getting their Christmas presents!\"</p><h2>Requirements</h2><ul><li><b>Stake out</b> the delivery route and catch the thieves</li><li><b>Recover</b> the stolen packages if possible</li><li>Find their <b>stash location</b> and shut down the operation</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 0,
         "freak": -3,

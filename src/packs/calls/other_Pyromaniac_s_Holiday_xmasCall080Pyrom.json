@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Fire Chief Emergency",
-      "callerQuote": "<p>\"A pyrokinetic villain is setting Christmas trees on fire across the city—we've got TWELVE structure fires and counting! He's moving too fast for us to catch. Keeps leaving notes: 'Your trees are kindling and your joy is smoke.' We're overwhelmed. Firefighters are exhausted!\"</p>",
-      "requirementsText": "<ul><li><b>Track the pyromaniac</b> and stop him</li><li><b>Help firefighters</b> contain the blazes</li><li>He's targeting <b>public trees</b>—protect the remaining ones</li></ul>",
+      "callerQuote": "<p>\"A pyrokinetic villain is setting Christmas trees on fire across the city—we've got TWELVE structure fires and counting! He's moving too fast for us to catch. Keeps leaving notes: 'Your trees are kindling and your joy is smoke.' We're overwhelmed. Firefighters are exhausted!\"</p><h2>Requirements</h2><ul><li><b>Track the pyromaniac</b> and stop him</li><li><b>Help firefighters</b> contain the blazes</li><li>He's targeting <b>public trees</b>—protect the remaining ones</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 2,
         "freak": 1,

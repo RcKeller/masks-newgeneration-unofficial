@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Highway Patrol Sergeant",
-      "callerQuote": "<p>\"Tanker truck overturned on the downtown off-ramp. It was carrying 5,000 gallons of commercial eggnog. The stuff is EVERYWHERE—streets are like an ice rink but stickier. Cars are sliding into each other. Also it smells like a very aggressive Christmas and people are slipping.\"</p>",
-      "requirementsText": "<ul><li><b>Stop traffic</b> before more cars slide into the pileup</li><li><b>Help stranded drivers</b> get to safety</li><li>Find a way to <b>clean up</b> 5,000 gallons of eggnog</li></ul>",
+      "callerQuote": "<p>\"Tanker truck overturned on the downtown off-ramp. It was carrying 5,000 gallons of commercial eggnog. The stuff is EVERYWHERE—streets are like an ice rink but stickier. Cars are sliding into each other. Also it smells like a very aggressive Christmas and people are slipping.\"</p><h2>Requirements</h2><ul><li><b>Stop traffic</b> before more cars slide into the pileup</li><li><b>Help stranded drivers</b> get to safety</li><li>Find a way to <b>clean up</b> 5,000 gallons of eggnog</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": -3,
         "freak": 0,

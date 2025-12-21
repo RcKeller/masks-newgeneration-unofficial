@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "minor-inconvenience",
       "callerName": "Naughty List Administrator Krampus Jr.",
-      "callerQuote": "<p>\"Look, I know I'm not the popular guy, but we have a PROBLEM. All the local coal mines closed for environmental reasons—which is GOOD—but now we have 47,000 naughty kids and nothing to put in their stockings. Can you find ethical coal alternatives?\"</p>",
-      "requirementsText": "<ul><li>Source <b>alternative coal</b>—maybe activated charcoal?</li><li>Help Krampus Jr. <b>navigate</b> the supply chain crisis</li><li>Maybe reconsider: is <b>coal punishment</b> even effective?</li></ul>",
+      "callerQuote": "<p>\"Look, I know I'm not the popular guy, but we have a PROBLEM. All the local coal mines closed for environmental reasons—which is GOOD—but now we have 47,000 naughty kids and nothing to put in their stockings. Can you find ethical coal alternatives?\"</p><h2>Requirements</h2><ul><li>Source <b>alternative coal</b>—maybe activated charcoal?</li><li>Help Krampus Jr. <b>navigate</b> the supply chain crisis</li><li>Maybe reconsider: is <b>coal punishment</b> even effective?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": -3,

@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "honey-heist",
       "callerName": "Beekeeper Association",
-      "callerQuote": "<p>\"Someone's been stealing our honey reserves, but the weird part? A swarm of bees seems to be HELPING the thief—a small creature in a flat cap. The bees call themselves 'The Beeves'? Our bees are unionized now? Please help.\"</p>",
-      "requirementsText": "<ul><li>Intercept the <b>honey-water heist</b> in progress</li><li>Understand the <b>Puddles-Beeves alliance</b></li><li>Can you <b>negotiate</b> with sentient bees?</li></ul>",
+      "callerQuote": "<p>\"Someone's been stealing our honey reserves, but the weird part? A swarm of bees seems to be HELPING the thief—a small creature in a flat cap. The bees call themselves 'The Beeves'? Our bees are unionized now? Please help.\"</p><h2>Requirements</h2><ul><li>Intercept the <b>honey-water heist</b> in progress</li><li>Understand the <b>Puddles-Beeves alliance</b></li><li>Can you <b>negotiate</b> with sentient bees?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": 1,

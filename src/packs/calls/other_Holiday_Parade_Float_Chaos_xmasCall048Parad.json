@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "disaster",
       "callerName": "Parade Grand Marshal",
-      "callerQuote": "<p>\"Multiple floats have lost control! The Frosty float crashed into a lamppost, the giant Santa balloon broke free and is heading for that skyscraper, and the marching band is trapped between two runaway Nutcracker floats! This is supposed to be FESTIVE!\"</p>",
-      "requirementsText": "<ul><li><b>Stop the runaway floats</b> before they hurt someone</li><li><b>Retrieve the Santa balloon</b> before it tangles in the skyscraper</li><li><b>Rescue the marching band</b> from between the Nutcrackers</li></ul>",
+      "callerQuote": "<p>\"Multiple floats have lost control! The Frosty float crashed into a lamppost, the giant Santa balloon broke free and is heading for that skyscraper, and the marching band is trapped between two runaway Nutcracker floats! This is supposed to be FESTIVE!\"</p><h2>Requirements</h2><ul><li><b>Stop the runaway floats</b> before they hurt someone</li><li><b>Retrieve the Santa balloon</b> before it tangles in the skyscraper</li><li><b>Rescue the marching band</b> from between the Nutcrackers</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 1,
         "freak": 1,

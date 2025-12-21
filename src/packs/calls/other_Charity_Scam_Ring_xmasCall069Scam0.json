@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "investigation",
       "callerName": "FBI Agent Reyes",
-      "callerQuote": "<p>\"We've got reports of fake Santas collecting 'donations' all over the city. It's not petty theft—the money is funneling to a known supervillain organization. They're exploiting people's holiday generosity to fund god-knows-what. We need someone to infiltrate and trace the money.\"</p>",
-      "requirementsText": "<ul><li><b>Identify</b> the fake charity Santas</li><li><b>Trace the money</b> to the villain organization</li><li>Shut down the operation <b>without tipping them off</b></li></ul>",
+      "callerQuote": "<p>\"We've got reports of fake Santas collecting 'donations' all over the city. It's not petty theft—the money is funneling to a known supervillain organization. They're exploiting people's holiday generosity to fund god-knows-what. We need someone to infiltrate and trace the money.\"</p><h2>Requirements</h2><ul><li><b>Identify</b> the fake charity Santas</li><li><b>Trace the money</b> to the villain organization</li><li>Shut down the operation <b>without tipping them off</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": -3,
         "freak": null,

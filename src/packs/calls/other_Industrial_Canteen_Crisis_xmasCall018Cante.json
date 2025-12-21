@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "honey-heist",
       "callerName": "Water Treatment Operator",
-      "callerQuote": "<p>\"There's something in our facility—looks like a tiny bear? It's got a flat cap and an ENORMOUS canteen. It's trying to fill up from our main tank while muttering about dehydration. It seems scared. Also it might be a tardigrade?\"</p>",
-      "requirementsText": "<ul><li>Stop Puddles from <b>contaminating</b> the water supply</li><li>He seems <b>panicked</b>—approach carefully</li><li>Find out why he <b>needs so much water</b></li></ul>",
+      "callerQuote": "<p>\"There's something in our facility—looks like a tiny bear? It's got a flat cap and an ENORMOUS canteen. It's trying to fill up from our main tank while muttering about dehydration. It seems scared. Also it might be a tardigrade?\"</p><h2>Requirements</h2><ul><li>Stop Puddles from <b>contaminating</b> the water supply</li><li>He seems <b>panicked</b>—approach carefully</li><li>Find out why he <b>needs so much water</b></li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": 1,

@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "investigation",
       "callerName": "Anonymous Source",
-      "callerQuote": "<p>\"I know where the bears hide. There's an abandoned subway station under the old cannery—they've turned it into a base. Glitter on the walls, bamboo containers everywhere, industrial water tanks, a garage for the semi. End this.\"</p>",
-      "requirementsText": "<ul><li>Locate and <b>infiltrate</b> the bear crew's secret HQ</li><li>Plan your approach—<b>stealth or assault</b>?</li><li>This could <b>end the bear crime wave</b> for good</li></ul>",
+      "callerQuote": "<p>\"I know where the bears hide. There's an abandoned subway station under the old cannery—they've turned it into a base. Glitter on the walls, bamboo containers everywhere, industrial water tanks, a garage for the semi. End this.\"</p><h2>Requirements</h2><ul><li>Locate and <b>infiltrate</b> the bear crew's secret HQ</li><li>Plan your approach—<b>stealth or assault</b>?</li><li>This could <b>end the bear crime wave</b> for good</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 2,
         "freak": 1,

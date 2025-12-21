@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "assault",
       "callerName": "Officer Down—Dispatch",
-      "callerQuote": "<p>\"Officer down! The honey badger attacked three officers who got between him and a honey shipment. He kept saying 'I don't have a choice' and 'the bees need this.' He's desperate—and desperate honey badgers are DANGEROUS.\"</p>",
-      "requirementsText": "<ul><li><b>Subdue Slick</b>—he's cornered and violent</li><li>Get the <b>injured officers</b> to safety</li><li>Find out why he's <b>so desperate</b>—what do the bees want?</li></ul>",
+      "callerQuote": "<p>\"Officer down! The honey badger attacked three officers who got between him and a honey shipment. He kept saying 'I don't have a choice' and 'the bees need this.' He's desperate—and desperate honey badgers are DANGEROUS.\"</p><h2>Requirements</h2><ul><li><b>Subdue Slick</b>—he's cornered and violent</li><li>Get the <b>injured officers</b> to safety</li><li>Find out why he's <b>so desperate</b>—what do the bees want?</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": 2,
         "freak": 1,

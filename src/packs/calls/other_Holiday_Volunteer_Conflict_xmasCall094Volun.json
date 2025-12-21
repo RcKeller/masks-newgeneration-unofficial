@@ -15,8 +15,8 @@
     "masks-newgeneration-unofficial": {
       "callType": "social",
       "callerName": "Volunteer Coordinator",
-      "callerQuote": "<p>\"You promised to help serve Christmas dinner at the shelter, but you never showed. Those families were counting on us—counting on YOU. I had to turn people away because we were short-staffed. I don't want excuses. I want to know: do you actually care?\"</p>",
-      "requirementsText": "<ul><li><b>Make it right</b> with the shelter—actions, not words</li><li>Figure out how to <b>balance</b> hero work and commitments</li><li>This one <b>stings</b>—you let people down</li></ul>",
+      "callerQuote": "<p>\"You promised to help serve Christmas dinner at the shelter, but you never showed. Those families were counting on us—counting on YOU. I had to turn people away because we were short-staffed. I don't want excuses. I want to know: do you actually care?\"</p><h2>Requirements</h2><ul><li><b>Make it right</b> with the shelter—actions, not words</li><li>Figure out how to <b>balance</b> hero work and commitments</li><li>This one <b>stings</b>—you let people down</li></ul>",
+      "requirementsText": "",
       "requirements": {
         "danger": null,
         "freak": -3,
