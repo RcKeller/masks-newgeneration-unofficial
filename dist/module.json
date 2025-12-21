@@ -2,7 +2,7 @@
   "id": "masks-newgeneration-unofficial",
   "title": "Dispatch",
   "description": "Dispatch adaptation using Masks: A New Generation",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "socket": true,
   "compatibility": {
     "minimum": 13,

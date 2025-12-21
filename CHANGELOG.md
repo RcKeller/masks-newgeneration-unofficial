@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.8.0...v1.9.0) (2025-12-21)
+
+
+### Features
+
+* call content updated ([bd3ff31](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/bd3ff3133511530803fbc8e9f2aaa5b440f7f8b2))
+
 # [1.8.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.7.0...v1.8.0) (2025-12-20)
 
 
