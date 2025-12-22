@@ -70,7 +70,7 @@
     "@types/node": "^24.7.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "symlink-dir": "^6.0.5",
+    "symlink-dir": "^9.0.0",
     "tailwindcss": "^4.1.12"
   }
 }
