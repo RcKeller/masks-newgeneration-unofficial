@@ -43,7 +43,7 @@
     "@types/react-dom": "^19.1.9",
     "autoprefixer": "^10.4.21",
     "dotenv": "^17.2.3",
-    "dotenv-cli": "^8.0.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.33.0",
     "fs-extra": "^11.3.2",
     "fvtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#main",
