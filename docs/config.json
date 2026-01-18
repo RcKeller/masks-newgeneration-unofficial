@@ -1,0 +1,94 @@
+{
+    "groups": [
+        {
+            "label": "Getting Started",
+            "children": [
+                {
+                    "id": "intro",
+                    "title": "Aeris Core",
+                    "file": "getting-started/intro.md"
+                }
+            ]
+        },
+        {
+            "label": "React App",
+            "children": [
+                {
+                    "id": "react-app-intro",
+                    "title": "Introduction",
+                    "file": "react-app/introduction.md"
+                },
+                {
+                    "id": "usage",
+                    "title": "Basic Usage",
+                    "file": "react-app/basic-usage.md"
+                },
+                {
+                    "id": "integration",
+                    "title": "Integration",
+                    "file": "react-app/integration.md"
+                },
+                {
+                    "id": "event-listeners",
+                    "title": "Event Listeners",
+                    "file": "react-app/event-listeners.md"
+                },
+                {
+                    "id": "tailwind",
+                    "title": "Tailwind Support",
+                    "file": "react-app/tailwind.md"
+                }
+            ]
+        },
+        {
+            "label": "React Chat Message",
+            "children": [
+                {
+                    "id": "react-chat-intro",
+                    "title": "Introduction",
+                    "file": "react-chat/introduction.md"
+                },
+                {
+                    "id": "usage",
+                    "title": "Basic Usage",
+                    "file": "react-chat/basic-usage.md"
+                }
+            ]
+        },
+        {
+            "label": "Documentation",
+            "children": [
+                {
+                    "id": "intro",
+                    "title": "Introduction",
+                    "file": "documentation/introduction.md"
+                },
+                {
+                    "id": "manifest",
+                    "title": "Docs Manifest",
+                    "file": "documentation/docs-manifest.md"
+                },
+                {
+                    "id": "file-structure",
+                    "title": "File Structure",
+                    "file": "documentation/file-structure.md"
+                },
+                {
+                    "id": "writing-pages",
+                    "title": "Writing Documentation Pages",
+                    "file": "documentation/writing-pages.md"
+                }
+            ]
+        },
+        {
+            "label": "API Reference",
+            "children": [
+                {
+                    "id": "register-docs-menu",
+                    "title": "Register Docs Menu",
+                    "file": "api/register-docs-menu.md"
+                }
+            ]
+        }
+    ]
+}

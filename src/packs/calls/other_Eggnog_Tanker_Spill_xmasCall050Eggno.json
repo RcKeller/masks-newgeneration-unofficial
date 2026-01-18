@@ -1,0 +1,47 @@
+{
+  "name": "Eggnog Tanker Spill",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "Highway Patrol Sergeant",
+      "callerQuote": "<p>\"Tanker truck overturned on the downtown off-ramp. It was carrying 5,000 gallons of commercial eggnog. The stuff is EVERYWHERE—streets are like an ice rink but stickier. Cars are sliding into each other. Also it smells like a very aggressive Christmas and people are slipping.\"</p><h2>Requirements</h2><ul><li><b>Stop traffic</b> before more cars slide into the pileup</li><li><b>Help stranded drivers</b> get to safety</li><li>Find a way to <b>clean up</b> 5,000 gallons of eggnog</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": -3,
+        "freak": 0,
+        "savior": 1,
+        "mundane": 1,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000050,
+    "modifiedTime": 1734700000050,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall050Eggno",
+  "sort": 100050,
+  "_key": "!actors!xmasCall050Eggno"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Spotlight Showboat",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "honey-heist",
+      "callerName": "Theater Director Morris",
+      "callerQuote": "<p>\"A bearcat broke into our prop room during intermission. She's taken the crown jewels from Act 3, but instead of leaving she's... performing? She's on stage doing a trapeze act with the chandelier. The audience thinks it's part of the show!\"</p><h2>Requirements</h2><ul><li>Wait for Barbara's <b>inevitable bow</b>—that's your window</li><li><b>Capture her</b> without ruining the audience's experience</li><li>Recover the <b>stolen props</b> before Act 3</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": 0,
+        "savior": null,
+        "mundane": 1,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000014,
+    "modifiedTime": 1734700000014,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall014Shows",
+  "sort": 100014,
+  "_key": "!actors!xmasCall014Shows"
+}

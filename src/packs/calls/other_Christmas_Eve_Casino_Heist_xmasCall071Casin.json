@@ -1,0 +1,47 @@
+{
+  "name": "Christmas Eve Casino Heist",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "robbery",
+      "callerName": "Casino Floor Manager",
+      "callerQuote": "<p>\"Someone's hitting the vault during our Christmas Eve gala! They cut the power during the fireworks display—perfect cover. Security is blind. We've got $50 million in the vault and a thousand guests who don't know anything's wrong yet. Quietly. PLEASE.\"</p><h2>Requirements</h2><ul><li><b>Stop the heist</b> without alerting the gala guests</li><li>Navigate the <b>dark casino</b> to find the thieves</li><li>Secure the vault before they <b>escape with millions</b></li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 1,
+        "freak": 0,
+        "savior": -3,
+        "mundane": 1,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000071,
+    "modifiedTime": 1734700000071,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall071Casin",
+  "sort": 100071,
+  "_key": "!actors!xmasCall071Casin"
+}

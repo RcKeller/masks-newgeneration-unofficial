@@ -1,0 +1,47 @@
+{
+  "name": "Industrial Canteen Crisis",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "honey-heist",
+      "callerName": "Water Treatment Operator",
+      "callerQuote": "<p>\"There's something in our facility—looks like a tiny bear? It's got a flat cap and an ENORMOUS canteen. It's trying to fill up from our main tank while muttering about dehydration. It seems scared. Also it might be a tardigrade?\"</p><h2>Requirements</h2><ul><li>Stop Puddles from <b>contaminating</b> the water supply</li><li>He seems <b>panicked</b>—approach carefully</li><li>Find out why he <b>needs so much water</b></li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": 1,
+        "savior": null,
+        "mundane": 0,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000018,
+    "modifiedTime": 1734700000018,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall018Cante",
+  "sort": 100018,
+  "_key": "!actors!xmasCall018Cante"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Coal Shortage Emergency",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "minor-inconvenience",
+      "callerName": "Naughty List Administrator Krampus Jr.",
+      "callerQuote": "<p>\"Look, I know I'm not the popular guy, but we have a PROBLEM. All the local coal mines closed for environmental reasons—which is GOOD—but now we have 47,000 naughty kids and nothing to put in their stockings. Can you find ethical coal alternatives?\"</p><h2>Requirements</h2><ul><li>Source <b>alternative coal</b>—maybe activated charcoal?</li><li>Help Krampus Jr. <b>navigate</b> the supply chain crisis</li><li>Maybe reconsider: is <b>coal punishment</b> even effective?</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": -3,
+        "savior": null,
+        "mundane": 0,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000041,
+    "modifiedTime": 1734700000041,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall041CoalS",
+  "sort": 100041,
+  "_key": "!actors!xmasCall041CoalS"
+}

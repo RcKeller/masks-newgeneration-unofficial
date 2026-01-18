@@ -1,0 +1,47 @@
+{
+  "name": "Last-Minute Layaway Lockdown",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "social",
+      "callerName": "Store Manager Confrontation",
+      "callerQuote": "<p>\"The store closed early and locked down due to a 'security threat' but there are 30 families outside who paid for layaway items MONTHS ago! The manager won't open the doors. Corporate isn't answering. These people's Christmas presents are RIGHT THERE behind locked gates!\"</p><h2>Requirements</h2><ul><li><b>Investigate</b> the 'security threat'—is it real?</li><li><b>Negotiate</b> with the manager to release the layaway items</li><li>Keep the <b>crowd calm</b>—tensions are rising</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": -3,
+        "freak": null,
+        "savior": 0,
+        "mundane": 1,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000058,
+    "modifiedTime": 1734700000058,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall058Layaw",
+  "sort": 100058,
+  "_key": "!actors!xmasCall058Layaw"
+}

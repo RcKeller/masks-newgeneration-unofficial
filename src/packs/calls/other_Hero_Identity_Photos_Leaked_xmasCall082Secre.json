@@ -1,0 +1,47 @@
+{
+  "name": "Hero Identity Photos Leaked",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "Tabloid Reporter",
+      "callerQuote": "<p>\"AEGIS, this is Vicky Vale from the Herald. I've got photos of one of your heroes unmasking behind a dumpster. I'm giving you ONE HOUR to comment before I publish. The public deserves to know who's 'protecting' them. Clock's ticking.\"</p><h2>Requirements</h2><ul><li><b>Track down</b> the reporter before she publishes</li><li><b>Verify</b> if the photos are real or fabricated</li><li>Decide how to <b>handle</b>—negotiate, discredit, or accept exposure</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 0,
+        "freak": -3,
+        "savior": null,
+        "mundane": 1,
+        "superior": 2
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000082,
+    "modifiedTime": 1734700000082,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall082Secre",
+  "sort": 100082,
+  "_key": "!actors!xmasCall082Secre"
+}

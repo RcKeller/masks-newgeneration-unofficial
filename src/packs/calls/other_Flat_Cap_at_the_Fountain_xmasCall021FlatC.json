@@ -1,0 +1,47 @@
+{
+  "name": "Flat-Cap at the Fountain",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "pursuit",
+      "callerName": "Parks Department",
+      "callerQuote": "<p>\"There's a tiny bear-thing living in the Memorial Fountain. It's been there three days. Every time we try to drain it, it cries. Actually cries. We think it needs the water to survive? But also it's technically trespassing. Help?\"</p><h2>Requirements</h2><ul><li>Coax Puddles <b>out of the fountain</b> safely</li><li><b>Don't dehydrate him</b>—find an alternative water source</li><li>Maybe negotiate a <b>better living situation</b>?</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": null,
+        "savior": 0,
+        "mundane": 1,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000021,
+    "modifiedTime": 1734700000021,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall021FlatC",
+  "sort": 100021,
+  "_key": "!actors!xmasCall021FlatC"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Bear Cave Hideout",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "Anonymous Source",
+      "callerQuote": "<p>\"I know where the bears hide. There's an abandoned subway station under the old cannery—they've turned it into a base. Glitter on the walls, bamboo containers everywhere, industrial water tanks, a garage for the semi. End this.\"</p><h2>Requirements</h2><ul><li>Locate and <b>infiltrate</b> the bear crew's secret HQ</li><li>Plan your approach—<b>stealth or assault</b>?</li><li>This could <b>end the bear crime wave</b> for good</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 2,
+        "freak": 1,
+        "savior": null,
+        "mundane": null,
+        "superior": 2
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000033,
+    "modifiedTime": 1734700000033,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall033BearC",
+  "sort": 100033,
+  "_key": "!actors!xmasCall033BearC"
+}

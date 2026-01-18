@@ -1,0 +1,47 @@
+{
+  "name": "Black Market Toy Ring",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "Desperate Parent Online",
+      "callerQuote": "<p>\"Someone's running a scalping operation on this year's hot toy—buying up entire stocks and reselling at 10x the price. But it's not just greedy resellers, it's ORGANIZED. They've got warehouses, a network. Regular families can't afford Christmas anymore. Can you expose these people?\"</p><h2>Requirements</h2><ul><li><b>Investigate</b> the scalping network</li><li>Find their <b>warehouse locations</b></li><li>Expose the operation and <b>redistribute the toys</b> fairly</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": -3,
+        "freak": null,
+        "savior": 0,
+        "mundane": 1,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000070,
+    "modifiedTime": 1734700000070,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall070Black",
+  "sort": 100070,
+  "_key": "!actors!xmasCall070Black"
+}

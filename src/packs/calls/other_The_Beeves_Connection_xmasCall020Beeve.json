@@ -1,0 +1,47 @@
+{
+  "name": "The Beeves Connection",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "honey-heist",
+      "callerName": "Beekeeper Association",
+      "callerQuote": "<p>\"Someone's been stealing our honey reserves, but the weird part? A swarm of bees seems to be HELPING the thief—a small creature in a flat cap. The bees call themselves 'The Beeves'? Our bees are unionized now? Please help.\"</p><h2>Requirements</h2><ul><li>Intercept the <b>honey-water heist</b> in progress</li><li>Understand the <b>Puddles-Beeves alliance</b></li><li>Can you <b>negotiate</b> with sentient bees?</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": 1,
+        "savior": null,
+        "mundane": 1,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000020,
+    "modifiedTime": 1734700000020,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall020Beeve",
+  "sort": 100020,
+  "_key": "!actors!xmasCall020Beeve"
+}

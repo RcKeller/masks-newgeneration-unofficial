@@ -1,0 +1,47 @@
+{
+  "name": "Pyromaniac's Holiday",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "Fire Chief Emergency",
+      "callerQuote": "<p>\"A pyrokinetic villain is setting Christmas trees on fire across the city—we've got TWELVE structure fires and counting! He's moving too fast for us to catch. Keeps leaving notes: 'Your trees are kindling and your joy is smoke.' We're overwhelmed. Firefighters are exhausted!\"</p><h2>Requirements</h2><ul><li><b>Track the pyromaniac</b> and stop him</li><li><b>Help firefighters</b> contain the blazes</li><li>He's targeting <b>public trees</b>—protect the remaining ones</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 2,
+        "freak": 1,
+        "savior": 1,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000080,
+    "modifiedTime": 1734700000080,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall080Pyrom",
+  "sort": 100080,
+  "_key": "!actors!xmasCall080Pyrom"
+}

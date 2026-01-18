@@ -1,0 +1,47 @@
+{
+  "name": "Sleigh Crash at Mall",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "Elf Dispatch Central",
+      "callerQuote": "<p>\"Code Tinsel! One of Santa's prototype sleighs crashed into the mall food court! The pilot elf is trapped under a Cinnabon kiosk and the experimental anti-gravity candy canes are making everything float! We've got airborne pretzels and panicking shoppers!\"</p><h2>Requirements</h2><ul><li><b>Rescue</b> the trapped elf pilot from the wreckage</li><li>Contain the <b>floating debris</b> before someone gets hurt</li><li>Keep <b>civilians calm</b>—it's Christmas Eve!</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": -3,
+        "freak": 1,
+        "savior": 1,
+        "mundane": 0,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000034,
+    "modifiedTime": 1734700000034,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall034Sleig",
+  "sort": 100034,
+  "_key": "!actors!xmasCall034Sleig"
+}

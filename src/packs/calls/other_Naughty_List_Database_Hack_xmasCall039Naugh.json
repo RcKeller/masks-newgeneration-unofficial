@@ -1,0 +1,47 @@
+{
+  "name": "Naughty List Database Hack",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "North Pole IT Elf Gigabyte",
+      "callerQuote": "<p>\"Someone hacked the Naughty/Nice database! They moved EVERYONE to the Nice list—including convicted supervillains! If Santa delivers presents to them thinking they're good... Do you know what happens when Dr. Destruction gets what he ACTUALLY wants for Christmas?!\"</p><h2>Requirements</h2><ul><li><b>Trace the hack</b> back to its source</li><li><b>Restore</b> the original Naughty/Nice data before Santa's run</li><li>Find out <b>who benefits</b> from this chaos</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": -3,
+        "freak": null,
+        "savior": null,
+        "mundane": 0,
+        "superior": 2
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000039,
+    "modifiedTime": 1734700000039,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall039Naugh",
+  "sort": 100039,
+  "_key": "!actors!xmasCall039Naugh"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Reindeer Games Gone Wrong",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "Reindeer Trainer Holly",
+      "callerQuote": "<p>\"The reindeer were practicing their formation flying and Blitzen got spooked by a drone! The whole team scattered and crashed into the city's main power substation. We've got a blackout spreading across downtown and eight panicking magical reindeer tangled in power lines!\"</p><h2>Requirements</h2><ul><li><b>Free the reindeer</b> from the power lines safely</li><li><b>Restore power</b> before the hospitals switch to backup</li><li><b>Calm the reindeer</b>—they're magical and scared</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 1,
+        "freak": 1,
+        "savior": 1,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000040,
+    "modifiedTime": 1734700000040,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall040Reind",
+  "sort": 100040,
+  "_key": "!actors!xmasCall040Reind"
+}

@@ -1,0 +1,54 @@
+{
+  "name": "Bull's Heart: Listener",
+  "type": "move",
+  "_id": "VrmIxkNMkCY4amM5",
+  "img": "modules/masks-newgeneration-unofficial/images/gameicons/centaur-heart-%23ffffff-%233da7db.svg",
+  "system": {
+    "description": "<p><strong>Listener:</strong> When you pierce the mask of your love or rival, you can always let them ask you a question to ask them an additional question in turn, even on a miss. These additional questions do not have to be on the list. </p>",
+    "moveType": "playbook",
+    "rollFormula": "",
+    "moveResults": {
+      "failure": {
+        "key": "system.moveResults.failure.value",
+        "label": "Complications...",
+        "value": ""
+      },
+      "partial": {
+        "key": "system.moveResults.partial.value",
+        "label": "Partial success",
+        "value": ""
+      },
+      "success": {
+        "key": "system.moveResults.success.value",
+        "label": "Success!",
+        "value": ""
+      }
+    },
+    "uses": 0,
+    "playbook": "",
+    "rollType": "",
+    "rollMod": 0,
+    "actorType": "character",
+    "choices": ""
+  },
+  "effects": [],
+  "folder": null,
+  "sort": 900000,
+  "ownership": {
+    "default": 0,
+    "IOpTeOSwK75GQDn8": 3
+  },
+  "flags": {},
+  "_stats": {
+    "systemId": "pbta",
+    "systemVersion": "1.0.14",
+    "coreVersion": "13.350",
+    "createdTime": 1710990622503,
+    "modifiedTime": 1718907883585,
+    "lastModifiedBy": "6hjjFCY28uGRsfsB",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "_key": "!items!VrmIxkNMkCY4amM5"
+}

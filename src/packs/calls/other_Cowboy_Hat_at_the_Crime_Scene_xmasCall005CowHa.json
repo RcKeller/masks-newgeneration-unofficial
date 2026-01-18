@@ -1,0 +1,47 @@
+{
+  "name": "Cowboy Hat at the Crime Scene",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "honey-heist",
+      "callerName": "Mall Security Ted",
+      "callerQuote": "<p>\"Jewelry store got hit during the Christmas rush. Only clue is a cowboy hat with bamboo residue and a note that says 'The city giveth, and the city taketh away.' Pretty sure that's not how the saying goes.\"</p><h2>Requirements</h2><ul><li>Analyze the <b>cowboy hat</b> for clues</li><li>Track <b>Greg's</b> movements through the mall</li><li>Find the <b>stolen jewelry</b> before it's fenced</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": null,
+        "savior": null,
+        "mundane": 0,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000005,
+    "modifiedTime": 1734700000005,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall005CowHa",
+  "sort": 100005,
+  "_key": "!actors!xmasCall005CowHa"
+}

@@ -1,0 +1,171 @@
+{{!-- templates/turncards.hbs - Team Turn Cards HUD --}}
+{{!-- Refactored to use flexbox columns for button stacks --}}
+
+<div class="turncards-row" data-team-size="{{teamSize}}" data-max-cooldown="{{maxCooldown}}">
+    {{!-- Team Pool Card --}}
+    {{#if showTeamCard}}
+    <article class="turncard turncard--team" role="group" aria-label="Team pool" data-combatant-id="team">
+        <div class="turncard__content">
+            <div class="turncard__portrait turncard__portrait--team">
+                <div class="turncard__team">
+                    <div class="turncard__team-label">Team Pool</div>
+                    <div class="turncard__team-value" aria-live="polite">{{team}}</div>
+
+                    <div class="turncard__team-controls">
+                        <button type="button" class="turncard__team-btn" data-action="team-minus" {{#unless
+                            teamCanEdit}}disabled{{/unless}} data-tooltip="Spend Team (Shift: 5)"
+                            aria-label="Spend Team">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+
+                        <button type="button" class="turncard__team-btn" data-action="team-reset" {{#unless
+                            teamCanEdit}}disabled{{/unless}} data-tooltip="Reset Team" aria-label="Reset Team">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </button>
+
+                        <button type="button" class="turncard__team-btn" data-action="team-plus" {{#unless
+                            teamCanEdit}}disabled{{/unless}} data-tooltip="Add Team (Shift: 5)" aria-label="Add Team">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                {{!-- GM Action button --}}
+                {{#if isGM}}
+                <button type="button" class="turncard__action turncard__action--gm" data-action="team-action"
+                    aria-label="GM Turn: Advance cooldowns" data-tooltip="GM/NPC Turn: Advance cooldowns">
+                    <span class="turncard__action-label">Action</span>
+                </button>
+                {{/if}}
+            </div>
+
+            <footer class="turncard__nameplate turncard__nameplate--team">
+                <div class="turncard__name">Team</div>
+            </footer>
+        </div>
+    </article>
+    {{/if}}
+
+    {{!-- Character Cards --}}
+    {{#each cards as |card|}}
+    <article
+        class="turncard turncard--state-{{card.status}} {{#if card.onCooldown}}is-cooldown{{/if}} {{#if card.downed}}is-downed{{/if}}"
+        data-combatant-id="{{card.combatantId}}" data-actor-id="{{card.actorId}}" data-playbook="{{card.playbook}}"
+        role="button" tabindex="0" aria-label="{{card.ariaLabel}}" {{#if card.downedId}}aria-describedby="{{card.downedId}}" {{/if}}>
+        <div class="turncard__content">
+            <div class="turncard__portrait">
+                <img src="{{card.img}}" alt="{{card.name}}" loading="lazy" />
+
+                {{!-- Status bar ALWAYS present (cooldown drain animates right-to-left) --}}
+                <div class="turncard__status-bar
+            {{#if card.downed}}turncard__status-bar--downed{{else if card.onCooldown}}turncard__status-bar--cooldown{{else}}turncard__status-bar--ready{{/if}}"
+                    {{#if card.downedId}}id="{{card.downedId}}" {{/if}} role="status" {{#if
+                    card.statusTooltip}}data-tooltip="{{card.statusTooltip}}" {{/if}}>
+                    <div class="turncard__cooldown-bar" style="--cooldown-frac: {{card.cooldownFrac}};"
+                        data-cooldown-target="{{card.cooldownFracTarget}}"></div>
+                    <span class="turncard__status-label">
+                        {{#if card.downed}}Downed{{else if card.onCooldown}}Busy{{/if}}
+                    </span>
+                </div>
+
+                {{!-- Action button overlay - only shown when character is ready --}}
+                {{#if card.showActionBtn}}
+                <button type="button" class="turncard__action" data-action="card-action"
+                    data-combatant-id="{{card.combatantId}}" aria-label="{{card.actionAria}}"
+                    data-tooltip="{{card.actionAria}}">
+                    <span class="turncard__action-label">Action</span>
+                </button>
+                {{/if}}
+
+                {{!-- LEFT COLUMN: Playbook trackers + Advantage + Shift Labels --}}
+                <div class="turncard__controls turncard__controls--left">
+                    {{!-- Playbook-specific left trackers (top position) --}}
+                    {{#each card.trackers.leftTop}}
+                    <button type="button"
+                        class="turncard__tracker turncard__tracker--{{id}} {{#if fillable}}turncard__tracker--fillable{{/if}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}} {{#if canAct}}is-action{{/if}} {{#if hasOngoing}}has-ongoing{{/if}} {{#if disabled}}is-disabled{{/if}}"
+                        data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
+                        data-tracker-type="{{type}}" style="--tracker-color: {{color}}; --tracker-fill: {{pct}};"
+                        aria-label="{{tooltip}}" data-tooltip="{{tooltip}}" {{#if disabled}}disabled{{/if}}>
+                        <i class="{{icon}}"></i>
+                        {{#if fillable}}
+                        <span class="turncard__tracker-badge">{{value}}</span>
+                        <div class="turncard__tracker-fill"><i class="{{icon}}"></i></div>
+                        {{/if}}
+                    </button>
+                    {{/each}}
+
+                    {{!-- Forward/Aid button (Advantage) --}}
+                    <button type="button"
+                        class="turncard__forward {{#if card.hasBonus}}has-bonus{{/if}} {{#if card.hasNegative}}has-negative{{/if}} {{#if card.forwardDisabled}}is-disabled{{/if}}"
+                        data-action="forward" data-actor-id="{{card.actorId}}" aria-label="{{card.forwardTooltip}}"
+                        data-tooltip="{{card.forwardTooltip}}" {{#if card.forwardDisabled}}disabled{{/if}}>
+                        {{#if card.hasBonus}}
+                        <span class="turncard__forward-value">{{#unless card.hasNegative}}+{{/unless}}{{card.effectiveBonus}}</span>
+                        {{else}}
+                        <i class="fa-solid fa-plus"></i>
+                        {{/if}}
+                    </button>
+
+                    {{!-- Shift Labels row: Pentagon + optional beside trackers (Soldier) --}}
+                    <div class="turncard__shift-row">
+                        {{!-- Labels Graph (Pentagon visualization) --}}
+                        <button type="button" class="turncard__shift turncard__labels-graph {{#unless card.canShiftLabels}}is-disabled{{/unless}} {{#if card.labelsGraph.hasCondition}}has-condition{{/if}} {{#if card.labelsGraph.hasBonus}}has-bonus{{/if}}"
+                            data-action="shift-labels" data-actor-id="{{card.actorId}}"
+                            aria-label="Shift Labels for {{card.name}}" data-tooltip="{{card.labelsGraph.tooltip}}" {{#unless
+                            card.canShiftLabels}}disabled{{/unless}}>
+                            {{{card.labelsGraph.svg}}}
+                        </button>
+
+                        {{!-- Beside trackers (Soldier - to the right of Shift Labels) --}}
+                        {{#each card.trackers.leftBeside}}
+                        <button type="button"
+                            class="turncard__tracker turncard__tracker--{{id}} turncard__tracker--beside {{#if canAct}}is-action{{/if}} {{#if disabled}}is-disabled{{/if}}"
+                            data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
+                            data-tracker-type="{{type}}" style="--tracker-color: {{color}};"
+                            aria-label="{{tooltip}}" data-tooltip="{{tooltip}}" {{#if disabled}}disabled{{/if}}>
+                            <i class="{{icon}}"></i>
+                            <span class="turncard__tracker-badge">{{value}}</span>
+                        </button>
+                        {{/each}}
+                    </div>
+                </div>
+
+                {{!-- RIGHT COLUMN: Playbook trackers + Potential --}}
+                <div class="turncard__controls turncard__controls--right">
+                    {{!-- Playbook-specific right trackers --}}
+                    {{#each card.trackers.rightTop}}
+                    <button type="button"
+                        class="turncard__tracker turncard__tracker--{{id}} {{#if fillable}}turncard__tracker--fillable{{/if}} {{#if canEdit}}is-editable{{/if}} {{#if isDisplay}}is-display{{/if}} {{#if canAct}}is-action{{/if}} {{#if disabled}}is-disabled{{/if}}"
+                        data-action="tracker" data-tracker-id="{{id}}" data-actor-id="{{../actorId}}"
+                        data-tracker-type="{{type}}" style="--tracker-color: {{color}}; --tracker-fill: {{pct}};"
+                        aria-label="{{tooltip}}" data-tooltip="{{tooltip}}" {{#if disabled}}disabled{{/if}}>
+                        <i class="{{icon}}"></i>
+                        {{#if fillable}}
+                        <span class="turncard__tracker-badge">{{value}}</span>
+                        <div class="turncard__tracker-fill"><i class="{{icon}}"></i></div>
+                        {{else if value}}
+                        <span class="turncard__tracker-badge">{{value}}</span>
+                        {{/if}}
+                    </button>
+                    {{/each}}
+
+                    {{!-- Potential (seedling) --}}
+                    <button type="button"
+                        class="turncard__potential {{#unless card.canEditPotential}}is-disabled{{/unless}}"
+                        data-action="potential" data-actor-id="{{card.actorId}}" {{#unless
+                        card.canEditPotential}}disabled{{/unless}}
+                        aria-label="Potential: {{card.potential}} of {{card.potentialMax}} (Click +1, Right-click -1)"
+                        data-tooltip="Potential: {{card.potential}}/{{card.potentialMax}}"
+                        style="--potential-fill: {{card.potentialPct}};">
+                        <i class="fa-solid fa-seedling"></i>
+                    </button>
+                </div>
+            </div>
+
+            <footer class="turncard__nameplate">
+                <div class="turncard__name" title="{{card.name}}">{{card.name}}</div>
+            </footer>
+        </div>
+    </article>
+    {{/each}}
+</div>

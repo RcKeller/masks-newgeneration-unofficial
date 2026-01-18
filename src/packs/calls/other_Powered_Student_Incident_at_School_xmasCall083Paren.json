@@ -1,0 +1,47 @@
+{
+  "name": "Powered Student Incident at School",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "Principal Morrison",
+      "callerQuote": "<p>\"We have a situation in the science wing. A student accidentally activated some kind of power during a chemistry experiment—now there's a localized gravity anomaly in Room 204. Desks are floating, students are stuck on the ceiling. The kid is panicking and it's getting WORSE.\"</p><h2>Requirements</h2><ul><li><b>Stabilize</b> the gravity anomaly before someone falls</li><li><b>Calm</b> the student causing the effect</li><li>Evacuate the <b>floating students</b> safely</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 1,
+        "freak": 2,
+        "savior": 1,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000083,
+    "modifiedTime": 1734700000083,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall083Paren",
+  "sort": 100083,
+  "_key": "!actors!xmasCall083Paren"
+}

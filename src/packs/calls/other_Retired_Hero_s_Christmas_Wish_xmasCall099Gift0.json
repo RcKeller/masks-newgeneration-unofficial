@@ -1,0 +1,47 @@
+{
+  "name": "Retired Hero's Christmas Wish",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "social",
+      "callerName": "Nursing Home Administrator",
+      "callerQuote": "<p>\"We have a resident—used to be a big-deal hero back in the 70s. Golden Guardian? His powers faded decades ago. He's been telling all the other residents that his 'sidekicks' are coming to visit for Christmas. We didn't have the heart to tell him no one's coming. Could someone... would AEGIS send someone? Just to make an old hero feel remembered?\"</p><h2>Requirements</h2><ul><li><b>Visit</b> the retired hero—hear his stories</li><li>Make him feel <b>valued</b>, not forgotten</li><li>Maybe learn something about what <b>heroism really means</b></li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": -3,
+        "freak": null,
+        "savior": 2,
+        "mundane": 1,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000099,
+    "modifiedTime": 1734700000099,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall099Gift0",
+  "sort": 100099,
+  "_key": "!actors!xmasCall099Gift0"
+}

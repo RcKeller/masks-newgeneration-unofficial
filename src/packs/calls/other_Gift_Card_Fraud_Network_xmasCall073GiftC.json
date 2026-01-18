@@ -1,0 +1,47 @@
+{
+  "name": "Gift Card Fraud Network",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "Retail Loss Prevention",
+      "callerQuote": "<p>\"We've tracked a massive gift card fraud operation—they're draining cards before customers even activate them. Thousands of people are going to open worthless plastic on Christmas morning. The trail leads to some kind of tech-savvy operation. Can you trace the digital fingerprints?\"</p><h2>Requirements</h2><ul><li><b>Trace</b> the gift card fraud network</li><li>Find their <b>technical operation</b> center</li><li>Recover what funds you can <b>before Christmas</b></li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": -3,
+        "freak": null,
+        "savior": null,
+        "mundane": 0,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000073,
+    "modifiedTime": 1734700000073,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall073GiftC",
+  "sort": 100073,
+  "_key": "!actors!xmasCall073GiftC"
+}

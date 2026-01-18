@@ -1,0 +1,80 @@
+{
+  "system": "pbta",
+  "map": [
+    {
+      "id": "angry",
+      "name": "Angry",
+      "icon": "icons/skills/wounds/injury-face-impact-orange.webp",
+      "referenceId": "@Compendium[masks-newgeneration-unofficial.conditions-masks.CHkJHR750AmybjBW]{Angry}",
+      "applyTrigger": "783qmrlxe8vtuzdu",
+      "removeTrigger": "g0qkjvrfprueiqh8",
+      "activeEffect": null,
+      "options": {
+        "overlay": false,
+        "removeOthers": false,
+        "outputChat": true,
+        "markDefeated": false
+      }
+    },
+    {
+      "id": "afraid",
+      "name": "Afraid",
+      "icon": "icons/magic/unholy/silhouette-robe-evil-power.webp",
+      "referenceId": "@Compendium[masks-newgeneration-unofficial.conditions-masks.67zetsmKWCtRWx18]{Afraid}",
+      "applyTrigger": "v1bimnlcypo6utio",
+      "removeTrigger": "exqtcb1rkxruxu4t",
+      "activeEffect": null,
+      "options": {
+        "overlay": false,
+        "removeOthers": false,
+        "outputChat": true,
+        "markDefeated": false
+      }
+    },
+    {
+      "id": "guilty",
+      "name": "Guilty",
+      "icon": "icons/creatures/mammals/humanoid-cat-skulking-teal.webp",
+      "referenceId": "@Compendium[masks-newgeneration-unofficial.conditions-masks.OKOdRBzVlxYBb1VQ]{Guilty}",
+      "applyTrigger": "drr2cikqampkld3d",
+      "removeTrigger": "112psa04lf2avyjz",
+      "activeEffect": null,
+      "options": {
+        "overlay": false,
+        "removeOthers": false,
+        "outputChat": true,
+        "markDefeated": false
+      }
+    },
+    {
+      "id": "hopeless",
+      "name": "Hopeless",
+      "icon": "icons/creatures/magical/spirit-undead-masked-blue.webp",
+      "referenceId": "@Compendium[masks-newgeneration-unofficial.conditions-masks.IVLVMhcSnRhWcepA]{Hopeless}",
+      "applyTrigger": "iqkcpglchgfnsa70",
+      "removeTrigger": "9ffv993rvo75lj4c",
+      "activeEffect": null,
+      "options": {
+        "overlay": false,
+        "removeOthers": false,
+        "outputChat": true,
+        "markDefeated": false
+      }
+    },
+    {
+      "id": "insecure",
+      "name": "Insecure",
+      "icon": "icons/magic/death/undead-skeleton-deformed-red.webp",
+      "referenceId": "@Compendium[masks-newgeneration-unofficial.conditions-masks.wzwc0Zm19Cjh0jCd]{Insecure}",
+      "applyTrigger": "f3hb17as7a8o8x9r",
+      "removeTrigger": "pqll4hlemfy5axw2",
+      "activeEffect": null,
+      "options": {
+        "overlay": false,
+        "removeOthers": false,
+        "outputChat": true,
+        "markDefeated": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "name": "The Bamboo Takeout Caper",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "honey-heist",
+      "callerName": "Golden Dragon Restaurant",
+      "callerQuote": "<p>\"Someone's been ordering 47 bamboo containers a day to the same address for two weeks. Paid in cash. Left a cowboy hat as a tip once. We think it's connected to those bear crimes?\"</p><h2>Requirements</h2><ul><li>Stake out the <b>delivery address</b></li><li>Trace Greg's <b>PI office</b> location</li><li>Gather <b>evidence</b> without alerting the target</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": null,
+        "savior": null,
+        "mundane": 1,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000002,
+    "modifiedTime": 1734700000002,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall002Bambo",
+  "sort": 100002,
+  "_key": "!actors!xmasCall002Bambo"
+}

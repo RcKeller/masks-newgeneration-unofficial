@@ -1,0 +1,47 @@
+{
+  "name": "Sweet-Scented Trail",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "Detective Murphy",
+      "callerQuote": "<p>\"We've got a lead on the bearcat thief. Witnesses keep mentioning a 'weirdly pleasant smell' at every crime scene—like cotton candy mixed with fruit. The scent trail leads into the ventilation system. Anyone good at crawling through ducts?\"</p><h2>Requirements</h2><ul><li>Follow Barbara's <b>sweet scent</b> through the city vents</li><li>Map out her <b>travel routes</b> for future stakeouts</li><li>Don't get <b>ambushed</b> in the tight spaces</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": 0,
+        "savior": null,
+        "mundane": null,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000015,
+    "modifiedTime": 1734700000015,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall015Sweet",
+  "sort": 100015,
+  "_key": "!actors!xmasCall015Sweet"
+}

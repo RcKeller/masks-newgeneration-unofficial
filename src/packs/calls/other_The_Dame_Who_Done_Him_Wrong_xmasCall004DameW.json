@@ -1,0 +1,47 @@
+{
+  "name": "The Dame Who Done Him Wrong",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "investigation",
+      "callerName": "Hartwell Insurance",
+      "callerQuote": "<p>\"We've got a panda in our lobby demanding to see our files on the 'Honeycomb Diamond Heist.' Says he's a private investigator. He's eating our decorative bamboo plant and muttering about 'the case that started it all.'\"</p><h2>Requirements</h2><ul><li>Determine if Greg is an <b>ally or obstacle</b> in this case</li><li>Find out what the <b>Honeycomb Diamond</b> has to do with the bears</li><li>Get the <b>information</b> before Greg does—or work together</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": null,
+        "savior": null,
+        "mundane": 1,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000004,
+    "modifiedTime": 1734700000004,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall004DameW",
+  "sort": 100004,
+  "_key": "!actors!xmasCall004DameW"
+}

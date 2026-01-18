@@ -1,0 +1,47 @@
+{
+  "name": "Elf Strike at Workshop",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "social",
+      "callerName": "Elf Union Rep Jingles",
+      "callerQuote": "<p>\"The elves have walked out! We're demanding dental coverage and reasonable overtime limits—it's been 72-hour shifts since November! Production has STOPPED. Christmas is in 3 days. We need a mediator before this becomes an international incident.\"</p><h2>Requirements</h2><ul><li><b>Negotiate</b> between the elves and North Pole management</li><li>Understand both sides' <b>grievances</b></li><li>Find a <b>compromise</b> before Christmas is cancelled</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": -3,
+        "savior": 0,
+        "mundane": 2,
+        "superior": 0
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000036,
+    "modifiedTime": 1734700000036,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall036ElfSt",
+  "sort": 100036,
+  "_key": "!actors!xmasCall036ElfSt"
+}

@@ -1,0 +1,47 @@
+{
+  "name": "Ice Skating Rink Collapse",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "Rink Manager Peterson",
+      "callerQuote": "<p>\"The ice is CRACKING! The refrigeration system failed and there are 40 skaters out there! Some already fell through into the machinery below. The water's rising and mixing with coolant. We've got maybe five minutes before the whole surface gives way!\"</p><h2>Requirements</h2><ul><li><b>Rescue skaters</b> before the ice collapses completely</li><li>Get people out of the <b>machinery pit</b> below</li><li>Someone needs to <b>shut off</b> the flooding coolant lines</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 1,
+        "freak": 1,
+        "savior": 2,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000044,
+    "modifiedTime": 1734700000044,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall044IceSk",
+  "sort": 100044,
+  "_key": "!actors!xmasCall044IceSk"
+}

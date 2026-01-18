@@ -1,0 +1,200 @@
+{{!-- Call Sheet Template - Dispatch-style vignette assignment UI --}}
+<form class="call-sheet {{#if isQualified}}call-sheet--qualified{{/if}} {{fitClass}}" autocomplete="off">
+  {{!-- Main Content Area - 2 Column Layout --}}
+  <section class="call-sheet__top">
+    {{!-- Left Panel: Call Type, Caller Info, The Call --}}
+    <div class="call-sheet__left-panel">
+      <header class="call-sheet__type-header">
+        <i class="call-type-icon {{currentTypeIcon}}"></i>
+        {{#if canEdit}}
+          <select class="call-type-select" data-action="change-call-type">
+            {{#each callTypeOptions}}
+              <option value="{{this.key}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+            {{/each}}
+          </select>
+        {{else}}
+          <span class="call-type-label">
+            {{#each callTypeOptions}}
+              {{#if this.selected}}{{this.label}}{{/if}}
+            {{/each}}
+          </span>
+        {{/if}}
+      </header>
+
+      <div class="call-sheet__caller">
+        <label class="caller-label">{{localize "DISPATCH.Call.CallerName"}}</label>
+        {{#if canEdit}}
+          <input type="text" class="caller-name-input" value="{{callerName}}" data-action="change-caller-name" placeholder="Anonymous" />
+        {{else}}
+          <span class="caller-name">{{callerName}}</span>
+        {{/if}}
+      </div>
+
+      {{!-- GM Stats Table --}}
+      {{#if canSeeBottom}}
+      <div class="call-sheet__gm-stats">
+        <header class="gm-stats-header">
+          <i class="fa-solid fa-lock"></i>
+          <span>Stats</span>
+        </header>
+        <table class="call-sheet__stats-table">
+          <thead>
+            <tr>
+              <th class="stat-col-label"></th>
+              <th class="stat-col-req">Req</th>
+              <th class="stat-col-hero">Hero</th>
+              <th class="stat-col-diff"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each labelRows}}
+              <tr class="stat-row stat-row--{{this.key}}">
+                <td class="stat-label">{{this.label}}</td>
+                <td class="stat-req">
+                  <input type="number" class="stat-input requirement-input"
+                         data-action="change-requirement"
+                         data-label="{{this.key}}"
+                         value="{{#if this.hasRequirement}}{{this.requirement}}{{/if}}"
+                         min="-3" max="4"
+                         placeholder="-" />
+                </td>
+                <td class="stat-hero {{#unless this.hasHeroValue}}hero-value--none{{/unless}}">
+                  {{#if this.hasHeroValue}}{{this.heroValue}}{{else}}-{{/if}}
+                </td>
+                <td class="stat-diff {{#if this.met}}diff--met{{else}}diff--unmet{{/if}}">
+                  {{#if this.hasRequirement}}
+                    {{#if this.met}}
+                      <i class="fa-solid fa-check"></i>
+                    {{else}}
+                      <i class="fa-solid fa-xmark"></i>
+                    {{/if}}
+                  {{else}}
+                    -
+                  {{/if}}
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        {{!-- Persistent Preview Fit Indicator (GM only) --}}
+        <div class="gm-preview-fit {{#if previewFitLabel}}{{previewFitClass}}{{else}}preview-fit--placeholder{{/if}}">
+          {{#if previewFitLabel}}
+            {{previewFitLabel}}
+          {{else}}
+            &nbsp;
+          {{/if}}
+        </div>
+      </div>
+      {{/if}}
+
+      <div class="call-sheet__quote">
+        <label class="quote-label">{{localize "DISPATCH.Call.Quote"}}</label>
+        {{#if canEdit}}
+          <div class="editor-wrapper quote-editor-wrapper" data-edit="callerQuote">
+            {{{editor callerQuote target="flags.masks-newgeneration-unofficial.callerQuote" button=false editable=true engine="prosemirror"}}}
+          </div>
+        {{else}}
+          <blockquote class="quote-text">{{{callerQuote}}}</blockquote>
+        {{/if}}
+      </div>
+
+    </div>
+
+    {{!-- Right Panel: Title, Graph, Heroes, Actions --}}
+    <div class="call-sheet__right-panel">
+      {{!-- Scrollable content area --}}
+      <div class="call-sheet__right-content">
+        <header class="call-sheet__title">
+          <input type="text" class="call-title-input" name="name" value="{{actor.name}}" {{#unless canEdit}}disabled{{/unless}} placeholder="Call Title" />
+          <button type="button" class="show-to-everyone-btn" data-action="show-to-everyone" title="{{localize 'DISPATCH.Call.ShowToEveryoneTooltip'}}">
+            <i class="fa-solid fa-users"></i> {{localize "DISPATCH.Call.ShowToEveryone"}}
+          </button>
+        </header>
+
+        {{!-- Overlay Graph Preview --}}
+        <div class="call-sheet__graph" data-graph-container>
+          {{{overlayGraph.svg}}}
+        </div>
+
+        {{!-- Preview indicator - shows which hero's stats are displayed --}}
+        {{#if previewActor}}
+          <div class="graph-preview-label">Previewing: {{previewActor.name}}</div>
+        {{/if}}
+
+        {{!-- No Combat Warning --}}
+        {{#if noCombatWarning}}
+          <div class="call-sheet__no-combat-warning">
+            <i class="fa-solid fa-exclamation-triangle"></i>
+            <span>No active combat</span>
+          </div>
+        {{/if}}
+
+        {{!-- Hero Selection Button Group - Compact 3-column grid --}}
+        <div class="call-sheet__hero-selection">
+          <div class="hero-button-group" role="radiogroup" aria-label="Select hero">
+            {{#each heroButtons}}
+              <button type="button"
+                      class="hero-btn {{#if this.selected}}hero-btn--selected{{/if}} {{#if this.unavailable}}hero-btn--unavailable{{/if}}"
+                      data-action="select-hero"
+                      data-actor-id="{{this.id}}"
+                      {{#if this.unavailable}}disabled{{/if}}
+                      {{#if ../isQualified}}disabled{{/if}}
+                      role="radio"
+                      aria-checked="{{#if this.selected}}true{{else}}false{{/if}}">
+                <span class="hero-btn__name">{{this.name}}</span>
+                {{#if this.unavailableReason}}
+                  <span class="hero-btn__status">{{this.unavailableReason}}</span>
+                {{/if}}
+              </button>
+            {{/each}}
+            {{#unless heroButtons.length}}
+              <div class="hero-button-group__empty">
+                {{#if noCombatWarning}}
+                  No combat active
+                {{else}}
+                  No heroes available
+                {{/if}}
+              </div>
+            {{/unless}}
+          </div>
+        </div>
+      </div>
+
+      {{!-- Bottom Action Bar - Fixed position --}}
+      <div class="call-sheet__actions">
+        {{!-- Dispatch Button --}}
+        <div class="call-sheet__dispatch">
+          {{#if isQualified}}
+            <div class="dispatch-complete">Dispatched</div>
+            {{!-- Forward result notification --}}
+            {{#if forwardMessage}}
+              <div class="forward-message {{#if forwardChange}}{{#if (gt forwardChange 0)}}forward--positive{{else}}forward--negative{{/if}}{{/if}}">
+                {{forwardMessage}}
+              </div>
+            {{/if}}
+          {{else if isAssessing}}
+            <button type="button" class="dispatch-btn dispatch-btn--assessing" disabled>
+              <i class="fa-solid fa-spinner fa-spin"></i> {{localize "DISPATCH.Call.Assessing"}}
+            </button>
+          {{else}}
+            <button type="button" class="dispatch-btn" data-action="dispatch" {{#unless canDispatch}}disabled{{/unless}}>
+              <i class="fa-solid fa-paper-plane"></i>
+              {{#if assignedActor}}
+                {{localize "DISPATCH.Call.Dispatch"}} {{assignedActor.name}}
+              {{else}}
+                {{localize "DISPATCH.Call.SelectHero"}}
+              {{/if}}
+            </button>
+          {{/if}}
+        </div>
+
+        {{!-- GM Reset Button --}}
+        {{#if isGM}}
+          <button type="button" class="reset-btn" data-action="reset-call">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+        {{/if}}
+      </div>
+    </div>
+  </section>
+</form>

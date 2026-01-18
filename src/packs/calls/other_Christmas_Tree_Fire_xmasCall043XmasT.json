@@ -1,0 +1,47 @@
+{
+  "name": "Christmas Tree Fire",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "disaster",
+      "callerName": "Fire Captain Morrison",
+      "callerQuote": "<p>\"The 50-foot Christmas tree in Civic Plaza is on FIRE! The ornaments are exploding from the heat—glass shrapnel everywhere! The tree-lighting ceremony was packed with families. We need evacuation help and someone to contain those burning branches before they spread!\"</p><h2>Requirements</h2><ul><li><b>Evacuate</b> civilians from the danger zone</li><li><b>Contain the fire</b> before it spreads to nearby buildings</li><li>Save what you can—this tree was <b>100 years old</b></li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 1,
+        "freak": 1,
+        "savior": 2,
+        "mundane": null,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000043,
+    "modifiedTime": 1734700000043,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall043XmasT",
+  "sort": 100043,
+  "_key": "!actors!xmasCall043XmasT"
+}

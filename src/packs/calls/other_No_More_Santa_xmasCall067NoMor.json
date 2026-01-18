@@ -1,0 +1,47 @@
+{
+  "name": "No More Santa",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "assault",
+      "callerName": "Mall Security Chief",
+      "callerQuote": "<p>\"Someone is kidnapping every mall Santa in the city! Seven have disappeared in the last four hours. The latest one was grabbed right off his throne—witnesses say it was a woman in an elf costume with super-strength. She keeps muttering about 'ending the lie.' What is she PLANNING?\"</p><h2>Requirements</h2><ul><li><b>Track down</b> the kidnapped mall Santas</li><li>Figure out the villain's <b>endgame</b>—what's the plan?</li><li><b>Stop her</b> before Christmas is ruined for thousands of kids</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 1,
+        "freak": 0,
+        "savior": 1,
+        "mundane": null,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000067,
+    "modifiedTime": 1734700000067,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall067NoMor",
+  "sort": 100067,
+  "_key": "!actors!xmasCall067NoMor"
+}

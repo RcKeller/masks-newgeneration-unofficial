@@ -1,0 +1,47 @@
+{
+  "name": "Rival Team at Holiday Tournament",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "social",
+      "callerName": "Coach Williams",
+      "callerQuote": "<p>\"Our rival school's team has a new player who's... suspiciously good. Like, impossibly good. We're playing them in the holiday tournament finals and I think he might be using powers. Can you investigate? But FAIRLY. If he's cheating, prove it. If not, we lose with dignity.\"</p><h2>Requirements</h2><ul><li><b>Investigate</b> the rival player—powers or natural talent?</li><li>Don't <b>cheat yourself</b> in the process</li><li>Figure out the <b>ethical path</b> regardless of outcome</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": -3,
+        "freak": 0,
+        "savior": null,
+        "mundane": 1,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000092,
+    "modifiedTime": 1734700000092,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall092Rival",
+  "sort": 100092,
+  "_key": "!actors!xmasCall092Rival"
+}

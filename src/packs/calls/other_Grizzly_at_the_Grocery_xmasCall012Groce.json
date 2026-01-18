@@ -1,0 +1,47 @@
+{
+  "name": "Grizzly at the Grocery",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "pursuit",
+      "callerName": "MegaMart Manager",
+      "callerQuote": "<p>\"There's a grizzly with a shopping cart FULL of honey jars in aisle 7. She's been staring at the self-checkout for ten minutes like she's having a moral crisis. I think she's trying to decide whether to pay or run. Please hurry.\"</p><h2>Requirements</h2><ul><li>Intercept Petunia before she <b>makes her choice</b></li><li>If she runs, <b>pursue</b> without endangering shoppers</li><li>If she pays... do you still <b>arrest her</b> for other crimes?</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": 0,
+        "freak": null,
+        "savior": 1,
+        "mundane": 0,
+        "superior": null
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000012,
+    "modifiedTime": 1734700000012,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall012Groce",
+  "sort": 100012,
+  "_key": "!actors!xmasCall012Groce"
+}

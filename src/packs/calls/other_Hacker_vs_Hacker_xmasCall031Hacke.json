@@ -1,0 +1,47 @@
+{
+  "name": "Hacker vs Hacker",
+  "type": "other",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "customType": "call"
+  },
+  "items": [],
+  "effects": [],
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "masks-newgeneration-unofficial": {
+      "callType": "pursuit",
+      "callerName": "Your Friend Alex",
+      "callerQuote": "<p>\"Dude, someone hacked my Instagram and posted that I wet the bed until I was 12! The trail leads to something called 'acid_burn.' I NEED you to find this bear and make him DELETE THAT POST. My social life is OVER.\"</p><h2>Requirements</h2><ul><li><b>Track acid_burn</b> through cyberspace</li><li>Make him <b>undo the damage</b> to your friend's reputation</li><li>Why is a bear hacker targeting <b>random teens</b>?</li></ul>",
+      "requirementsText": "",
+      "requirements": {
+        "danger": null,
+        "freak": null,
+        "savior": null,
+        "mundane": 1,
+        "superior": 1
+      },
+      "assignedActorIds": [],
+      "dispatchStatus": "idle",
+      "fitResult": null,
+      "snapshotHeroLabels": null,
+      "forwardChange": null
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "13.350",
+    "systemId": "pbta",
+    "systemVersion": "1.1.22",
+    "createdTime": 1734700000031,
+    "modifiedTime": 1734700000031,
+    "lastModifiedBy": null
+  },
+  "_id": "xmasCall031Hacke",
+  "sort": 100031,
+  "_key": "!actors!xmasCall031Hacke"
+}
