@@ -2,7 +2,7 @@
   "id": "masks-newgeneration-unofficial",
   "title": "Masks: A New Generation",
   "description": "Character sheets, influence tracking, team pool mechanics, and playbook support for Masks: A New Generation.",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "socket": true,
   "compatibility": {
     "minimum": 13,
@@ -344,6 +344,5 @@
   "manifest": "https://github.com/RcKeller/masks-newgeneration-unofficial/releases/latest/download/module.json",
   "download": "https://github.com/RcKeller/masks-newgeneration-unofficial/releases/latest/download/module.zip",
   "license": "LICENSE",
-  "readme": "README.md",
-  "includes": ["assets", "docs", "images", "lang", "main.bundle.js", "main.bundle.js.map", "module.json", "packs", "templates"]
+  "readme": "README.md"
 }
