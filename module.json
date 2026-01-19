@@ -1,7 +1,7 @@
 {
   "id": "masks-newgeneration-unofficial",
-  "title": "Dispatch",
-  "description": "Dispatch adaptation using Masks: A New Generation. Villain packs are now available as separate modules: masks-villains, masks-adversaries, masks-champions-villains.",
+  "title": "Masks: A New Generation",
+  "description": "Character sheets, influence tracking, team pool mechanics, and playbook support for Masks: A New Generation. For turn cards and combat UI, install the optional Dispatch module. Villain packs are available as separate modules.",
   "version": "2.1.0",
   "socket": true,
   "compatibility": {
@@ -287,24 +287,24 @@
       "folders": []
     }
   ],
-  "esmodules": ["main.bundle.js"],
-  "styles": ["assets/main.css"],
+  "esmodules": ["dist/main.bundle.js"],
+  "styles": ["dist/assets/main.css"],
   "languages": [
     {
       "lang": "en",
       "name": "English",
-      "path": "lang/en.json"
+      "path": "dist/lang/en.json"
     },
     {
       "lang": "es",
       "name": "Spanish",
-      "path": "lang/es.json"
+      "path": "dist/lang/es.json"
     }
   ],
   "flags": {
     "hotReload": {
       "extensions": ["css", "hbs", "json"],
-      "paths": ["assets", "templates", "lang"]
+      "paths": ["dist/assets", "dist/templates", "dist/lang"]
     }
   },
   "relationships": {
@@ -318,6 +318,11 @@
       }
     ],
     "recommends": [
+      {
+        "id": "dispatch",
+        "type": "module",
+        "reason": "Turn cards, call sheets, and combat UI for Masks"
+      },
       {
         "id": "masks-villains",
         "type": "module",
