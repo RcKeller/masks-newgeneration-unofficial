@@ -9,7 +9,10 @@ import './styles/dispatch.scss';
 import './module/masks';
 
 Hooks.once("ready", () => {
-    aerisCore.docs.registerDocsMenu("masks-newgeneration-unofficial");
+    // Register docs menu if aeris-core module is available
+    if (typeof aerisCore !== "undefined") {
+        aerisCore.docs.registerDocsMenu("masks-newgeneration-unofficial");
+    }
 });
 
 Hooks.once("aeris-core.import-css", () => {

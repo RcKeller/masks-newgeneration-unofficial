@@ -2,11 +2,9 @@
  * Define a set of template paths to pre-load
  */
 export const preloadHandlebarsTemplates = async function () {
-    return loadTemplates([
+    return foundry.applications.handlebars.loadTemplates([
       // Main sheet
       'modules/masks-newgeneration-unofficial/templates/sheets/actor-sheet.hbs',
-      // Call sheet (Dispatch-style vignettes)
-      'modules/masks-newgeneration-unofficial/templates/sheets/call-sheet.hbs',
       // Legacy partials (NPC sheet)
       'modules/masks-newgeneration-unofficial/templates/parts/actor-header.hbs',
       'modules/masks-newgeneration-unofficial/templates/parts/actor-attributes.hbs',
@@ -25,7 +23,6 @@ export const preloadHandlebarsTemplates = async function () {
       'modules/masks-newgeneration-unofficial/templates/parts/actor-power-card.hbs',
       // UI components
       'modules/masks-newgeneration-unofficial/templates/team.hbs',
-      'modules/masks-newgeneration-unofficial/templates/turncards.hbs',
       'modules/masks-newgeneration-unofficial/templates/xcard.hbs',
     ]);
 };

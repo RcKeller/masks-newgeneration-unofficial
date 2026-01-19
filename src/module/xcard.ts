@@ -62,18 +62,9 @@ function ensureWhisperToGM(text) {
 		: prefix + text;
 }
 
-/** Render a Handlebars template with broad compatibility for v13+. */
+/** Render a Handlebars template (v13+ API). */
 async function renderTpl(path, data) {
-	// Prefer the global helper, then v13+ utils, then legacy handlebar shim.
-	if (typeof globalThis.renderTemplate === "function") {
-		return globalThis.renderTemplate(path, data);
-	}
-	if (foundry?.utils?.renderTemplate) {
-		return foundry.utils.renderTemplate(path, data);
-	}
-	const fn = foundry?.applications?.handlebars?.renderTemplate;
-	if (typeof fn === "function") return fn(path, data);
-	throw new Error("renderTemplate is not available in this environment.");
+	return foundry.applications.handlebars.renderTemplate(path, data);
 }
 
 /* ----------------------------- GM & User Helpers --------------------------- */

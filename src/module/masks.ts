@@ -4,8 +4,8 @@ import { MasksActorSheetMixin } from './sheets/actor-sheet';
 
 Hooks.once("init", () => {
     const masksActorSheet = MasksActorSheetMixin(game.pbta.applications.actor.PbtaActorSheet);
-    Actors.unregisterSheet('pbta', game.pbta.applications.actor.PbtaActorSheet, { types: ['character'] });
-    Actors.registerSheet('pbta', masksActorSheet, {
+    foundry.documents.collections.Actors.unregisterSheet('pbta', game.pbta.applications.actor.PbtaActorSheet, { types: ['character'] });
+    foundry.documents.collections.Actors.registerSheet('pbta', masksActorSheet, {
         types: ['character'],
         makeDefault: true,
         label: 'DISPATCH.SheetConfig.character',
