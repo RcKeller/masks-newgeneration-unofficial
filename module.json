@@ -2,7 +2,7 @@
   "id": "masks-newgeneration-unofficial",
   "title": "Masks: A New Generation",
   "description": "Character sheets, influence tracking, team pool mechanics, and playbook support for Masks: A New Generation.",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "socket": true,
   "compatibility": {
     "minimum": 13,

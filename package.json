@@ -1,6 +1,6 @@
 {
   "name": "masks-newgeneration-unofficial",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Core System for Masks: A New Generation",
   "main": "index.js",
   "scripts": {
