@@ -1,3 +1,14 @@
+# [1.10.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.9.0...v1.10.0) (2026-01-19)
+
+
+### Features
+
+* fixed ([fc570b5](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/fc570b5312f8c9b504ad2e9fb6507f745c88b621))
+* fixed the compatibility issue ([dae8b75](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/dae8b75e163b75b07fe4d97e9c318937894c3493))
+* initial commit ([55aa4d9](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/55aa4d9163cd2c883576ce6a4c060ab416106855))
+* save wip ([a25f228](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/a25f22885d64637df24780c2452c854800593c10))
+* save wip ([9befe04](https://github.com/RcKeller/masks-newgeneration-unofficial/commit/9befe04a668bba2534dd87822707fd2fc3bb7a9a))
+
 # [1.9.0](https://github.com/RcKeller/masks-newgeneration-unofficial/compare/v1.8.0...v1.9.0) (2025-12-21)
 
 
