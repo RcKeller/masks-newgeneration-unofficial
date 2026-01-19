@@ -288,23 +288,23 @@
     }
   ],
   "esmodules": ["dist/main.bundle.js"],
-  "styles": ["dist/assets/main.css"],
+  "styles": ["assets/main.css"],
   "languages": [
     {
       "lang": "en",
       "name": "English",
-      "path": "dist/lang/en.json"
+      "path": "lang/en.json"
     },
     {
       "lang": "es",
       "name": "Spanish",
-      "path": "dist/lang/es.json"
+      "path": "lang/es.json"
     }
   ],
   "flags": {
     "hotReload": {
       "extensions": ["css", "hbs", "json"],
-      "paths": ["dist/assets", "dist/templates", "dist/lang"]
+      "paths": ["assets", "templates", "lang"]
     }
   },
   "relationships": {

@@ -77,3 +77,9 @@ CLAUDE.md
 
 assets/scenes/*
 repomix-output.xml
+
+# Development symlinks (point to dist/)
+/templates
+/images
+/lang
+/assets
