@@ -1,8 +1,8 @@
 {
   "id": "masks-newgeneration-unofficial",
-  "title": "Dispatch",
-  "description": "Dispatch adaptation using Masks: A New Generation",
-  "version": "2.0.0",
+  "title": "Masks: A New Generation",
+  "description": "Character sheets, influence tracking, team pool mechanics, and playbook support for Masks: A New Generation. For turn cards and combat UI, install the optional Dispatch module. Villain packs are available as separate modules.",
+  "version": "2.1.0",
   "socket": true,
   "compatibility": {
     "minimum": 13,
@@ -257,89 +257,6 @@
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
-    },
-    {
-      "name": "characters",
-      "label": "Characters",
-      "path": "packs/characters",
-      "type": "Actor",
-      "system": "pbta",
-      "ownership": {
-        "PLAYER": "NONE",
-        "TRUSTED": "OWNER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "campaign",
-      "label": "Campaign Rules & Recaps",
-      "path": "packs/campaign",
-      "type": "JournalEntry",
-      "system": "pbta",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "scenes",
-      "label": "Scenes",
-      "path": "packs/scenes",
-      "type": "Scene",
-      "system": "pbta",
-      "ownership": {
-        "PLAYER": "NONE",
-        "TRUSTED": "OWNER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "villains",
-      "label": "Villains",
-      "path": "packs/villains",
-      "type": "Actor",
-      "system": "pbta",
-      "ownership": {
-        "PLAYER": "NONE",
-        "TRUSTED": "OWNER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "champions-villains",
-      "label": "Villains (Champions)",
-      "path": "packs/champions-villains",
-      "type": "Actor",
-      "system": "pbta",
-      "ownership": {
-        "PLAYER": "NONE",
-        "TRUSTED": "OWNER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "adversaries",
-      "label": "Villains (Adversaries)",
-      "path": "packs/adversaries",
-      "type": "Actor",
-      "system": "pbta",
-      "ownership": {
-        "PLAYER": "NONE",
-        "TRUSTED": "OWNER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
-      "name": "calls",
-      "label": "Dispatch Calls",
-      "path": "packs/calls",
-      "type": "Actor",
-      "system": "pbta",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "TRUSTED": "OWNER",
-        "ASSISTANT": "OWNER"
-      }
     }
   ],
   "packFolders": [
@@ -365,13 +282,12 @@
         "hchc-playbook-joined",
         "hchc-playbook-newborn",
         "hchc-playbook-reformed",
-        "hchc-playbook-star",
-        "calls"
+        "hchc-playbook-star"
       ],
       "folders": []
     }
   ],
-  "esmodules": ["main.bundle.js"],
+  "esmodules": ["dist/main.bundle.js"],
   "styles": ["assets/main.css"],
   "languages": [
     {
@@ -399,6 +315,28 @@
         "compatibility": {
           "minimum": "1.1.16"
         }
+      }
+    ],
+    "recommends": [
+      {
+        "id": "dispatch",
+        "type": "module",
+        "reason": "Turn cards, call sheets, and combat UI for Masks"
+      },
+      {
+        "id": "masks-villains",
+        "type": "module",
+        "reason": "Villain NPCs from the Masks core rulebook"
+      },
+      {
+        "id": "masks-adversaries",
+        "type": "module",
+        "reason": "Villain NPCs from the Masks: Adversaries supplement"
+      },
+      {
+        "id": "masks-champions-villains",
+        "type": "module",
+        "reason": "Villain NPCs from the Champions collection"
       }
     ]
   },

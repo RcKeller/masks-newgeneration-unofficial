@@ -168,3 +168,13 @@ I'd also like to thank the following Patrons for their ongoing support, both on 
 - Relic
 - Ichabod
 
+===================
+
+
+
+TODO:
+Move modules/masks-newgeneration-unofficial/packs/villains to a new independently manageable and publishable/modules/masks-villains module
+Move modules/masks-newgeneration-unofficial/packs/champions-villains to a new independently manageable and publishable/modules/masks-champions-villains module
+Move modules/masks-newgeneration-unofficial/packs/champions-villains to a new independently manageable and publishable/modules/masks-champions-villains module
+Move modules/masks-newgeneration-unofficial/packs/adversaries to a new independently manageable and publishable/modules/masks-adversaries module
+Move modules/masks-newgeneration-unofficial/packs/campaign to a new independently manageable and PRIVATE /modules/masks-campaigns module. Include /scenes

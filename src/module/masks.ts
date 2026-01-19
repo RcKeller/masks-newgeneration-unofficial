@@ -1,7 +1,6 @@
 import { configSheet } from "./helpers/config-sheet";
 import * as utils from "./helpers/utils";
 import { MasksActorSheetMixin } from './sheets/actor-sheet';
-import { CallSheet, registerCallSheetQueries, registerCallSheetSocketHandler } from './sheets/call-sheet';
 
 Hooks.once("init", () => {
     const masksActorSheet = MasksActorSheetMixin(game.pbta.applications.actor.PbtaActorSheet);
@@ -10,13 +9,6 @@ Hooks.once("init", () => {
         types: ['character'],
         makeDefault: true,
         label: 'DISPATCH.SheetConfig.character',
-    });
-
-    // Call sheet for "other" actor type (custom subtype "call")
-    Actors.registerSheet('masks-newgeneration-unofficial', CallSheet, {
-        types: ['other'],
-        makeDefault: true,
-        label: 'DISPATCH.SheetConfig.call',
     });
 
     game.settings.register("masks-newgeneration-unofficial", "enable_dark_mode", {
@@ -93,12 +85,6 @@ Hooks.once("init", () => {
 });
 
 Hooks.once('ready', async function () {
-    // Register query handlers for call sheet actions (V13+ query system)
-    registerCallSheetQueries();
-
-    // Register socket handler for call sheet actions (Show to Everyone)
-    registerCallSheetSocketHandler();
-
     if (!game.user.isGM) return;
     if (game.settings.get('masks-newgeneration-unofficial', 'firstTime')) {
         game.settings.set('masks-newgeneration-unofficial', 'firstTime', false);
@@ -189,10 +175,6 @@ Hooks.once('pbtaSheetConfig', () => {
 Hooks.on("preCreateActor", async function (document) {
     if (document.type === 'character') {
         document.updateSource({'flags.masks-newgeneration-unofficial.influences': []});
-    }
-    // Set customType so PbtA resolves sheetType to "call" config
-    if (document.type === 'other') {
-        document.updateSource({'system.customType': 'call'});
     }
 });
 
@@ -293,4 +275,3 @@ import './xcard';
 import './advantage';
 import './conditions';
 import './health';
-import './turn-cards';

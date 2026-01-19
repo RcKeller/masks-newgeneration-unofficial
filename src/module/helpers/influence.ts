@@ -23,6 +23,15 @@
 export const NS = "masks-newgeneration-unofficial";
 const FLAG_PATH = "flags.masks-newgeneration-unofficial.influences";
 
+/**
+ * Legacy namespaces for backward compatibility.
+ * Influences may have been stored under these older namespaces.
+ */
+const LEGACY_FLAG_PATHS = [
+  "flags.masks-newgeneration-sheets.influences",  // Old PbtA sheets namespace
+  "flags.dispatch.influences",                     // Pre-separation dispatch namespace
+];
+
 /* ----------------------------- Normalization ----------------------------- */
 
 /** Fuzzy normalize per requirement:
@@ -64,11 +73,26 @@ export function compositeKey(actor, token = null) {
   return normalize(joined);
 }
 
-/** Deep-cloned influences array from a Character actor (never NPC). */
+/**
+ * Deep-cloned influences array from a Character actor (never NPC).
+ * Includes backward compatibility for legacy flag namespaces.
+ */
 export function readInfluences(actor) {
-  return foundry.utils.deepClone(
-    foundry.utils.getProperty(actor, FLAG_PATH) || []
-  );
+  // Try primary namespace first
+  let influences = foundry.utils.getProperty(actor, FLAG_PATH);
+
+  // Fallback to legacy namespaces if primary is empty
+  if (!influences || !Array.isArray(influences) || influences.length === 0) {
+    for (const legacyPath of LEGACY_FLAG_PATHS) {
+      const legacyInfluences = foundry.utils.getProperty(actor, legacyPath);
+      if (legacyInfluences && Array.isArray(legacyInfluences) && legacyInfluences.length > 0) {
+        influences = legacyInfluences;
+        break;
+      }
+    }
+  }
+
+  return foundry.utils.deepClone(influences || []);
 }
 
 /* ------------------------------ InfluenceIndex ------------------------------ */

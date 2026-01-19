@@ -730,7 +730,7 @@ export function MasksActorSheetMixin(Base) {
 			event.preventDefault();
 			// Import and use the shift labels modal from turn-cards
 			// For now, show a simple dialog
-			const { promptShiftLabels, applyShiftLabels } = await import("../turn-cards");
+			const { promptShiftLabels, applyShiftLabels } = await import("../helpers/shift-labels");
 			const result = await promptShiftLabels(this.actor, `Shift Labels: ${this.actor.name}`);
 			if (result) {
 				await applyShiftLabels(this.actor, result.up, result.down);
