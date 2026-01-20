@@ -1,7 +1,6 @@
 /* global ChatMessage, CONST, Dialog, game, foundry, ui */
 import { createLabelsGraphData, LABEL_ORDER, saveGraphAnimationState, animateGraphFromSavedState } from "../labels-graph";
-
-const NS = "masks-newgeneration-unofficial";
+import { NS } from "../constants";
 
 /**
  * Label configuration with icons and colors
@@ -163,7 +162,7 @@ export function MasksActorSheetMixin(Base) {
 			}
 
 			const moveType = "move";
-			const sheetConfig = (game as any).pbta?.sheetConfig;
+			const sheetConfig = game.pbta?.sheetConfig;
 			const sheetType = this.actor.sheetType ?? this.actor.type;
 			const moveTypes = sheetConfig?.actorTypes?.[sheetType]?.moveTypes;
 			const equipmentTypes = sheetConfig?.actorTypes?.[sheetType]?.equipmentTypes;
@@ -998,7 +997,7 @@ export function MasksActorSheetMixin(Base) {
 			try {
 				const enriched = await TextEditor.enrichHTML(item.system.description, {
 					secrets: this.actor.isOwner,
-					rollData: (item as any).getRollData?.() ?? {},
+					rollData: (item as Item).getRollData?.() ?? {},
 					relativeTo: item,
 				});
 

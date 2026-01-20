@@ -20,8 +20,11 @@
  *    Typical influence counts are small, so this is very fast in practice.
  */
 
-export const NS = "masks-newgeneration-unofficial";
-const FLAG_PATH = "flags.masks-newgeneration-unofficial.influences";
+// Re-export NS from constants for backward compatibility
+export { NS } from "../constants";
+import { NS } from "../constants";
+
+const FLAG_PATH = `flags.${NS}.influences`;
 
 /**
  * Legacy namespaces for backward compatibility.

@@ -25,14 +25,15 @@
  *
  * ---------------------------------------------------------------------------
  * BUGFIX (v13+ reliability):
- * - Ensure the default behavior (“Anonymously inform the table”) ALWAYS posts a
+ * - Ensure the default behavior ("Anonymously inform the table") ALWAYS posts a
  *   public chat message locally (no GM‑socket dependency). This fixes cases
  *   where players clicked the X‑card and no table message appeared in new worlds
  *   or during socket/GM timing races.
  * - Also: use `ChatMessage.getSpeaker({ alias })` and robust active‑GM checks.
  */
 
-const NS = "masks-newgeneration-unofficial";
+import { NS } from "./constants";
+
 const TEMPLATE_PATH = `modules/${NS}/templates/xcard.hbs`;
 
 // --- Settings (new + legacy/deprecated) ---

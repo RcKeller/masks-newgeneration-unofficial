@@ -12,7 +12,7 @@
  * v13+ only.
  */
 
-const NS = "masks-newgeneration-unofficial";
+import { NS } from "./constants";
 
 /** Canonical set of conditions we manage + their icons. */
 const MANAGED = Object.freeze({

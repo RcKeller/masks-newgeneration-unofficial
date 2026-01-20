@@ -9,7 +9,7 @@
  * A minimal standalone HUD is shown only when NO combat is active.
  */
 
-const NS = "masks-newgeneration-unofficial";
+import { NS } from "./constants";
 
 // Settings keys
 const KEY_ALLOW_EDIT = "playersCanEdit";

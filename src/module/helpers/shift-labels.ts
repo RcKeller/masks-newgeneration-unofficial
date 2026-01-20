@@ -2,11 +2,11 @@
 // Label shifting functionality for Masks character sheets
 // Extracted from turn-cards.ts for use without the Dispatch module
 
-const NS = "masks-newgeneration-unofficial";
+import { NS } from "../constants";
 
-// Utility functions
-const escape = (s: string) => (foundry as any).utils.escapeHTML(String(s ?? ""));
-const getProp = (obj: any, path: string) => (foundry as any).utils.getProperty(obj, path);
+// Utility functions using typed foundry globals
+const escape = (s: string): string => foundry.utils.escapeHTML(String(s ?? ""));
+const getProp = <T = unknown>(obj: object, path: string): T | undefined => foundry.utils.getProperty<T>(obj, path);
 
 // Base labels for all playbooks
 const BASE_LABEL_KEYS = Object.freeze([
@@ -21,7 +21,7 @@ const BASE_LABEL_KEYS = Object.freeze([
  * Get label keys for an actor - The Soldier has an additional "soldier" label
  */
 export function getLabelKeysForActor(actor: Actor): string[] {
-	const playbook = (actor as any)?.system?.playbook?.name ?? "";
+	const playbook = actor?.system?.playbook?.name ?? "";
 	if (playbook === "The Soldier") {
 		return [...BASE_LABEL_KEYS, "soldier"];
 	}
@@ -56,11 +56,11 @@ function shiftBounds(): { lo: number; hi: number } {
 function statLabel(actor: Actor, key: string): string {
 	// Soldier label has a special path and localization
 	if (key === "soldier") {
-		return (game as any).i18n?.localize?.("DISPATCH.CharacterSheets.Playbooks.theSoldierLabel") || "Soldier";
+		return game.i18n?.localize("DISPATCH.CharacterSheets.Playbooks.theSoldierLabel") ?? "Soldier";
 	}
 	return (
-		getProp(actor, `system.stats.${key}.label`) ||
-		(game as any).pbta?.sheetConfig?.actorTypes?.character?.stats?.[key]?.label ||
+		getProp<string>(actor, `system.stats.${key}.label`) ??
+		game.pbta?.sheetConfig?.actorTypes?.character?.stats?.[key]?.label ??
 		key.charAt(0).toUpperCase() + key.slice(1)
 	);
 }
@@ -81,7 +81,7 @@ export function getShiftableLabels(actor: Actor): {
 	labelKeys: string[];
 } {
 	const { lo, hi } = shiftBounds();
-	const lockedLabels = (actor as any)?.getFlag?.(NS, "lockedLabels") ?? {};
+	const lockedLabels = actor.getFlag<Record<string, boolean>>(NS, "lockedLabels") ?? {};
 	const labelKeys = getLabelKeysForActor(actor);
 	const up: string[] = [];
 	const down: string[] = [];
@@ -105,7 +105,7 @@ export async function promptShiftLabels(
 ): Promise<{ up: string; down: string } | null> {
 	const { canShiftUp, canShiftDown, labelKeys } = getShiftableLabels(actor);
 	if (!canShiftUp.length || !canShiftDown.length) {
-		(ui as any).notifications?.warn?.("No valid label shifts.");
+		ui.notifications?.warn("No valid label shifts.");
 		return null;
 	}
 
@@ -142,7 +142,7 @@ export async function promptShiftLabels(
 	</form>`;
 
 	return new Promise((resolve) => {
-		new (Dialog as any)({
+		new Dialog({
 			title: title ?? `Shift Labels: ${actor?.name ?? "Character"}`,
 			content,
 			buttons: {
@@ -152,11 +152,11 @@ export async function promptShiftLabels(
 						const up = (html[0]?.querySelector("select[name='up']") as HTMLSelectElement)?.value;
 						const down = (html[0]?.querySelector("select[name='down']") as HTMLSelectElement)?.value;
 						if (!up || !down || up === down) {
-							if (up === down) (ui as any).notifications?.warn?.("Choose two different Labels.");
+							if (up === down) ui.notifications?.warn("Choose two different Labels.");
 							return resolve(null);
 						}
 						if (!canShiftUp.includes(up) || !canShiftDown.includes(down)) {
-							(ui as any).notifications?.warn?.("Invalid selection.");
+							ui.notifications?.warn("Invalid selection.");
 							return resolve(null);
 						}
 						resolve({ up, down });
@@ -197,7 +197,7 @@ export async function applyShiftLabels(
 	const curDown = getLabelValue(actor, downKey);
 
 	if (curUp >= hi || curDown <= lo) {
-		(ui as any).notifications?.warn?.("Labels at limits.");
+		ui.notifications?.warn("Labels at limits.");
 		return false;
 	}
 
@@ -218,7 +218,7 @@ export async function applyShiftLabels(
 		// Show actual value changes like other resource messages
 		content += `<span class="shift up">${escape(upLabel)}: ${curUp} → <b>${newUp}</b></span>, `;
 		content += `<span class="shift down">${escape(downLabel)}: ${curDown} → <b>${newDown}</b></span>`;
-		await (ChatMessage as any).create({ content, type: (CONST as any).CHAT_MESSAGE_TYPES.OTHER });
+		await ChatMessage.create({ content, type: CONST.CHAT_MESSAGE_TYPES.OTHER });
 	}
 
 	return true;
