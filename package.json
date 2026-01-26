@@ -54,7 +54,7 @@
     "postcss": "^8.5.6",
     "postcss-import": "^16.1.1",
     "postcss-nesting": "^13.0.2",
-    "repomix": "^1.10.1",
+    "repomix": "^1.11.1",
     "sass": "^1.96.0",
     "semantic-release": "^24.2.9",
     "tailwindcss": "^4.1.14",
