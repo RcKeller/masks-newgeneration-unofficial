@@ -53,7 +53,7 @@
     "pdf-parse": "^2.4.5",
     "postcss": "^8.5.6",
     "postcss-import": "^16.1.1",
-    "postcss-nesting": "^13.0.2",
+    "postcss-nesting": "^14.0.0",
     "repomix": "^1.10.1",
     "sass": "^1.96.0",
     "semantic-release": "^24.2.9",
