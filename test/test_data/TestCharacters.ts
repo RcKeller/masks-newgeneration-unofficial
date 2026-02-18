@@ -13,7 +13,7 @@
  *   });
  */
 
-import { StubActor } from "../stubs/foundry/StubActor";
+import { StubActor } from "@rckeller/foundryvtt-devtools/jest/stubs/foundry";
 
 // ============================================================================
 // Core Playbook Characters

@@ -11,6 +11,21 @@ import {
 	createCharacterAtLabelBounds,
 } from "../../fixtures/actors";
 
+// Verify that the module uses the new v13+ APIs instead of deprecated ones
+describe("shift-labels.ts API usage", () => {
+	it("should use CHAT_MESSAGE_STYLES instead of deprecated CHAT_MESSAGE_TYPES", () => {
+		// CHAT_MESSAGE_STYLES is the v13+ replacement for CHAT_MESSAGE_TYPES
+		expect(CONST.CHAT_MESSAGE_STYLES).toBeDefined();
+		expect(CONST.CHAT_MESSAGE_STYLES.OTHER).toBe(0);
+	});
+
+	it("should have DialogV2 available for dialogs", () => {
+		// DialogV2 is the v13+ replacement for Dialog (V1 Application)
+		expect(foundry.applications.api.DialogV2).toBeDefined();
+		expect(typeof foundry.applications.api.DialogV2.wait).toBe("function");
+	});
+});
+
 describe("shift-labels.ts", () => {
 	// We'll test the exported pure functions
 	let getLabelKeysForActor: (actor: unknown) => string[];

@@ -32,7 +32,7 @@ jobs:
           npm install
 
       - name: Compile compendium packs
-        run: npm run pullJSONtoLDB
+        run: npm run packs:to-ldb
 
       - name: Build module
         run: npm run ci

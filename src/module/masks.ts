@@ -70,16 +70,25 @@ Hooks.once("init", () => {
         return obj[key]?.label ?? key;
     });
 
-    // stripUuidLinks helper - converts @UUID[Type.id]{Label} to just Label
+    // concat helper - concatenates strings
+    Handlebars.registerHelper("concat", function(...args) {
+        // Remove the Handlebars options object from the end
+        args.pop();
+        return args.join("");
+    });
+
+    // stripUuidLinks helper - converts @UUID[Type.id]{Label} and @Compendium[pack.id]{Label} to just Label
     // Used for displaying move descriptions before lazy enrichment
     Handlebars.registerHelper("stripUuidLinks", function(text) {
         if (!text) return "";
-        // Convert @UUID[Type.id]{Label} to just Label
-        // Also handle @UUID[Type.id] without label (use "link" as fallback)
+        // Convert @UUID[Type.id]{Label} and @Compendium[pack.id]{Label} to just Label
+        // Also handle links without labels (use "[link]" as fallback)
         return new Handlebars.SafeString(
             String(text)
                 .replace(/@UUID\[[^\]]+\]\{([^}]+)\}/g, "$1")
                 .replace(/@UUID\[[^\]]+\]/g, "[link]")
+                .replace(/@Compendium\[[^\]]+\]\{([^}]+)\}/g, "$1")
+                .replace(/@Compendium\[[^\]]+\]/g, "[link]")
         );
     });
 });
@@ -90,7 +99,6 @@ Hooks.once('ready', async function () {
         game.settings.set('masks-newgeneration-unofficial', 'firstTime', false);
 
         const callback = async () => {
-            game.settings.set('masks-newgeneration-unofficial', 'firstTime', true);
             const worldData = {
                 id: game.world.id,
                 action: 'editWorld',

@@ -158,7 +158,7 @@ async function announceChange(srcName, tgtName, beforeSym, afterSym) {
     // <h6>${badge(afterSym)} ${title}</h6>
     // <b>Previous:</b> ${srcName} ${badge(beforeSym)} ${tgtName}</em>`,
     content,
-    type: CONST.CHAT_MESSAGE_TYPES.OTHER
+    type: CONST.CHAT_MESSAGE_STYLES.OTHER
   });
 }
 
@@ -182,32 +182,37 @@ async function pickTargetViaDialog(excludeTokenId = null) {
     return `<option value="${t.id}">${foundry.utils.escapeHTML(lbl)}</option>`;
   }).join("");
 
-  return new Promise((resolve) => {
-    const content = `
-      <form style="margin-bottom:8px;">
-        <div class="form-group">
-          <label>Target:</label>
-          <select name="tok">${options}</select>
-        </div>
-      </form>`;
-    // eslint-disable-next-line no-new
-    new Dialog({
-      title: "Select a Target",
-      content,
-      buttons: {
-        ok: {
-          label: "Use",
-          callback: html => {
-            const id = html[0].querySelector("select[name='tok']")?.value;
-            resolve(canvas.tokens?.get(id) || null);
-          }
-        },
-        cancel: { label: "Cancel", callback: () => resolve(null) }
+  const content = `
+    <form style="margin-bottom:8px;">
+      <div class="form-group">
+        <label>Target:</label>
+        <select name="tok">${options}</select>
+      </div>
+    </form>`;
+
+  const result = await foundry.applications.api.DialogV2.wait({
+    window: { title: "Select a Target" },
+    content,
+    rejectClose: false,
+    buttons: [
+      {
+        action: "ok",
+        label: "Use",
+        default: true,
+        callback: (event, button, dialog) => {
+          const id = dialog.querySelector("select[name='tok']")?.value;
+          return canvas.tokens?.get(id) || null;
+        }
       },
-      default: "ok",
-      close: () => resolve(null)
-    }).render(true);
+      {
+        action: "cancel",
+        label: "Cancel",
+        callback: () => null
+      }
+    ],
   });
+
+  return result;
 }
 
 async function pickTargetByClick(timeoutMs = 10000, hint = "Click a token to choose it as target…") {

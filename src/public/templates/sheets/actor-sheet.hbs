@@ -1,79 +1,178 @@
-<form class="{{cssClass}} masks-sheet-v2" autocomplete="off">
+<form class="{{cssClass}}" autocomplete="off">
 	{{#if isCharacter}}
-	{{!-- New Character Sheet Layout --}}
-	<div class="masks-sheet">
-		{{!-- Left Panel: Portrait, Identity, Conditions --}}
-		{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-left-panel.hbs"}}
+	<div class="sheet-wrapper character-sheet">
+		{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-header.hbs" }}
 
-		{{!-- Right Section: Tabs + Stats Sidebar --}}
-		<div class="masks-sheet__right">
-			{{!-- Tabs Container --}}
-			<div class="tabs-container">
-				{{!-- Tab Navigation --}}
-				<nav class="sheet-tabs tabs" data-group="primary">
-					<a class="tab-btn active" data-tab="info">
-						<i class="fas fa-info-circle"></i>
-						<span>Info</span>
-					</a>
-					<a class="tab-btn" data-tab="powers">
-						<i class="fas fa-bolt"></i>
-						<span>Powers</span>
-					</a>
-					<a class="tab-btn" data-tab="playbook">
-						<i class="fas fa-book-open"></i>
-						<span>Playbook</span>
-					</a>
-				</nav>
-
-				{{!-- Tab Content --}}
-				<div class="tab-content">
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-info-tab.hbs"}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-powers-tab.hbs"}}
-					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-playbook-tab.hbs"}}
+		<section class="sheet-body-layout">
+			<aside class="sheet-aside">
+				<div class="cell cell--image">
+					<img class="profile-img" src="{{actor.img}}" data-edit="img" />
 				</div>
-			</div>
 
-			{{!-- Stats Sidebar --}}
-			{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-labels-sidebar.hbs"}}
-		</div>
+				<div class="cell cell--xp">
+					<label class="cell__title">{{system.attributes.xp.label}} <i class="fa-solid fa-star"></i></label>
+					<div class="cell__clock potential-pips">
+						{{#each potentialSteps as |step idx|}}
+						<input type="radio" class="potential-pip" data-name="system.attributes.xp" data-step="{{idx}}" {{checked step}}>
+						{{/each}}
+					</div>
+				</div>
+
+				<div class="cell cell--modifiers">
+					<label class="cell__title">{{localize "DISPATCH.Advantages"}} <i class="fa-solid fa-plus-minus"></i></label>
+					<div class="modifiers-list">
+						<div class="slanted-row color--forward {{#if forwardActive}}active{{/if}}" data-action="toggle-forward">
+							<span class="modifier-icon rollable-icon" data-action="share-forward">
+								<i class="label-icon fa-solid fa-arrow-right"></i>
+								<i class="dice-icon fa-solid fa-comment"></i>
+							</span>
+							<span class="modifier-name">{{localize "PBTA.Forward"}}</span>
+							<input type="number" class="row-input" name="system.resources.forward.value" value="{{system.resources.forward.value}}" min="{{forwardBounds.min}}" max="{{forwardBounds.max}}" data-dtype="Number" />
+						</div>
+						<div class="slanted-row color--ongoing {{#if ongoingActive}}active{{/if}}" data-action="toggle-ongoing">
+							<span class="modifier-icon rollable-icon" data-action="share-ongoing">
+								<i class="label-icon fa-solid fa-rotate"></i>
+								<i class="dice-icon fa-solid fa-comment"></i>
+							</span>
+							<span class="modifier-name">{{localize "PBTA.Ongoing"}}</span>
+							<input type="number" class="row-input" name="system.resources.ongoing.value" value="{{system.resources.ongoing.value}}" min="{{ongoingBounds.min}}" max="{{ongoingBounds.max}}" data-dtype="Number" />
+						</div>
+					</div>
+				</div>
+
+				<div class="cell cell--conditions">
+					<label class="cell__title">{{localize "DISPATCH.CharacterSheets.conditions.label"}} <i class="fa-solid fa-heart-pulse"></i></label>
+					<ul class="cell__checkboxes flexcol">
+						{{#each conditionRows as |condition|}}
+						<label class="checkbox-toggle condition--{{condition.key}} {{#if condition.value}}active{{/if}}">
+							<input type="checkbox" name="system.attributes.conditions.options.{{condition.idx}}.value" {{checked condition.value}} />
+							<span class="toggle-icon"><i class="{{condition.icon}}"></i></span>
+							<span class="toggle-label">{{condition.label}}</span>
+						</label>
+						{{/each}}
+					</ul>
+				</div>
+
+				{{#each playbookSidebarAttrs as |attr key|}}
+				<div class="cell cell--{{key}} cell--{{attr.type}}">
+					<label class="cell__title">{{attr.label}}</label>
+					{{#if (eq attr.type "Clock")}}
+					<div class="cell__clock">
+						{{#each attr.pips as |pip idx|}}
+						<input type="radio" class="clock-pip" data-name="system.attributes.{{../key}}" data-step="{{idx}}" {{checked pip.filled}}>
+						{{/each}}
+					</div>
+					{{else if (eq attr.type "Number")}}
+					<div class="cell__wrapper">
+						<button type="button" class="resource-control mod-btn" data-action="decrease" data-attr="attributes.{{key}}.value">-</button>
+						<input type="number" name="system.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="Number" />
+						<button type="button" class="resource-control mod-btn" data-action="increase" data-attr="attributes.{{key}}.value">+</button>
+					</div>
+					{{/if}}
+				</div>
+				{{/each}}
+			</aside>
+
+			<section class="sheet-main">
+				{{!-- Labels section (always visible, above tabs) --}}
+				{{#if labels}}
+				<div class="cell cell--labels cell--group">
+					<h2 class="cell__title">
+						<label class="item-group-label">
+							{{localize "DISPATCH.CharacterSheets.stats.labels"}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span>
+						</label>
+					</h2>
+					<div class="labels-layout">
+						{{#if labelsGraph}}
+						<div class="labels-graph" data-action="shift-labels" data-tooltip="{{labelsGraph.tooltip}}">
+							{{{labelsGraph.svg}}}
+						</div>
+						{{/if}}
+						<ol class="labels-list">
+							{{#each labels as |label|}}
+							<li class="label-row label--{{label.key}} {{#if label.locked}}locked{{/if}}"
+								data-stat="{{label.key}}" data-action="shift-label">
+								{{!-- Solid bar (base value) --}}
+								<div class="label-bar-solid" style="width: {{label.solidPercent}}%;"></div>
+								{{!-- Ghost bar (bonus/penalty difference) --}}
+								<div class="label-bar-ghost {{#if label.hasBonus}}bonus{{/if}}{{#if label.hasPenalty}}penalty{{/if}}" style="left: {{label.ghostLeft}}%; width: {{label.ghostWidth}}%;"></div>
+								{{!-- Baseline indicator (where value 0 sits on the bar) --}}
+								<div class="label-baseline"></div>
+
+								{{!-- Rollable icon --}}
+								<div class="label-rollable rollable-icon" data-action="roll-stat" data-mod="{{label.effectiveValue}}" data-label="{{label.label}}">
+									<i class="label-icon {{label.icon}}"></i>
+									<i class="dice-icon fa-solid fa-dice"></i>
+								</div>
+
+								{{!-- Value input (square, left of title) --}}
+								<input type="number" class="label-input" name="{{label.path}}" value="{{label.value}}"
+									   min="{{label.min}}" max="{{label.max}}" data-dtype="Number" {{#if label.locked}}disabled{{/if}} />
+
+								{{!-- Label name --}}
+								<span class="label-name">{{label.label}}</span>
+
+								{{!-- Lock icon --}}
+								<div class="label-lock rollable-icon" data-action="toggle-stat-lock" data-stat="{{label.key}}" title="{{#if label.locked}}Unlock{{else}}Lock{{/if}}">
+									<i class="fa-solid {{#if label.locked}}fa-lock{{else}}fa-lock-open{{/if}}"></i>
+								</div>
+							</li>
+							{{/each}}
+						</ol>
+					</div>
+				</div>
+				{{/if}}
+
+				<nav class="sheet-tabs tabs" data-group="primary">
+					<a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
+					<a class="item" data-tab="moves">{{localize "PBTA.Moves"}}</a>
+					<a class="item" data-tab="influence">{{localize "DISPATCH.Influences"}}</a>
+					<a class="item" data-tab="playbook">{{localize "PBTA.Playbook"}}</a>
+				</nav>
+				<section class="sheet-body">
+					{{> "pbta.actor-description" }}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-movelist.hbs" }}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-influence-tab.hbs"}}
+					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-playbook-tab.hbs"}}
+				</section>
+			</section>
+		</section>
 	</div>
 
 	{{else}}
-	{{!-- NPC Sheet - Keep existing layout for now --}}
 	<div class="sheet-wrapper npc-sheet">
-		{{!-- Sheet Header --}}
 		{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-header.hbs" }}
-
 		<section class="sheet-top flexcol">
 			<section class="sheet-attributes-top">
 				{{~> "modules/masks-newgeneration-unofficial/templates/parts/actor-attributes.hbs" attrs=system.attrTop cssClass="cell--attributes-top flexrow" owner=owner editable=editable ~}}
 			</section>
 		</section>
-
 		<section class="sheet-bottom flexrow">
-			{{!-- Sidebar --}}
-			{{#if (objLen system.attrLeft)}}
 			<section class="sheet-look">
 				<div class="cell cell--aesthetics">
-					{{> "pbta.actor-attributes" attrs=system.attrLeft cssClass="cell--attributes-left" owner=owner editable=editable}}
+					{{!-- NPC Conditions in correct order: Afraid, Hopeless, Insecure, Guilty, Angry --}}
+					{{#if npcConditionRows}}
+					<div class="cell cell--conditions cell--ListMany">
+						<label class="cell__title">{{localize "DISPATCH.NPCSheets.conditions.label"}}</label>
+						<ul class="cell__checkboxes flexcol">
+							{{#each npcConditionRows as |condition|}}
+							<label class="flexrow">
+								<input type="checkbox" class="attr-list" name="system.attributes.conditions.options.{{condition.idx}}.value" {{checked condition.value}}/>
+								{{condition.label}}
+							</label>
+							{{/each}}
+						</ul>
+					</div>
+					{{/if}}
 				</div>
 			</section>
-			{{/if}}
-
-			{{!-- Main --}}
 			<section class="sheet-main flexcol">
-				{{!-- Sheet Tab Navigation --}}
 				<nav class="sheet-tabs tabs" data-group="primary">
 					<a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
 					<a class="item" data-tab="moves">{{localize "PBTA.Moves"}}</a>
 				</nav>
-
-				{{!-- Sheet Body --}}
 				<section class="sheet-body">
-					{{!-- Main Tab --}}
 					{{> "pbta.actor-description" }}
-
-					{{!-- Moves Tab --}}
 					{{> "modules/masks-newgeneration-unofficial/templates/parts/actor-movelist.hbs" }}
 				</section>
 			</section>

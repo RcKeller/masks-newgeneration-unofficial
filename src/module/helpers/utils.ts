@@ -17,6 +17,7 @@ export const preloadHandlebarsTemplates = async function () {
       'modules/masks-newgeneration-unofficial/templates/parts/actor-conditions.hbs',
       'modules/masks-newgeneration-unofficial/templates/parts/actor-info-tab.hbs',
       'modules/masks-newgeneration-unofficial/templates/parts/actor-powers-tab.hbs',
+      'modules/masks-newgeneration-unofficial/templates/parts/actor-influence-tab.hbs',
       'modules/masks-newgeneration-unofficial/templates/parts/actor-playbook-tab.hbs',
       'modules/masks-newgeneration-unofficial/templates/parts/actor-labels-sidebar.hbs',
       'modules/masks-newgeneration-unofficial/templates/parts/actor-move-item.hbs',

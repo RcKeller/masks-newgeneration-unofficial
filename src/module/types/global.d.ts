@@ -100,9 +100,72 @@ declare global {
     randomID(length?: number): string;
   }
 
+  /** DialogV2 button configuration */
+  interface DialogV2Button {
+    action: string;
+    label: string;
+    default?: boolean;
+    callback?: (event: Event, button: HTMLButtonElement, dialog: HTMLElement) => unknown;
+  }
+
+  /** DialogV2 options */
+  interface DialogV2Options {
+    window?: { title?: string };
+    content: string;
+    rejectClose?: boolean;
+    buttons: DialogV2Button[];
+    render?: (event: Event, dialog: HTMLElement) => void;
+  }
+
+  /** DialogV2 API */
+  interface DialogV2API {
+    wait<T = unknown>(options: DialogV2Options): Promise<T | null>;
+    confirm(options: {
+      window?: { title?: string };
+      content: string;
+      rejectClose?: boolean;
+      yes?: { callback?: () => unknown };
+      no?: { callback?: () => unknown };
+    }): Promise<boolean>;
+    prompt<T = unknown>(options: {
+      window?: { title?: string };
+      content: string;
+      rejectClose?: boolean;
+      ok?: { label?: string; callback?: (event: Event, button: HTMLButtonElement, dialog: HTMLElement) => T };
+    }): Promise<T | null>;
+  }
+
+  /** TextEditor implementation interface */
+  interface TextEditorImplementation {
+    enrichHTML(content: string, options?: {
+      secrets?: boolean;
+      rollData?: Record<string, unknown>;
+      relativeTo?: Item | Actor;
+      async?: boolean;
+    }): Promise<string>;
+  }
+
   /** Foundry global namespace */
   const foundry: {
     utils: FoundryUtils;
+    applications: {
+      api: {
+        DialogV2: DialogV2API;
+      };
+      ux: {
+        TextEditor: {
+          implementation: TextEditorImplementation;
+        };
+      };
+      handlebars: {
+        renderTemplate(path: string, data: object): Promise<string>;
+      };
+    };
+    documents: {
+      BaseItem: {
+        DEFAULT_ICON: string;
+      };
+    };
   };
 
   /** i18n localization interface */
@@ -208,19 +271,17 @@ declare global {
 
   const Dialog: DialogConstructor;
 
-  /** Chat message types constant */
-  interface ChatMessageTypes {
+  /** Chat message styles constant (v13+, replaces CHAT_MESSAGE_TYPES) */
+  interface ChatMessageStyles {
     OTHER: number;
     OOC: number;
     IC: number;
     EMOTE: number;
-    WHISPER: number;
-    ROLL: number;
   }
 
   /** CONST global */
   const CONST: {
-    CHAT_MESSAGE_TYPES: ChatMessageTypes;
+    CHAT_MESSAGE_STYLES: ChatMessageStyles;
     TOKEN_DISPOSITIONS: {
       HOSTILE: number;
       NEUTRAL: number;
@@ -232,7 +293,7 @@ declare global {
   interface ChatMessageConstructor {
     create(data: {
       content: string;
-      type?: number;
+      style?: number;
       speaker?: {
         actor?: string;
         token?: string;
@@ -241,12 +302,14 @@ declare global {
       whisper?: string[];
       blind?: boolean;
     }): Promise<ChatMessage>;
+    getSpeaker(options?: { alias?: string; actor?: Actor; token?: Token }): { alias?: string; actor?: string; token?: string };
+    getWhisperRecipients(name: string): { id: string }[];
   }
 
   interface ChatMessage {
     id: string;
     content: string;
-    type: number;
+    style: number;
     speaker: {
       actor?: string;
       token?: string;
@@ -284,16 +347,6 @@ declare global {
   }
 
   const TextEditor: TextEditorGlobal;
-
-  /** foundry.documents namespace */
-  const foundry: {
-    utils: FoundryUtils;
-    documents: {
-      BaseItem: {
-        DEFAULT_ICON: string;
-      };
-    };
-  };
 
   /** Playbook reference */
   interface PlaybookReference {

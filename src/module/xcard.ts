@@ -137,7 +137,7 @@ async function notifyTableAnon() {
 	try {
 		await ChatMessage.create({
 			content,
-			type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+			type: CONST.CHAT_MESSAGE_STYLES.OTHER,
 			speaker: speakerAlias(XCARD_TITLE),
 		});
 	} catch (err) {
@@ -175,7 +175,7 @@ async function notifyGMAnon() {
 	try {
 		await ChatMessage.create({
 			content,
-			type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+			type: CONST.CHAT_MESSAGE_STYLES.OTHER,
 			whisper,
 			speaker: speakerAlias(XCARD_TITLE),
 		});
@@ -197,7 +197,7 @@ async function notifyGMDirect() {
 	try {
 		await ChatMessage.create({
 			content: buildDirectGMContent(),
-			type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+			type: CONST.CHAT_MESSAGE_STYLES.OTHER,
 			whisper,
 			// No `speaker` alias — let Foundry show the user normally (not anonymous).
 		});
@@ -273,7 +273,7 @@ function registerGMSocketHandler() {
 					if (!whisper.length) return;
 					await ChatMessage.create({
 						content,
-						type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+						type: CONST.CHAT_MESSAGE_STYLES.OTHER,
 						whisper,
 						speaker: speakerAlias(XCARD_TITLE),
 					});
@@ -281,7 +281,7 @@ function registerGMSocketHandler() {
 					// We no longer emit "table" via socket in default flow, but keep this for completeness.
 					await ChatMessage.create({
 						content,
-						type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+						type: CONST.CHAT_MESSAGE_STYLES.OTHER,
 						speaker: speakerAlias(XCARD_TITLE),
 					});
 				}

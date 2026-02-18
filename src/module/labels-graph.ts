@@ -1,7 +1,9 @@
-// module/labels-graph.mjs
+// module/labels-graph.ts
 // Labels Graph - Pentagon-shaped data visualization for Masks labels
 // Reusable component that can be used in turn cards, character sheets, etc.
 /* global foundry */
+
+import { LABEL_BOUNDS, CONDITION_TO_LABEL as CONDITION_TO_LABEL_IMPORT } from "./constants";
 
 /**
  * Configuration for the Labels Graph
@@ -15,11 +17,11 @@ const LABEL_ORDER = Object.freeze([
 ]);
 
 /**
- * Value range constants
+ * Value range constants - derived from centralized LABEL_BOUNDS
  * Labels can range from -3 to +4 (8 distinct values, 7 steps between them)
  */
-const MIN_VALUE = -3;
-const MAX_VALUE = 4;
+const MIN_VALUE = LABEL_BOUNDS.ROLL_MIN;
+const MAX_VALUE = LABEL_BOUNDS.ROLL_MAX;
 const VALUE_RANGE = MAX_VALUE - MIN_VALUE; // 7
 
 /**
@@ -45,24 +47,8 @@ const LABEL_ICONS = Object.freeze({
 	superior: { unicode: "\uf19d", class: "fa-graduation-cap", color: "#f39c12" }, // graduation-cap - gold
 });
 
-/**
- * Condition to Label mapping
- * Each condition applies -2 to a specific label
- */
-const CONDITION_TO_LABEL = Object.freeze({
-	// By condition index (from system.attributes.conditions.options)
-	0: "danger",   // Afraid: -2 Danger
-	1: "mundane",  // Angry: -2 Mundane
-	2: "superior", // Guilty: -2 Superior
-	3: "freak",    // Hopeless: -2 Freak
-	4: "savior",   // Insecure: -2 Savior
-	// By condition name (lowercase)
-	afraid: "danger",
-	angry: "mundane",
-	guilty: "superior",
-	hopeless: "freak",
-	insecure: "savior",
-});
+// Re-export CONDITION_TO_LABEL from constants for backward compatibility
+const CONDITION_TO_LABEL = CONDITION_TO_LABEL_IMPORT;
 
 /**
  * Color configuration

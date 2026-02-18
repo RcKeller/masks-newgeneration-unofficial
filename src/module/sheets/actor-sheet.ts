@@ -1,82 +1,14 @@
-/* global ChatMessage, CONST, Dialog, game, foundry, ui */
-import { createLabelsGraphData, LABEL_ORDER, saveGraphAnimationState, animateGraphFromSavedState } from "../labels-graph";
-import { NS } from "../constants";
+/* global game, foundry */
+import { createLabelsGraphData, saveGraphAnimationState, animateGraphFromSavedState } from "../labels-graph";
+import { NS, LABEL_BOUNDS, getLabelKeysForActor, getLabelPath, getLabelValue, SPECIAL_PLAYBOOKS, CONDITION_TO_LABEL } from "../constants";
 
 /**
- * Label configuration with icons and colors
+ * Min/max bounds for numeric values (Forward/Ongoing only - labels use LABEL_BOUNDS from constants)
  */
-const LABEL_CONFIG = Object.freeze({
-	danger: {
-		key: "danger",
-		icon: "fa-solid fa-hand-fist",
-		color: "danger",
-	},
-	freak: {
-		key: "freak",
-		icon: "fa-solid fa-hat-wizard",
-		color: "freak",
-	},
-	savior: {
-		key: "savior",
-		icon: "fa-solid fa-shield-heart",
-		color: "savior",
-	},
-	superior: {
-		key: "superior",
-		icon: "fa-solid fa-graduation-cap",
-		color: "superior",
-	},
-	mundane: {
-		key: "mundane",
-		icon: "fa-solid fa-hat-cowboy",
-		color: "mundane",
-	},
-});
-
-/**
- * Condition configuration with icons and affected labels
- * Indexed by condition storage index in PbtA system
- */
-const CONDITION_CONFIG = Object.freeze({
-	0: { key: "afraid", icon: "fa-solid fa-ghost", cssClass: "afraid", affectsLabel: "danger", tooltip: "-2 Danger", cleanLabel: "Afraid" },
-	1: { key: "angry", icon: "fa-solid fa-face-angry", cssClass: "angry", affectsLabel: "mundane", tooltip: "-2 Mundane", cleanLabel: "Angry" },
-	2: { key: "guilty", icon: "fa-solid fa-scale-unbalanced", cssClass: "guilty", affectsLabel: "superior", tooltip: "-2 Superior", cleanLabel: "Guilty" },
-	3: { key: "hopeless", icon: "fa-solid fa-heart-crack", cssClass: "hopeless", affectsLabel: "freak", tooltip: "-2 Freak", cleanLabel: "Hopeless" },
-	4: { key: "insecure", icon: "fa-solid fa-face-frown-open", cssClass: "insecure", affectsLabel: "savior", tooltip: "-2 Savior", cleanLabel: "Insecure" },
-});
-
-/**
- * Display order for conditions to match label order
- * Order: afraid (danger), hopeless (freak), insecure (savior), angry (mundane), guilty (superior)
- */
-const CONDITION_DISPLAY_ORDER = [0, 3, 4, 1, 2];
-
-/**
- * Min/max bounds for various numeric values
- */
-const BOUNDS = Object.freeze({
-	label: { min: -2, max: 3 },
+const MODIFIER_BOUNDS = Object.freeze({
 	forward: { min: -1, max: 8 },
 	ongoing: { min: -1, max: 8 },
 });
-
-/**
- * Cached i18n label names (populated on first use to avoid repeated lookups)
- */
-let _cachedLabelNames: Record<string, string> | null = null;
-
-/**
- * Get cached label display name (populates cache on first access)
- */
-function getCachedLabelName(key: string): string {
-	if (!_cachedLabelNames) {
-		_cachedLabelNames = {};
-		for (const k of LABEL_ORDER) {
-			_cachedLabelNames[k] = game.i18n.localize(`DISPATCH.CharacterSheets.stats.${k}`);
-		}
-	}
-	return _cachedLabelNames[key] ?? key;
-}
 
 export function MasksActorSheetMixin(Base) {
 	return class MasksActorSheet extends Base {
@@ -91,15 +23,9 @@ export function MasksActorSheetMixin(Base) {
 				width: 900,
 				height: 700,
 				classes: ["pbta", "sheet", "actor"],
-				tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".tab-content", initial: "info" }],
+				tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }],
 			});
 		}
-
-		/**
-		 * Track the currently active tab
-		 * @type {string}
-		 */
-		_activeTab = "info";
 
 		/**
 		 * Track scroll position for restoration
@@ -108,10 +34,10 @@ export function MasksActorSheetMixin(Base) {
 		_scrollTop = 0;
 
 		/**
-		 * Track the expanded power card ID for restoration after re-render
-		 * @type {string|null}
+		 * Cached label bar percentages for animation
+		 * @type {Map<string, {solidPercent: string, ghostWidth: string, ghostLeft: string, ghostClass: string}>}
 		 */
-		_expandedPowerCardId = null;
+		_labelBarCache: Map<string, {solidPercent: string, ghostWidth: string, ghostLeft: string, ghostClass: string}> = new Map();
 
 		/**
 		 * Cached labels graph data (regenerated only when values change)
@@ -190,13 +116,44 @@ export function MasksActorSheetMixin(Base) {
 			if (!context.equipment.PBTA_OTHER) context.equipment.PBTA_OTHER = [];
 			if (!context.moves.PBTA_OTHER) context.moves.PBTA_OTHER = [];
 
-			// Iterate through items WITHOUT enriching descriptions (the expensive part)
+			// Iterate through items and enrich descriptions (matching PbtA base pattern)
 			for (const item of context.items) {
 				item.img = item.img || foundry.documents.BaseItem.DEFAULT_ICON;
-				item.isExpanded = (this as any)._expanded?.has(item._id) ?? false;
 
-				// Mark for lazy enrichment instead of enriching now
-				item._needsEnrichment = !!item.system?.description;
+				// Get the source item document for proper enrichment context
+				const sourceItem = this.actor.items.get(item._id) ?? {};
+				const enrichmentOptions = {
+					secrets: this.actor.isOwner,
+					rollData: (sourceItem as any)?.getRollData?.() ?? {},
+					relativeTo: sourceItem,
+				};
+
+				// Enrich all item descriptions so @UUID links render as clickable
+				if (item.system?.description) {
+					item.system.description = await (foundry.applications.ux as any).TextEditor.implementation.enrichHTML(
+						item.system.description,
+						enrichmentOptions
+					);
+				}
+				// Also enrich choices and moveResults like PbtA base does
+				if (item.system?.choices) {
+					item.system.choices = await (foundry.applications.ux as any).TextEditor.implementation.enrichHTML(
+						item.system.choices,
+						enrichmentOptions
+					);
+				}
+				if (item.system?.moveResults) {
+					for (const [mK, mV] of Object.entries(item.system.moveResults)) {
+						if ((mV as any).value) {
+							item.system.moveResults[mK].value = await (foundry.applications.ux as any).TextEditor.implementation.enrichHTML(
+								(mV as any).value,
+								enrichmentOptions
+							);
+						}
+					}
+				}
+				// Track expanded state for accordion behavior
+				item.isExpanded = (this as any)._expanded?.has(item._id) ?? false;
 
 				if (item.type === moveType) {
 					const bucket = context.moves[item.system.moveType] ?? context.moves.PBTA_OTHER;
@@ -208,15 +165,34 @@ export function MasksActorSheetMixin(Base) {
 			}
 		}
 
+		/**
+		 * Label-specific icons for the Masks RPG stats
+		 */
+		static labelIcons = {
+			danger: "fa-solid fa-fire",
+			freak: "fa-solid fa-ghost",
+			savior: "fa-solid fa-shield",
+			superior: "fa-solid fa-hat-wizard",
+			mundane: "fa-solid fa-user",
+			soldier: "fa-solid fa-crosshairs",
+		};
+
+		/**
+		 * Core Masks labels in display order
+		 */
+		static coreLabels = ["danger", "freak", "savior", "superior", "mundane"];
+
 		/** @override */
 		async getData() {
 			const context = await super.getData();
 
-			// Pass the active tab to template
-			context.activeTab = this._activeTab;
-
-			// Only add v2 data for character sheets
+			// Only add custom data for character sheets
 			if (this.actor?.type === "character") {
+				// Prepare filtered labels (only core Masks stats + Soldier if applicable)
+				context.labels = this._prepareLabels();
+
+				// Add label icons for template (used by labels graph)
+				context.labelIcons = (this.constructor as typeof MasksActorSheet).labelIcons;
 				// Labels graph data (cached - only regenerate when values change)
 				const graphCacheKey = this._getLabelsGraphCacheKey();
 				if (this._labelsGraphCacheKey !== graphCacheKey || !this._cachedLabelsGraph) {
@@ -230,11 +206,16 @@ export function MasksActorSheetMixin(Base) {
 				}
 				context.labelsGraph = this._cachedLabelsGraph;
 
-				// Prepare label rows for the sidebar
-				context.labelRows = this._prepareLabelRows();
+				// Prepare potential (XP) steps as boolean array for radio button rendering
+				const xpValue = Number(this.actor.system.attributes?.xp?.value) || 0;
+				const xpMax = Number(this.actor.system.attributes?.xp?.max) || 5;
+				context.potentialSteps = [];
+				for (let i = 0; i < xpMax; i++) {
+					context.potentialSteps.push(i < xpValue);
+				}
 
-				// Prepare condition tags
-				context.conditionTags = this._prepareConditionTags();
+				// Prepare condition rows with icons and color coding
+				context.conditionRows = this._prepareConditionRows();
 
 				// Prepare playbook-specific attributes split between sidebar and playbook tab
 				// Sidebar: Clock and Number types (e.g., Doom Track, Soldier's Fight)
@@ -243,122 +224,178 @@ export function MasksActorSheetMixin(Base) {
 				context.playbookSidebarAttrs = sidebarAttrs;
 				context.playbookAttributes = tabAttrs;
 
-				// Prepare potential pips (1-based for correct display and click handling)
-				const xpValue = Number(this.actor.system.attributes?.xp?.value) || 0;
-				context.potentialPips = [1, 2, 3, 4, 5].map((v) => ({
-					value: v,
-					filled: v <= xpValue,
-				}));
+				// Forward/Ongoing active states (active when value is not 0)
+				const forwardValue = Number(this.actor.system.resources?.forward?.value) || 0;
+				const ongoingValue = Number(this.actor.system.resources?.ongoing?.value) || 0;
+				context.forwardActive = forwardValue !== 0;
+				context.ongoingActive = ongoingValue !== 0;
+				context.forwardBounds = MODIFIER_BOUNDS.forward;
+				context.ongoingBounds = MODIFIER_BOUNDS.ongoing;
+			}
 
-				// Pass expanded power card ID to template for pre-checked rendering (prevents flash on re-render)
-				context.expandedPowerCardId = this._expandedPowerCardId;
+			// Prepare NPC condition rows in correct order: Afraid, Hopeless, Insecure, Guilty, Angry
+			if (this.actor?.type === "npc") {
+				context.npcConditionRows = this._prepareNpcConditionRows();
 			}
 
 			return context;
 		}
 
 		/**
-		 * Prepare label data for template rendering
-		 * Normal label range: -2 to +3 (via shifts)
-		 * Roll modifier caps: -3 to +4
-		 * @returns {Object} Label rows keyed by label name
+		 * Prepare filtered stats list showing only core Masks labels (+ Soldier for that playbook)
+		 * @returns {Array} Array of stat objects with computed properties for bar visualization
 		 */
-		_prepareLabelRows() {
+		_prepareLabels() {
 			const stats = this.actor.system.stats ?? {};
-			const lockedLabels = this.actor.getFlag(NS, "lockedLabels") ?? {};
-			const rows = {};
+			const labelIcons = (this.constructor as typeof MasksActorSheet).labelIcons;
+			const labelKeys = getLabelKeysForActor(this.actor);
 
-			for (const key of LABEL_ORDER) {
-				const config = LABEL_CONFIG[key];
-				const value = Number(stats[key]?.value) || 0;
-				const displayName = stats[key]?.label ?? getCachedLabelName(key);
+			// Get global bonus from Forward + Ongoing
+			const forward = Number(this.actor.system.resources?.forward?.value) || 0;
+			const ongoing = Number(this.actor.system.resources?.ongoing?.value) || 0;
+			const globalBonus = forward + ongoing;
 
-				rows[key] = {
+			// Determine which labels are affected by conditions
+			const conditions = this.actor.system.attributes?.conditions?.options ?? {};
+			const affectedLabels = new Set<string>();
+			for (const [idx, opt] of Object.entries(conditions)) {
+				if ((opt as any)?.value === true) {
+					const label = CONDITION_TO_LABEL[idx as keyof typeof CONDITION_TO_LABEL];
+					if (label) affectedLabels.add(label);
+				}
+			}
+
+			// Helper to convert value to percentage
+			const valueToPercent = (v: number) => Math.max(0, Math.min(100,
+				((v - LABEL_BOUNDS.ROLL_MIN) / (LABEL_BOUNDS.ROLL_MAX - LABEL_BOUNDS.ROLL_MIN)) * 100
+			));
+
+			const labels = [];
+
+			for (const key of labelKeys) {
+				// Get base value from actor data
+				const baseValue = getLabelValue(this.actor, key);
+
+				// Calculate penalty and effective value
+				const hasCondition = affectedLabels.has(key);
+				const penalty = hasCondition ? 2 : 0;
+				const effectiveValue = Math.max(LABEL_BOUNDS.ROLL_MIN, Math.min(LABEL_BOUNDS.ROLL_MAX,
+					baseValue - penalty + globalBonus
+				));
+
+				// Get locked status (Soldier label doesn't have a lock)
+				const locked = key === "soldier" ? false : !!(stats[key]?.locked);
+
+				// Get display label
+				let displayLabel: string;
+				if (key === "soldier") {
+					const soldierAttr = this.actor.system.attributes?.theSoldier;
+					displayLabel = soldierAttr?.label ?? "Soldier";
+				} else {
+					displayLabel = stats[key]?.label ?? key.charAt(0).toUpperCase() + key.slice(1);
+				}
+
+				// Calculate bar percentages
+				const basePercent = valueToPercent(baseValue);
+				const effectivePercent = valueToPercent(effectiveValue);
+
+				// Determine if there's a net bonus or penalty affecting the display
+				const netModifier = globalBonus - penalty;
+				const hasBonus = netModifier > 0;
+				const hasPenalty = netModifier < 0;
+
+				// Calculate bar values for visualization:
+				// - Solid bar: ALWAYS shows the base stat value (what the character "owns")
+				// - Ghost bar: shows the modifier effect
+				//   - Bonus: extends beyond solid bar (starts at base, goes to effective)
+				//   - Penalty: overlays end of solid bar (starts at effective, goes to base)
+				const solidPercent = basePercent;
+				const ghostWidth = Math.abs(effectivePercent - basePercent);
+				const ghostLeft = Math.min(basePercent, effectivePercent);
+
+				labels.push({
 					key,
-					value,
-					displayName,
+					label: displayLabel,
+					value: baseValue,
+					effectiveValue,
+					locked,
+					icon: labelIcons[key] ?? "fa-solid fa-tag",
+					path: getLabelPath(key),
+					min: LABEL_BOUNDS.ROLL_MIN,
+					max: LABEL_BOUNDS.ROLL_MAX,
+					atMin: baseValue <= LABEL_BOUNDS.ROLL_MIN,
+					atMax: baseValue >= LABEL_BOUNDS.ROLL_MAX,
+					canShiftUp: !locked && baseValue < LABEL_BOUNDS.SHIFT_MAX,
+					canShiftDown: !locked && baseValue > LABEL_BOUNDS.SHIFT_MIN,
+					// Bar visualization (base values for reference)
+					barPercent: basePercent,
+					effectivePercent,
+					// Computed values for smooth animation
+					solidPercent,
+					ghostWidth,
+					ghostLeft,
+					hasBonus,
+					hasPenalty,
+					netModifier,
+				});
+			}
+
+			return labels;
+		}
+
+		/**
+		 * Prepare condition rows with icons and proper keys for color coding
+		 * @returns {Array} Array of condition objects with key, label, icon, value, idx
+		 */
+		_prepareConditionRows() {
+			const conditions = this.actor.system.attributes?.conditions?.options ?? {};
+			// Map data indices to condition config
+			const conditionConfig = {
+				0: { key: "afraid", icon: "fa-solid fa-ghost", label: "Afraid" },
+				1: { key: "angry", icon: "fa-solid fa-face-angry", label: "Angry" },
+				2: { key: "guilty", icon: "fa-solid fa-scale-unbalanced", label: "Guilty" },
+				3: { key: "hopeless", icon: "fa-solid fa-heart-crack", label: "Hopeless" },
+				4: { key: "insecure", icon: "fa-solid fa-face-frown-open", label: "Insecure" },
+			};
+			// Display order: Afraid, Hopeless, Insecure, Guilty, Angry
+			const displayOrder = [0, 3, 4, 2, 1];
+
+			const rows = [];
+			for (const idx of displayOrder) {
+				const config = conditionConfig[idx];
+				const cond = conditions[idx];
+				if (!cond) continue;
+				rows.push({
+					idx: idx,
+					key: config.key,
 					icon: config.icon,
-					color: config.color,
-					isLocked: !!lockedLabels[key],
-					atMin: value <= BOUNDS.label.min,
-					atMax: value >= BOUNDS.label.max,
-				};
+					label: cond.label || config.label,
+					value: !!cond.value,
+				});
 			}
-
-			// Add Soldier stat as 6th label for The Soldier playbook
-			const playbook = this.actor.system.playbook?.name ?? "";
-			if (playbook === "The Soldier") {
-				const soldierAttr = this.actor.system.attributes?.theSoldier;
-				if (soldierAttr) {
-					const value = Number(soldierAttr.value) || 0;
-					rows.soldier = {
-						key: "soldier",
-						value,
-						displayName: soldierAttr.label ?? "Soldier",
-						icon: "fa-solid fa-crosshairs",
-						color: "soldier",
-						isLocked: !!lockedLabels.soldier,
-						atMin: value <= BOUNDS.label.min,
-						atMax: value >= BOUNDS.label.max,
-						isPlaybookLabel: true, // Mark as playbook-specific label
-						attrPath: "system.attributes.theSoldier.value", // Different path than stats
-					};
-				}
-			}
-
-			// Add Nomad's "Putting Down Roots" as a 6th label - ALWAYS LOCKED
-			// The value is dynamically calculated from influence count and cannot be edited
-			if (playbook === "The Nomad") {
-				const nomadAttr = this.actor.system.attributes?.theNomad;
-				if (nomadAttr) {
-					const value = Number(nomadAttr.value) || 0;
-					rows.nomad = {
-						key: "nomad",
-						value,
-						displayName: nomadAttr.label ?? "Roots",
-						icon: "fa-solid fa-street-view",
-						color: "nomad",
-						isLocked: true, // ALWAYS locked - value is derived from influence count
-						atMin: value <= 0,
-						atMax: value >= 6,
-						isPlaybookLabel: true,
-						isReadOnly: true, // Special flag to indicate this is derived/read-only
-						attrPath: "system.attributes.theNomad.value",
-					};
-				}
-			}
-
 			return rows;
 		}
 
 		/**
-		 * Prepare condition tags for template rendering
-		 * Returns an array in display order (matching label order)
-		 * @returns {Array} Condition tags in display order
+		 * Prepare NPC condition rows in correct display order
+		 * @returns {Array} Array of condition objects with idx, label, value
 		 */
-		_prepareConditionTags() {
+		_prepareNpcConditionRows() {
 			const conditions = this.actor.system.attributes?.conditions?.options ?? {};
-			const tags = [];
+			// Display order: Afraid, Hopeless, Insecure, Guilty, Angry (indices 0, 3, 4, 2, 1)
+			const displayOrder = [0, 3, 4, 2, 1];
 
-			// Use display order to match label order: afraid, hopeless, insecure, angry, guilty
-			for (const idx of CONDITION_DISPLAY_ORDER) {
-				const opt = conditions[idx];
-				const config = CONDITION_CONFIG[idx];
-				if (!config || !opt) continue;
-
-				tags.push({
-					idx,
-					key: config.key,
-					label: config.cleanLabel,
-					icon: config.icon,
-					cssClass: config.cssClass,
-					value: !!opt.value,
-					tooltip: config.tooltip,
-					affectsLabel: config.affectsLabel,
+			const rows = [];
+			for (const idx of displayOrder) {
+				const cond = conditions[idx];
+				if (!cond) continue;
+				rows.push({
+					idx: idx,
+					label: cond.label,
+					value: !!cond.value,
 				});
 			}
-
-			return tags;
+			return rows;
 		}
 
 		/**
@@ -455,75 +492,107 @@ export function MasksActorSheetMixin(Base) {
 
 		/** @override */
 		async _render(force = false, options = {}) {
-			// Batch pre-render state preservation (single element reference)
+			// Save animation state before re-render
 			const el = this.element?.[0];
 			if (el) {
-				const tabContent = el.querySelector(".tab-content");
-				const activeTabBtn = el.querySelector(".tab-btn.active");
-				const expandedRadio = el.querySelector(".power-card__radio:checked");
-				const graphContainer = el.querySelector(".labels-graph-clickable");
+				const sheetBody = el.querySelector(".sheet-body");
+				const graphContainer = el.querySelector(".labels-graph");
 
-				if (tabContent) this._scrollTop = (tabContent as HTMLElement).scrollTop;
-				if (activeTabBtn?.dataset.tab) this._activeTab = activeTabBtn.dataset.tab;
-				this._expandedPowerCardId = expandedRadio?.id?.replace("power-", "") ?? null;
+				if (sheetBody) this._scrollTop = (sheetBody as HTMLElement).scrollTop;
 				if (graphContainer && this.actor?.id) {
 					saveGraphAnimationState(`actor-${this.actor.id}`, graphContainer as HTMLElement);
 				}
+
+				// Save label bar states for animation from actual DOM elements
+				const labelRows = el.querySelectorAll(".label-row");
+				this._labelBarCache.clear();
+				labelRows.forEach((row: Element) => {
+					const stat = (row as HTMLElement).dataset.stat;
+					if (stat) {
+						const solidBar = row.querySelector(".label-bar-solid") as HTMLElement;
+						const ghostBar = row.querySelector(".label-bar-ghost") as HTMLElement;
+						// Capture ghost class for animation when removing bonus/penalty
+						const ghostClass = ghostBar?.classList.contains("bonus") ? "bonus" :
+							ghostBar?.classList.contains("penalty") ? "penalty" : "";
+						this._labelBarCache.set(stat, {
+							solidPercent: solidBar?.style.width || "50%",
+							ghostWidth: ghostBar?.style.width || "0%",
+							ghostLeft: ghostBar?.style.left || "50%",
+							ghostClass,
+						});
+					}
+				});
 			}
 
 			await super._render(force, options);
 
-			// Batch post-render restoration (single element reference)
+			// Restore state and animate after re-render
 			const newEl = this.element?.[0];
 			if (newEl) {
-				const newTabContent = newEl.querySelector(".tab-content");
-				if (newTabContent && this._scrollTop > 0) {
-					(newTabContent as HTMLElement).scrollTop = this._scrollTop;
+				const newSheetBody = newEl.querySelector(".sheet-body");
+				if (newSheetBody && this._scrollTop > 0) {
+					(newSheetBody as HTMLElement).scrollTop = this._scrollTop;
 				}
 
-				this._restoreActiveTab();
-				this._restoreExpandedPowerCard();
-
-				const newGraphContainer = newEl.querySelector(".labels-graph-clickable");
+				const newGraphContainer = newEl.querySelector(".labels-graph");
 				if (newGraphContainer && this.actor?.id) {
 					animateGraphFromSavedState(`actor-${this.actor.id}`, newGraphContainer as HTMLElement);
 				}
-			}
-		}
 
-		/**
-		 * Restore the active tab after re-render
-		 */
-		_restoreActiveTab() {
-			const html = this.element;
-			if (!html?.length) return;
+				// Animate label bars from old to new values
+				if (this._labelBarCache.size > 0) {
+					const newLabelRows = newEl.querySelectorAll(".label-row");
+					newLabelRows.forEach((row: Element) => {
+						const stat = (row as HTMLElement).dataset.stat;
+						const cached = stat ? this._labelBarCache.get(stat) : null;
+						if (!cached) return;
 
-			const form = html[0];
-			const tabBtn = form.querySelector(`.tab-btn[data-tab="${this._activeTab}"]`);
-			if (!tabBtn) return;
+						const solidBar = row.querySelector(".label-bar-solid") as HTMLElement;
+						const ghostBar = row.querySelector(".label-bar-ghost") as HTMLElement;
+						if (!solidBar || !ghostBar) return;
 
-			// Update tab buttons
-			form.querySelectorAll(".tab-btn").forEach((t) => t.classList.remove("active"));
-			tabBtn.classList.add("active");
+						// Read new values from inline styles
+						const newSolidPercent = solidBar.style.width || "50%";
+						const newGhostWidth = ghostBar.style.width || "0%";
+						const newGhostLeft = ghostBar.style.left || "50%";
 
-			// Update tab content
-			form.querySelectorAll(".tab-content > .tab").forEach((t) => {
-				t.classList.toggle("active", t.dataset.tab === this._activeTab);
-			});
-		}
+						// Skip if no change
+						if (cached.solidPercent === newSolidPercent &&
+							cached.ghostWidth === newGhostWidth &&
+							cached.ghostLeft === newGhostLeft) return;
 
-		/**
-		 * Restore the expanded power card after re-render
-		 */
-		_restoreExpandedPowerCard() {
-			if (!this._expandedPowerCardId) return;
+						// If ghost bar had a class but now doesn't, temporarily restore it for visible animation
+						const needsTempClass = cached.ghostClass && !ghostBar.classList.contains("bonus") && !ghostBar.classList.contains("penalty");
+						if (needsTempClass) {
+							ghostBar.classList.add(cached.ghostClass);
+						}
 
-			const html = this.element;
-			if (!html?.length) return;
+						// Disable transitions, set old values
+						solidBar.style.transition = "none";
+						ghostBar.style.transition = "none";
+						solidBar.style.width = cached.solidPercent;
+						ghostBar.style.width = cached.ghostWidth;
+						ghostBar.style.left = cached.ghostLeft;
 
-			const radio = html[0].querySelector(`#power-${this._expandedPowerCardId}`);
-			if (radio) {
-				radio.checked = true;
+						// Double-RAF: wait for paint, then animate to new values
+						requestAnimationFrame(() => {
+							requestAnimationFrame(() => {
+								solidBar.style.transition = "";
+								ghostBar.style.transition = "";
+								solidBar.style.width = newSolidPercent;
+								ghostBar.style.width = newGhostWidth;
+								ghostBar.style.left = newGhostLeft;
+
+								// Remove temp class after animation completes
+								if (needsTempClass) {
+									setTimeout(() => {
+										ghostBar.classList.remove(cached.ghostClass);
+									}, 400); // Match transition duration
+								}
+							});
+						});
+					});
+				}
 			}
 		}
 
@@ -531,195 +600,94 @@ export function MasksActorSheetMixin(Base) {
 		activateListeners(html) {
 			super.activateListeners(html);
 
-			// Only add v2 listeners for character sheets
+			// Only add custom listeners for character sheets
 			if (this.actor?.type !== "character") return;
 
-			// Condition tag toggle
-			html.on("click", ".condition-tag", this._onConditionToggle.bind(this));
-
-			// Label controls
-			html.on("click", ".label-increment", this._onLabelIncrement.bind(this));
-			html.on("click", ".label-decrement", this._onLabelDecrement.bind(this));
-			html.on("click", ".label-lock", this._onLabelLock.bind(this));
-
 			// Labels graph click -> shift labels modal
-			html.on("click", ".labels-graph-clickable", this._onShiftLabelsClick.bind(this));
+			html.on("click", "[data-action='shift-labels']", this._onShiftLabelsClick.bind(this));
 
-			// Potential pips
-			html.on("click", ".potential-pip", this._onPotentialClick.bind(this));
+			// Label row click -> shift labels modal with prepopulated label
+			html.on("click", "[data-action='shift-label']", this._onShiftLabelClick.bind(this));
 
-			// Clock pips (sidebar playbook attributes like Doom Track)
+			// Label rollable icon click -> roll 2d6 + label modifier
+			html.on("click", "[data-action='roll-stat']", this._onRollStat.bind(this));
+
+			// Stat lock toggle
+			html.on("click", "[data-action='toggle-stat-lock']", this._onStatLockToggle.bind(this));
+
+			// Resource/Modifier buttons (Forward/Ongoing/Playbook attrs)
+			html.on("click", ".mod-btn[data-action]", this._onModifierClick.bind(this));
+
+			// Forward/Ongoing toggle (click name to toggle between 0 and 1)
+			html.on("click", "[data-action='toggle-forward']", this._onForwardToggle.bind(this));
+			html.on("click", "[data-action='toggle-ongoing']", this._onOngoingToggle.bind(this));
+
+			// Forward/Ongoing share to chat (click icon)
+			html.on("click", "[data-action='share-forward']", this._onShareForward.bind(this));
+			html.on("click", "[data-action='share-ongoing']", this._onShareOngoing.bind(this));
+
+			// Potential (XP) radio pips
+			html.on("click", ".potential-pip", this._onXpPipClick.bind(this));
+
+			// Playbook clock radio pips (e.g., Doom Track)
 			html.on("click", ".clock-pip", this._onClockPipClick.bind(this));
-
-			// Modifier buttons (Forward/Ongoing)
-			html.on("click", ".modifier-btn", this._onModifierClick.bind(this));
-
-			// Playbook attribute steppers (both old .attr-btn and new .tracker-btn)
-			html.on("click", ".tracker-btn, .attr-btn", this._onAttrStepperClick.bind(this));
-
-			// Move group collapse
-			html.on("click", ".moves-group-header", this._onMoveGroupCollapse.bind(this));
-
-			// Move actions
-			html.on("click", ".move-icon", this._onMoveIconClick.bind(this));
-			html.on("click", ".move-share", this._onMoveShare.bind(this));
-			html.on("click", ".move-roll", this._onMoveRoll.bind(this));
-			html.on("click", ".move-edit", this._onMoveEdit.bind(this));
-			html.on("click", ".move-delete", this._onMoveDelete.bind(this));
-
-			// Move header click to expand description
-			html.on("click", ".move-header .move-name", this._onMoveHeaderClick.bind(this));
-
-			// Add move button
-			html.on("click", ".moves-add-btn", this._onAddMove.bind(this));
 
 			// Influence controls
 			html.on("click", "[data-action='create-influence']", this._onInfluenceCreate.bind(this));
 			html.on("click", "[data-action='toggle-influence']", this._onInfluenceToggle.bind(this));
 			html.on("click", "[data-action='toggle-influence-lock']", this._onInfluenceLock.bind(this));
 			html.on("click", "[data-action='delete-influence']", this._onInfluenceDelete.bind(this));
-			html.on("change", ".influence-name-input", this._onInfluenceNameChange.bind(this));
+			html.on("change", ".influence--name", this._onInfluenceNameChange.bind(this));
 
-			// Playbook link
-			html.on("click", ".playbook-link", this._onPlaybookLink.bind(this));
-
-			// NOTE: Playbook select uses class="charplaybook" and is handled by PbtA's base sheet
-			// Do NOT add a custom handler - PbtA handles playbook changes including choices/grants
-
-			// Tab handling
-			html.on("click", ".tab-btn", this._onTabClick.bind(this));
-
-			// Power card actions (new accordion style)
-			html.on("click", ".power-card__icon", this._onMoveIconClick.bind(this));
-			html.on("click", ".power-card__action[data-action='share-move']", this._onMoveShare.bind(this));
-			html.on("click", ".power-card__action[data-action='edit-item']", this._onMoveEdit.bind(this));
-			html.on("click", ".power-card__action[data-action='delete-item']", this._onMoveDelete.bind(this));
-
-			// Power card header click - allow re-toggle to collapse (radio buttons don't naturally toggle off)
-			html.on("click", ".power-card__header", this._onPowerCardHeaderClick.bind(this));
-
-			// Power card expand - lazy-enrich description when card is opened
-			html.on("change", ".power-card__radio", this._onPowerCardExpand.bind(this));
-
-			// Powers section add button
-			html.on("click", ".powers-section__add", this._onAddMove.bind(this));
-
-			// Power card drag - creates compendium link when dragged to chat
-			html.on("dragstart", ".power-card", this._onPowerCardDragStart.bind(this));
+			// View playbook
+			html.on("click", ".view-playbook", this._onPlaybookLink.bind(this));
 		}
 
 		/**
-		 * Handle condition tag toggle
+		 * Handle XP/Potential pip click - fills up to clicked pip or reduces if clicking highest filled
 		 */
-		async _onConditionToggle(event) {
-			event.preventDefault();
-			const btn = event.currentTarget;
-			const conditionKey = btn.dataset.conditionKey;
-			if (!conditionKey) return;
-
-			const path = `system.attributes.conditions.options.${conditionKey}.value`;
-			const current = foundry.utils.getProperty(this.actor, path);
-			await this.actor.update({ [path]: !current });
-		}
-
-		/**
-		 * Handle label increment
-		 * Normal label range: -2 to +3 (via shifts)
-		 */
-		async _onLabelIncrement(event) {
+		async _onXpPipClick(event) {
 			event.preventDefault();
 			event.stopPropagation();
-			const btn = event.currentTarget;
-			const label = btn.dataset.label;
-			if (!label) return;
+			const pip = event.currentTarget;
+			const stepIndex = Number(pip.dataset.step);
+			if (isNaN(stepIndex)) return;
 
-			// Check if label is locked
-			const lockedLabels = this.actor.getFlag(NS, "lockedLabels") ?? {};
-			if (lockedLabels[label]) return;
+			const current = Number(this.actor.system.attributes?.xp?.value) || 0;
+			const clickedValue = stepIndex + 1; // steps are 0-indexed, value is 1-indexed
 
-			// Handle soldier label differently (uses attributes path)
-			const path = label === "soldier"
-				? "system.attributes.theSoldier.value"
-				: `system.stats.${label}.value`;
-			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
+			// If clicking on the currently filled max pip, reduce by one
+			// Otherwise, set to the clicked value
+			const newValue = (clickedValue === current) ? current - 1 : clickedValue;
+			const clamped = Math.max(0, Math.min(5, newValue));
 
-			if (current >= BOUNDS.label.max) return;
-
-			// Trigger shift-up animation
-			this._animateLabelShift(label, "up");
-
-			await this.actor.update({ [path]: current + 1 });
+			await this.actor.update({ "system.attributes.xp.value": clamped });
 		}
 
 		/**
-		 * Handle label decrement
-		 * Normal label range: -2 to +3 (via shifts)
+		 * Handle playbook clock pip click (e.g., Doom Track)
 		 */
-		async _onLabelDecrement(event) {
+		async _onClockPipClick(event) {
 			event.preventDefault();
 			event.stopPropagation();
-			const btn = event.currentTarget;
-			const label = btn.dataset.label;
-			if (!label) return;
+			const pip = event.currentTarget;
+			const attrName = pip.dataset.name;
+			const stepIndex = Number(pip.dataset.step);
+			if (!attrName || isNaN(stepIndex)) return;
 
-			// Check if label is locked
-			const lockedLabels = this.actor.getFlag(NS, "lockedLabels") ?? {};
-			if (lockedLabels[label]) return;
+			// Extract the attribute key from the name (e.g., "system.attributes.doom" -> "doom")
+			const keyMatch = attrName.match(/system\.attributes\.(\w+)/);
+			if (!keyMatch) return;
+			const attrKey = keyMatch[1];
 
-			// Handle soldier label differently (uses attributes path)
-			const path = label === "soldier"
-				? "system.attributes.theSoldier.value"
-				: `system.stats.${label}.value`;
-			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
+			const current = Number(this.actor.system.attributes?.[attrKey]?.value) || 0;
+			const clickedValue = stepIndex + 1;
 
-			if (current <= BOUNDS.label.min) return;
+			// If clicking on the currently filled max pip, reduce by one
+			const newValue = (clickedValue === current) ? current - 1 : clickedValue;
+			const clamped = Math.max(0, newValue);
 
-			// Trigger shift-down animation
-			this._animateLabelShift(label, "down");
-
-			await this.actor.update({ [path]: current - 1 });
-		}
-
-		/**
-		 * Animate label value shift
-		 * @param {string} label - The label key
-		 * @param {string} direction - "up" or "down"
-		 */
-		_animateLabelShift(label, direction) {
-			const labelRow = this.element?.[0]?.querySelector(`.label-row.label--${label}`);
-			if (!labelRow) return;
-
-			const valueInput = labelRow.querySelector(".label-value");
-			if (!valueInput) return;
-
-			// Remove any existing animation class
-			valueInput.classList.remove("shifting-up", "shifting-down");
-
-			// Force reflow to restart animation
-			void valueInput.offsetWidth;
-
-			// Add the animation class
-			valueInput.classList.add(`shifting-${direction}`);
-
-			// Remove class after animation completes
-			setTimeout(() => {
-				valueInput.classList.remove(`shifting-${direction}`);
-			}, 300);
-		}
-
-		/**
-		 * Handle label lock toggle
-		 */
-		async _onLabelLock(event) {
-			event.preventDefault();
-			event.stopPropagation();
-			const btn = event.currentTarget;
-			const label = btn.dataset.label;
-			if (!label) return;
-
-			const lockedLabels = this.actor.getFlag(NS, "lockedLabels") ?? {};
-			const newLocked = { ...lockedLabels, [label]: !lockedLabels[label] };
-			await this.actor.setFlag(NS, "lockedLabels", newLocked);
+			await this.actor.update({ [`system.attributes.${attrKey}.value`]: clamped });
 		}
 
 		/**
@@ -727,8 +695,6 @@ export function MasksActorSheetMixin(Base) {
 		 */
 		async _onShiftLabelsClick(event) {
 			event.preventDefault();
-			// Import and use the shift labels modal from turn-cards
-			// For now, show a simple dialog
 			const { promptShiftLabels, applyShiftLabels } = await import("../helpers/shift-labels");
 			const result = await promptShiftLabels(this.actor, `Shift Labels: ${this.actor.name}`);
 			if (result) {
@@ -737,48 +703,148 @@ export function MasksActorSheetMixin(Base) {
 		}
 
 		/**
-		 * Handle potential pip click
+		 * Handle click on a label row to open shift labels modal with that label prepopulated
+		 * The entire row is clickable, but skip if clicking on interactive child elements
 		 */
-		async _onPotentialClick(event) {
+		async _onShiftLabelClick(event) {
+			const target = event.target as HTMLElement;
+
+			// Skip if clicking on interactive child elements (they have their own handlers)
+			if (
+				target.closest("[data-action='roll-stat']") ||
+				target.closest("[data-action='toggle-stat-lock']") ||
+				target.tagName === "INPUT"
+			) {
+				return;
+			}
+
 			event.preventDefault();
-			const pip = event.currentTarget;
-			const pipValue = Number(pip.dataset.pip);
-			if (isNaN(pipValue)) return;
+			event.stopPropagation();
 
-			const current = Number(this.actor.system.attributes?.xp?.value) || 0;
-			// If clicking on the current value, decrease; otherwise set to clicked value
-			const newValue = pipValue === current ? current - 1 : pipValue;
-			const clamped = Math.max(0, Math.min(5, newValue));
+			const el = event.currentTarget as HTMLElement;
+			const statKey = el.dataset.stat;
+			if (!statKey) return;
 
-			await this.actor.update({ "system.attributes.xp.value": clamped });
+			// Use actor data instead of DOM classes
+			const labels = this._prepareLabels();
+			const label = labels.find((l) => l.key === statKey);
+
+			// Don't allow shifting if locked or cannot shift up
+			if (!label || label.locked || !label.canShiftUp) {
+				return;
+			}
+
+			const { promptShiftLabels, applyShiftLabels } = await import("../helpers/shift-labels");
+			const result = await promptShiftLabels(this.actor, `Shift Labels: ${this.actor.name}`, statKey);
+			if (result) {
+				await applyShiftLabels(this.actor, result.up, result.down);
+			}
 		}
 
 		/**
-		 * Handle clock pip click (for playbook attributes like Doom Track)
-		 * Works like potential pips - click to fill up to that pip, click current to decrease
+		 * Handle stat lock toggle
 		 */
-		async _onClockPipClick(event) {
+		async _onStatLockToggle(event) {
 			event.preventDefault();
-			const pip = event.currentTarget;
-			const pipValue = Number(pip.dataset.pip);
-			const attrKey = pip.dataset.attr;
-			if (isNaN(pipValue) || !attrKey) return;
+			event.stopPropagation();
+			const el = event.currentTarget;
+			const statKey = el.dataset.stat;
+			if (!statKey) return;
 
-			const path = `system.attributes.${attrKey}.value`;
-			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
-			// If clicking on the current value, decrease; otherwise set to clicked value
-			const newValue = pipValue === current ? current - 1 : pipValue;
-			const clamped = Math.max(0, newValue);
-
-			await this.actor.update({ [path]: clamped });
+			const currentLocked = this.actor.system.stats?.[statKey]?.locked ?? false;
+			await this.actor.update({ [`system.stats.${statKey}.locked`]: !currentLocked });
 		}
 
 		/**
-		 * Handle modifier button click (Forward/Ongoing)
-		 * Forward and Ongoing are bounded: -1 to 8
+		 * Handle roll stat click - roll 2d6 + modifier
+		 */
+		async _onRollStat(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			const el = event.currentTarget;
+			const mod = parseInt(el.dataset.mod ?? "0", 10);
+			const label = el.dataset.label ?? "Stat";
+
+			const roll = new Roll("2d6 + @mod", { mod });
+			await roll.evaluate();
+			await roll.toMessage({
+				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+				flavor: `<strong>${this.actor.name}</strong> rolls ${label}`,
+			});
+		}
+
+		/**
+		 * Handle Forward toggle - click to toggle between 0 and 1
+		 * Active when value !== 0, clicking toggles: 0 -> 1, non-zero -> 0
+		 */
+		async _onForwardToggle(event) {
+			const target = event.target as HTMLElement;
+			// Skip if clicking on the share icon or input field
+			if (target.closest("[data-action='share-forward']") || target.tagName === "INPUT") {
+				return;
+			}
+			event.preventDefault();
+			const current = Number(this.actor.system.resources?.forward?.value ?? 0);
+			const newValue = current === 0 ? 1 : 0;
+			await this.actor.update({ "system.resources.forward.value": newValue });
+		}
+
+		/**
+		 * Handle Ongoing toggle - click to toggle between 0 and 1
+		 * Active when value !== 0, clicking toggles: 0 -> 1, non-zero -> 0
+		 */
+		async _onOngoingToggle(event) {
+			const target = event.target as HTMLElement;
+			// Skip if clicking on the share icon or input field
+			if (target.closest("[data-action='share-ongoing']") || target.tagName === "INPUT") {
+				return;
+			}
+			event.preventDefault();
+			const current = Number(this.actor.system.resources?.ongoing?.value ?? 0);
+			const newValue = current === 0 ? 1 : 0;
+			await this.actor.update({ "system.resources.ongoing.value": newValue });
+		}
+
+		/**
+		 * Share Forward status to chat
+		 */
+		async _onShareForward(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			const value = Number(this.actor.system.resources?.forward?.value) || 0;
+			const label = game.i18n.localize("PBTA.Forward");
+			await ChatMessage.create({
+				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+				content: `<div class="pbta chat-card">
+					<h3>${this.actor.name}</h3>
+					<p><strong>${label}:</strong> ${value >= 0 ? "+" : ""}${value}</p>
+				</div>`,
+			});
+		}
+
+		/**
+		 * Share Ongoing status to chat
+		 */
+		async _onShareOngoing(event) {
+			event.preventDefault();
+			event.stopPropagation();
+			const value = Number(this.actor.system.resources?.ongoing?.value) || 0;
+			const label = game.i18n.localize("PBTA.Ongoing");
+			await ChatMessage.create({
+				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+				content: `<div class="pbta chat-card">
+					<h3>${this.actor.name}</h3>
+					<p><strong>${label}:</strong> ${value >= 0 ? "+" : ""}${value}</p>
+				</div>`,
+			});
+		}
+
+		/**
+		 * Handle resource button click (Forward/Ongoing/Advances)
 		 */
 		async _onModifierClick(event) {
 			event.preventDefault();
+			event.stopPropagation();
 			const btn = event.currentTarget;
 			const action = btn.dataset.action;
 			const attr = btn.dataset.attr;
@@ -792,9 +858,11 @@ export function MasksActorSheetMixin(Base) {
 			// Determine bounds based on attribute type
 			let bounds = { min: -Infinity, max: Infinity };
 			if (attr.includes("forward")) {
-				bounds = BOUNDS.forward;
+				bounds = MODIFIER_BOUNDS.forward;
 			} else if (attr.includes("ongoing")) {
-				bounds = BOUNDS.ongoing;
+				bounds = MODIFIER_BOUNDS.ongoing;
+			} else if (attr === "advancements") {
+				bounds = { min: 0, max: 99 };
 			}
 
 			// Clamp to bounds
@@ -804,284 +872,6 @@ export function MasksActorSheetMixin(Base) {
 			await this.actor.update({ [path]: clamped });
 		}
 
-
-		/**
-		 * Handle playbook attribute stepper click
-		 */
-		async _onAttrStepperClick(event) {
-			event.preventDefault();
-			const btn = event.currentTarget;
-			const action = btn.dataset.action;
-			const attr = btn.dataset.attr;
-			if (!action || !attr) return;
-
-			const path = `system.${attr}`;
-			const current = Number(foundry.utils.getProperty(this.actor, path)) || 0;
-			const delta = action === "increase" ? 1 : -1;
-
-			await this.actor.update({ [path]: current + delta });
-		}
-
-		/**
-		 * Handle move group collapse toggle
-		 */
-		_onMoveGroupCollapse(event) {
-			// Don't collapse if clicking the add button
-			if (event.target.closest(".moves-add-btn")) return;
-
-			const header = event.currentTarget;
-			const group = header.closest(".moves-group");
-			if (group) {
-				group.classList.toggle("collapsed");
-			}
-		}
-
-		/**
-		 * Handle move icon click - rolls if rollable, otherwise shares to chat
-		 */
-		async _onMoveIconClick(event) {
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation(); // Prevent other jQuery delegated handlers from firing
-			const icon = event.currentTarget;
-			const action = icon.dataset.action;
-			const itemId = icon.closest("[data-item-id]")?.dataset.itemId;
-			const item = this.actor.items.get(itemId);
-			if (!item) return;
-
-			if (action === "roll-move") {
-				await item.roll();
-			} else {
-				await this._shareMoveToChat(item);
-			}
-		}
-
-		/**
-		 * Handle move share in chat
-		 */
-		async _onMoveShare(event) {
-			event.preventDefault();
-			event.stopPropagation();
-			const itemId = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
-			const item = this.actor.items.get(itemId);
-			if (item) {
-				await this._shareMoveToChat(item);
-			}
-		}
-
-		/**
-		 * Share a move to chat as a chat card
-		 * @param {Item} item - The move item to share
-		 */
-		async _shareMoveToChat(item) {
-			const content = `
-				<div class="cell cell--chat">
-					<header class="chat-title row flexrow">
-						<img class="item-icon" src="${item.img}" alt="${item.name}" width="36" height="36" />
-						<h2 class="cell__title">${item.name}</h3>
-					</header>
-					${
-						item.system.description
-							? `<div class="card-content">${item.system.description}</div>`
-							: ""
-					}
-				</div>
-			`;
-
-			await ChatMessage.create({
-				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-				content: content,
-				type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-			});
-		}
-
-		/**
-		 * Handle move roll
-		 */
-		async _onMoveRoll(event) {
-			event.preventDefault();
-			event.stopPropagation();
-			const itemId = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
-			const item = this.actor.items.get(itemId);
-			if (item) {
-				await item.roll();
-			}
-		}
-
-		/**
-		 * Handle move edit
-		 */
-		_onMoveEdit(event) {
-			event.preventDefault();
-			event.stopPropagation();
-			const itemId = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
-			const item = this.actor.items.get(itemId);
-			if (item) {
-				item.sheet.render(true);
-			}
-		}
-
-		/**
-		 * Handle move delete
-		 */
-		async _onMoveDelete(event) {
-			event.preventDefault();
-			event.stopPropagation();
-			const itemId = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
-			const item = this.actor.items.get(itemId);
-			if (item) {
-				const confirmed = await Dialog.confirm({
-					title: game.i18n.localize("PBTA.Delete"),
-					content: `<p>Delete ${item.name}?</p>`,
-				});
-				if (confirmed) {
-					await item.delete();
-				}
-			}
-		}
-
-		/**
-		 * Handle power card header click - allows collapsing already-open cards
-		 * Radio buttons don't toggle off naturally, so we handle it manually
-		 * Also prevents page scroll jump from label's default behavior
-		 */
-		_onPowerCardHeaderClick(event) {
-			// Don't interfere with icon clicks (they have their own handler)
-			if (event.target.closest(".power-card__icon")) return;
-
-			// Prevent default label behavior (causes scroll jump to hidden radio)
-			event.preventDefault();
-
-			const header = event.currentTarget;
-			const card = header.closest(".power-card");
-			const radio = card?.querySelector(".power-card__radio") as HTMLInputElement | null;
-			if (!radio) return;
-
-			// Toggle the radio state
-			radio.checked = !radio.checked;
-
-			// Trigger lazy enrichment if expanding
-			if (radio.checked) {
-				this._enrichPowerCardDescription(card);
-			}
-		}
-
-		/**
-		 * Handle power card expand via radio button change - lazy-enrich the description
-		 * This is called when the radio button state changes (from CSS accordion)
-		 */
-		async _onPowerCardExpand(event: JQuery.ChangeEvent) {
-			const radio = event.currentTarget as HTMLInputElement;
-			if (!radio.checked) return; // Only on expand, not collapse
-
-			const card = radio.closest(".power-card");
-			if (card) {
-				await this._enrichPowerCardDescription(card);
-			}
-		}
-
-		/**
-		 * Lazy-enrich a power card's description
-		 * Called when a power card is expanded to resolve @UUID links
-		 */
-		async _enrichPowerCardDescription(card: Element) {
-			const itemId = (card as HTMLElement).dataset?.itemId;
-			if (!itemId) return;
-
-			const descEl = card.querySelector(".power-card__description") as HTMLElement | null;
-			if (!descEl || descEl.dataset.enriched === "true") return; // Already enriched
-
-			const item = this.actor.items.get(itemId);
-			if (!item?.system?.description) return;
-
-			try {
-				const enriched = await TextEditor.enrichHTML(item.system.description, {
-					secrets: this.actor.isOwner,
-					rollData: (item as Item).getRollData?.() ?? {},
-					relativeTo: item,
-				});
-
-				descEl.innerHTML = enriched;
-				descEl.dataset.enriched = "true";
-			} catch (err) {
-				console.warn(`[masks] Failed to enrich description for item ${itemId}:`, err);
-			}
-		}
-
-		/**
-		 * Handle power card drag start - creates proper drag data with UUID for compendium links
-		 */
-		_onPowerCardDragStart(event) {
-			const card = event.currentTarget;
-			const itemId = card.dataset.itemId;
-			const item = this.actor.items.get(itemId);
-			if (!item) return;
-
-			// Build drag data that Foundry can use to create @UUID links when dropped in chat
-			const dragData = item.toDragData();
-			event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(dragData));
-
-			// Create a custom drag image showing just the card header
-			const header = card.querySelector(".power-card__header");
-			if (header) {
-				const clone = header.cloneNode(true);
-				clone.style.cssText = `
-					position: absolute;
-					top: -9999px;
-					left: -9999px;
-					background: var(--masks-bg-card, #1a1a2e);
-					padding: 8px 12px;
-					border-radius: 4px;
-					border-left: 3px solid var(--masks-accent, #e67e22);
-					box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-				`;
-				document.body.appendChild(clone);
-				event.originalEvent.dataTransfer.setDragImage(clone, 0, 0);
-				setTimeout(() => clone.remove(), 0);
-			}
-		}
-
-		/**
-		 * Handle move header click to expand/collapse description
-		 */
-		_onMoveHeaderClick(event) {
-			const moveItem = event.currentTarget.closest(".move-item");
-			if (!moveItem) return;
-
-			const description = moveItem.querySelector(".move-description");
-			if (description) {
-				description.classList.toggle("collapsed");
-			}
-		}
-
-		/**
-		 * Handle add move button click
-		 */
-		async _onAddMove(event) {
-			event.preventDefault();
-			event.stopPropagation();
-			const btn = event.currentTarget;
-			const moveType = btn.dataset.moveType ?? "playbook";
-
-			// Create a new move item with localized name
-			const moveTypeName = game.pbta.sheetConfig?.actorTypes?.character?.moveTypes?.[moveType]?.label
-				?? game.i18n.localize("PBTA.Move");
-			const newMoveName = `New ${moveTypeName}`;
-
-			const itemData = {
-				name: newMoveName,
-				type: "move",
-				system: {
-					moveType: moveType,
-					description: "",
-				},
-			};
-
-			const [newItem] = await this.actor.createEmbeddedDocuments("Item", [itemData]);
-			if (newItem) {
-				newItem.sheet.render(true);
-			}
-		}
 
 		/**
 		 * Handle influence create
@@ -1104,10 +894,10 @@ export function MasksActorSheetMixin(Base) {
 		 */
 		async _onInfluenceToggle(event) {
 			event.preventDefault();
-			const btn = event.currentTarget;
-			const direction = btn.dataset.direction;
-			const item = btn.closest("[data-influence-id]");
-			const influenceId = item?.dataset.influenceId;
+			const el = event.currentTarget;
+			const direction = el.dataset.direction;
+			const item = el.closest("[data-influence-id]") ?? el.closest(".item");
+			const influenceId = item?.dataset?.influenceId;
 			if (!direction || !influenceId) return;
 
 			const influences = foundry.utils.deepClone(this.actor.getFlag(NS, "influences") ?? []);
@@ -1126,8 +916,9 @@ export function MasksActorSheetMixin(Base) {
 		 */
 		async _onInfluenceLock(event) {
 			event.preventDefault();
-			const item = event.currentTarget.closest("[data-influence-id]");
-			const influenceId = item?.dataset.influenceId;
+			const el = event.currentTarget;
+			const item = el.closest("[data-influence-id]") ?? el.closest(".item");
+			const influenceId = item?.dataset?.influenceId;
 			if (!influenceId) return;
 
 			const influences = foundry.utils.deepClone(this.actor.getFlag(NS, "influences") ?? []);
@@ -1143,8 +934,9 @@ export function MasksActorSheetMixin(Base) {
 		 */
 		async _onInfluenceDelete(event) {
 			event.preventDefault();
-			const item = event.currentTarget.closest("[data-influence-id]");
-			const influenceId = item?.dataset.influenceId;
+			const el = event.currentTarget;
+			const item = el.closest("[data-influence-id]") ?? el.closest(".item");
+			const influenceId = item?.dataset?.influenceId;
 			if (!influenceId) return;
 
 			const influences = this.actor.getFlag(NS, "influences") ?? [];
@@ -1162,8 +954,8 @@ export function MasksActorSheetMixin(Base) {
 		 */
 		async _onInfluenceNameChange(event) {
 			const input = event.currentTarget;
-			const item = input.closest("[data-influence-id]");
-			const influenceId = item?.dataset.influenceId;
+			const item = input.closest("[data-influence-id]") ?? input.closest(".item");
+			const influenceId = item?.dataset?.influenceId;
 			if (!influenceId) return;
 
 			const influences = foundry.utils.deepClone(this.actor.getFlag(NS, "influences") ?? []);
@@ -1175,10 +967,11 @@ export function MasksActorSheetMixin(Base) {
 		}
 
 		/**
-		 * Handle playbook link click
+		 * Handle playbook view click
 		 */
 		async _onPlaybookLink(event) {
 			event.preventDefault();
+			event.stopPropagation();
 			const btn = event.currentTarget;
 			const playbookUuid = btn.dataset.playbook;
 			if (!playbookUuid) return;
@@ -1186,41 +979,6 @@ export function MasksActorSheetMixin(Base) {
 			const playbook = await fromUuid(playbookUuid);
 			if (playbook) {
 				playbook.sheet.render(true);
-			}
-		}
-
-		// NOTE: Playbook change is handled entirely by PbtA's base sheet via class="charplaybook"
-		// PbtA handles: setPlaybook(), handleChoices(), grantChoices(), and all dialogs
-
-		/**
-		 * Handle tab click
-		 */
-		_onTabClick(event) {
-			event.preventDefault();
-			const btn = event.currentTarget;
-			const tabId = btn.dataset.tab;
-			if (!tabId) return;
-
-			// Save the active tab
-			this._activeTab = tabId;
-
-			const form = btn.closest("form");
-			if (!form) return;
-
-			// Update tab buttons
-			form.querySelectorAll(".tab-btn").forEach((t) => t.classList.remove("active"));
-			btn.classList.add("active");
-
-			// Update tab content
-			form.querySelectorAll(".tab-content > .tab").forEach((t) => {
-				t.classList.toggle("active", t.dataset.tab === tabId);
-			});
-
-			// Reset scroll position when switching tabs
-			const tabContent = form.querySelector(".tab-content");
-			if (tabContent) {
-				tabContent.scrollTop = 0;
-				this._scrollTop = 0;
 			}
 		}
 	};
