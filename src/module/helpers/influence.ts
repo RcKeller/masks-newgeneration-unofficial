@@ -1,4 +1,4 @@
-/* global game, canvas, foundry, Hooks, CONST */
+/* global game, foundry, Hooks */
 
 /**
  * helpers/influence.mjs
@@ -257,7 +257,7 @@ class InfluenceIndexImpl {
     const findTargetCharacterByNorm = (norm) => {
       // Prefer exact match on actor.name or realName, else fallback to contains.
       const chars = (game.actors?.contents ?? []).filter(x => x?.type === "character" && x.id !== actor.id);
-      let exact = null;
+      const exact = null;
       let partial = null;
 
       for (const t of chars) {
@@ -343,8 +343,8 @@ class InfluenceIndexImpl {
       // Guard to avoid loops - released when the promise settles
       this._syncGuard.add(doc.id);
       const promise = doc.setFlag("masks-newgeneration-unofficial", "influences", infl)
-        .catch(err => {
-          // console.error(`[${NS}] Failed to sync Influence flags on ${doc.name}`, err);
+        .catch(_err => {
+          // console.error(`[${NS}] Failed to sync Influence flags on ${doc.name}`, _err);
         })
         .finally(() => {
           this._syncGuard.delete(doc.id);
@@ -375,7 +375,7 @@ class InfluenceIndexImpl {
         // If we are NOT the one performing symmetry writes, optionally sync pair now.
         if (inflChanged && !this._syncGuard.has(actor.id)) {
           // Fire and forget; do not await to keep UI snappy.
-          this.syncCharacterPairFlags(actor);
+          void this.syncCharacterPairFlags(actor);
         }
         // Use debounced rebuild to batch rapid changes
         this.queueRebuild();
@@ -383,7 +383,7 @@ class InfluenceIndexImpl {
 
       // Sync Nomad influence counts when influences change (guarded to prevent cascades)
       if (inflChanged) {
-        syncNomadInfluenceCount(actor, this._nomadSyncGuard);
+        void syncNomadInfluenceCount(actor, this._nomadSyncGuard);
       }
     });
 
@@ -456,7 +456,7 @@ export function syncAllNomadInfluenceCounts() {
   // Use the InfluenceIndex's Nomad sync guard to prevent cascades
   const guard = InfluenceIndex._nomadSyncGuard;
   for (const nomad of nomads) {
-    syncNomadInfluenceCount(nomad, guard);
+    void syncNomadInfluenceCount(nomad, guard);
   }
 }
 

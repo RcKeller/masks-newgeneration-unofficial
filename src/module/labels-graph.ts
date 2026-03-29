@@ -600,7 +600,7 @@ const graphAnimationStateCache = new Map<string, GraphAnimationState>();
  */
 export function saveGraphAnimationState(key: string, container: HTMLElement | SVGElement | null): void {
 	if (!container) return;
-	const dataPath = container.querySelector(".labels-graph-data") as SVGPathElement | null;
+	const dataPath = container.querySelector(".labels-graph-data");
 	if (!dataPath) return;
 	graphAnimationStateCache.set(key, {
 		path: dataPath.getAttribute("d") ?? "",
@@ -623,7 +623,7 @@ export function animateGraphFromSavedState(key: string, container: HTMLElement |
 
 	if (!prev || !container) return false;
 
-	const dataPath = container.querySelector(".labels-graph-data") as SVGPathElement | null;
+	const dataPath = container.querySelector(".labels-graph-data");
 	if (!dataPath) return false;
 
 	const newPath = dataPath.getAttribute("d") ?? "";

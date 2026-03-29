@@ -1,7 +1,7 @@
 /**
  * Define a set of template paths to pre-load
  */
-export const preloadHandlebarsTemplates = async function () {
+export const preloadHandlebarsTemplates = function () {
     return foundry.applications.handlebars.loadTemplates([
       // Main sheet
       'modules/masks-newgeneration-unofficial/templates/sheets/actor-sheet.hbs',

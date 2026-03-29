@@ -23,7 +23,7 @@ const getProp = <T = unknown>(obj: object, path: string): T | undefined => found
 function statLabel(actor: Actor, key: string): string {
 	// Soldier label has a special path and localization
 	if (key === "soldier") {
-		return game.i18n?.localize("DISPATCH.CharacterSheets.Playbooks.theSoldierLabel") ?? "Soldier";
+		return game.i18n?.localize("MASKS.CharacterSheets.Playbooks.theSoldierLabel") ?? "Soldier";
 	}
 	return (
 		getProp<string>(actor, `system.stats.${key}.label`) ??
@@ -56,17 +56,36 @@ export function getShiftableLabels(actor: Actor): {
 
 /**
  * Show a dialog prompting the user to select labels to shift
+ * @param initialLabel - Optional label key to pre-select (placed in whichever direction is valid)
  * @returns Promise resolving to {up, down} keys or null if cancelled
  */
 export async function promptShiftLabels(
 	actor: Actor,
 	title?: string,
-	initialUp?: string
+	initialLabel?: string
 ): Promise<{ up: string; down: string } | null> {
 	const { canShiftUp, canShiftDown, labelKeys } = getShiftableLabels(actor);
 	if (!canShiftUp.length || !canShiftDown.length) {
 		ui.notifications?.warn("No valid label shifts.");
 		return null;
+	}
+
+	// Determine defaults: ensure up and down are always different
+	let defaultUp: string;
+	let defaultDown: string;
+
+	if (initialLabel && canShiftUp.includes(initialLabel)) {
+		// Clicked label can shift up — put it in up, pick a different one for down
+		defaultUp = initialLabel;
+		defaultDown = canShiftDown.find((k) => k !== defaultUp) ?? canShiftDown[0];
+	} else if (initialLabel && canShiftDown.includes(initialLabel)) {
+		// Clicked label can only shift down — put it in down, pick a different one for up
+		defaultDown = initialLabel;
+		defaultUp = canShiftUp.find((k) => k !== defaultDown) ?? canShiftUp[0];
+	} else {
+		// No initial label or it's locked — pick first available for each
+		defaultUp = canShiftUp[0];
+		defaultDown = canShiftDown.find((k) => k !== defaultUp) ?? canShiftDown[0];
 	}
 
 	const labels = labelKeys.map((k) => ({
@@ -77,6 +96,7 @@ export async function promptShiftLabels(
 
 	const makeOpts = (
 		arr: string[],
+		selected: string,
 		atLimitCheck: (v: number, limit: number) => boolean,
 		limit: number,
 		suffix: string
@@ -86,12 +106,13 @@ export async function promptShiftLabels(
 				const disabled = !arr.includes(l.key);
 				const atLimit = atLimitCheck(l.value, limit);
 				const suf = atLimit ? ` (at ${suffix} ${limit})` : "";
-				return `<option value="${l.key}" ${disabled ? "disabled" : ""}>${escape(l.label)} [${l.value}]${suf}</option>`;
+				const sel = l.key === selected ? "selected" : "";
+				return `<option value="${l.key}" ${disabled ? "disabled" : ""} ${sel}>${escape(l.label)} [${l.value}]${suf}</option>`;
 			})
 			.join("");
 
-	const optsUp = makeOpts(canShiftUp, (v, h) => v >= h, LABEL_BOUNDS.SHIFT_MAX, "max");
-	const optsDown = makeOpts(canShiftDown, (v, l) => v <= l, LABEL_BOUNDS.SHIFT_MIN, "min");
+	const optsUp = makeOpts(canShiftUp, defaultUp, (v, h) => v >= h, LABEL_BOUNDS.SHIFT_MAX, "max");
+	const optsDown = makeOpts(canShiftDown, defaultDown, (v, l) => v <= l, LABEL_BOUNDS.SHIFT_MIN, "min");
 
 	const content = `<form>
 		<p style="margin:0 0 .5rem 0;">Choose one Label to shift <b>up</b> and one <b>down</b>.</p>
@@ -109,15 +130,21 @@ export async function promptShiftLabels(
 				action: "shift",
 				label: "Shift",
 				default: true,
-				callback: (event: Event, button: HTMLButtonElement, dialog: HTMLElement) => {
-					const up = (dialog.querySelector("select[name='up']") as HTMLSelectElement)?.value;
-					const down = (dialog.querySelector("select[name='down']") as HTMLSelectElement)?.value;
+				callback: (_event: Event, button: HTMLButtonElement) => {
+					const up = (button.form?.querySelector("select[name='up']") as HTMLSelectElement)?.value;
+					const down = (button.form?.querySelector("select[name='down']") as HTMLSelectElement)?.value;
 					if (!up || !down || up === down) {
 						if (up === down) ui.notifications?.warn("Choose two different Labels.");
 						return null;
 					}
-					if (!canShiftUp.includes(up) || !canShiftDown.includes(down)) {
-						ui.notifications?.warn("Invalid selection.");
+					if (!canShiftUp.includes(up)) {
+						const lbl = labels.find((l) => l.key === up);
+						ui.notifications?.warn(`${lbl?.label ?? up} is already at max (${LABEL_BOUNDS.SHIFT_MAX}).`);
+						return null;
+					}
+					if (!canShiftDown.includes(down)) {
+						const lbl = labels.find((l) => l.key === down);
+						ui.notifications?.warn(`${lbl?.label ?? down} is already at min (${LABEL_BOUNDS.SHIFT_MIN}).`);
 						return null;
 					}
 					return { up, down };
@@ -129,17 +156,7 @@ export async function promptShiftLabels(
 				callback: () => null,
 			},
 		],
-		render: (event: Event, dialog: HTMLElement) => {
-			const upSel = dialog.querySelector("select[name='up']") as HTMLSelectElement;
-			const downSel = dialog.querySelector("select[name='down']") as HTMLSelectElement;
-			// Use initialUp if provided and valid, otherwise use first available
-			const defaultUp = (initialUp && canShiftUp.includes(initialUp)) ? initialUp : (canShiftUp[0] || labelKeys[0]);
-			if (upSel) upSel.value = defaultUp;
-			if (downSel) {
-				downSel.value = canShiftDown.find((k) => k !== defaultUp) || canShiftDown[0] || labelKeys[1];
-			}
-		},
-	}) as Promise<{ up: string; down: string } | null>;
+	});
 }
 
 /**

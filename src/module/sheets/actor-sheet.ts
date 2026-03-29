@@ -1,6 +1,6 @@
 /* global game, foundry */
 import { createLabelsGraphData, saveGraphAnimationState, animateGraphFromSavedState } from "../labels-graph";
-import { NS, LABEL_BOUNDS, getLabelKeysForActor, getLabelPath, getLabelValue, SPECIAL_PLAYBOOKS, CONDITION_TO_LABEL } from "../constants";
+import { NS, LABEL_BOUNDS, getLabelKeysForActor, getLabelPath, getLabelValue, CONDITION_TO_LABEL } from "../constants";
 
 /**
  * Min/max bounds for numeric values (Forward/Ongoing only - labels use LABEL_BOUNDS from constants)
@@ -124,7 +124,7 @@ export function MasksActorSheetMixin(Base) {
 				const sourceItem = this.actor.items.get(item._id) ?? {};
 				const enrichmentOptions = {
 					secrets: this.actor.isOwner,
-					rollData: (sourceItem as any)?.getRollData?.() ?? {},
+					rollData: (sourceItem)?.getRollData?.() ?? {},
 					relativeTo: sourceItem,
 				};
 
@@ -729,8 +729,8 @@ export function MasksActorSheetMixin(Base) {
 			const labels = this._prepareLabels();
 			const label = labels.find((l) => l.key === statKey);
 
-			// Don't allow shifting if locked or cannot shift up
-			if (!label || label.locked || !label.canShiftUp) {
+			// Don't allow shifting if locked or can't shift in either direction
+			if (!label || label.locked || (!label.canShiftUp && !label.canShiftDown)) {
 				return;
 			}
 

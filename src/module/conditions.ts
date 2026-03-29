@@ -321,7 +321,7 @@ function queueSync(actor, delay = 30) {
 	const tid = setTimeout(() => {
 		_pending.delete(id);
 		// Fire and forget; syncConditionEffects will elect a single writer.
-		syncConditionEffects(actor);
+		void syncConditionEffects(actor);
 	}, Math.max(10, delay));
 	_pending.set(id, tid);
 }

@@ -1,6 +1,6 @@
 {
     "TYPES.Item.masks-newgeneration-unofficial.influence": "Influencia",
-    "DISPATCH": {
+    "MASKS": {
         "SheetConfig": {
             "character": "Hoja de personaje de Masks"
         },

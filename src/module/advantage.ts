@@ -95,9 +95,9 @@ Hooks.on("getSceneControlButtons", (controls) => {
   };
 
   // Helper: generate onClick using shift for ±5
-  const withDelta = (resource, sign) => (evt) => {
-    const step = 1
-    ResourceTools.adjust(resource, sign * step);
+  const withDelta = (resource, sign) => (_evt) => {
+    const step = 1;
+    void ResourceTools.adjust(resource, sign * step);
   };
 
   addTool("forwardAdd", {

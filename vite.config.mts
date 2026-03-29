@@ -1,4 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
+import fs from "fs";
 import path, { resolve } from "path";
 import { defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
@@ -7,25 +8,21 @@ import { MODULE_ID } from "./src/config";
 export default defineConfig(({ mode }) => {
     const isDev = mode === "development";
 
+    const targets: { src: string; dest: string }[] = [
+        { src: "docs", dest: "" },
+        { src: "module.json", dest: "" },
+    ];
+
+    // Only copy packs if they exist (CI may not have them yet)
+    if (fs.existsSync(resolve(__dirname, "packs")) &&
+        fs.readdirSync(resolve(__dirname, "packs")).length > 0) {
+        targets.push({ src: "packs", dest: "" });
+    }
+
     return {
         plugins: [
             tailwindcss(),
-            viteStaticCopy({
-                targets: [
-                    {
-                        src: "docs",
-                        dest: "",
-                    },
-                    {
-                        src: "module.json",
-                        dest: "",
-                    },
-                    {
-                        src: "packs",
-                        dest: "",
-                    },
-                ],
-            }),
+            viteStaticCopy({ targets }),
         ],
 
         base: isDev ? `/modules/${MODULE_ID}/` : "./",

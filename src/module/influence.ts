@@ -20,7 +20,6 @@
 import {
   NS,
   InfluenceIndex,
-  compositeKey,
   registerInfluenceHelpers
 } from "./helpers/influence";
 
@@ -85,7 +84,7 @@ const InfluenceLines = {
 
   clear() {
     if (!this.container) return;
-    this.container.removeChildren().forEach(c => { try { c.destroy(); } catch (_) {} });
+    this.container.removeChildren().forEach(c => { try { c.destroy(); } catch (_) { /* ignore destroy errors on cleanup */ } });
   },
 
   /** Draw connections from hovered token to all other tokens. */

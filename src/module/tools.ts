@@ -1,4 +1,4 @@
-/* global game, ui, Hooks, ChatMessage, CONST, canvas, foundry, Dialog */
+/* global game, ui, Hooks, ChatMessage, CONST, canvas, foundry */
 
 /**
  * tools.mjs — Quick Influence (Scene Controls v2)
@@ -136,7 +136,8 @@ function mutateSide(inflArr, counterpartyName, which) {
 
 async function announceChange(srcName, tgtName, beforeSym, afterSym) {
   if (!game.settings.get(NS, KEY_ANNOUNCE)) return;
-  const who = game.user?.name ?? "Player";
+  // Note: game.user?.name used in announcement context (retained for debug)
+  const _who = game.user?.name ?? "Player";
   const badge = (s) => {
     const css = "display:inline-block;padding:0 .35rem;border-radius:.25rem;font-weight:700;";
     if (s === "⬆") return `<span style="${css}background:#4CAF50;color:#fff">${s}</span>`;
@@ -178,7 +179,8 @@ async function pickTargetViaDialog(excludeTokenId = null) {
   const options = toks.map(t => {
     
     const rn = foundry.utils.getProperty(t.actor, "system.attributes.realName.value");
-    const lbl = `${t.actor?.name || t.name} (${rn || t.document?.name})`;
+    const rnStr = typeof rn === "string" ? rn : (t.document?.name ?? "");
+    const lbl = `${String(t.actor?.name || t.name)} (${rnStr})`;
     return `<option value="${t.id}">${foundry.utils.escapeHTML(lbl)}</option>`;
   }).join("");
 
@@ -199,8 +201,8 @@ async function pickTargetViaDialog(excludeTokenId = null) {
         action: "ok",
         label: "Use",
         default: true,
-        callback: (event, button, dialog) => {
-          const id = dialog.querySelector("select[name='tok']")?.value;
+        callback: (_event, button) => {
+          const id = (button.form?.querySelector("select[name='tok']") as HTMLSelectElement)?.value;
           return canvas.tokens?.get(id) || null;
         }
       },
@@ -222,7 +224,7 @@ async function pickTargetByClick(timeoutMs = 10000, hint = "Click a token to cho
     const done = (tok) => {
       if (resolved) return;
       resolved = true;
-      try { Hooks.off("clickToken", handler); } catch (_) {}
+      try { Hooks.off("clickToken", handler); } catch (_) { /* ignore hook cleanup errors */ }
       resolve(tok);
     };
     const handler = (token /*, event */) => done(token);
@@ -245,7 +247,7 @@ const QuickInfluence = {
    */
   async run(directive, evt) {
     // 1) Resolve source (you)
-    const src = await this._resolveSource();
+    const src = this._resolveSource();
     if (!src) return;
 
     // 2) Resolve target
@@ -279,7 +281,7 @@ const QuickInfluence = {
     await this._applyPair(src.actor, src.token, targetToken.actor, targetToken, directive);
   },
 
-  async _resolveSource() {
+  _resolveSource() {
     const controlled = canvas.tokens?.controlled ?? [];
     if (controlled.length === 1 && controlled[0]?.actor) {
       return { token: controlled[0], actor: controlled[0].actor };
@@ -539,6 +541,6 @@ Hooks.once("ready", () => {
   }
 
   // Create and register new handler
-  _toolsSocketHandler = (data: unknown) => QuickInfluence._gmApplyFromSocket(data);
+  _toolsSocketHandler = (data: unknown) => { void QuickInfluence._gmApplyFromSocket(data); };
   game.socket.on(SOCKET_NS, _toolsSocketHandler);
 });

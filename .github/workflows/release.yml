@@ -1,96 +1,49 @@
-name: Release Module
+name: Release
 
 on:
   push:
     branches: [main]
-    tags:
-      - 'v*'
-  workflow_dispatch:
 
-env:
-  NODE_VERSION: '20'
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
-  build-and-release:
+  release:
+    name: Release
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Create release zip
         run: |
-          rm -f package-lock.json
-          npm install
+          MODULE_ID=$(node -p "require('./package.json').name")
+          mkdir -p "${MODULE_ID}"
+          cp -r dist/* "${MODULE_ID}/"
+          # Include non-dist assets that should be in the release
+          [ -d "packs" ] && cp -r packs "${MODULE_ID}/" || true
+          [ -d "images" ] && cp -r images "${MODULE_ID}/" || true
+          zip -r release.zip "${MODULE_ID}/"
+          rm -rf "${MODULE_ID}"
 
-      - name: Compile compendium packs
-        run: npm run packs:to-ldb
-
-      - name: Build module
-        run: npm run ci
-
-      - name: Extract version from module.json
-        id: version
-        run: |
-          VERSION=$(jq -r '.version' dist/module.json)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Module version: $VERSION"
-
-      - name: Check if release exists
-        id: check_release
-        run: |
-          if gh release view "v${{ steps.version.outputs.version }}" > /dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "Release v${{ steps.version.outputs.version }} already exists, skipping"
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-            echo "Release v${{ steps.version.outputs.version }} does not exist, will create"
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create module.zip
-        if: steps.check_release.outputs.exists == 'false'
-        run: |
-          cd dist
-          zip -r ../module.zip . -x "*.DS_Store" -x "*.map"
-
-      - name: Extract changelog
-        if: steps.check_release.outputs.exists == 'false'
-        id: changelog
-        run: |
-          VERSION="v${{ steps.version.outputs.version }}"
-          if [ -f "CHANGELOG.md" ]; then
-            NOTES=$(awk -v tag="## ${VERSION}" '
-              $0 ~ tag {flag=1; next}
-              /^## / && flag {exit}
-              flag {print}
-            ' CHANGELOG.md)
-            if [ -z "$NOTES" ]; then
-              NOTES="Release ${VERSION}"
-            fi
-          else
-            NOTES="Release ${VERSION}"
-          fi
-          echo "$NOTES" > release_notes.md
-
-      - name: Create GitHub Release
-        if: steps.check_release.outputs.exists == 'false'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.version.outputs.version }}
-          name: Release ${{ steps.version.outputs.version }}
-          body_path: release_notes.md
-          files: |
-            module.zip
-            dist/module.json
+      - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release

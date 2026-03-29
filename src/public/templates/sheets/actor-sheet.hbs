@@ -19,7 +19,7 @@
 				</div>
 
 				<div class="cell cell--modifiers">
-					<label class="cell__title">{{localize "DISPATCH.Advantages"}} <i class="fa-solid fa-plus-minus"></i></label>
+					<label class="cell__title">{{localize "MASKS.Advantages"}} <i class="fa-solid fa-plus-minus"></i></label>
 					<div class="modifiers-list">
 						<div class="slanted-row color--forward {{#if forwardActive}}active{{/if}}" data-action="toggle-forward">
 							<span class="modifier-icon rollable-icon" data-action="share-forward">
@@ -41,7 +41,7 @@
 				</div>
 
 				<div class="cell cell--conditions">
-					<label class="cell__title">{{localize "DISPATCH.CharacterSheets.conditions.label"}} <i class="fa-solid fa-heart-pulse"></i></label>
+					<label class="cell__title">{{localize "MASKS.CharacterSheets.conditions.label"}} <i class="fa-solid fa-heart-pulse"></i></label>
 					<ul class="cell__checkboxes flexcol">
 						{{#each conditionRows as |condition|}}
 						<label class="checkbox-toggle condition--{{condition.key}} {{#if condition.value}}active{{/if}}">
@@ -79,7 +79,7 @@
 				<div class="cell cell--labels cell--group">
 					<h2 class="cell__title">
 						<label class="item-group-label">
-							{{localize "DISPATCH.CharacterSheets.stats.labels"}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span>
+							{{localize "MASKS.CharacterSheets.stats.labels"}}<span class="item-details-toggle"><i class="fas fa-chevron-up"></i></span>
 						</label>
 					</h2>
 					<div class="labels-layout">
@@ -126,7 +126,7 @@
 				<nav class="sheet-tabs tabs" data-group="primary">
 					<a class="item" data-tab="description">{{localize "PBTA.Description"}}</a>
 					<a class="item" data-tab="moves">{{localize "PBTA.Moves"}}</a>
-					<a class="item" data-tab="influence">{{localize "DISPATCH.Influences"}}</a>
+					<a class="item" data-tab="influence">{{localize "MASKS.Influences"}}</a>
 					<a class="item" data-tab="playbook">{{localize "PBTA.Playbook"}}</a>
 				</nav>
 				<section class="sheet-body">
@@ -153,7 +153,7 @@
 					{{!-- NPC Conditions in correct order: Afraid, Hopeless, Insecure, Guilty, Angry --}}
 					{{#if npcConditionRows}}
 					<div class="cell cell--conditions cell--ListMany">
-						<label class="cell__title">{{localize "DISPATCH.NPCSheets.conditions.label"}}</label>
+						<label class="cell__title">{{localize "MASKS.NPCSheets.conditions.label"}}</label>
 						<ul class="cell__checkboxes flexcol">
 							{{#each npcConditionRows as |condition|}}
 							<label class="flexrow">

@@ -259,35 +259,37 @@ async function handleXCardClick(htmlRoot) {
 /** Register a GM‑side socket handler to create the anonymous GM whisper. */
 function registerGMSocketHandler() {
 	try {
-		game.socket?.on(SOCKET_NS, async (data) => {
-			if (!data || data.action !== "xcardNotify") return;
-			if (!game.user?.isGM) return;
-			if (!isPrimaryGM()) return; // only one GM should actually post
+		game.socket?.on(SOCKET_NS, (data) => {
+			void (async () => {
+				if (!data || data.action !== "xcardNotify") return;
+				if (!game.user?.isGM) return;
+				if (!isPrimaryGM()) return; // only one GM should actually post
 
-			const scope = data.scope === "gm" ? "gm" : "table";
-			const content = data.content || buildAnonContent(scope);
+				const scope = data.scope === "gm" ? "gm" : "table";
+				const content = data.content || buildAnonContent(scope);
 
-			try {
-				if (scope === "gm") {
-					const whisper = getGMUserIds();
-					if (!whisper.length) return;
-					await ChatMessage.create({
-						content,
-						type: CONST.CHAT_MESSAGE_STYLES.OTHER,
-						whisper,
-						speaker: speakerAlias(XCARD_TITLE),
-					});
-				} else {
-					// We no longer emit "table" via socket in default flow, but keep this for completeness.
-					await ChatMessage.create({
-						content,
-						type: CONST.CHAT_MESSAGE_STYLES.OTHER,
-						speaker: speakerAlias(XCARD_TITLE),
-					});
+				try {
+					if (scope === "gm") {
+						const whisper = getGMUserIds();
+						if (!whisper.length) return;
+						await ChatMessage.create({
+							content,
+							type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+							whisper,
+							speaker: speakerAlias(XCARD_TITLE),
+						});
+					} else {
+						// We no longer emit "table" via socket in default flow, but keep this for completeness.
+						await ChatMessage.create({
+							content,
+							type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+							speaker: speakerAlias(XCARD_TITLE),
+						});
+					}
+				} catch (err) {
+					console.error(`[${NS}] Primary GM failed to deliver X‑Card alert.`, err);
 				}
-			} catch (err) {
-				console.error(`[${NS}] Primary GM failed to deliver X‑Card alert.`, err);
-			}
+			})();
 		});
 	} catch (err) {
 		console.warn(
@@ -370,19 +372,23 @@ Hooks.once("ready", () => {
 	registerGMSocketHandler();
 });
 
-Hooks.on("renderChatLog", async (_app, html) => {
-	try {
-		await injectButton(html);
-	} catch (err) {
-		console.error(`[${NS}] Failed to inject X‑Card button`, err);
-	}
+Hooks.on("renderChatLog", (_app, html) => {
+	void (async () => {
+		try {
+			await injectButton(html);
+		} catch (err) {
+			console.error(`[${NS}] Failed to inject X‑Card button`, err);
+		}
+	})();
 });
 
-Hooks.on("renderSidebarTab", async (app, html) => {
+Hooks.on("renderSidebarTab", (app, html) => {
 	if (app?.id !== "chat") return;
-	try {
-		await injectButton(html);
-	} catch (err) {
-		console.error(`[${NS}] Failed to inject X‑Card button (sidebar)`, err);
-	}
+	void (async () => {
+		try {
+			await injectButton(html);
+		} catch (err) {
+			console.error(`[${NS}] Failed to inject X‑Card button (sidebar)`, err);
+		}
+	})();
 });

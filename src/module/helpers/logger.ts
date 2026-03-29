@@ -53,7 +53,7 @@ export function warn(message: string, ...args: unknown[]): void {
 /**
  * Log an error message
  */
-export function error(message: string, err?: Error | unknown, ...args: unknown[]): void {
+export function error(message: string, err?: unknown, ...args: unknown[]): void {
 	if (err instanceof Error) {
 		console.error(formatMessage(message), err.message, err.stack, ...args);
 	} else if (err !== undefined) {
@@ -74,7 +74,8 @@ export function notify(
 	message: string,
 	options: { permanent?: boolean; console?: boolean } = {}
 ): void {
-	const ui = (globalThis as unknown as { ui?: { notifications?: { info: Function; warn: Function; error: Function } } }).ui;
+	type NotifyFn = (...args: unknown[]) => void;
+	const ui = (globalThis as unknown as { ui?: { notifications?: { info: NotifyFn; warn: NotifyFn; error: NotifyFn } } }).ui;
 
 	if (!ui?.notifications) {
 		// Fallback to console if UI not available
@@ -99,7 +100,7 @@ export function notify(
  */
 export function errorWithNotify(
 	message: string,
-	err?: Error | unknown,
+	err?: unknown,
 	userMessage?: string
 ): void {
 	error(message, err);

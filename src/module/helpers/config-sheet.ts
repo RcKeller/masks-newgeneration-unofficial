@@ -1,19 +1,19 @@
-export const configSheet = async () => {
+export const configSheet = () => {
   // Pass Masks sheet object to sheetConfig
   game.pbta.sheetConfig = {
     rollFormula: "2d6",
     rollShifting: true,
     statShifting: {
-      label: game.i18n.localize("DISPATCH.Shift-Labels.label"),
+      label: game.i18n.localize("MASKS.Shift-Labels.label"),
       img: "systems/pbta/assets/icons/svg/back-forth.svg",
       value: 1,
       labels: {
-        stat: game.i18n.localize("DISPATCH.Shift-Labels.stat"),
-        stats: game.i18n.localize("DISPATCH.Shift-Labels.stats"),
+        stat: game.i18n.localize("MASKS.Shift-Labels.stat"),
+        stats: game.i18n.localize("MASKS.Shift-Labels.stats"),
       },
     },
     statToggle: {
-      label: game.i18n.localize("DISPATCH.CharacterSheets.statToggle"),
+      label: game.i18n.localize("MASKS.CharacterSheets.statToggle"),
       modifier: 0,
     },
     minMod: -3,
@@ -22,46 +22,46 @@ export const configSheet = async () => {
       failure: {
         start: null,
         end: 6,
-        label: game.i18n.localize("DISPATCH.CharacterSheets.rollResults.complications"),
+        label: game.i18n.localize("MASKS.CharacterSheets.rollResults.complications"),
       },
       partial: {
         start: 7,
         end: 9,
-        label: game.i18n.localize("DISPATCH.CharacterSheets.rollResults.partialSuccess"),
+        label: game.i18n.localize("MASKS.CharacterSheets.rollResults.partialSuccess"),
       },
       success: {
         start: 10,
         end: null,
-        label: game.i18n.localize("DISPATCH.CharacterSheets.rollResults.success"),
+        label: game.i18n.localize("MASKS.CharacterSheets.rollResults.success"),
       },
     },
     actorTypes: {
       character: {
         stats: {
           danger: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.stats.danger"),
+            label: game.i18n.localize("MASKS.CharacterSheets.stats.danger"),
             value: 0,
           },
           freak: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.stats.freak"),
+            label: game.i18n.localize("MASKS.CharacterSheets.stats.freak"),
             value: 0,
           },
           savior: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.stats.savior"),
+            label: game.i18n.localize("MASKS.CharacterSheets.stats.savior"),
             value: 0,
           },
           superior: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.stats.superior"),
+            label: game.i18n.localize("MASKS.CharacterSheets.stats.superior"),
             value: 0,
           },
           mundane: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.stats.mundane"),
+            label: game.i18n.localize("MASKS.CharacterSheets.stats.mundane"),
             value: 0,
           },
         },
         attributes: {
           realName: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.realNameLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.realNameLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -69,7 +69,7 @@ export const configSheet = async () => {
             value: ""
           },
           xp: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.xpLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.xpLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -81,7 +81,7 @@ export const configSheet = async () => {
           },
           theDoomed: {
             type: "Clock",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theDoomed.track"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theDoomed.track"),
             max: 5,
             value: 0,
             playbook: "The Doomed",
@@ -90,40 +90,40 @@ export const configSheet = async () => {
           },
           theBull: {
             type: "LongText",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theBull.label"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theBull.label"),
             playbook: "The Bull",
             position: "Top"
           },
           theNova: {
             type: "Number",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theNovaLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theNovaLabel"),
             playbook: "The Nova",
             value: 0,
             position: "Top"
           },
           theProtege: {
             type: "LongText",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theProtege.label"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theProtege.label"),
             playbook: "The Protégé",
             position: "Top"
           },
           theSoldier: {
             type: "Number",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theSoldierLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theSoldierLabel"),
             playbook: "The Soldier",
             value: 2,
             position: "Top"
           },
           theHarbingerMemories: {
             type: "Number",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theHarbingerLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theHarbingerLabel"),
             playbook: "The Harbinger",
             value: -1,
             position: "Top"
           },
           theNomad: {
             type: "Number",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theNomadLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theNomadLabel"),
             playbook: "The Nomad",
             value: 0,
             max: 6,
@@ -131,7 +131,7 @@ export const configSheet = async () => {
           },
           theBrain: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theBrainLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theBrainLabel"),
             playbook: "The Brain",
             options: {
               0: {
@@ -143,14 +143,14 @@ export const configSheet = async () => {
           },
           theBrainGadgets: {
             type: "Number",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theBrainGadgetsLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theBrainGadgetsLabel"),
             playbook: "The Brain",
             value: 0,
             position: "Top"
           },
           conditions: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.conditions.label"),
-            description: game.i18n.localize("DISPATCH.CharacterSheets.conditions.description"),
+            label: game.i18n.localize("MASKS.CharacterSheets.conditions.label"),
+            description: game.i18n.localize("MASKS.CharacterSheets.conditions.description"),
             customLabel: false,
             userLabel: false,
             type: "ListMany",
@@ -158,23 +158,23 @@ export const configSheet = async () => {
             position: "Left",
             options: {
               0: {
-                label: game.i18n.localize("DISPATCH.CharacterSheets.conditions.options.0"),
+                label: game.i18n.localize("MASKS.CharacterSheets.conditions.options.0"),
                 value: false,
               },
               1: {
-                label: game.i18n.localize("DISPATCH.CharacterSheets.conditions.options.1"),
+                label: game.i18n.localize("MASKS.CharacterSheets.conditions.options.1"),
                 value: false,
               },
               2: {
-                label: game.i18n.localize("DISPATCH.CharacterSheets.conditions.options.2"),
+                label: game.i18n.localize("MASKS.CharacterSheets.conditions.options.2"),
                 value: false,
               },
               3: {
-                label: game.i18n.localize("DISPATCH.CharacterSheets.conditions.options.3"),
+                label: game.i18n.localize("MASKS.CharacterSheets.conditions.options.3"),
                 value: false,
               },
               4: {
-                label: game.i18n.localize("DISPATCH.CharacterSheets.conditions.options.4"),
+                label: game.i18n.localize("MASKS.CharacterSheets.conditions.options.4"),
                 value: false,
               },
             },
@@ -182,8 +182,8 @@ export const configSheet = async () => {
           bringsDoomCloser: {
             type: "ListMany",
             condition: false,
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theDoomed.bringsDoomCloser.label"),
-            description: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theDoomed.bringsDoomCloser.description"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theDoomed.bringsDoomCloser.label"),
+            description: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theDoomed.bringsDoomCloser.description"),
             playbook: "The Doomed",
             position: "Left",
             options: {
@@ -215,21 +215,21 @@ export const configSheet = async () => {
           },
           doomedSanctuaryFeatures: {
             type: "LongText",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theDoomed.sanctuary.features.label"),
-            description: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theDoomed.sanctuary.features.description"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theDoomed.sanctuary.features.label"),
+            description: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theDoomed.sanctuary.features.description"),
             playbook: "The Doomed",
             position: "Left",
           },
           doomedSanctuaryDownsides: {
             type: "LongText",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theDoomed.sanctuary.downsides.label"),
-            description: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theDoomed.sanctuary.downsides.description"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theDoomed.sanctuary.downsides.label"),
+            description: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theDoomed.sanctuary.downsides.description"),
             playbook: "The Doomed",
             position: "Left",
           },
           theScionGreatestEnemy: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theScionGreatestEnemyLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theScionGreatestEnemyLabel"),
             playbook: "The Scion",
             position: "Left",
             options: {
@@ -248,7 +248,7 @@ export const configSheet = async () => {
           },
           theScionGreatestVictim: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theScionGreatestVictimLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theScionGreatestVictimLabel"),
             playbook: "The Scion",
             position: "Left",
             options: {
@@ -267,7 +267,7 @@ export const configSheet = async () => {
           },
           theScionPersonalIdol: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theScionPersonalIdolLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theScionPersonalIdolLabel"),
             playbook: "The Scion",
             position: "Left",
             options: {
@@ -286,7 +286,7 @@ export const configSheet = async () => {
           },
           theScionGreatestLeader: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theScionGreatestLeaderLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theScionGreatestLeaderLabel"),
             playbook: "The Scion",
             position: "Left",
             options: {
@@ -305,7 +305,7 @@ export const configSheet = async () => {
           },
           theScionGreatestHero: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theScionGreatestHeroLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theScionGreatestHeroLabel"),
             playbook: "The Scion",
             position: "Left",
             options: {
@@ -324,7 +324,7 @@ export const configSheet = async () => {
           },
           theScionBiggestCelebrity: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theScionBiggestCelebrityLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theScionBiggestCelebrityLabel"),
             playbook: "The Scion",
             position: "Left",
             options: {
@@ -343,13 +343,13 @@ export const configSheet = async () => {
           },
           theHarbinger: {
             type: "LongText",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theHarbinger.label"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theHarbinger.label"),
             playbook: "The Harbinger",
             position: "Left",
           },
           theStarAdvantages: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theStarAdvantagesLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theStarAdvantagesLabel"),
             playbook: "The Star",
             position: "Left",
             options: {
@@ -365,7 +365,7 @@ export const configSheet = async () => {
           },
           theStarDemands: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theStarDemandsLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theStarDemandsLabel"),
             playbook: "The Star",
             position: "Left",
             options: {
@@ -381,7 +381,7 @@ export const configSheet = async () => {
           },
           theInnocent: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theInnocentLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theInnocentLabel"),
             playbook: "The Innocent",
             position: "Left",
             options: {
@@ -405,7 +405,7 @@ export const configSheet = async () => {
           },
           theNewborn: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theNewbornLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theNewbornLabel"),
             playbook: "The Newborn",
             position: "Left",
             options: {
@@ -429,7 +429,7 @@ export const configSheet = async () => {
           },
           theReformed: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theReformedLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theReformedLabel"),
             playbook: "The Reformed",
             position: "Left",
             options: {
@@ -467,7 +467,7 @@ export const configSheet = async () => {
           },
           theJanus: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theJanusLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theJanusLabel"),
             playbook: "The Janus",
             position: "Left",
             options: {
@@ -487,21 +487,21 @@ export const configSheet = async () => {
           },
           theProtegeMentorsResources: {
             type: "LongText",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theProtege.resources.label"),
-            description: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theProtege.resources.description"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theProtege.resources.label"),
+            description: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theProtege.resources.description"),
             playbook: "The Protégé",
             position: "Left",
           },
           theLegacy: {
             type: "LongText",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theLegacy.label"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theLegacy.label"),
             playbook: "The Legacy",
-            value: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theLegacy.value"),
+            value: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theLegacy.value"),
             position: "Left",
           },
           theBeacon: {
             type: "ListMany",
-            label: game.i18n.localize("DISPATCH.CharacterSheets.Playbooks.theBeaconLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.Playbooks.theBeaconLabel"),
             playbook: "The Beacon",
             position: "Left",
             options: {
@@ -524,17 +524,17 @@ export const configSheet = async () => {
             },
           },
           momentUnlocked: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.momentUnlocked.label"),
+            label: game.i18n.localize("MASKS.CharacterSheets.momentUnlocked.label"),
             description: null,
             customLabel: false,
             userLabel: false,
             type: "Checkbox",
-            checkboxLabel: game.i18n.localize("DISPATCH.CharacterSheets.momentUnlocked.checkboxLabel"),
+            checkboxLabel: game.i18n.localize("MASKS.CharacterSheets.momentUnlocked.checkboxLabel"),
             value: false,
           },
           advancements: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.advancementsLabel"),
-            description: game.i18n.localize("DISPATCH.CharacterSheets.advancementsDescription"),
+            label: game.i18n.localize("MASKS.CharacterSheets.advancementsLabel"),
+            description: game.i18n.localize("MASKS.CharacterSheets.advancementsDescription"),
             customLabel: false,
             userLabel: false,
             type: "ListMany",
@@ -542,8 +542,8 @@ export const configSheet = async () => {
             playbook: true,
           },
           laterAdvances: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.laterAdvancesLabel"),
-            description: game.i18n.localize("DISPATCH.CharacterSheets.laterAdvancesDescription"),
+            label: game.i18n.localize("MASKS.CharacterSheets.laterAdvancesLabel"),
+            description: game.i18n.localize("MASKS.CharacterSheets.laterAdvancesDescription"),
             customLabel: false,
             userLabel: false,
             type: "ListMany",
@@ -551,7 +551,7 @@ export const configSheet = async () => {
             playbook: true,
           },
           relationshipQuestions: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.details.relationshipsLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.details.relationshipsLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -559,7 +559,7 @@ export const configSheet = async () => {
             playbook: true,
           },
           momentOfTruth: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.details.momentLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.details.momentLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -567,7 +567,7 @@ export const configSheet = async () => {
             playbook: true,
           },
           teamQuestion: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.details.teamLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.details.teamLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -577,7 +577,7 @@ export const configSheet = async () => {
         },
         details: {
           look: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.details.lookLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.details.lookLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -586,7 +586,7 @@ export const configSheet = async () => {
             value: "",
           },
           abilities: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.details.abilitiesLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.details.abilitiesLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -595,7 +595,7 @@ export const configSheet = async () => {
             playbook: true,
           },
           backstory: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.details.backstoryLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.details.backstoryLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -604,7 +604,7 @@ export const configSheet = async () => {
             playbook: true,
           },
           biography: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.details.biographyLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.details.biographyLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -614,18 +614,18 @@ export const configSheet = async () => {
         },
         moveTypes: {
           basic: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.moveTypes.basicLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.moveTypes.basicLabel"),
             creation: true,
           },
           playbook: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.moveTypes.playbookLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.moveTypes.playbookLabel"),
             playbook: true,
           },
           adult: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.moveTypes.adultLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.moveTypes.adultLabel"),
           },
           rules: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.moveTypes.rulesLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.moveTypes.rulesLabel"),
             creation: true,
           },
         },
@@ -633,8 +633,8 @@ export const configSheet = async () => {
       npc: {
         attributes: {
           conditions: {
-            label: game.i18n.localize("DISPATCH.NPCSheets.conditions.label"),
-            description: game.i18n.localize("DISPATCH.NPCSheets.conditions.description"),
+            label: game.i18n.localize("MASKS.NPCSheets.conditions.label"),
+            description: game.i18n.localize("MASKS.NPCSheets.conditions.description"),
             customLabel: false,
             userLabel: false,
             type: "ListMany",
@@ -642,29 +642,29 @@ export const configSheet = async () => {
             position: "Left",
             options: {
               0: {
-                label: game.i18n.localize("DISPATCH.NPCSheets.conditions.options.0"),
+                label: game.i18n.localize("MASKS.NPCSheets.conditions.options.0"),
                 value: false,
               },
               1: {
-                label: game.i18n.localize("DISPATCH.NPCSheets.conditions.options.1"),
+                label: game.i18n.localize("MASKS.NPCSheets.conditions.options.1"),
                 value: false,
               },
               2: {
-                label: game.i18n.localize("DISPATCH.NPCSheets.conditions.options.2"),
+                label: game.i18n.localize("MASKS.NPCSheets.conditions.options.2"),
                 value: false,
               },
               3: {
-                label: game.i18n.localize("DISPATCH.NPCSheets.conditions.options.3"),
+                label: game.i18n.localize("MASKS.NPCSheets.conditions.options.3"),
                 value: false,
               },
               4: {
-                label: game.i18n.localize("DISPATCH.NPCSheets.conditions.options.4"),
+                label: game.i18n.localize("MASKS.NPCSheets.conditions.options.4"),
                 value: false,
               },
             },
           },
           realName: {
-            label: game.i18n.localize("DISPATCH.NPCSheets.realName"),
+            label: game.i18n.localize("MASKS.NPCSheets.realName"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -673,7 +673,7 @@ export const configSheet = async () => {
             position: "Left",
           },
           generation: {
-            label: game.i18n.localize("DISPATCH.NPCSheets.generationLabel"),
+            label: game.i18n.localize("MASKS.NPCSheets.generationLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -684,36 +684,36 @@ export const configSheet = async () => {
         },
         details: {
           drive: {
-            label: game.i18n.localize("DISPATCH.NPCSheets.driveLabel"),
+            label: game.i18n.localize("MASKS.NPCSheets.driveLabel"),
             value: "",
           },
           abilities: {
-            label: game.i18n.localize("DISPATCH.NPCSheets.abilitiesLabel"),
+            label: game.i18n.localize("MASKS.NPCSheets.abilitiesLabel"),
             value: "",
           },
           biography: {
-            label: game.i18n.localize("DISPATCH.CharacterSheets.details.biographyLabel"),
+            label: game.i18n.localize("MASKS.CharacterSheets.details.biographyLabel"),
             value: "",
           },
         },
         moveTypes: {
           villain: {
-            label: game.i18n.localize("DISPATCH.NPCSheets.moveTypes.villainLabel"),
+            label: game.i18n.localize("MASKS.NPCSheets.moveTypes.villainLabel"),
             moves: [],
           },
           condition: {
-            label: game.i18n.localize("DISPATCH.NPCSheets.moveTypes.conditionLabel"),
+            label: game.i18n.localize("MASKS.NPCSheets.moveTypes.conditionLabel"),
             moves: [],
           },
         },
       },
       // Call actor type (uses PbtA's "other" base type with customType="call")
       call: {
-        label: game.i18n.localize("DISPATCH.Call.TypeLabel"),
+        label: game.i18n.localize("MASKS.Call.TypeLabel"),
         baseType: "npc",
         attributes: {
           callType: {
-            label: game.i18n.localize("DISPATCH.Call.TypeLabel"),
+            label: game.i18n.localize("MASKS.Call.TypeLabel"),
             description: null,
             customLabel: false,
             userLabel: false,
@@ -724,7 +724,7 @@ export const configSheet = async () => {
         },
         details: {
           biography: {
-            label: game.i18n.localize("DISPATCH.Call.Description"),
+            label: game.i18n.localize("MASKS.Call.Description"),
             description: null,
             customLabel: false,
             userLabel: false,

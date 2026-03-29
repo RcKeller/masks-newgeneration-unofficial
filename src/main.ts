@@ -1,6 +1,3 @@
-import { MODULE_ID } from "./config";
-import { log } from "./utils/logging";
-
 // Styles
 import './index.css';
 import './styles/dispatch.scss';

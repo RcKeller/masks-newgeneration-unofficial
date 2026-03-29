@@ -1,4 +1,4 @@
-/* global game, Hooks, ui, canvas, foundry, CONST */
+/* global game, Hooks, canvas, foundry, CONST */
 
 /**
  * health.mjs
@@ -277,59 +277,67 @@ function patchSheetConfig() {
 
 /* ---------------------------------- Hooks --------------------------------- */
 
-Hooks.once("ready", async () => {
-	// Patch PbtA sheet config (visible Tier/Health inputs; real bar is the token bar)
-	patchSheetConfig();
+Hooks.once("ready", () => {
+	void (async () => {
+		// Patch PbtA sheet config (visible Tier/Health inputs; real bar is the token bar)
+		patchSheetConfig();
 
-	// Initial migration + first compute
-	await migrateExistingActorsAndTokens();
+		// Initial migration + first compute
+		await migrateExistingActorsAndTokens();
 
-	// Actor changes (conditions/tier/name/anything relevant)
-	Hooks.on("updateActor", (actor, changes) => {
-		// Recompute if conditions or tier changed
-		recalcApply(actor, changes);
-	});
+		// Actor changes (conditions/tier/name/anything relevant)
+		Hooks.on("updateActor", (actor, changes) => {
+			// Recompute if conditions or tier changed
+			void recalcApply(actor, changes);
+		});
 
-	// Synthetic (unlinked) token changes may carry actorData deltas
-	Hooks.on("updateToken", (tokenDoc, changes) => {
-		if (!tokenDoc?.actor) return;
-		// Always ensure token bar
-		ensureTokenBar(tokenDoc);
-		if (didConditionsChange(changes) || didTierChange(changes)) {
-			recalcApply(tokenDoc.actor, {}); // actorData already applied; trigger recompute
-		}
-	});
-
-	// New docs during play
-	Hooks.on("createActor", async (actor) => {
-		// Add tier to new NPCs
-		if (actor.type === "npc") {
-			const tier = Number(foundry.utils.getProperty(actor, PATH.TIER));
-			if (!Number.isFinite(tier)) {
-				console.log(`[${NS}] Adding tier 5 to new NPC ${actor.name}`);
-				await actor.update({ [PATH.TIER]: 5 });
+		// Synthetic (unlinked) token changes may carry actorData deltas
+		Hooks.on("updateToken", (tokenDoc, changes) => {
+			if (!tokenDoc?.actor) return;
+			// Always ensure token bar
+			void ensureTokenBar(tokenDoc);
+			if (didConditionsChange(changes) || didTierChange(changes)) {
+				void recalcApply(tokenDoc.actor, {}); // actorData already applied; trigger recompute
 			}
-		}
-		await ensureHpField(actor);
-		await writeDerivedHP(actor);
-	});
+		});
 
-	Hooks.on("createToken", async (tokenDoc) => {
-		await ensureTokenBar(tokenDoc);
-		if (tokenDoc?.actor) {
-			await ensureHpField(tokenDoc.actor);
-			await writeDerivedHP(tokenDoc.actor);
-		}
-	});
+		// New docs during play
+		Hooks.on("createActor", (actor) => {
+			void (async () => {
+				// Add tier to new NPCs
+				if (actor.type === "npc") {
+					const tier = Number(foundry.utils.getProperty(actor, PATH.TIER));
+					if (!Number.isFinite(tier)) {
+						console.log(`[${NS}] Adding tier 5 to new NPC ${actor.name}`);
+						await actor.update({ [PATH.TIER]: 5 });
+					}
+				}
+				await ensureHpField(actor);
+				await writeDerivedHP(actor);
+			})();
+		});
 
-	// Scene swap: make sure token bars are present and HP derived (actors typically cached)
-	Hooks.on("canvasReady", async () => {
-		for (const t of canvas.tokens?.placeables ?? [])
-			await ensureTokenBar(t.document);
-		// A quick sweep to sync defeated overlays for any scene tokens
-		for (const t of canvas.tokens?.placeables ?? [])
-			if (t?.actor) await toggleDefeatedForActorTokens(t.actor);
-	});
+		Hooks.on("createToken", (tokenDoc) => {
+			void (async () => {
+				await ensureTokenBar(tokenDoc);
+				if (tokenDoc?.actor) {
+					await ensureHpField(tokenDoc.actor);
+					await writeDerivedHP(tokenDoc.actor);
+				}
+			})();
+		});
+
+		// Scene swap: make sure token bars are present and HP derived (actors typically cached)
+		Hooks.on("canvasReady", () => {
+			void (async () => {
+				for (const t of canvas.tokens?.placeables ?? [])
+					await ensureTokenBar(t.document);
+				// A quick sweep to sync defeated overlays for any scene tokens
+				for (const t of canvas.tokens?.placeables ?? [])
+					if (t?.actor) await toggleDefeatedForActorTokens(t.actor);
+			})();
+		});
+	})();
 });
 
 

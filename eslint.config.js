@@ -19,6 +19,10 @@ export default [
             "*.cjs",
             "*.mjs",
             "*.mts",
+            // TypeScript declaration files: handled by TypeScript compiler, not ESLint
+            "**/*.d.ts",
+            // Legacy entry point not in tsconfig
+            "src/index.js",
         ],
     },
     js.configs.recommended,
@@ -49,6 +53,48 @@ export default [
             "react-refresh/only-export-components": [
                 "warn",
                 { allowConstantExport: true },
+            ],
+
+            // FoundryVTT APIs return `any` extensively via fvtt-types.
+            // These rules produce thousands of unfixable errors — turn them off.
+            "@typescript-eslint/no-unsafe-assignment": "off",
+            "@typescript-eslint/no-unsafe-member-access": "off",
+            "@typescript-eslint/no-unsafe-call": "off",
+            "@typescript-eslint/no-unsafe-return": "off",
+            "@typescript-eslint/no-unsafe-argument": "off",
+            "@typescript-eslint/no-explicit-any": "warn",
+
+            // Allow underscore-prefixed variables to be unused (conventional ignore pattern).
+            "@typescript-eslint/no-unused-vars": [
+                "error",
+                {
+                    args: "all",
+                    argsIgnorePattern: "^_",
+                    caughtErrors: "all",
+                    caughtErrorsIgnorePattern: "^_",
+                    destructuredArrayIgnorePattern: "^_",
+                    varsIgnorePattern: "^_",
+                    ignoreRestSiblings: true,
+                },
+            ],
+
+            // import-x TypeScript resolver has an incompatible interface with
+            // the installed version — disable resolver-dependent rules.
+            "import-x/no-unresolved": "off",
+            "import-x/namespace": "off",
+            "import-x/named": "off",
+            "import-x/default": "off",
+
+            // jQuery and FoundryVTT event handlers commonly use async callbacks.
+            // The void-returning event listener pattern is standard in this codebase.
+            "@typescript-eslint/no-misused-promises": [
+                "error",
+                {
+                    checksVoidReturn: {
+                        attributes: false,
+                        arguments: false,
+                    },
+                },
             ],
         },
         settings: {

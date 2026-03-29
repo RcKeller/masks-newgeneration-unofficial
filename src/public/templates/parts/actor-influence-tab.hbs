@@ -2,7 +2,7 @@
 <div class="tab influence" data-group="primary" data-tab="influence">
 	<div class="cell cell--influences">
 		<h2 class="cell__title">
-			<label class="item-group-label">{{localize "DISPATCH.Influences"}}</label>
+			<label class="item-group-label">{{localize "MASKS.Influences"}}</label>
 			<div>
 				<button type="button" class="item-control item-create" data-action="create-influence">
 					<i class="fas fa-plus"></i>
@@ -13,17 +13,17 @@
 			{{#each flags.masks-newgeneration-unofficial.influences}}
 			<li class="item flexrow {{#if locked}}locked{{/if}}" data-influence-id="{{id}}">
 				<div class="influence-name">
-					<input type="text" class="influence--name" value="{{name}}" placeholder="{{localize 'DISPATCH.Person-Name'}}" {{#if locked}}readonly{{/if}} />
+					<input type="text" class="influence--name" value="{{name}}" placeholder="{{localize 'MASKS.Person-Name'}}" {{#if locked}}readonly{{/if}} />
 				</div>
 				<div class="influence-management flexrow">
 					<img class="influence-icon {{#unless hasInfluenceOver}}influence-disabled{{/unless}}"
 						src="modules/masks-newgeneration-unofficial/images/team-downgrade.svg"
 						data-action="toggle-influence" data-direction="hasInfluenceOver"
-						data-tooltip="{{localize 'DISPATCH.HasInfluence'}}" />
+						data-tooltip="{{localize 'MASKS.HasInfluence'}}" />
 					<img class="influence-icon {{#unless haveInfluenceOver}}influence-disabled{{/unless}}"
 						src="modules/masks-newgeneration-unofficial/images/team-upgrade.svg"
 						data-action="toggle-influence" data-direction="haveInfluenceOver"
-						data-tooltip="{{localize 'DISPATCH.HaveInfluence'}}" />
+						data-tooltip="{{localize 'MASKS.HaveInfluence'}}" />
 					<a class="influence-control influence-lock" data-action="toggle-influence-lock">
 						<i class="fas {{#if locked}}fa-lock{{else}}fa-lock-open{{/if}}"></i>
 					</a>
@@ -35,7 +35,7 @@
 			{{/each}}
 		</ol>
 		{{#unless flags.masks-newgeneration-unofficial.influences}}
-		<p class="no-influences">{{localize "DISPATCH.NoInfluences"}}</p>
+		<p class="no-influences">{{localize "MASKS.NoInfluences"}}</p>
 		{{/unless}}
 	</div>
 </div>
